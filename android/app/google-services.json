@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "62511586249",
+    "firebase_url": "https://vietjack-4b6d1.firebaseio.com",
+    "project_id": "vietjack-4b6d1",
+    "storage_bucket": "vietjack-4b6d1.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:62511586249:android:57c356e47f5df15ffb6618",
+        "android_client_info": {
+          "package_name": "com.jsmile.android.vietjack"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "62511586249-ok3i79o64lm29jnd5hne8aftfpunc183.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCkNJ0tfEIJTYzhU5DzuMdtlJ9QeGOGOWM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "62511586249-ok3i79o64lm29jnd5hne8aftfpunc183.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "62511586249-smvk8q5m9cciq1754rsnlnam4eja4u9n.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "org.jsmile.native.vietjack"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
