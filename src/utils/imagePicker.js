@@ -44,21 +44,40 @@ class ImagePickerModule {
 
   }
 
-  launchLibrary(multiple, { onChooseImage, onDidCancel, onError }) {
-    ImagePickerCrop.openPicker({
-      multiple: multiple,
-      compressImageMaxWidth: 1920,
-      compressImageMaxHeight: 1080,
-      mediaType: "photo"
-    })
-      .then(response => {
-        console.log("ImagePicker Success: ", response);
-        onChooseImage && onChooseImage(response);
+  launchLibrary(otherOption, { onChooseImage, onDidCancel, onError }) {
+    console.log('=======1111111===')
+    try {
+      // ImagePickerCrop.openPicker({
+      //   compressImageMaxWidth: 1920,
+      //   compressImageMaxHeight: 1080,
+      //   cropping: true,
+      //   ...otherOption,
+      // })
+      //   .then(response => {
+      //     console.log("ImagePicker Success: ", response);
+      //     onChooseImage && onChooseImage(response);
+      //   })
+      //   .catch(err => {
+      //     onError && onError();
+      //     console.log("ImagePicker Error: ", err);
+      //   });
+      ImagePickerCrop.openPicker({
+        compressImageMaxWidth: 1920,
+        compressImageMaxHeight: 1080,
+        mediaType: "photo",
+        ...otherOption,
       })
-      .catch(err => {
-        onError && onError();
-        console.log("ImagePicker Error: ", err);
-      });
+        .then(response => {
+          console.log("ImagePicker Success: ", response);
+          onChooseImage && onChooseImage(response);
+        })
+        .catch(err => {
+          onError && onError();
+          console.log("ImagePicker Error: ", err);
+        });
+    } catch (error) {
+      console.log('--------error===', error)
+    }
   }
 }
 

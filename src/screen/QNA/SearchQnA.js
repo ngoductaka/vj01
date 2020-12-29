@@ -48,7 +48,7 @@ const QnA = (props) => {
 
     useEffect(() => {
         if (searchText && filter) {
-            console.log(filter, 'filter====');
+            // console.log(filter, 'filter====');
             const { cls, currSub } = filter;
             const query = { grade_id: cls == 13 ? '' : cls };
             if (currSub && currSub.id) {

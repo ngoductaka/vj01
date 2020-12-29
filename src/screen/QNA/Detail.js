@@ -9,6 +9,7 @@ import { Icon } from 'native-base';
 import { KeyboardAwareFlatList } from 'react-native-keyboard-aware-scroll-view';
 import Toast from 'react-native-simple-toast';
 import OptionsMenu from "react-native-option-menu";
+import ImageView from "react-native-image-viewing";
 
 
 import api from '../../handle/api';
@@ -24,6 +25,7 @@ import RenderData, { RenderDataJson } from '../../component/shared/renderHtmlQue
 import services from '../../handle/services';
 import { endpoints } from '../../constant/endpoints';
 import { search_services } from './service';
+import { RenderListImg } from '../../component/Image/renderListImg';
 
 
 const { width, height } = Dimensions.get('window');
@@ -37,7 +39,9 @@ const QnA = (props) => {
     const [showKeyboad, setShowKeyBoard] = useState(false);
     const [commentType, setType] = useState({ type: 'answer' });
     const inputEl = useRef(null);
-    const refList = useRef(null)
+    const refList = useRef(null);
+
+    const [visible, setIsVisible] = useState(false);
 
     const handleComment = (type = 'answer', data) => {
         setType({ type, data });
@@ -47,7 +51,7 @@ const QnA = (props) => {
     }
     const [questionData, setQuestionData] = useState({});
     const [isFollow, setFollow] = useState(false);
-    // console.log('questionData', questionData)
+    // console.log(get(questionData, 'content.image', []).map(img => ({ uri: `${endpoints.MEDIA_URL}${img.path}` })))
 
     const requesQuestion = (isScroll) => {
         api.get(`/question/${questionId}`)
@@ -131,7 +135,7 @@ const QnA = (props) => {
     const _handleFollow = () => {
         search_services.handleFollow(questionId)
             .then(() => {
-                Toast.showWithGravity(isFollow ? "Bỏ theo dõi thành công": "Theo dõi thành công", Toast.SHORT, Toast.CENTER);
+                Toast.showWithGravity(isFollow ? "Bỏ theo dõi thành công" : "Theo dõi thành công", Toast.SHORT, Toast.CENTER);
             })
     };
     const _handleReport = () => {
@@ -168,6 +172,7 @@ const QnA = (props) => {
                                 }}
                                 questionId={questionId}
                                 handleClickAnswer={handleComment}
+                                setIsVisible={setIsVisible}
                             />
                         }
                         renderItem={({ item, index }) => <RenderAnwser {...{ item, index, handleComment, _gotoProfile }} />}
@@ -188,6 +193,15 @@ const QnA = (props) => {
                     : null
                 }
             </SafeAreaView>
+            {
+                get(questionData, 'content.image[0]') ?
+                    <ImageView
+                        images={get(questionData, 'content.image', []).map(img => ({ uri: `${endpoints.MEDIA_URL}${img.path}` }))}
+                        imageIndex={0}
+                        visible={visible}
+                        onRequestClose={() => setIsVisible(false)}
+                    /> : null
+            }
         </View >
     );
 };
@@ -225,7 +239,7 @@ const styles = StyleSheet.create({
     itemQ: {
         backgroundColor: '#fefefe',
         paddingVertical: 10,
-        padding: 10,
+        // padding: 10,
         // borderRadius: 10,
         // marginVertical: 10
     },
@@ -331,7 +345,7 @@ const mapImg = {
     // 3: 3,
 }
 
-const RenderQuestion = ({ questionId, item, index, handleClickAnswer = () => { } }) => {
+const RenderQuestion = ({ questionId, item, index, handleClickAnswer = () => { }, setIsVisible }) => {
     // console.log('item.image[0]', endpoints.BASE_URL)
     const [like, setLike] = useState(false);
     const _handleLike = useCallback(() => {
@@ -349,23 +363,9 @@ const RenderQuestion = ({ questionId, item, index, handleClickAnswer = () => { }
             style={[styles.itemQ]}
         >
             <RenderDataJson indexItem={index} content={item.content || ''} />
-            {
-                item.image && item.image[0] ? (
-                    <View style={{ marginTop: 10, flexDirection: 'row' }}>
-                        {
-                            item.image.map(img => {
-                                return (
-                                    <View style={{ borderRadius: 10, overflow: 'hidden', height: 200, width: `${100 / item.image.length - 10 / 3}%`, margin: 5 }}>
-                                        <Image
-                                            source={{ uri: `${endpoints.MEDIA_URL}${get(img, 'path', '')}` }}
-                                            style={{ height: null, width: null, flex: 1 }}
-                                        />
-                                    </View>
-                                )
-                            })
-                        }
-                    </View>
-                ) : null}
+            <TouchableOpacity onPress={() => setIsVisible(true)}>
+            <RenderListImg listImg={item.image} />
+            </TouchableOpacity>
             <View style={{
                 flexDirection: 'row',
                 borderTopColor: '#cecece', borderTopWidth: 1,
@@ -548,7 +548,7 @@ const Header = ({
     gotoProfile = () => { },
     _handleFollow = () => { },
     _handleReport = () => { },
-    isFollow=false,
+    isFollow = false,
 }) => {
     return (
         <View style={{ flexDirection: 'row', alignItems: 'center', marginVertical: 8 }}>
@@ -578,7 +578,7 @@ const Header = ({
             <OptionsMenu
                 customButton={<Icon name='dots-three-vertical' type='Entypo' style={{ fontSize: 16, color: '#040404', paddingHorizontal: 20, paddingBottom: 20 }} />}
                 destructiveIndex={1}
-                options={[isFollow ? "Bỏ theo dõi" :"Theo dõi", "Báo cáo", "Huỷ bỏ"]}
+                options={[isFollow ? "Bỏ theo dõi" : "Theo dõi", "Báo cáo", "Huỷ bỏ"]}
                 actions={[_handleFollow, _handleReport]} />
 
         </View>
@@ -603,7 +603,7 @@ const FormComment = ({
 
     const handleChoosePhotos = () => {
         // imagePicker.
-        imagePicker.launchLibrary(false, {
+        imagePicker.launchLibrary({}, {
             onChooseImage: (response) => {
                 if (response.path) {
                     try {

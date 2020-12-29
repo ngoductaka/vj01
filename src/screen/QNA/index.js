@@ -21,6 +21,9 @@ import api from '../../handle/api';
 import { RenderDataJson } from '../../component/shared/renderHtmlNew';
 import { search_services } from './service';
 import { images } from '../../utils/images';
+import { endpoints } from '../../constant/endpoints';
+import { RenderListImg } from '../../component/Image/renderListImg';
+
 
 const userImg = "https://www.xaprb.com/media/2018/08/kitten.jpg";
 const { height } = Dimensions.get('screen');
@@ -28,7 +31,6 @@ const { height } = Dimensions.get('screen');
 const QnA = (props) => {
     const onMomentumScrollBeginRef = useRef(true);
     const flatlistRef = useRef(null);
-
     const current_class = useSelector(state => state.userInfo.class);
 
     const [filter, setFilter] = useState({ cls: current_class });
@@ -243,7 +245,7 @@ const styles = StyleSheet.create({
     itemQ: {
         backgroundColor: '#fff',
         paddingVertical: 10,
-        padding: 10,
+        // padding: 10,
         // borderRadius: 10,
         marginTop: 10
     },
@@ -347,8 +349,8 @@ const renderHead = ({ filter, setFilter, setShowFilter, navigation, loading }) =
 
                 <TouchableOpacity onPress={() => setShowFilter(true)} style={styles.filter}>
                     {
-                        loading? <ActivityIndicator color="#fff"/>:
-                        <Icon style={styles.iconFilter} type="AntDesign" name="filter" />
+                        loading ? <ActivityIndicator color="#fff" /> :
+                            <Icon style={styles.iconFilter} type="AntDesign" name="filter" />
                     }
                     {/* <Text style={styles.h2}> Lọc câu hỏi</Text> */}
                 </TouchableOpacity>
@@ -427,7 +429,8 @@ const RenderQestion = ({ item, index, hanldleClick, _handleNavigate = () => { },
         id = '',
         user: {
             name = '',
-            avatar = ''
+            avatar = '',
+            role_id = 0
         } = {},
         userAnswer = [],
         path: {
@@ -464,20 +467,19 @@ const RenderQestion = ({ item, index, hanldleClick, _handleNavigate = () => { },
                 marginBottom: 10, justifyContent: 'space-between'
             }}>
                 <View style={{
-                    flexDirection: 'row', alignItems: 'center',
+                    flexDirection: 'row', alignItems: 'center', paddingHorizontal: 10
                 }}>
 
                     <TouchableOpacity onPress={() => _handleNavigate(get(item, 'user.id', ''))} style={styles.largeImgWapper} >
-                        <Image style={userStyle.img} source={{ uri: avatar || userImg }} />
-                        <View style={{ backgroundColor: '#fff', position: 'absolute', right: -3, bottom: -3, borderRadius: 10 }}>
+                        <Image style={userStyle.img} source={{ uri: handleImgLink(avatar) || userImg }} />
+                        {(role_id == 1 || role_id == 2) ? <View style={{ backgroundColor: '#fff', position: 'absolute', right: -3, bottom: -3, borderRadius: 10 }}>
                             <Icon style={{ color: 'green', fontSize: 15, fontWeight: 'bolid' }} name="check-circle" type="FontAwesome" />
-                        </View>
+                        </View> : null}
                     </TouchableOpacity>
                     <View style={{ marginLeft: 10 }}>
                         <Text style={{ fontWeight: 'bold', fontSize: 16 }}>{name}</Text>
-                        <Text style={{ fontSize: 13 }}>Lớp {class_id} • {get(subject,'subject_name', '') + ' • '} {getDiffTime(timestamp)}</Text>
+                        <Text style={{ fontSize: 13 }}>Lớp {class_id} • {get(subject, 'subject_name', '') + ' • '} {getDiffTime(timestamp)}</Text>
                     </View>
-
                 </View>
                 {/* <View style={{ flexDirection: 'row' }}> */}
                 <OptionsMenu
@@ -489,10 +491,11 @@ const RenderQestion = ({ item, index, hanldleClick, _handleNavigate = () => { },
                 {/* </View> */}
             </TouchableOpacity>
             {/* content */}
-            <View>
+            <View style={{ paddingHorizontal: 10 }}>
                 <RenderDataJson isShort indexItem={index} content={parse_content} />
-                <Text style={{ textAlign: 'right', marginTop: 8 }}>Xem thêm ...</Text>
+                {(parse_content && get(parse_content, 'length', 0) > 5) ? < Text style={{ textAlign: 'left', marginTop: 8 }}>... Xem thêm</Text> : null}
             </View>
+            <RenderListImg listImg={image} />
             {/* footer */}
             <View style={{
                 flexDirection: 'row', borderTopColor: '#cecece',
@@ -529,6 +532,16 @@ const RenderQestion = ({ item, index, hanldleClick, _handleNavigate = () => { },
 
                 </View>
             </View>
-        </TouchableOpacity>
+        </TouchableOpacity >
     )
+}
+
+
+const handleImgLink = (link) => {
+    try {
+        return link.includes('http') ? link : endpoints.BASE_HOI_DAP + link;
+    } catch (err) {
+        return link;
+    }
+
 }

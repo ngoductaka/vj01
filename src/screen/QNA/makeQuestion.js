@@ -7,6 +7,7 @@ import {
 import Toast from 'react-native-simple-toast';
 import { Icon } from 'native-base';
 import { useSelector, useDispatch } from 'react-redux';
+import { get } from 'lodash';
 
 import { fontSize, COLOR } from '../../handle/Constant';
 import { fontMaker, fontStyles } from '../../utils/fonts';
@@ -52,12 +53,13 @@ const QnA = (props) => {
     const [photos, setPhotos] = useState([])
 
     const handleChoosePhotos = () => {
-        imagePicker.launchLibrary(false, {
+        imagePicker.launchLibrary({}, {
             onChooseImage: (response) => {
                 if (response.path) {
+                    console.log('responseresponseresponseresponseresponse', response)
                     try {
                         if (photos.length < 3)
-                            setPhotos([...photos, response.path])
+                            setPhotos([...photos, response])
                         else
                             Toast.showWithGravity("Bạn chỉ được gửi tối đa 3 ảnh", Toast.SHORT, Toast.CENTER);
 
@@ -76,7 +78,7 @@ const QnA = (props) => {
                     console.log('response1111', response)
                     try {
                         if (photos.length < 3)
-                            setPhotos([...photos, response.path])
+                            setPhotos([...photos, response])
                         else
                             Toast.showWithGravity("Bạn chỉ được gửi tối đa 3 ảnh", Toast.SHORT, Toast.CENTER);
 
@@ -112,24 +114,19 @@ const QnA = (props) => {
             if (photos[0]) {
                 const dataUpload = new FormData();
                 photos.map(file => {
-
-                    let fileName = file.split('/');
-
-                    console.log('231232312filefilefilefilefile34234', file)
-                    dataUpload.append("img[]", {
-                        uri: file,
-                        name: fileName[fileName.length - 1],
-                        type: 'multipart/form-data',
-                    });
+                    if (file.path) {
+                        dataUpload.append("img[]", {
+                            uri: file.path,
+                            name: get(file, 'filename', 'dd'),
+                            type: 'multipart/form-data',
+                        });
+                    }
                 });
                 try {
 
                     const imageUpload = await services.uploadImage(dataUpload);
-                    console.log('------00000imageUpload.data--------------------', imageUpload.data)
                     if (imageUpload && imageUpload.data) {
-                        console.log('imageUpload.data', imageUpload.data)
                         body.image = imageUpload.data;
-
                         const data = await api.post('/question', body);
                         if (data && data.question_id) {
                             props.navigation.navigate('QuestionDetail', { questionId: data.question_id, source: "QnA" })
@@ -212,7 +209,7 @@ const QnA = (props) => {
                             numberOfLines={4}
                             placeholder={`Câu hỏi của bạn là gì? Hãy chia nhỏ câu hỏi để có lời giải nhanh nhất nhé `}
                             style={[{
-                                height: height / 4,
+                                maxHeight: height / 5,
                                 borderBottomColor: '#dedede',
                                 borderBottomWidth: 1,
                                 textAlignVertical: 'top',
@@ -224,11 +221,15 @@ const QnA = (props) => {
                             }]}
                         />
                         {
-                            photos[0] ? photos.map((p, index) => {
+                            photos[0] ? photos.map((photo, index) => {
                                 return (
-                                    <View key={p} style={{ height: width / 2, padding: 10 }}>
+                                    <View key={photo.path} style={{
+                                        height: get(photo, 'height', width / 2) * (width / get(photo, 'width', width / 2)),
+                                        width,
+                                        marginBottom: 20
+                                    }}>
                                         <Image
-                                            source={{ uri: p }}
+                                            source={{ uri: photo.path }}
                                             style={{ flex: 1, width: undefined, height: undefined }}
                                         // resizeMode='contain'
                                         />
@@ -237,9 +238,10 @@ const QnA = (props) => {
                                             style={{
                                                 position: 'absolute',
                                                 backgroundColor: '#ddd', right: 0,
-                                                paddingHorizontal: 10, justifyContent: 'center',
+                                                // paddingHorizontal: 10, 
+                                                justifyContent: 'center',
                                                 height: 40, width: 40,
-                                                alignItems: 'center', justifyContent: 'center', borderRadius: 10
+                                                alignItems: 'center', justifyContent: 'center', borderRadius: 40
                                             }}>
                                             <Icon name="close" style={{ color: 'red' }} />
                                         </TouchableOpacity>
@@ -276,7 +278,7 @@ const QnA = (props) => {
                         </View>
                     </KeyboardStickyView> : null}
             </SafeAreaView>
-            {/* <FilterModal
+            <FilterModal
                 show={showFilter}
                 onClose={() => setShowFilter(false)}
                 setFilter={setFilter}
@@ -284,7 +286,8 @@ const QnA = (props) => {
                 showState={false}
                 headerText="Thông tin câu hỏi"
                 cancelAble={true}
-            /> */}
+                showAll={false}
+            />
         </View>
     );
 };

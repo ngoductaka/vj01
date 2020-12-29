@@ -10,8 +10,7 @@ import {
 import Modal from 'react-native-modal';
 import { useSelector } from 'react-redux';
 import DropDownPicker from 'react-native-dropdown-picker';
-
-const { width, height } = Dimensions.get('window');
+import { get } from 'lodash';
 
 import { Icon } from 'native-base';
 import { blackColor, COLOR } from '../../../handle/Constant';
@@ -20,15 +19,18 @@ import { helpers } from '../../../utils/helpers';
 import { fontMaker, fontStyles } from '../../../utils/fonts';
 import { class_services } from '../../../redux/services/class.service';
 
+const { width, height } = Dimensions.get('window');
 const MODAL_WIDTH = helpers.isTablet ? 300 : 3 * width / 4;
 
 export const FilterModal = (props) => {
-    const { show = false,
+    const {
+        show = false,
         onClose = () => { },
         setFilter = () => { },
         filter, showState = true,
         headerText = 'Lọc theo:',
         cancelAble = true,
+        showAll = true,
     } = props;
 
     const current_class = useSelector(state => state.userInfo.class);
@@ -43,11 +45,17 @@ export const FilterModal = (props) => {
     const [cls, setCls, clsChoosen] = useClassChoosen({ initVal: current_class });
 
     useEffect(() => {
-        setCurrIndex(0);
-        setCurrSub(null);
         async function fetchAllSubjects() {
             const result = await class_services.getAllSubjectsInClass(cls);
             setSubjects(result.data);
+            setCurrIndex(0);
+            if (!showAll) {
+                setCurrSub(result.data[0]);
+                setFilter({ cls, currSub: { index: currIndex, ...get(result, 'data[0]', {}) }, curType });
+            } else {
+                setCurrSub(null);
+            }
+
         }
         fetchAllSubjects();
     }, [cls]);
@@ -55,7 +63,7 @@ export const FilterModal = (props) => {
     useEffect(() => {
         console.log('filter-----', filter);
         if (filter.cls) {
-            setCls(filter.cls);
+            setCls('' + filter.cls);
             if (filter.cls == '13') {
                 setCurrIndex(0);
                 setCurrSub(null);
@@ -63,9 +71,9 @@ export const FilterModal = (props) => {
                 setCurrIndex(0);
             }
         }
-        if (filter.currSub) {
-            setCurrIndex(filter.currSub.index);
-        }
+        // if (filter.currSub) {
+        //     setCurrIndex(filter.currSub.index);
+        // }
     }, [filter]);
 
     useEffect(() => {
@@ -112,7 +120,7 @@ export const FilterModal = (props) => {
                             <View style={{ width: '100%' }}>
                                 <Text style={{ color: COLOR.MAIN, fontSize: 16, ...fontMaker({ weight: 'Regular' }) }}>- Môn:</Text>
                                 <FlatList
-                                    data={[{ title: 'Tất cả', id: null }, ...subjects]}
+                                    data={showAll ? [{ title: 'Tất cả', id: null }, ...subjects] : subjects}
                                     style={{ marginTop: 15 }}
                                     numColumns={2}
                                     renderItem={({ item, index }) => (
@@ -211,6 +219,19 @@ export const mapTypeQestion =
     '4': "Hỏi lần đầu",
 }
 
+const allCls = [
+    { label: 'Tất cả', value: '13' },
+    { label: 'Lớp 3', value: '3' },
+    { label: 'Lớp 4', value: '4' },
+    { label: 'Lớp 5', value: '5' },
+    { label: 'Lớp 6', value: '6' },
+    { label: 'Lớp 7', value: '7' },
+    { label: 'Lớp 8', value: '8' },
+    { label: 'Lớp 9', value: '9' },
+    { label: 'Lớp 10', value: '10' },
+    { label: 'Lớp 11', value: '11' },
+    { label: 'Lớp 12', value: '12' },
+];
 
 
 const useClassChoosen = ({ initVal = 10 }) => {
@@ -219,19 +240,7 @@ const useClassChoosen = ({ initVal = 10 }) => {
 
     const view = (
         <DropDownPicker
-            items={[
-                { label: 'Tất cả', value: '13' },
-                { label: 'Lớp 3', value: '3' },
-                { label: 'Lớp 4', value: '4' },
-                { label: 'Lớp 5', value: '5' },
-                { label: 'Lớp 6', value: '6' },
-                { label: 'Lớp 7', value: '7' },
-                { label: 'Lớp 8', value: '8' },
-                { label: 'Lớp 9', value: '9' },
-                { label: 'Lớp 10', value: '10' },
-                { label: 'Lớp 11', value: '11' },
-                { label: 'Lớp 12', value: '12' },
-            ]}
+            items={allCls}
             defaultValue={cls}
             containerStyle={{ height: 40 }}
             style={{ backgroundColor: '#fafafa' }}
