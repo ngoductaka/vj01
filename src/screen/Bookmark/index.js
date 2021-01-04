@@ -187,6 +187,7 @@ const styles = StyleSheet.create({
     },
     textStyle: {
         fontSize: 14,
+        color: '#000'
     },
     activeTextStyle: {
         fontSize: 14,

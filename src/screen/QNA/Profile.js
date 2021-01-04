@@ -202,6 +202,7 @@ const styles = StyleSheet.create({
     },
     textStyle: {
         fontSize: 18,
+        color: '#000'
     },
     activeTextStyle: {
         fontSize: 19,

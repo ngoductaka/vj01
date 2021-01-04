@@ -11,6 +11,7 @@ import { useSelector } from 'react-redux';
 import Toast from 'react-native-simple-toast';
 import { get } from 'lodash';
 import OptionsMenu from "react-native-option-menu";
+import ImageView from "react-native-image-viewing";
 
 import { getDiffTime } from '../../utils/helpers';
 import { fontSize, COLOR } from '../../handle/Constant';
@@ -60,7 +61,7 @@ const QnA = (props) => {
 
         return api.get(endPoint)
             .then(({ data, meta }) => {
-                console.log(data, 'datadatadatadata')
+                // console.log(data, 'datadatadatadata')
                 setPage({ loading: false, current_page: meta.current_page })
                 if (data) {
                     if (next_page) {
@@ -80,10 +81,7 @@ const QnA = (props) => {
 
     };
 
-    useEffect(() => {
-        setPage(0);
-        // requestQestion();
-    }, []);
+    useEffect(() => { setPage(0); }, []);
 
     useEffect(() => {
         requestQestion();
@@ -455,14 +453,13 @@ const RenderQestion = ({ item, index, hanldleClick, _handleNavigate = () => { },
         setLike(!like);
     }, [like]);
 
+    const [listImgShow, setVisible] = useState(false)
+
     return (
-        <TouchableOpacity
-            onPress={() => {
-                hanldleClick({ title: 'item.title', content: 'content', questionId: id })
-            }}
+        <View
             style={styles.itemQ}
         >
-            <TouchableOpacity style={{
+            <View style={{
                 flexDirection: 'row', alignItems: 'center',
                 marginBottom: 10, justifyContent: 'space-between'
             }}>
@@ -481,21 +478,27 @@ const RenderQestion = ({ item, index, hanldleClick, _handleNavigate = () => { },
                         <Text style={{ fontSize: 13 }}>Lớp {class_id} • {get(subject, 'subject_name', '') + ' • '} {getDiffTime(timestamp)}</Text>
                     </View>
                 </View>
-                {/* <View style={{ flexDirection: 'row' }}> */}
+                {/* select option */}
                 <OptionsMenu
                     customButton={<Icon name='dots-three-vertical' type='Entypo' style={{ fontSize: 16, color: '#040404', paddingLeft: 20, paddingBottom: 20 }} />}
                     destructiveIndex={1}
                     options={[isFollow ? "Bỏ theo dõi" : 'Theo dõi', "Báo cáo", "Huỷ bỏ"]}
                     actions={[() => { _handleFollow(id, isFollow); setFollow(!isFollow) }, () => _handleReport(id)]} />
-                {/* <Text>{is_follow ? "Bỏ theo dõi" : 'Theo dõi'}</Text> */}
-                {/* </View> */}
-            </TouchableOpacity>
+                
+            </View>
             {/* content */}
-            <View style={{ paddingHorizontal: 10 }}>
+            <TouchableOpacity
+                onPress={() => {
+                    hanldleClick({
+                        contentQuestion: parse_content,
+                        questionId: id,
+                    })
+                }}
+                style={{ paddingHorizontal: 10 }}>
                 <RenderDataJson isShort indexItem={index} content={parse_content} />
                 {(parse_content && get(parse_content, 'length', 0) > 5) ? < Text style={{ textAlign: 'left', marginTop: 8 }}>... Xem thêm</Text> : null}
-            </View>
-            <RenderListImg listImg={image} />
+            </TouchableOpacity>
+            <RenderListImg setVisible={setVisible} listImg={image} />
             {/* footer */}
             <View style={{
                 flexDirection: 'row', borderTopColor: '#cecece',
@@ -514,7 +517,10 @@ const RenderQestion = ({ item, index, hanldleClick, _handleNavigate = () => { },
                     </TouchableOpacity>
                     <TouchableOpacity
                         onPress={() => {
-                            hanldleClick({ title: 'item.title', content: 'content', questionId: id })
+                            hanldleClick({
+                                contentQuestion: parse_content,
+                                questionId: id,
+                            })
                         }}
                         style={{ justifyContent: 'center', alignItems: 'center', flexDirection: 'row', marginRight: 10 }} >
                         <Icon name="comment" type="EvilIcons" style={{ fontSize: 24, marginHorizontal: 4, }} />
@@ -522,17 +528,19 @@ const RenderQestion = ({ item, index, hanldleClick, _handleNavigate = () => { },
                     </TouchableOpacity>
                     {/* <ListUser /> */}
                 </View>
-                <View style={{ flex: 1, alignItems: 'flex-end' }}>
-
-                    <View style={{ justifyContent: 'center', alignItems: 'center', flexDirection: 'row', marginRight: 10 }} >
-                        {/* <Icon name="eye" type="Entypo" style={{fontSize: 16, marginHorizontal: 4}} /> */}
+                <View style={{ flex: 1, alignItems: 'flex-end', paddingRight: 10 }}>
+                    <View style={{ justifyContent: 'center', alignItems: 'center', flexDirection: 'row', marginRight: 15 }} >
                         <Text style={{ fontSize: 13, color: '#333' }}> {image[0] ? `${image.length} ảnh • ` : ''} {viewCount} lượt xem</Text>
-
                     </View>
-
                 </View>
             </View>
-        </TouchableOpacity >
+            <ImageView
+                images={get(listImgShow, 'data[0]', null) && get(listImgShow, 'data', []).map(img => ({ uri: `${endpoints.MEDIA_URL}${get(img, 'path', '')}` }))}
+                imageIndex={+get(listImgShow, 'index', 0)}
+                visible={!!listImgShow}
+                onRequestClose={() => setVisible(false)}
+            />
+        </View >
     )
 }
 

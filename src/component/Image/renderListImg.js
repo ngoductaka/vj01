@@ -1,35 +1,36 @@
-import React from 'react';
-import {View, Image} from 'react-native';
+import React, { useState } from 'react';
+import { View, Image, TouchableOpacity } from 'react-native';
 import { get } from 'lodash';
 
 import { endpoints } from "../../constant/endpoints";
 
-export const RenderListImg = ({ listImg }) => {
+export const RenderListImg = ({ listImg, setVisible = () => { } }) => {
     if (!listImg || !listImg[0]) return null;
     if (listImg.length == 1) {
-        return <RenderOne img={listImg[0]} />
+        return <RenderOne img={listImg[0]} setVisible={() => setVisible({ index: "0", data: listImg })} />
     } else if (listImg.length == 2) {
-        return <RenderTwo listImg={listImg} />
+        return <RenderTwo listImg={listImg} setVisible={val => setVisible({ index: '' + val, data: listImg })} />
     } else {
         return (
             <View>
-                <RenderOne img={listImg[0]} />
-                <RenderTwo listImg={[listImg[1], listImg[2]]} />
+                <RenderOne img={listImg[0]} setVisible={() => setVisible({ index: "0", data: listImg })} />
+                <RenderTwo listImg={[listImg[1], listImg[2]]} setVisible={val => setVisible({ index: '' + (val + 1), data: listImg })} />
             </View>
         )
-
     }
-};
+}
 
-export const RenderOne = ({ img }) => {
+export const RenderOne = ({ img, setVisible }) => {
     return (
-        <View style={{
-            overflow: 'hidden',
-            borderRadius: 5,
-            height: 200,
-            flex: 1,
-            marginVertical: 5
-        }}>
+        <TouchableOpacity
+            onPress={setVisible}
+            style={{
+                overflow: 'hidden',
+                borderRadius: 5,
+                height: 200,
+                flex: 1,
+                marginVertical: 5
+            }}>
             <Image
                 resizeMode='cover'
                 source={{ uri: `${endpoints.MEDIA_URL}${get(img, 'path', '')}` }}
@@ -39,36 +40,42 @@ export const RenderOne = ({ img }) => {
                     flex: 1
                 }}
             />
-        </View>
+        </TouchableOpacity>
     )
 }
 
-export const RenderTwo = ({ listImg }) => {
+export const RenderTwo = ({ listImg, setVisible }) => {
     return (
         <View style={{ flexDirection: 'row' }}>
             {
                 listImg.map((img, index) => {
                     return (
-                        <View
+                        <TouchableOpacity
                             key={index + ''}
-                            style={{
-                                overflow: 'hidden',
-                                borderRadius: 5,
-                                height: 200,
-                                flex: 1,
-                                marginLeft: index ? 10:0,
-                                marginVertical: 5
-                            }}>
-                            <Image
-                                resizeMode='cover'
-                                source={{ uri: `${endpoints.MEDIA_URL}${get(img, 'path', '')}` }}
+                            onPress={() => setVisible(index)}
+                            style={{ flex: 1, }}>
+                            <View
                                 style={{
-                                    height: null,
-                                    width: null,
-                                    flex: 1
-                                }}
-                            />
-                        </View>
+                                    overflow: 'hidden',
+                                    borderRadius: 5,
+                                    height: 200,
+                                    flex: 1,
+                                    marginLeft: index ? 10 : 0,
+                                    marginVertical: 5,
+                                    display: 'flex'
+                                }}>
+
+                                <Image
+                                    resizeMode='cover'
+                                    source={{ uri: `${endpoints.MEDIA_URL}${get(img, 'path', '')}` }}
+                                    style={{
+                                        height: null,
+                                        width: null,
+                                        flex: 1
+                                    }}
+                                />
+                            </View>
+                        </TouchableOpacity>
                     )
                 })
             }

@@ -10,7 +10,15 @@ import { KeyboardAwareFlatList } from 'react-native-keyboard-aware-scroll-view';
 import Toast from 'react-native-simple-toast';
 import OptionsMenu from "react-native-option-menu";
 import ImageView from "react-native-image-viewing";
+import {
+    Placeholder,
+    PlaceholderMedia,
+    PlaceholderLine,
+    Fade,
+} from "rn-placeholder";
 
+import ImageZoom from 'react-native-image-pan-zoom';
+import { SvgXml } from 'react-native-svg';
 
 import api from '../../handle/api';
 import { getDiffTime } from '../../utils/helpers'
@@ -33,15 +41,13 @@ const userImg = "https://www.xaprb.com/media/2018/08/kitten.jpg";
 
 
 const QnA = (props) => {
-    const title = props.navigation.getParam('title', '');
+    const contentQuestion = props.navigation.getParam('contentQuestion', '');
     const questionId = props.navigation.getParam('questionId', '8675');
     const source = props.navigation.getParam('source', '');
     const [showKeyboad, setShowKeyBoard] = useState(false);
     const [commentType, setType] = useState({ type: 'answer' });
     const inputEl = useRef(null);
     const refList = useRef(null);
-
-    const [visible, setIsVisible] = useState(false);
 
     const handleComment = (type = 'answer', data) => {
         setType({ type, data });
@@ -50,12 +56,18 @@ const QnA = (props) => {
         }
     }
     const [questionData, setQuestionData] = useState({});
+    const [loading, setLoading] = useState(false);
     const [isFollow, setFollow] = useState(false);
-    // console.log(get(questionData, 'content.image', []).map(img => ({ uri: `${endpoints.MEDIA_URL}${img.path}` })))
+    // show img in content
+    const [showImg, setShowImg] = useState(false);
+    // show img upload
+    const [listImgShow, setListShowImg] = useState(false);
 
     const requesQuestion = (isScroll) => {
+        setLoading(true);
         api.get(`/question/${questionId}`)
             .then(({ data = {} }) => {
+                setLoading(false);
                 setFollow(data.is_follow)
                 setQuestionData(data);
                 if (isScroll) {
@@ -68,6 +80,9 @@ const QnA = (props) => {
                         console.log('err request question', err)
                     }
                 }
+            })
+            .catch(err => {
+                setLoading(false);
             })
     };
 
@@ -145,39 +160,55 @@ const QnA = (props) => {
     return (
         <View style={styles.container}>
             <SafeAreaView style={{ flex: 1 }}>
-                {/* head */}
+                {/* back header */}
                 <Header
                     userName={get(questionData, 'user.name', '')}
                     time={questionData.timestamp}
                     avatar={get(questionData, 'user.avatar', '')}
+                    isCheck={get(questionData, 'user.role_id') == 1 || get(questionData, 'user.role_id') == 2}
                     handleBack={handleBack}
                     gotoProfile={() => _gotoProfile(get(questionData, 'user.id', ''))}
                     _handleFollow={_handleFollow}
                     _handleReport={_handleReport}
                     isFollow={isFollow}
                 />
-                {/*  */}
+                {/* list */}
                 <View style={{ flex: 1, marginBottom: 65 }}>
                     <KeyboardAwareFlatList
                         ref={refList}
                         data={get(questionData, 'answer', [])}
                         showsVerticalScrollIndicator={false}
+                        // header content
                         ListHeaderComponent={
                             <RenderQuestion
                                 item={{
-                                    title,
-                                    content: get(questionData, 'content.parse_content'),
+                                    content: contentQuestion || get(questionData, 'content.parse_content'),
                                     image: get(questionData, 'content.image'),
-                                    answerCount: get(questionData, 'answer', []).length
+                                    answerCount: get(questionData, 'answer', []).length,
                                 }}
                                 questionId={questionId}
                                 handleClickAnswer={handleComment}
-                                setIsVisible={setIsVisible}
+                                setListShowImg={setListShowImg}
                             />
                         }
-                        renderItem={({ item, index }) => <RenderAnwser {...{ item, index, handleComment, _gotoProfile }} />}
+                        // render list anwer
+                        renderItem={({ item, index }) => {
+                            return <RenderAnwser {...{ item, index, handleComment, _gotoProfile, setShowImg, setListShowImg }} />
+                        }}
                         extraData={questionData}
                         keyExtractor={(item) => '' + item.id}
+                        // loading
+                        ListFooterComponent={
+                            loading ? (
+                                <View style={{ padding: 10 }}>
+                                    <Placeholder Animation={Fade}
+                                        Left={PlaceholderMedia}>
+                                        <PlaceholderLine height={40} />
+                                    </Placeholder>
+                                </View>
+                            ) : null
+                        }
+
                     />
                 </View>
                 {showKeyboad ?
@@ -193,15 +224,59 @@ const QnA = (props) => {
                     : null
                 }
             </SafeAreaView>
-            {
-                get(questionData, 'content.image[0]') ?
-                    <ImageView
-                        images={get(questionData, 'content.image', []).map(img => ({ uri: `${endpoints.MEDIA_URL}${img.path}` }))}
-                        imageIndex={0}
-                        visible={visible}
-                        onRequestClose={() => setIsVisible(false)}
-                    /> : null
-            }
+
+            <ImageView
+                images={get(listImgShow, 'data[0]', null) ?
+                    get(listImgShow, 'data', []).map(img => ({ uri: `${endpoints.MEDIA_URL}${get(img, 'path', '')}` })) : []
+                }
+                imageIndex={+get(listImgShow, 'index', 0)}
+                visible={!!listImgShow}
+                onRequestClose={() => setListShowImg(false)}
+            />
+
+            {!!showImg ?
+                <TouchableOpacity style={{ flex: 1, position: 'absolute', width, height }} >
+                    <ImageZoom
+                        onClick={() => setShowImg(false)}
+                        cropWidth={width}
+                        cropHeight={height}
+                        imageWidth={width}
+                        imageHeight={get(showImg, 'size.height', '')}
+                        style={{ backgroundColor: 'rgba(0,0,0,0.3)' }}
+                        pinchToZoom={false}
+                    >
+                        {
+                            showImg.type == 'svg' ?
+                                <SvgXml
+                                    xml={showImg.content}
+                                    width={showImg.width}
+                                    height={showImg.height}
+                                    color="#000"
+                                    style={{
+                                        backgroundColor: '#fff'
+                                    }}
+                                />
+                                :
+                                <Image
+                                    resizeMode="contain"
+                                    style={{ flex: 1, height: undefined, width: undefined, backgroundColor: '#fff' }}
+                                    source={{
+                                        uri: get(showImg, 'uri', ''),
+                                        // priority: FastImage.priority.normal,
+                                    }}
+                                // resizeMode={FastImage.resizeMode.contain}
+                                />
+                        }
+                        <Image
+                            resizeMode="contain"
+                            style={{ flex: 1, height: undefined, width: undefined }}
+                            source={{
+                                uri: get(showImg, 'uri', ''),
+                            }}
+                        />
+                    </ImageZoom>
+                </TouchableOpacity>
+                : null}
         </View >
     );
 };
@@ -328,13 +403,13 @@ const userStyle = StyleSheet.create({
 })
 
 
-const User = ({ style = {}, uri, _gotoProfile = () => { } }) => {
+const User = ({ isCheck = false, style = {}, uri, _gotoProfile = () => { } }) => {
     return (
         <TouchableOpacity onPress={_gotoProfile} style={[userStyle.imgLargeWapper, style]} >
             <Image style={[userStyle.img, {}]} source={{ uri: uri || userImg }} />
-            <View style={{ backgroundColor: '#fff', position: 'absolute', right: -3, bottom: -3, borderRadius: 10 }}>
+            {isCheck ? <View style={{ backgroundColor: '#fff', position: 'absolute', right: -3, bottom: -3, borderRadius: 10 }}>
                 <Icon style={{ color: 'green', fontSize: 15, fontWeight: 'bolid' }} name="check-circle" type="FontAwesome" />
-            </View>
+            </View> : null}
         </TouchableOpacity>
     )
 }
@@ -345,7 +420,7 @@ const mapImg = {
     // 3: 3,
 }
 
-const RenderQuestion = ({ questionId, item, index, handleClickAnswer = () => { }, setIsVisible }) => {
+const RenderQuestion = ({ questionId, item, index, handleClickAnswer = () => { }, setListShowImg = () => { } }) => {
     // console.log('item.image[0]', endpoints.BASE_URL)
     const [like, setLike] = useState(false);
     const _handleLike = useCallback(() => {
@@ -363,9 +438,7 @@ const RenderQuestion = ({ questionId, item, index, handleClickAnswer = () => { }
             style={[styles.itemQ]}
         >
             <RenderDataJson indexItem={index} content={item.content || ''} />
-            <TouchableOpacity onPress={() => setIsVisible(true)}>
-            <RenderListImg listImg={item.image} />
-            </TouchableOpacity>
+            <RenderListImg listImg={item.image} setVisible={setListShowImg} />
             <View style={{
                 flexDirection: 'row',
                 borderTopColor: '#cecece', borderTopWidth: 1,
@@ -404,13 +477,14 @@ const RenderQuestion = ({ questionId, item, index, handleClickAnswer = () => { }
     )
 }
 
-const RenderAnwser = ({ item, index, handleComment, _gotoProfile = () => { } }) => {
+const RenderAnwser = ({ item, index, handleComment, _gotoProfile = () => { }, setShowImg = () => { }, setListShowImg = () => { } }) => {
     const {
         id = '',
         user: {
             id: useID = '',
             avatar = '',
             name = '',
+            role_id = ''
         } = {},
         content = '',
         viewCount = null,
@@ -430,34 +504,31 @@ const RenderAnwser = ({ item, index, handleComment, _gotoProfile = () => { } }) 
             .catch(err => {
                 console.log('err', err)
             })
-    }, [like])
-    // console.log('parse_contentparse_content', parse_content, name)
+    }, [like]);
+
     return (
         <View
             style={[styles.itemQ, {}]}
         >
-            <View style={{ flexDirection: 'row' }}>
-                <User style={{ marginRight: 5 }} _gotoProfile={() => _gotoProfile(useID)} uri={endpoints.BASE_HOI_DAP + avatar} />
+            <View style={{ flexDirection: 'row', paddingRight: 10 }}>
+                <User style={{ marginRight: 5 }}
+                    _gotoProfile={() => _gotoProfile(useID)}
+                    uri={endpoints.BASE_HOI_DAP + avatar}
+                    isCheck={role_id == 1 || role_id == 2}
+                />
                 <View style={{ flex: 1 }}>
                     <View style={{ padding: 10, backgroundColor: '#F1F2F6', flex: 1, borderRadius: 10 }}>
                         <Text style={{ fontWeight: 'bold', marginBottom: 8 }}>{name}</Text>
                         <View>
-                            <RenderDataJson indexItem={index} content={parse_content} />
-                            {image && image[0] ? (
-                                <View style={{ marginTop: 10, flexDirection: 'row' }}>
-                                    {image.map(img => {
-                                        return (
-                                            <View style={{ borderRadius: 10, overflow: 'hidden', height: 150, width: `${100 / image.length - 10}%`, margin: 5 }}>
-                                                <Image
-                                                    source={{ uri: `${endpoints.MEDIA_URL}${get(img, 'path')}` }}
-                                                    style={{ height: null, width: null, flex: 1 }}
-                                                />
-                                            </View>
-                                        )
-                                    })}
-
-                                </View>
-                            ) : null}
+                            <RenderDataJson
+                                indexItem={index}
+                                content={parse_content}
+                                isAnwser
+                                setShowImg={setShowImg}
+                            />
+                            <TouchableOpacity onPress={() => { console.log('wewe'), setListShowImg(image) }}>
+                                <RenderListImg listImg={image} setVisible={setListShowImg} />
+                            </TouchableOpacity>
                             {/* <Text style={{}}>{JSON.stringify(parse_content)}</Text> */}
                         </View>
                     </View>
@@ -549,6 +620,7 @@ const Header = ({
     _handleFollow = () => { },
     _handleReport = () => { },
     isFollow = false,
+    isCheck
 }) => {
     return (
         <View style={{ flexDirection: 'row', alignItems: 'center', marginVertical: 8 }}>
@@ -566,7 +638,7 @@ const Header = ({
                     <TouchableOpacity onPress={gotoProfile} style={styles.largeImgWapper} >
                         <Image style={userStyle.imgLargeWapper} source={{ uri: avatar || userImg }} />
                         <View style={{ backgroundColor: '#fff', position: 'absolute', right: -3, bottom: -3, borderRadius: 10 }}>
-                            <Icon style={{ color: 'green', fontSize: 15, fontWeight: 'bolid' }} name="check-circle" type="FontAwesome" />
+                            {isCheck ? <Icon style={{ color: 'green', fontSize: 15, fontWeight: 'bolid' }} name="check-circle" type="FontAwesome" /> : null}
                         </View>
                     </TouchableOpacity>
                     <View style={{ marginLeft: 10 }}>
@@ -809,7 +881,7 @@ const FormComment = ({
                         value={commentText}
                     />
                 </View>
-                {loading ? <ActivityIndicator style={{ paddingRight: 20 }} /> :
+                {loading ? <ActivityIndicator color="#000" style={{ paddingRight: 20 }} /> :
                     <TouchableOpacity style={{ paddingRight: 20 }} onPress={handlePostComment}>
                         <Icon name="ios-send" type="Ionicons" style={{ color: COLOR.MAIN }} />
                     </TouchableOpacity>}

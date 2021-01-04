@@ -188,25 +188,25 @@ const ImageSVG = props => {
   }
 };
 
-const RenderImg = ({ uri, height, widthImg, indexItem, setShowImg = () => { } }) => {
+const RenderImg = ({ uri, height, widthImg, indexItem, setShowImg = () => { }, isAnwser }) => {
   try {
     const convertEndPoint = `${endpoints.BASE_HOI_DAP}${uri}`
 
     // const uri = url.toLocaleLowerCase();
-    console.log('----------', convertEndPoint)
     if (height && widthImg) {
       return (
         <TouchableOpacity onPress={() => {
-          if (widthImg > width - 30) {
-            Toast.showWithGravity("Click 2 lần để phóng to", Toast.SHORT, Toast.CENTER);
-            setShowImg({ uri, size: { height, width: widthImg } })
-          }
+          // if (widthImg > width - 30) {
+          Toast.showWithGravity("Click 2 lần để phóng to", Toast.SHORT, Toast.CENTER);
+          setShowImg({ uri: convertEndPoint, size: { height, width: widthImg } })
+          // }
         }} key={indexItem + 'img'} style={{ height, width: widthImg > width ? width - 5 : widthImg }}>
           <Image
             resizeMode="contain"
             style={{ flex: 1, height: undefined, width: undefined }}
             source={{
-              uri: 'https://hoidap.vietjack.com/storage/upload/images/1589295123-imagejpg.jpg',
+              uri: convertEndPoint
+              // 'https://hoidap.vietjack.com/storage/upload/images/1589295123-imagejpg.jpg',
               // priority: FastImage.priority.normal,
             }}
           // resizeMode={FastImage.resizeMode.contain}
@@ -217,7 +217,7 @@ const RenderImg = ({ uri, height, widthImg, indexItem, setShowImg = () => { } })
     const [size, setSize] = useState({ width: width, height: width })
     const onSuccess = useCallback(
       (width, height) => {
-        const cWidth = getWidth(width);
+        const cWidth = getWidth(width, isAnwser);
         setSize({ height: height * (cWidth / width), width: cWidth });
       }
       , [uri]);
@@ -251,8 +251,12 @@ const RenderImg = ({ uri, height, widthImg, indexItem, setShowImg = () => { } })
   }
 }
 
-const getWidth = (svgWidth) => {
-  return svgWidth >= width - 20 ? width - 20 : svgWidth
+const getWidth = (svgWidth, isAnwser) => {
+  if (isAnwser) {
+    return svgWidth >= width - 70 ? width - 70 : svgWidth
+  } else {
+    return svgWidth >= width - 20 ? width - 20 : svgWidth
+  }
 }
 
 const RenderItemPow = ({ content = '', indexRow, style }) => {
@@ -293,19 +297,19 @@ const RenderData = ({ indexItem = '', content }) => {
   )
 }
 
-export const RenderDataJson = ({ indexItem = '', content }) => {
+export const RenderDataJson = ({ indexItem = '', content, isAnwser, setShowImg = () => { } }) => {
   // console.log('contentcontentcontentcontentcontentcontent', content, typeof content)
   if (isEmpty(content) || !Array.isArray(content)) return null;
   return (
     <View style={styles.container}>
       {
-        content.map((row, indexRow) => RenderRow({ indexItem, row, indexRow }))
+        content.map((row, indexRow) => RenderRow({ indexItem, row, indexRow, isAnwser, setShowImg }))
       }
     </View >
   )
 }
 // 
-export const RenderRow = ({ indexItem = '', row, indexRow, setShowImg = () => { } }) => {
+export const RenderRow = ({ indexItem = '', row, indexRow, setShowImg = () => { }, isAnwser }) => {
   try {
     return (
       <View key={`${indexItem}_row_${indexRow}`} style={styles.viewRow}>
@@ -346,7 +350,7 @@ export const RenderRow = ({ indexItem = '', row, indexRow, setShowImg = () => { 
                 return null;
               }
               const heightConvert = svgH * 10;
-              const widthConvert = getWidth(svgW * 10);
+              const widthConvert = getWidth(svgW * 10, isAnwser);
               // console.log('contentcontentcontent', content)
               return (
                 <TouchableOpacity
@@ -393,8 +397,15 @@ export const RenderRow = ({ indexItem = '', row, indexRow, setShowImg = () => { 
             } else if (type === 'img') {
               const { height: imgH = 0, width: imgW = 0 } = params;
               if (isNaN(imgH) || isNaN(imgW)) return null;
-              const widthConvert = getWidth(imgW);
-              return <RenderImg setShowImg={setShowImg} uri={content} height={imgH} widthImg={widthConvert} indexItem={`${indexItem}-${index}-img`} />
+              const widthConvert = getWidth(imgW, isAnwser);
+              return <RenderImg
+                setShowImg={setShowImg}
+                uri={content}
+                height={(widthConvert / imgW) * imgH}
+                widthImg={widthConvert}
+                indexItem={`${indexItem}-${index}-img`}
+                isAnwser
+              />
             } else if (type === 'ul') {
               return (
                 <View key={indexRow + indexItem + 'ul' + index}>

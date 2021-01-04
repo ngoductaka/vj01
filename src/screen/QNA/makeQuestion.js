@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import {
     View, FlatList, Text, StyleSheet, Platform,
     TouchableOpacity, Dimensions, Image, ScrollView,
-    SafeAreaView, TextInput, Keyboard, TouchableWithoutFeedback
+    SafeAreaView, TextInput, Keyboard, ActivityIndicator
 } from 'react-native';
 import Toast from 'react-native-simple-toast';
 import { Icon } from 'native-base';
@@ -39,7 +39,7 @@ const QnA = (props) => {
         props.navigation.navigate("QuestionDetail", params);
     };
 
-    console.log('vvvvv', filter);
+    // console.log('vvvvv', filter);
     useEffect(() => {
         // if (inputRef && inputRef.current) {
         //     setTimeout(() => {
@@ -96,21 +96,24 @@ const QnA = (props) => {
         setPhotos([...photos]);
     }
 
+    const [loading, setLoading] = useState(false);
+
     const uploadQuestion = async () => {
         if (!questionContent) {
             Toast.showWithGravity("Vui lòng nhập nội dung câu hỏi", Toast.SHORT, Toast.CENTER);
             return 1;
         };
         try {
+            setLoading(true)
             const { cls, currSub } = filter;
-            console.log('currSub=========', currSub)
+            // console.log('currSub=========', currSub)
             const body = {
                 "grade": cls,
                 "subject": currSub && currSub.id || '99',
                 // subject: 1,
                 "content": questionContent
             };
-            console.log('photosphotos', photos)
+            // console.log('photosphotos', photos)
             if (photos[0]) {
                 const dataUpload = new FormData();
                 photos.map(file => {
@@ -132,9 +135,11 @@ const QnA = (props) => {
                             props.navigation.navigate('QuestionDetail', { questionId: data.question_id, source: "QnA" })
                         }
                     }
+                    setLoading(false)
 
                 } catch (err) {
                     console.log('==== err', err)
+                    setLoading(false)
 
                 }
             } else {
@@ -143,13 +148,19 @@ const QnA = (props) => {
                     if (data && data.question_id) {
                         props.navigation.navigate('QuestionDetail', { questionId: data.question_id, source: "QnA" })
                     }
+
+                    setLoading(false)
                 } catch (err) {
                     console.log('<err upload question>', err)
+
+                    setLoading(false)
                 }
             }
 
         } catch (err) {
             console.log('-d-d-d-d-d-', err)
+
+            setLoading(false)
         }
 
     }
@@ -272,9 +283,13 @@ const QnA = (props) => {
                                     <Icon name="camera" type='Entypo' />
                                 </TouchableOpacity>
                             </View>
-                            <TouchableOpacity style={{ paddingRight: 20 }} onPress={uploadQuestion}>
-                                <Icon name="ios-send" type="Ionicons" style={{ color: COLOR.MAIN }} />
-                            </TouchableOpacity>
+                            {
+                                loading ? <ActivityIndicator color="#000" style={{ paddingRight: 20 }} /> :
+
+                                    <TouchableOpacity style={{ paddingRight: 20 }} onPress={uploadQuestion}>
+                                        <Icon name="ios-send" type="Ionicons" style={{ color: COLOR.MAIN }} />
+                                    </TouchableOpacity>
+                            }
                         </View>
                     </KeyboardStickyView> : null}
             </SafeAreaView>

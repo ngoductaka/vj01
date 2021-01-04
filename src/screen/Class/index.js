@@ -513,7 +513,7 @@ const HotExam = ({ navigate, hotExamData, classId = null, setHotSubIdx = () => {
 				<Text style={{ fontSize: 18, ...fontMaker({ weight: fontStyles.SemiBold }) }}>
 					Đang thi nhiều
 				</Text>
-				<TouchableOpacity onPress={() => navigate('TestStack')}>
+				<TouchableOpacity onPress={() => navigation.navigate('TestStack')}>
 					<Text style={{ fontSize: 14, ...fontMaker({ weight: fontStyles.Regular }), textDecorationColor: COLOR.MAIN, color: COLOR.MAIN }}>Xem thêm</Text>
 				</TouchableOpacity>
 			</View>
