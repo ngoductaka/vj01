@@ -171,6 +171,7 @@ const QnA = (props) => {
                     _handleFollow={_handleFollow}
                     _handleReport={_handleReport}
                     isFollow={isFollow}
+                    subtitle={`• ${get(questionData, 'path.subject.subject_name', '')} • lớp ${get(questionData, 'path.class', '')}`}
                 />
                 {/* list */}
                 <View style={{ flex: 1, marginBottom: 65 }}>
@@ -242,7 +243,7 @@ const QnA = (props) => {
                         cropHeight={height}
                         imageWidth={width}
                         imageHeight={get(showImg, 'size.height', '')}
-                        style={{ backgroundColor: 'rgba(0,0,0,0.3)' }}
+                        style={{ backgroundColor: '#fff' }}
                         pinchToZoom={false}
                     >
                         {
@@ -262,18 +263,9 @@ const QnA = (props) => {
                                     style={{ flex: 1, height: undefined, width: undefined, backgroundColor: '#fff' }}
                                     source={{
                                         uri: get(showImg, 'uri', ''),
-                                        // priority: FastImage.priority.normal,
                                     }}
-                                // resizeMode={FastImage.resizeMode.contain}
                                 />
                         }
-                        <Image
-                            resizeMode="contain"
-                            style={{ flex: 1, height: undefined, width: undefined }}
-                            source={{
-                                uri: get(showImg, 'uri', ''),
-                            }}
-                        />
                     </ImageZoom>
                 </TouchableOpacity>
                 : null}
@@ -406,7 +398,7 @@ const userStyle = StyleSheet.create({
 const User = ({ isCheck = false, style = {}, uri, _gotoProfile = () => { } }) => {
     return (
         <TouchableOpacity onPress={_gotoProfile} style={[userStyle.imgLargeWapper, style]} >
-            <Image style={[userStyle.img, {}]} source={{ uri: uri || userImg }} />
+            <Image style={[userStyle.img, {}]} source={{ uri: handleImgLink(uri) }} />
             {isCheck ? <View style={{ backgroundColor: '#fff', position: 'absolute', right: -3, bottom: -3, borderRadius: 10 }}>
                 <Icon style={{ color: 'green', fontSize: 15, fontWeight: 'bolid' }} name="check-circle" type="FontAwesome" />
             </View> : null}
@@ -434,17 +426,18 @@ const RenderQuestion = ({ questionId, item, index, handleClickAnswer = () => { }
             })
     }, [like])
     return (
-        <View
-            style={[styles.itemQ]}
-        >
-            <RenderDataJson indexItem={index} content={item.content || ''} />
+        <View style={[styles.itemQ]} >
+            <View style={{paddingHorizontal: 8}}>
+                <RenderDataJson indexItem={index} content={item.content || ''} />
+            </View>
             <RenderListImg listImg={item.image} setVisible={setListShowImg} />
             <View style={{
                 flexDirection: 'row',
                 borderTopColor: '#cecece', borderTopWidth: 1,
                 alignItems: 'flex-end',
                 paddingTop: 8,
-                marginTop: 10
+                marginTop: 10,
+                paddingHorizontal: 8
                 // justifyContent: 'flex-end'
             }}>
                 {/* <ListUser /> */}
@@ -465,10 +458,8 @@ const RenderQuestion = ({ questionId, item, index, handleClickAnswer = () => { }
                             <Text style={{ fontSize: 18 }}>Trả lời</Text>
                         </TouchableOpacity>
                     </View>
-                    <View style={{ flexDirection: 'row', marginLeft: 20 }}>
-                        {/* <Icon name="bookmark" type="Feather" style={{ fontSize: 26, marginHorizontal: 4 }} /> */}
+                    <View style={{ flexDirection: 'row' }}>
                         <Text> {item.answerCount} câu trả lời</Text>
-                        {/* <Text>Bình luận  </Text> */}
                     </View>
                 </View>
 
@@ -489,7 +480,7 @@ const RenderAnwser = ({ item, index, handleComment, _gotoProfile = () => { }, se
         content = '',
         viewCount = null,
         commentCount = 3,
-        likeCount = 3,
+        likeCount = '',
         timestamp = '2020-05-11T19:39:36.000000Z',
         comment = [],
         parse_content = '',
@@ -505,7 +496,6 @@ const RenderAnwser = ({ item, index, handleComment, _gotoProfile = () => { }, se
                 console.log('err', err)
             })
     }, [like]);
-
     return (
         <View
             style={[styles.itemQ, {}]}
@@ -513,7 +503,7 @@ const RenderAnwser = ({ item, index, handleComment, _gotoProfile = () => { }, se
             <View style={{ flexDirection: 'row', paddingRight: 10 }}>
                 <User style={{ marginRight: 5 }}
                     _gotoProfile={() => _gotoProfile(useID)}
-                    uri={endpoints.BASE_HOI_DAP + avatar}
+                    uri={avatar}
                     isCheck={role_id == 1 || role_id == 2}
                 />
                 <View style={{ flex: 1 }}>
@@ -537,7 +527,7 @@ const RenderAnwser = ({ item, index, handleComment, _gotoProfile = () => { }, se
                             <Text style={{ fontSize: 16, marginLeft: 5 }}>{getDiffTime(timestamp)}</Text>
                             <TouchableOpacity onPress={_handleLike}>
                                 {/* <Icon name="heart" style={{ fontSize: 15, color: 'red' }} type='AntDesign' /> */}
-                                <Text style={{ fontSize: 16, marginLeft: 15, color: like ? COLOR.MAIN : '#222' }}>{likeCount + like ? 1 : 0} Thích</Text>
+                                <Text style={{ fontSize: 16, marginLeft: 15, color: like ? COLOR.MAIN : '#222' }}>{+likeCount + (like ? 1 : 0)} Thích</Text>
                             </TouchableOpacity>
 
                             <TouchableOpacity onPress={() => handleComment('comment', { id, name, index })}>
@@ -585,22 +575,18 @@ const RenderFeedbackComment = ({
             style={[styles.itemQ, {}]}
         >
             <View style={{ flexDirection: 'row' }}>
-                <User style={{ marginRight: 5 }} uri={avatar || userImg} _gotoProfile={_gotoProfile} />
+                <User style={{ marginRight: 5 }} uri={avatar} _gotoProfile={_gotoProfile} />
                 <View style={{ flex: 1 }}>
                     <View style={{ padding: 10, backgroundColor: '#F1F2F6', flex: 1, borderRadius: 10 }}>
-                        <Text style={{ fontWeight: 'bold', marginBottom: 8 }}>{name}</Text>
+                        <Text numberOfLines={1} style={{ fontWeight: 'bold', marginBottom: 8 }}>{name}</Text>
                         <View>
                             <Text>{content}</Text>
-                            {/* <RenderDataJson indexItem={index} content={parse_content} /> */}
                         </View>
                     </View>
                     <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
                         <View style={{ flexDirection: 'row' }}>
                             <Text style={{ fontSize: 16, marginLeft: 5 }}>{getDiffTime(timestamp)}</Text>
-                            <TouchableOpacity>
-                                {/* <Icon name="heart" style={{ fontSize: 15, color: 'red' }} type='AntDesign' /> */}
-                                <Text style={{ fontSize: 16, marginLeft: 15 }}>Thích</Text>
-                            </TouchableOpacity>
+                            {/* <Text style={{ fontSize: 16, marginLeft: 15 }}>Thích</Text> */}
                         </View>
                     </View>
                 </View>
@@ -620,7 +606,8 @@ const Header = ({
     _handleFollow = () => { },
     _handleReport = () => { },
     isFollow = false,
-    isCheck
+    isCheck,
+    subtitle = ''
 }) => {
     return (
         <View style={{ flexDirection: 'row', alignItems: 'center', marginVertical: 8 }}>
@@ -636,14 +623,14 @@ const Header = ({
                     marginBottom: 10, marginLeft: 8
                 }}>
                     <TouchableOpacity onPress={gotoProfile} style={styles.largeImgWapper} >
-                        <Image style={userStyle.imgLargeWapper} source={{ uri: avatar || userImg }} />
+                        <Image style={userStyle.imgLargeWapper} source={{ uri: handleImgLink(avatar) }} />
                         <View style={{ backgroundColor: '#fff', position: 'absolute', right: -3, bottom: -3, borderRadius: 10 }}>
                             {isCheck ? <Icon style={{ color: 'green', fontSize: 15, fontWeight: 'bolid' }} name="check-circle" type="FontAwesome" /> : null}
                         </View>
                     </TouchableOpacity>
                     <View style={{ marginLeft: 10 }}>
                         <Text style={{ fontWeight: 'bold', fontSize: 16 }}>{userName}</Text>
-                        <Text style={{ fontSize: 13 }}>{getDiffTime(time)} </Text>
+                        <Text numberOfLines={1} style={{ fontSize: 13 }}>{getDiffTime(time)} {subtitle}</Text>
                     </View>
                 </View>
             </View>
@@ -889,4 +876,13 @@ const FormComment = ({
         </View>
 
     )
+}
+
+const handleImgLink = (link) => {
+    try {
+        if(!link) return "https://www.xaprb.com/media/2018/08/kitten.jpg"
+        return link.includes('http') ? link : endpoints.BASE_HOI_DAP + link;
+    } catch (err) {
+        return link;
+    }
 }

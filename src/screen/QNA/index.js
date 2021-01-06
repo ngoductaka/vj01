@@ -456,17 +456,12 @@ const RenderQestion = ({ item, index, hanldleClick, _handleNavigate = () => { },
     const [listImgShow, setVisible] = useState(false)
 
     return (
-        <View
-            style={styles.itemQ}
-        >
+        <View style={styles.itemQ} >
             <View style={{
                 flexDirection: 'row', alignItems: 'center',
                 marginBottom: 10, justifyContent: 'space-between'
             }}>
-                <View style={{
-                    flexDirection: 'row', alignItems: 'center', paddingHorizontal: 10
-                }}>
-
+                <View style={{ flex: 1, flexDirection: 'row', alignItems: 'center', paddingHorizontal: 10 }}>
                     <TouchableOpacity onPress={() => _handleNavigate(get(item, 'user.id', ''))} style={styles.largeImgWapper} >
                         <Image style={userStyle.img} source={{ uri: handleImgLink(avatar) || userImg }} />
                         {(role_id == 1 || role_id == 2) ? <View style={{ backgroundColor: '#fff', position: 'absolute', right: -3, bottom: -3, borderRadius: 10 }}>
@@ -474,13 +469,13 @@ const RenderQestion = ({ item, index, hanldleClick, _handleNavigate = () => { },
                         </View> : null}
                     </TouchableOpacity>
                     <View style={{ marginLeft: 10 }}>
-                        <Text style={{ fontWeight: 'bold', fontSize: 16 }}>{name}</Text>
+                        <Text numberOfLines={1} style={{ fontWeight: 'bold', fontSize: 16 }}>{name}</Text>
                         <Text style={{ fontSize: 13 }}>Lớp {class_id} • {get(subject, 'subject_name', '') + ' • '} {getDiffTime(timestamp)}</Text>
                     </View>
                 </View>
                 {/* select option */}
                 <OptionsMenu
-                    customButton={<Icon name='dots-three-vertical' type='Entypo' style={{ fontSize: 16, color: '#040404', paddingLeft: 20, paddingBottom: 20 }} />}
+                    customButton={<Icon name='dots-three-vertical' type='Entypo' style={{ fontSize: 16, color: '#040404', paddingLeft: 20, paddingBottom: 20, marginLeft: 20 }} />}
                     destructiveIndex={1}
                     options={[isFollow ? "Bỏ theo dõi" : 'Theo dõi', "Báo cáo", "Huỷ bỏ"]}
                     actions={[() => { _handleFollow(id, isFollow); setFollow(!isFollow) }, () => _handleReport(id)]} />
@@ -494,16 +489,16 @@ const RenderQestion = ({ item, index, hanldleClick, _handleNavigate = () => { },
                         questionId: id,
                     })
                 }}
-                style={{ paddingHorizontal: 10 }}>
+                style={{ paddingHorizontal: 8 }}>
                 <RenderDataJson isShort indexItem={index} content={parse_content} />
-                {(parse_content && get(parse_content, 'length', 0) > 5) ? < Text style={{ textAlign: 'left', marginTop: 8 }}>... Xem thêm</Text> : null}
+                {(parse_content && get(parse_content, 'length', 0) > 5) ? < Text style={{ textAlign: 'left', marginTop: 8, color: COLOR.MAIN }}>... Xem thêm</Text> : null}
             </TouchableOpacity>
             <RenderListImg setVisible={setVisible} listImg={image} />
             {/* footer */}
             <View style={{
                 flexDirection: 'row', borderTopColor: '#cecece',
                 borderTopWidth: 1, alignItems: 'flex-end',
-                paddingTop: 8, marginTop: 5
+                paddingTop: 8, marginTop: 5, paddingHorizontal: 8
             }}>
                 {/* <ListUser /> */}
                 <View style={{ flexDirection: 'row', alignItems: 'center' }}>
@@ -528,7 +523,7 @@ const RenderQestion = ({ item, index, hanldleClick, _handleNavigate = () => { },
                     </TouchableOpacity>
                     {/* <ListUser /> */}
                 </View>
-                <View style={{ flex: 1, alignItems: 'flex-end', paddingRight: 10 }}>
+                <View style={{ flex: 1, alignItems: 'flex-end' }}>
                     <View style={{ justifyContent: 'center', alignItems: 'center', flexDirection: 'row', marginRight: 15 }} >
                         <Text style={{ fontSize: 13, color: '#333' }}> {image[0] ? `${image.length} ảnh • ` : ''} {viewCount} lượt xem</Text>
                     </View>
@@ -547,9 +542,9 @@ const RenderQestion = ({ item, index, hanldleClick, _handleNavigate = () => { },
 
 const handleImgLink = (link) => {
     try {
+        if(!link) return "https://www.xaprb.com/media/2018/08/kitten.jpg"
         return link.includes('http') ? link : endpoints.BASE_HOI_DAP + link;
     } catch (err) {
         return link;
     }
-
 }
