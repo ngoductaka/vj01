@@ -211,9 +211,13 @@ const SearchView = memo((props) => {
 			<View style={{ height: null }}>
 
 				<View style={{ alignItems: 'center', flexDirection: 'row', marginTop: helpers.isIOS ? (helpers.isIpX ? helpers.statusBarHeight : 10) : 2, paddingVertical: 15, paddingBottom: 10 }}>
-					<TouchableOpacity onPress={() => {
+					{/* <TouchableOpacity onPress={() => {
 						navigation.goBack()
-					}} style={{}}><Icon type="AntDesign" name="left" /></TouchableOpacity>
+					}} style={{}}><Icon type="AntDesign" name="left" /></TouchableOpacity> */}
+					<TouchableOpacity onPress={() => navigation.goBack()}
+						style={[styles.backHeader]}>
+						<Icon type='MaterialIcons' name='arrow-back' style={{ fontSize: 26, color: '#F86087' }} />
+					</TouchableOpacity>
 					<View style={{ flex: 1 }}>
 						<Search
 							setIsBlank={setIsBlank}
@@ -464,6 +468,25 @@ const renderItemBook = (item, setBookInfo, navigation, index) => {
 
 
 const styles = StyleSheet.create({
+	backHeader: {
+		width: 40,
+		height: 40,
+		borderRadius: 20,
+		marginLeft: 10,
+		justifyContent: 'center',
+		alignItems: 'center',
+		backgroundColor: 'white',
+		shadowColor: "rgba(0,0,0,0.3)",
+		shadowOffset: {
+			width: 1,
+			height: 2,
+		},
+		shadowOpacity: 0.37,
+		shadowRadius: 10.49,
+
+		elevation: 12,
+
+	},
 	tag: {
 		paddingHorizontal: 12,
 		borderWidth: 1,
@@ -522,7 +545,7 @@ const styles = StyleSheet.create({
 	},
 	textStyle: {
 		fontSize: 14,
-        color: '#000'
+		color: '#000'
 	},
 	activeTextStyle: {
 		fontSize: 14,

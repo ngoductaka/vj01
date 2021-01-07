@@ -37,7 +37,7 @@ const QnA = (props) => {
     const currentClass = useSelector(state => state.userInfo.class);
 
     const [filter, setFilter] = useState({ cls: currentClass });
-    const [showFilter, setShowFilter] = useState(false);
+    const [showFilter, setShowFilter] = useState(true);
 
     const hanldleClick = (params) => {
         props.navigation.navigate("QuestionDetail", params);
@@ -138,8 +138,13 @@ const QnA = (props) => {
                             ListEmptyComponent={() => {
                                 return (
                                     <View style={{ alignItems: 'center', marginTop: 30 }}>
-                                        <Image source={images.no_item} />
-                                        <Text style={{ fontSize: 20, color: '#666' }}>{"Không tìm thấy kết quả"}</Text>
+                                        {
+                                            !searchText ? <Text style={{fontSize: 20, color: '#333'}}> Vui lòng nhập từ khoá để tìm kiếm</Text> :
+                                                <View>
+                                                    <Image source={images.no_item} />
+                                                    <Text style={{ fontSize: 20, color: '#666' }}>{"Không tìm thấy kết quả"}</Text>
+                                                </View>
+                                        }
                                     </View>
                                 )
                             }}

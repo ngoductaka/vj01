@@ -77,6 +77,17 @@ export const GAME_CENTERS = [
 	{ src: images["2048_logo"], name: '2048', slogan: 'Vui mà học, học mà chơi', route: 'Game2048' },
 	{ src: images.flappybird, name: 'Flappy Bird', slogan: 'Vui mà học, học mà chơi', route: 'FlappyBird' },
 ];
+export const LIST_UTILITIES = [
+	{
+		src: { uri: 'https://cdn2.iconfinder.com/data/icons/e-learning-17/96/timetable_classes_school_schedule-512.png' },
+		name: 'Thời gian biểu',
+		slogan: 'Lên lịch học tập',
+		route: 'TimeTable'
+	},
+	{ src: images.game2, name: 'Nối từ', slogan: 'Vui mà học, học mà chơi', route: 'WordCatcher' },
+	{ src: images["2048_logo"], name: '2048', slogan: 'Vui mà học, học mà chơi', route: 'Game2048' },
+	{ src: images.flappybird, name: 'Flappy Bird', slogan: 'Vui mà học, học mà chơi', route: 'FlappyBird' },
+];
 
 export const avatarIndex = [
 	{ img: images.avatar1, name: 'Jack tinh nghịch' }, { img: images.avatar2, name: 'Jack cần cù' },

@@ -62,10 +62,11 @@ const QnA = (props) => {
     const [showImg, setShowImg] = useState(false);
     // show img upload
     const [listImgShow, setListShowImg] = useState(false);
+    const [refreshing, setRefesh] = useState(false);
 
     const requesQuestion = (isScroll) => {
         setLoading(true);
-        api.get(`/question/${questionId}`)
+        return api.get(`/question/${questionId}`)
             .then(({ data = {} }) => {
                 setLoading(false);
                 setFollow(data.is_follow)
@@ -179,6 +180,12 @@ const QnA = (props) => {
                         ref={refList}
                         data={get(questionData, 'answer', [])}
                         showsVerticalScrollIndicator={false}
+                        onRefresh={() => {
+                            setRefesh(true);
+                            requesQuestion()
+                                .finally(() => setRefesh(false))
+                        }}
+                        refreshing={refreshing}
                         // header content
                         ListHeaderComponent={
                             <RenderQuestion
@@ -427,7 +434,7 @@ const RenderQuestion = ({ questionId, item, index, handleClickAnswer = () => { }
     }, [like])
     return (
         <View style={[styles.itemQ]} >
-            <View style={{paddingHorizontal: 8}}>
+            <View style={{ paddingHorizontal: 8 }}>
                 <RenderDataJson indexItem={index} content={item.content || ''} />
             </View>
             <RenderListImg listImg={item.image} setVisible={setListShowImg} />
@@ -880,7 +887,7 @@ const FormComment = ({
 
 const handleImgLink = (link) => {
     try {
-        if(!link) return "https://www.xaprb.com/media/2018/08/kitten.jpg"
+        if (!link) return "https://www.xaprb.com/media/2018/08/kitten.jpg"
         return link.includes('http') ? link : endpoints.BASE_HOI_DAP + link;
     } catch (err) {
         return link;

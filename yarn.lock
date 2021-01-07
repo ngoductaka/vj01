@@ -6932,6 +6932,13 @@ react-native-share@^3.3.2:
   resolved "https://registry.yarnpkg.com/react-native-share/-/react-native-share-3.8.5.tgz#e74ed39401b9fceef700435cef7c28bc37c7e267"
   integrity sha512-GjMI2NwUvi8zC7JHWk6NIcg/gFJmK/+cAQ8VStvfy4/kOiXYE5YnpPjvKs/K1Aun0HqYi2vjvZruL5ouDEWxmg==
 
+react-native-simple-time-picker@^0.2.0:
+  version "0.2.0"
+  resolved "https://registry.yarnpkg.com/react-native-simple-time-picker/-/react-native-simple-time-picker-0.2.0.tgz#b1a12a7880ac2f5a1200b0bc3d3c0065196097dc"
+  integrity sha1-saEqeICsL1oSALC8PTwAZRlgl9w=
+  dependencies:
+    prop-types "^15.5.10"
+
 react-native-simple-toast@^1.1.2:
   version "1.1.3"
   resolved "https://registry.yarnpkg.com/react-native-simple-toast/-/react-native-simple-toast-1.1.3.tgz#4d0835891fe5c9342341fc4a88ed01ebb1a34bd5"
@@ -7009,6 +7016,14 @@ react-native-thumbnail-video@^0.1.2:
   version "0.1.2"
   resolved "https://registry.yarnpkg.com/react-native-thumbnail-video/-/react-native-thumbnail-video-0.1.2.tgz#a50e3c665ce987d641da43d2528e372cac111322"
   integrity sha512-+dD8dIUxiZz/QaL+gOtmb3Co/VE0MK5s8el9fYXpuEZbQu882voz7ALJmEn5o7A62sDTT3mpR2UF1V0ioXTFKA==
+
+react-native-timetable@^1.0.4:
+  version "1.0.4"
+  resolved "https://registry.yarnpkg.com/react-native-timetable/-/react-native-timetable-1.0.4.tgz#4a7ec72078340b3b844864900f0f71fe473e4370"
+  integrity sha512-Wz4wBziqrQTyi7yFx03T3gUt7sA1+shAuj91LVH7w81uh9qmVz6M08fx0nJQB465QJxnFUbWvS1Kh46EWUNTPw==
+  dependencies:
+    moment "^2.24.0"
+    prop-types "^15.7.2"
 
 react-native-vector-icons@^4.3.0, react-native-vector-icons@^4.5.0:
   version "4.6.0"

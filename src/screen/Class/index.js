@@ -20,7 +20,7 @@ import { setRatingStatus, setUserInfo, setDeviceInfo } from '../../redux/action/
 import { RatingModal } from '../../component/RatingModal';
 import { images } from '../../utils/images';
 import { setBookInfo } from '../../redux/action/book_info';
-import { fontSize, blackColor, COLOR, avatarIndex, HOT_SUBJECT_CLASS, GAME_CENTERS } from '../../handle/Constant';
+import { fontSize, blackColor, COLOR, avatarIndex, HOT_SUBJECT_CLASS, GAME_CENTERS, LIST_UTILITIES } from '../../handle/Constant';
 import { helpers } from '../../utils/helpers';
 import { fontMaker, fontStyles } from '../../utils/fonts';
 import { GradientText } from '../../component/shared/GradientText';
@@ -39,6 +39,7 @@ import { common_services } from '../../redux/services';
 import { _createNotificationListeners } from '../../utils/notificationHandler';
 import { localNotificationService } from '../../utils/notificationServices';
 import { GameItem } from '../GameCenter';
+import { UtilitiesItem } from '../Utilities';
 
 const { width } = Dimensions.get('window');
 
@@ -348,6 +349,30 @@ const Class = memo((props) => {
 							}}
 							keyExtractor={(item, index) => index + 'game_item'}
 						/>
+						{/* utiliti */}
+						<View style={{
+							flexDirection: 'row', alignItems: 'center',
+							justifyContent: 'space-between', marginVertical: 10,
+
+						}}>
+							<Text style={{ fontSize: 18, ...fontMaker({ weight: fontStyles.SemiBold }) }}>Kho Tiện ích</Text>
+							<TouchableOpacity onPress={() => navigation.navigate('GameCenter')} style={{}}>
+								<Text style={{ fontSize: 14, ...fontMaker({ weight: fontStyles.Regular }), textDecorationColor: COLOR.MAIN, color: COLOR.MAIN }}>Xem tất cả</Text>
+							</TouchableOpacity>
+						</View>
+						<FlatList
+							style={{}}
+							data={LIST_UTILITIES.slice(0, 3)}
+							numColumns={3}
+							renderItem={({ item, index }) => {
+								return (
+									<UtilitiesItem src={item.src} name={item.name} slogan={item.slogan} navigation={navigation} route={item.route} />
+								);
+							}}
+							keyExtractor={(item, index) => index + 'game_item'}
+						/>
+
+
 						{/* hot exam */}
 						<HotExam classId={props.userInfo.class} loading={hostLoading} hotSubIdx={hotSubIdx} setHotSubIdx={setHotSubIdx} hotExamData={get(hostLesson, 'exams', [])} navigation={navigation} />
 						{/* continue learning */}
@@ -778,7 +803,7 @@ const HeaderView = (props, noti = 0, getNumberOfUnseenNoti = () => { }, avatarId
 						/>
 					</TouchableOpacity>
 
-					<TouchableOpacity onPress={() => props.navigation.navigate('SearchStack')} style={{ flex: 1, borderRadius: 38, flexDirection: 'row', alignItems: 'center', paddingVertical: 8, paddingLeft: 10, backgroundColor: 'white', backgroundColor: '#F3F3F3', }}>
+					<TouchableOpacity onPress={() => props.navigation.navigate('SearchView')} style={{ flex: 1, borderRadius: 38, flexDirection: 'row', alignItems: 'center', paddingVertical: 8, paddingLeft: 10, backgroundColor: 'white', backgroundColor: '#F3F3F3', }}>
 						<Icon name='search' type='Feather' style={{ fontSize: 20, color: '#888888' }} />
 						<Text numberOfLines={1} style={{ ...fontMaker({ weight: fontStyles.Regular }), fontSize: 16, marginHorizontal: 10, color: '#888888', flex: 1 }}>Tìm kiếm bài tập, đề thi, bài giảng...</Text>
 					</TouchableOpacity>

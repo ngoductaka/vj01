@@ -53,13 +53,17 @@ const QnA = (props) => {
     const [photos, setPhotos] = useState([])
 
     const handleChoosePhotos = () => {
-        imagePicker.launchLibrary({}, {
+        imagePicker.launchLibrary({ multiple: true }, {
             onChooseImage: (response) => {
-                if (response.path) {
-                    console.log('responseresponseresponseresponseresponse', response)
+                if (response) {
+                    // console.log('responseresponseresponseresponseresponse', response)
                     try {
-                        if (photos.length < 3)
-                            setPhotos([...photos, response])
+                        const arrImg = [...photos, ...response];
+                        // console.log('arrImg', arrImg)
+                        if (arrImg.length < 4) {
+                            setPhotos(arrImg);
+                        }
+                        // setPhotos()
                         else
                             Toast.showWithGravity("Bạn chỉ được gửi tối đa 3 ảnh", Toast.SHORT, Toast.CENTER);
 
@@ -99,13 +103,22 @@ const QnA = (props) => {
     const [loading, setLoading] = useState(false);
 
     const uploadQuestion = async () => {
-        if (!questionContent) {
-            Toast.showWithGravity("Vui lòng nhập nội dung câu hỏi", Toast.SHORT, Toast.CENTER);
-            return 1;
-        };
         try {
+            if (!questionContent) {
+                Toast.showWithGravity("Vui lòng nhập nội dung câu hỏi", Toast.SHORT, Toast.CENTER);
+                return 1;
+            };
+            const { cls = '', currSub = '' } = filter || {};
+            if (!currSub) {
+                Toast.showWithGravity("Vui lòng chọn môn học", Toast.SHORT, Toast.CENTER);
+                return 1;
+            };
+            if (cls == 13) {
+                Toast.showWithGravity("Vui lòng chọn lớp", Toast.SHORT, Toast.CENTER);
+                return 1;
+            }
+            // 
             setLoading(true)
-            const { cls, currSub } = filter;
             // console.log('currSub=========', currSub)
             const body = {
                 "grade": cls,
