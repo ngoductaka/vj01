@@ -13,7 +13,7 @@ import LinearGradient from 'react-native-linear-gradient';
 
 import { Loading } from '../../handle/api';
 import { fontMaker, fontStyles } from '../../utils/fonts';
-import { fontSize, COLOR } from '../../handle/Constant';
+import { fontSize, COLOR, unitIntertitialId } from '../../handle/Constant';
 import { GradientText } from '../../component/shared/GradientText';
 import { handleSrc } from '../../component/menuItem';
 import { images } from '../../utils/images';
@@ -21,6 +21,11 @@ import { helpers } from '../../utils/helpers';
 import { setLearningTimes } from '../../redux/action/user_info';
 import { user_services } from '../../redux/services';
 const { height, width } = Dimensions.get('window');
+
+import firebase from 'react-native-firebase';
+const AdRequest = firebase.admob.AdRequest;
+let advert;
+let request;
 
 const OverviewTest = (props) => {
 
@@ -43,6 +48,21 @@ const OverviewTest = (props) => {
     }
 
     useEffect(() => {
+        advert = firebase.admob().interstitial(unitIntertitialId);
+        request = new AdRequest();
+        request.addKeyword('facebook').addKeyword('google').addKeyword('instagram').addKeyword('zalo').addKeyword('google').addKeyword('pubg').addKeyword('asphalt').addKeyword('covid-19');
+
+        advert.loadAd(request.build());
+
+        advert.on('onAdLoaded', () => {
+            // console.log('----------Advert ready to show.--------');
+            // if (navigation.isFocused() && advert.isLoaded()) {
+            if (advert.isLoaded()) {
+                advert.show();
+            } else {
+                // console.log('---------interstitial fail---------', navigation.isFocused());
+            }
+        });
         BackHandler.addEventListener(
             'hardwareBackPress',
             handleBackButtonPressAndroid

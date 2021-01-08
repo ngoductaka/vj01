@@ -3,9 +3,7 @@ import { GoogleSignin } from '@react-native-community/google-signin';
 import AsyncStorage from '@react-native-community/async-storage';
 import appleAuth, {
     AppleAuthError,
-    AppleAuthRequestScope,
     AppleAuthRealUserStatus,
-    AppleAuthRequestOperation,
 } from '@invertase/react-native-apple-authentication';
 import { LoginManager } from 'react-native-fbsdk';
 
@@ -17,83 +15,75 @@ import { endpoints } from '../../constant/endpoints';
 import NavigationService from '../../Router/NavigationService';
 import { Constants, FIRST_TIME } from '../../handle/Constant';
 import { helpers } from '../../utils/helpers';
+import { get } from 'lodash';
 
 function* loginWithApple(action) {
     const updateCredentialStateForUser = action.data;
     // start a login request
     try {
         const appleAuthRequestResponse = yield appleAuth.performRequest({
-            requestedOperation: AppleAuthRequestOperation.LOGIN,
-            requestedScopes: [AppleAuthRequestScope.EMAIL, AppleAuthRequestScope.FULL_NAME],
+            requestedOperation: appleAuth.Operation.LOGIN,
+            requestedScopes: [appleAuth.Scope.EMAIL, appleAuth.Scope.FULL_NAME],
         });
 
         // console.log('appleAuthRequestResponse', appleAuthRequestResponse);
 
-        const {
-            fullName,
-            email,
-            nonce,
-            identityToken,
-            realUserStatus
-        } = appleAuthRequestResponse;
+        const credentialState = yield appleAuth.getCredentialStateForUser(appleAuthRequestResponse.user);
 
-        console.log('asas.a.a.s.as', appleAuthRequestResponse);
+        // use credentialState response to ensure the user is authenticated
+        if (credentialState === appleAuth.State.AUTHORIZED) {
+            // user is authenticated
+            // console.log('-------', appleAuthRequestResponse);
 
-        user_services.fetchAndUpdateCredentialState(updateCredentialStateForUser).catch(error =>
-            updateCredentialStateForUser(`Error: ${error.code}`),
-        );
 
-        if (identityToken) {
-            // e.g. sign in with Firebase Auth using `nonce` & `identityToken`
-            // console.log(appleAuthRequestResponse);
-        } else {
-            // no token - failed sign-in?
-        }
+            user_services.fetchAndUpdateCredentialState(updateCredentialStateForUser).catch(error =>
+                updateCredentialStateForUser(`Error: ${error.code}`),
+            );
 
-        if (realUserStatus === AppleAuthRealUserStatus.LIKELY_REAL) {
-            // console.log("I'm a real person!");
-        }
+            const name = get(appleAuthRequestResponse, 'fullName.givenName', '') + get(appleAuthRequestResponse, 'fullName.familyName', '');
 
-        const name = (fullName.givenName ? fullName.givenName : '') + ' ' + (fullName.familyName ? fullName.familyName : '');
-
-        const payload = {
-            token: identityToken,
-            type: 2,
-            provider_id: nonce,
-            name: name.trim().length > 0 ? name : helpers.randomName(),
-            email: email ? email : `${nonce}@gmail.com`,
-            avatar: null,
-        }
-
-        const result = yield api.post(endpoints.SOCIAL_LOGIN, { ...payload });
-        // console.log('asasasas', result);
-
-        if (result.access_token) {
-            const temp = {
-                ...result.user,
-                token: result.access_token,
-                device: result.device ? result.device : null
+            console.log('asbdkjabdkjasd', name);
+            const payload = {
+                token: get(appleAuthRequestResponse, 'identityToken', ''),
+                type: 2,
+                provider_id: get(appleAuthRequestResponse, 'nonce', ''),
+                name: name && name.trim().length > 0 ? name : helpers.randomName(),
+                email: get(appleAuthRequestResponse, 'email', null) ? get(appleAuthRequestResponse, 'email', null) : `${get(appleAuthRequestResponse, 'nonce', '')}@gmail.com`,
+                avatar: null,
             }
-            saveItem(KEY.saved_user, temp);
-            saveItem(Constants.ACCESS_TOKEN, result.access_token);
-            saveItem(Constants.APPLE_PAYLOAD, payload);
-            saveItem(Constants.TYPE_LOGIN, 2);
-            yield put({
-                type: LOGIN_WITH_APPLE_SUCCESS,
-                payload: temp
-            });
-            NavigationService.navigate('InAppStack');
+
+            const result = yield api.post(endpoints.SOCIAL_LOGIN, { ...payload });
+
+            if (result.access_token) {
+                const temp = {
+                    ...result.user,
+                    token: result.access_token,
+                    device: result.device ? result.device : null
+                }
+                saveItem(KEY.saved_user, temp);
+                saveItem(Constants.ACCESS_TOKEN, result.access_token);
+                saveItem(Constants.APPLE_PAYLOAD, payload);
+                saveItem(Constants.TYPE_LOGIN, 2);
+                yield put({
+                    type: LOGIN_WITH_APPLE_SUCCESS,
+                    payload: temp
+                });
+                NavigationService.navigate('InAppStack');
+            } else {
+                yield put({
+                    type: LOGIN_WITH_APPLE_FAIL,
+                });
+                alert('Đã có lỗi xảy ra');
+            }
         } else {
-            yield put({
-                type: LOGIN_WITH_APPLE_FAIL,
-            });
-            alert('Đã có lỗi xảy ra');
+
         }
     } catch (error) {
+        console.log('--------', error);
         yield put({
             type: LOGIN_WITH_APPLE_FAIL
         });
-        if (error.code === AppleAuthError.CANCELED) {
+        if (error.code === appleAuth.Error.CANCELED) {
             console.warn('User canceled Apple Sign in.');
         } else {
             console.error(error);

@@ -188,5 +188,6 @@ export const helpers = {
     convertIndex,
     randomName,
     capitalizeFirstLetter,
-    changeTimeView
+    changeTimeView,
+    default_name
 }
