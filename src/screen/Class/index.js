@@ -356,13 +356,15 @@ const Class = memo((props) => {
 
 						}}>
 							<Text style={{ fontSize: 18, ...fontMaker({ weight: fontStyles.SemiBold }) }}>Kho Tiện ích</Text>
-							<TouchableOpacity onPress={() => navigation.navigate('GameCenter')} style={{}}>
+							<TouchableOpacity 
+							// onPress={() => navigation.navigate('GameCenter')}
+							 style={{}}>
 								<Text style={{ fontSize: 14, ...fontMaker({ weight: fontStyles.Regular }), textDecorationColor: COLOR.MAIN, color: COLOR.MAIN }}>Xem tất cả</Text>
 							</TouchableOpacity>
 						</View>
 						<FlatList
 							style={{}}
-							data={LIST_UTILITIES.slice(0, 3)}
+							data={LIST_UTILITIES.slice(0, 1)}
 							numColumns={3}
 							renderItem={({ item, index }) => {
 								return (

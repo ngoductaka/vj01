@@ -3,129 +3,66 @@ import {
     SafeAreaView,
     StyleSheet,
     View,
-    Alert, TextInput,
-    Pressable, Text, Dimensions,
+    Alert, TextInput, TouchableOpacity,
+    Pressable, Text, Dimensions
 } from 'react-native';
 import { cloneDeep } from 'lodash';
-import TimeTableView, { genTimeBlock } from 'react-native-timetable';
+import TimeTableView_, { genTimeBlock } from 'react-native-timetable';
 import Orientation from 'react-native-orientation-locker';
 import { Icon } from 'native-base';
 import ModalBox from 'react-native-modalbox';
 import TimePicker from 'react-native-simple-time-picker';
+import DropDownPicker from 'react-native-dropdown-picker';
+import moment from 'moment';
+import Toast from 'react-native-simple-toast';
+import { get } from 'lodash';
+
 
 
 import { HeaderBarWithBack } from '../../component/Header/Normal';
+import TimeTableView, { listSubject } from './com/TimeTableView'
+import { useStorage, KEY } from '../../handle/handleStorage';
+import { FlatList } from 'react-native-gesture-handler';
+import { COLOR } from '../../handle/Constant';
 
 const { height, width } = Dimensions.get('screen');
 
 const Timetable = (props) => {
     const { navigation } = props;
-    const [events, setEvents] = useState(events_data_Init)
     const [isOpen, setOpen] = useState(false)
-    useEffect(() => {
-        Orientation.lockToLandscape();
-        console.log('heightheightheight', height, width)
-        return () => {
-            Orientation.lockToPortrait()
-        }
+    const [events, setEvents] = useStorage(KEY.TIMETABLE, [])
 
-    }, []);
+    const _hanldePress = (val) => {
+        console.log('valvalvalval', val)
+        setOpen(val)
+    }
 
-    const hanldeAddItem = useCallback((val) => {
-        // const {}
-
-    }, [events])
+    const _handleSubmit = useCallback((val) => {
+        setEvents({
+            ...events,
+            ...val
+        })
+        setOpen(false)
+    }, [events]);
 
     return (
         <SafeAreaView style={{ flex: 1 }}>
             <HeaderBarWithBack text="Thời khoá biểu" leftAction={() => navigation.goBack()} />
             <View style={styles.container}>
                 <TimeTableView
-                    // scrollViewRef={this.scrollViewRef}
-                    events={events}
-                    pivotTime={9}
-                    pivotEndTime={20}
-                    pivotDate={genTimeBlock('mon')}
-                    numberOfDays={6}
-                    onEventPress={(evt) => {
-                        Alert.alert("onEventPress", JSON.stringify(evt));
-                    }}
-                    headerStyle={styles.headerStyle}
-                    formatDateHeader="dddd"
-                    locale="vi"
+                    data={events}
+                    onPress={_hanldePress}
                 />
-            </View>
-            <View style={styles.bottomView}>
-                <Pressable onPress={() => setOpen(true)} style={styles.addBtn}>
-                    <Icon style={{ color: '#fff' }} name="plus" type="AntDesign" />
-                </Pressable>
             </View>
             <ModalTimetable
                 setOpen={setOpen}
                 isOpen={isOpen}
-                submit={hanldeAddItem} />
+                submit={_handleSubmit} />
         </SafeAreaView>
     )
 };
 
 export default Timetable;
-
-const events_data_Init = [
-    {
-        title: "Math-----",
-        startTime: genTimeBlock("MON", 9),
-        endTime: genTimeBlock("MON", 10, 30),
-        location: "Classroom 403",
-        extra_descriptions: ["Kim", "Lee"],
-    },
-    {
-        title: "Math",
-        startTime: genTimeBlock("WED", 9),
-        endTime: genTimeBlock("WED", 10, 50),
-        location: "Classroom 403",
-        extra_descriptions: ["Kim", "Lee"],
-    },
-    {
-        title: "Physics",
-        startTime: genTimeBlock("MON", 11),
-        endTime: genTimeBlock("MON", 11, 50),
-        location: "Lab 404",
-        extra_descriptions: ["Einstein"],
-    },
-    {
-        title: "Physics",
-        startTime: genTimeBlock("WED", 11),
-        endTime: genTimeBlock("WED", 11, 50),
-        location: "Lab 404",
-        extra_descriptions: ["Einstein"],
-    },
-    {
-        title: "Mandarin",
-        startTime: genTimeBlock("TUE", 9),
-        endTime: genTimeBlock("TUE", 10, 50),
-        location: "Language Center",
-        extra_descriptions: ["Chen"],
-    },
-    {
-        title: "Japanese",
-        startTime: genTimeBlock("FRI", 9),
-        endTime: genTimeBlock("FRI", 10, 50),
-        location: "Language Center",
-        extra_descriptions: ["Nakamura"],
-    },
-    {
-        title: "Club Activity",
-        startTime: genTimeBlock("THU", 9),
-        endTime: genTimeBlock("THU", 10, 50),
-        location: "Activity Center",
-    },
-    {
-        title: "Club Activity",
-        startTime: genTimeBlock("FRI", 13, 30),
-        endTime: genTimeBlock("FRI", 14, 50),
-        location: "Activity Center",
-    },
-];
 
 const styles = StyleSheet.create({
     headerStyle: {
@@ -160,12 +97,33 @@ const ModalTimetable = ({
     submit
 }) => {
     const [subject, setSubject] = useState('');
-    const [description, setDescription] = useState('');
-    const [time, setTime] = useState({
-        from: [8, 30],
-        to: [10, 30],
-    });
-    console.log('isOpenisOpenisOpen', isOpen)
+    const [title, setTitle] = useState('');
+
+    const [showSubject, setShowSubject] = useState(false)
+
+    const _handleSubmit = () => {
+        // if (!subject) {
+        //     Toast.showWithGravity("Vui lòng nhập môn học", Toast.SHORT, Toast.CENTER);
+        //     return 1;
+        // }
+        const [position = ''] = Object.keys(isOpen);
+        submit({ [position]: subject })
+
+    }
+    useEffect(() => {
+        if (isOpen) {
+            try {
+                const [position = ''] = Object.keys(isOpen);
+                const [day, session, time] = position.split('');
+
+                setTitle(`${mapDay[day]} - ${mapSession[session]} - Tiết ${time}`)
+                const subject = isOpen[position];
+                setSubject(subject);
+            } catch (err) {
+                console.log(err)
+            }
+        }
+    }, [isOpen])
     return (
         <ModalBox
             onClosed={() => setOpen(false)}
@@ -175,21 +133,28 @@ const ModalTimetable = ({
             backdropPressToClose={true}
             swipeToClose={false}
             backdropColor='rgba(0, 0, 0, .7)'
-            style={{ width: width, height: null, borderTopLeftRadius: 15, borderTopRightRadius: 15, overflow: 'hidden' }}
-            position='bottom'
+            style={{
+                width: width - 20,
+                height: null,
+                borderRadius: 10,
+                // borderTopLeftRadius: 15, borderTopRightRadius: 15,
+                overflow: 'hidden'
+            }}
+            position='center'
         >
             <View style={{
                 paddingTop: 20,
-                height: height * 4 / 5,
-                backgroundColor: '#fff', width: '100%', paddingHorizontal: 80
+                // height: height / 3,
+                backgroundColor: '#fff', width: '100%', paddingHorizontal: 20
             }}>
-                <View style={{ flexDirection: 'row', flex: 1 }}>
-                    <View style={{ flex: 1 }}>
-                        <Text style={{ fontSize: 20, color: '#222', marginBottom: 20 }}>Thêm mới</Text>
-                        <View style={{ flex: 1 }}>
+                <View style={{}}>
+                    <Text style={{ fontSize: 20, color: '#222', marginBottom: 10, fontWeight: '600' }}>Sửa thời khoá biểu</Text>
+                    <Text style={{ fontSize: 15, color: '#222', marginBottom: 20 }}>{title}</Text>
+                    <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                        <View style={{ flex: 1, }}>
 
-                            {/* <Text>Môn học:</Text> */}
                             <TextInput
+                                clearButtonMode="always"
                                 value={subject}
                                 onChangeText={setSubject}
                                 placeholder="Nhập môn học"
@@ -202,79 +167,96 @@ const ModalTimetable = ({
                                     paddingHorizontal: 10,
                                     paddingVertical: 5,
                                     // backgroundColor: COLOR.black(.03),
-                                    marginTop: 10,
+                                    // marginTop: 10,
                                     borderWidth: 1,
                                     fontSize: 16,
                                     borderColor: "#ddd",
-                                    borderRadius: 7
+                                    borderRadius: 7,
                                 }} />
-
-
-                            <TextInput
-                                value={description}
-                                onChangeText={setDescription}
-                                multiline
-                                numberOfLines={4}
-                                placeholder={`Chú thích`}
-                                style={[{
-                                    backgroundColor: '#fff',
-                                    height: 70,
-                                    paddingHorizontal: 10,
-                                    paddingVertical: 5,
-                                    marginTop: 10,
-                                    borderWidth: 1,
-                                    fontSize: 16,
-                                    borderColor: "#ddd",
-                                    borderRadius: 7
-                                }]}
-                            />
-                        </View>
-                        <View style={{ flexDirection: 'row', justifyContent: 'flex-end' }}>
-                            <Pressable style={{
-                                backgroundColor: "#fff",
-                                paddingHorizontal: 15, paddingVertical: 10,
-                                borderRadius: 7, borderColor: '#ddd', borderWidth: 1,
-                                marginRight: -60,marginBottom: 18
-                            }}>
-                                <Text>Thêm mới</Text>
-                            </Pressable>
                         </View>
 
-                    </View>
+                        <Pressable onPress={() => setShowSubject(true)} style={{ marginLeft: 20 }}>
+                            <Icon name="plus" type='AntDesign' />
+                        </Pressable>
 
-                    <View style={{ flex: 1 }}>
-                        <Text style={{ textAlign: 'center', fontSize: 17, color: '#333' }}>Thời gian học</Text>
-                        <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center' }}>
-                            <Text style={{ color: '#111', fontSize: 16 }}>Từ: </Text>
-                            <View style={{ width: 100 }}>
-                                <TimePicker
-                                    selectedHours={time.from[0]}
-                                    selectedMinutes={time.from[1]}
-                                    onChange={(hours, minutes) => {
-                                        setTime({
-                                            ...time,
-                                            from: [hours, minutes]
-                                        })
-                                    }}
-                                />
-                            </View>
-                            <Text style={{ color: '#111', fontSize: 16 }}> Đến: </Text>
-                            <View style={{ width: 100 }}>
-                                <TimePicker
-                                    selectedHours={time.to[0]}
-                                    selectedMinutes={time.to[1]}
-                                    onChange={(hours, minutes) => {
-                                        setTime({
-                                            ...time,
-                                            to: [hours, minutes]
-                                        })
-                                    }}
-                                />
-                            </View>
-                        </View>
                     </View>
                 </View>
+                <View style={{ justifyContent: 'center', flexDirection: 'row' }}>
+                    <TouchableOpacity
+                        onPress={_handleSubmit}
+                        style={{
+                            backgroundColor: "#337ab7",
+                            paddingHorizontal: 15, paddingVertical: 10,
+                            borderRadius: 7, borderColor: '#ddd', borderWidth: 1,
+                            marginBottom: 18, marginTop: 20
+                        }}>
+                        <Text style={{ color: '#fff' }}>Cập nhật</Text>
+                    </TouchableOpacity>
+                </View>
             </View>
+
+            <ModalBox
+                onClosed={() => setShowSubject(false)}
+                isOpen={showSubject}
+                animationDuration={300}
+                coverScreen={true}
+                backdropPressToClose={true}
+                swipeToClose={false}
+                backdropColor='rgba(0, 0, 0, 1)'
+                style={{
+                    width: width,
+                    height: null,
+                    borderRadius: 10,
+                    // borderTopLeftRadius: 15, borderTopRightRadius: 15,
+                    overflow: 'hidden'
+                }}
+                position='bottom'
+            >
+
+                <View style={{
+                    paddingTop: 20,
+                    height: height * 2 / 3,
+                    backgroundColor: '#fff', width: '100%', paddingHorizontal: 20
+                }}>
+                    <Text style={{ textAlign: 'center', fontSize: 22, fontWeight: '600' }}>Chọn môn học</Text>
+                    <FlatList
+                        data={listSubject}
+                        style={{ flex: 1, marginBottom: 30 }}
+                        renderItem={({ item }) => {
+                            return (
+                                <Pressable onPress={() => { setSubject(item.text); setShowSubject(false) }}>
+                                    <View style={{ flexDirection: 'row', alignItems: 'center', marginBottom: 10, paddingHorizontal: 10 }}>
+                                        <View style={{ height: 30, width: 30, borderRadius: 30, borderWidth: 2, borderColor: COLOR.MAIN, justifyContent: 'center', alignItems: 'center' }} >
+                                            <View style={{ borderRadius: 15, height: 15, width: 15, backgroundColor: item.text == subject ? COLOR.MAIN : '#fff' }} />
+                                        </View>
+                                        <Text style={{ marginLeft: 20, fontSize: 16 }}>{item.text}</Text>
+                                    </View>
+                                </Pressable>
+                            )
+                        }}
+                        keyExtractor={({ item, index }) => index + ''}
+                    />
+                </View>
+            </ModalBox>
         </ModalBox>
     )
 }
+
+
+const mapDay = {
+    2: 'Thứ 2',
+    3: 'Thứ 3',
+    4: 'Thứ 4',
+    6: 'Thứ 6',
+    7: 'Thứ 7',
+    0: 'Chủ nhật'
+};
+
+const mapSession = {
+    's': 'Sáng',
+    'c': 'Chiều',
+    't': 'Tối'
+}
+
+
+var randomColor = () => '#' + Math.floor(Math.random() * 16777215).toString(16)

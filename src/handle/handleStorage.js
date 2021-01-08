@@ -17,7 +17,8 @@ const KEY = {
 	rating_vietjack_app: 'rating_vietjack_app',
 	firebase_token: 'new_firebase_token_2',
 	saved_video: 'saved_video',
-	soundOn: 'soundOn'
+	soundOn: 'soundOn',
+	TIMETABLE: 'TIMETABLE',
 };
 
 const saveItem = (key, value) => {
