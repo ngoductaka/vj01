@@ -83,6 +83,7 @@ const QnA = (props) => {
                 }
             })
             .catch(err => {
+                console.log('err load question', err)
                 setLoading(false);
             })
     };
@@ -143,7 +144,7 @@ const QnA = (props) => {
                 return true;
             });
         }
-    }, []);
+    }, [questionId]);
     const _gotoProfile = (id = '') => {
         props.navigation.navigate('UserQnA', { userId: id })
     }

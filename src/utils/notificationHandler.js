@@ -180,7 +180,7 @@ const updateSeenStatus = async (notiId) => {
 
 // const handleData = (val = '') => {
 const handleData = async (val_ = '') => {
-    console.log('akjshdjkagsdkasjkdgashjd', val_);
+    console.log('akjshdjkag000sdkasjkdgashjd', val_);
     try {
         // post user click
         const notiDataRaw = get(val_, 'notification', null);
@@ -188,6 +188,11 @@ const handleData = async (val_ = '') => {
         let notiData = null;
         if (notiDataRaw) {
             notiData = JSON.parse(notiDataRaw);
+        }
+        if(val_.type == 'question') {
+            NavigationService.navigate('QuestionDetail', {
+                questionId: val_.question,
+            })
         }
         // console.log('la sao ta 2222222', notiData);
         if (notiData && notiData.id) {

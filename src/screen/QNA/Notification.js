@@ -3,13 +3,14 @@ import {
     View, Text, SafeAreaView, StyleSheet,
     TouchableOpacity, FlatList, Image
 } from 'react-native';
-import { Icon } from 'native-base';
+import { Icon, Toast } from 'native-base';
 import { get } from 'lodash';
 
 
 import { GradientText } from '../../component/shared/GradientText';
 import { useRequest } from '../../handle/api';
 import { getDiffTime } from '../../utils/helpers';
+import { handleImgLink } from './com/com';
 
 
 const userImg = "https://www.xaprb.com/media/2018/08/kitten.jpg";
@@ -22,7 +23,14 @@ const Notication = (props) => {
     const _renderNotiItem = useCallback(({ item, index }) => {
         return <NotiItem
             item={item}
-            onPress={() => props.navigation.navigate('QuestionDetail', { questionId: item.question_id })} />
+            onPress={() => {
+                if (item.question_status) {
+                    props.navigation.navigate('QuestionDetail', { questionId: item.question_id })
+                } else {
+                    Toast.show('Câu hỏi không khả dụng')
+                }
+            }
+            } />
     }, []);
     const [data, loading, err] = useRequest('notification/show', [1]);
     // console.log('datadatadatadata', data)
@@ -95,7 +103,7 @@ const NotiItem = ({ item, index, onPress }) => {
     return (
         <View style={styleNoti.container}>
             <View>
-                <User />
+                <User uri={item.avatar} isCheck={['1', '2'].includes(item.role_id)} />
             </View>
             <TouchableOpacity onPress={onPress} style={styleNoti.content}>
                 <Text style={styleNoti.textContent} numberOfLines={2}>{item.content} </Text>
@@ -172,13 +180,13 @@ const userStyle = StyleSheet.create({
 })
 
 
-const User = ({ style = {}, uri }) => {
+const User = ({ style = {}, uri, isCheck }) => {
     return (
         <View style={[userStyle.imgLargeWapper, style]} >
-            <Image style={[userStyle.img, {}]} source={{ uri: uri || userImg }} />
-            <View style={{ backgroundColor: '#fff', position: 'absolute', right: -3, bottom: -3, borderRadius: 10 }}>
+            <Image style={[userStyle.img, {}]} source={{ uri: handleImgLink(uri) }} />
+            {isCheck ? <View style={{ backgroundColor: '#fff', position: 'absolute', right: -3, bottom: -3, borderRadius: 10 }}>
                 <Icon style={{ color: 'green', fontSize: 15, fontWeight: 'bolid' }} name="check-circle" type="FontAwesome" />
-            </View>
+            </View>: null}
         </View>
     )
 }

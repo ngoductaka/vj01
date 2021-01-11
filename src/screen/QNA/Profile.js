@@ -3,11 +3,11 @@ import {
     View, Text, SafeAreaView, StyleSheet,
     Image, Dimensions, ImageBackground, FlatList
 } from 'react-native';
-import { Icon, Tab, Tabs, } from 'native-base';
+import { Icon, Tab, Tabs, Toast, } from 'native-base';
 import LinearGradient from 'react-native-linear-gradient';
 import { get } from 'lodash';
 
-import { TollBar } from './com/com';
+import { TollBar, handleImgLink } from './com/com';
 import { Colors } from '../../utils/colors';
 import { useRequest } from '../../handle/api';
 import RenderData, { RenderDataJson } from '../../component/shared/renderHtmlQuestion';
@@ -116,7 +116,13 @@ const UserProfile = (props) => {
                                 renderItem={({ item, index }) => {
                                     return (
                                         <TouchableOpacity
-                                            onPress={() => props.navigation.navigate('QuestionDetail', { questionId: item.question_id })}
+                                            onPress={() => {
+                                                if (item.question_status == 0) {
+                                                    Toast.show('Câu hỏi không khả dụng')
+                                                } else {
+                                                    props.navigation.navigate('QuestionDetail', { questionId: item.question_id })
+                                                }
+                                            }}
                                             style={{
                                                 paddingHorizontal: 8, marginBottom: 15,
                                             }}
@@ -155,7 +161,13 @@ const UserProfile = (props) => {
                                 renderItem={({ item, index }) => {
                                     return (
                                         <TouchableOpacity
-                                            onPress={() => props.navigation.navigate('QuestionDetail', { questionId: item.id })}
+                                            onPress={() => {
+                                                if (item.question_status == 0) {
+                                                    Toast.show('Câu hỏi không khả dụng')
+                                                } else {
+                                                    props.navigation.navigate('QuestionDetail', { questionId: item.id })
+                                                }
+                                            }}
                                             style={{ paddingHorizontal: 8, marginBottom: 15, borderBottomColor: '#dedede', borderBottomWidth: 1 }}
                                         >
                                             <View style={{
@@ -256,7 +268,7 @@ const userImg = "https://www.xaprb.com/media/2018/08/kitten.jpg";
 const User = ({ style = {}, uri }) => {
     return (
         <View style={[userStyle.imgLargeWapper, style]} >
-            <Image style={[userStyle.img, {}]} source={{ uri: uri || userImg }} />
+            <Image style={[userStyle.img, {}]} source={{ uri: handleImgLink(uri) }} />
             <View style={{ backgroundColor: '#fff', position: 'absolute', right: -3, bottom: -3, borderRadius: 10 }}>
                 {/* <Icon style={{ color: 'green', fontSize: 15, fontWeight: 'bolid' }} name="check-circle" type="FontAwesome" /> */}
             </View>

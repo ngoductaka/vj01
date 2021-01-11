@@ -7,6 +7,7 @@ import {
 import { Icon } from 'native-base';
 import { fontMaker, fontStyles } from '../../../utils/fonts';
 import { GradientText } from '../../../component/shared/GradientText';
+import { endpoints } from '../../../constant/endpoints';
 
 
 const userImg = "https://www.xaprb.com/media/2018/08/kitten.jpg";
@@ -42,10 +43,19 @@ const styles = StyleSheet.create({
 })
 
 
+const handleImgLink = (link) => {
+    try {
+        if (!link) return "https://www.xaprb.com/media/2018/08/kitten.jpg"
+        return link.includes('http') ? link : endpoints.BASE_HOI_DAP + link;
+    } catch (err) {
+        return link;
+    }
+}
+
 
 
 
 export {
     TollBar,
-
+    handleImgLink,
 }

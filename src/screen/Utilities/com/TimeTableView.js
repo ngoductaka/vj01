@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text, StyleSheet, ScrollView, Pressable } from 'react-native';
+import { View, Text, StyleSheet, ScrollView, Pressable, TouchableOpacity } from 'react-native';
 import { get } from 'lodash';
 
 
@@ -11,15 +11,15 @@ const TimetableView = ({ data, onPress }) => {
             {/* content */}
             <ScrollView>
                 <View style={{ backgroundColor: '#7ee0b7' }}>
-                    <Text style={{ paddingHorizontal: 7, paddingVertical: 5, fontWeight: 'bold', color: '#fff', }}>Sáng</Text>
+                    <Text style={{ paddingHorizontal: 7, paddingVertical: 5, fontWeight: 'bold', color: '#fff', fontSize: 17, textAlign: 'center' }}>Buổi sáng</Text>
                 </View>
                 {listTime.map(i => <RenderRow onPress={onPress} val={`s${i}`} key={i} title={"Tiết " + i} data={data} />)}
                 <View style={{ backgroundColor: '#004bb9' }}>
-                    <Text style={{ paddingHorizontal: 7, paddingVertical: 5, color: '#fff', fontWeight: 'bold' }}>Chiều</Text>
+                    <Text style={{ paddingHorizontal: 7, paddingVertical: 5, color: '#fff', fontWeight: 'bold', fontSize: 17, textAlign: 'center' }}>Buổi chiều</Text>
                 </View>
                 {listTime.map(i => <RenderRow onPress={onPress} val={`c${i}`} key={i} title={"Tiết " + i} data={data} />)}
                 <View style={{ backgroundColor: '#868686' }}>
-                    <Text style={{ paddingHorizontal: 7, paddingVertical: 5, color: '#fff', fontWeight: 'bold' }}>Tối</Text>
+                    <Text style={{ paddingHorizontal: 7, paddingVertical: 5, color: '#fff', fontWeight: 'bold', fontSize: 17, textAlign: 'center' }}>Buổi tối</Text>
                 </View>
                 {
                     listTime.map(i => <RenderRow onPress={onPress} val={`t${i}`} key={i} title={"Tiết " + i} data={data} />)
@@ -49,18 +49,21 @@ const RenderRow = ({ title = '', data, onPress = () => { }, val }) => {
     return (
         <View style={{ flexDirection: 'row' }}>
             <View style={{ borderColor: '#dedede', borderWidth: 1, width: 40, justifyContent: 'center', alignItems: 'center' }}>
-                <Text style={{fontSize: 11}}>{title}</Text>
+                <Text style={{ fontSize: 11, fontWeight: '600' }}>{title}</Text>
             </View>
             {/*  */}
             {
                 Day.map(({ day }) => {
                     const subject = get(data, `${day}${val}`, '');
                     return (
-                        <Pressable style={{ flex: 1 }} onPress={() => onPress({ [`${day}${val}`]: subject })}>
+                        <TouchableOpacity style={{
+                            flex: 1,
+                            backgroundColor: day & 1 ? '#fff' : '#f2f2f2'
+                        }} onPress={() => onPress({ [`${day}${val}`]: subject })}>
                             <View style={{ flex: 1, borderColor: '#dedede', borderWidth: 1, height: 70, justifyContent: 'center', alignItems: 'center' }}>
                                 <Text style={{ color: '#111', fontSize: 12, padding: 4 }}>{subject}</Text>
                             </View>
-                        </Pressable>
+                        </TouchableOpacity>
                     )
                 })
             }
@@ -77,12 +80,14 @@ const Header = () => {
             </View>
             {/*  */}
             {
-                Day.map(content => {
+                Day.map((content, index) => {
                     return (
-                        <View style={{ flex: 1, borderColor: '#dedede', borderWidth: 1,  }}>
+                        <View style={{ flex: 1, borderColor: '#dedede', borderWidth: 1, }}>
                             <Pressable>
                                 <Text style={{
-                                    textAlign: 'center', paddingVertical: 10
+                                    textAlign: 'center', paddingVertical: 10, fontWeight: '600',
+                                    backgroundColor: index & 1 ? '#fff' : '#f2f2f2',
+                                    color: index == 6 ? 'red' : '#000'
                                 }}>{content.text}</Text>
                             </Pressable>
                         </View>
@@ -176,4 +181,4 @@ export const listSubject = [
 
 ]
 
-var randomColor = () => '#'+Math.floor(Math.random()*16777215).toString(16)
+var randomColor = () => '#' + Math.floor(Math.random() * 16777215).toString(16)

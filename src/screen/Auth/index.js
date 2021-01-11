@@ -65,7 +65,7 @@ const Auth = (props) => {
         const route = url.replace(/.*?:\/\//g, '');
         const id = route.match(/\/([^\/]+)\/?$/)[1];
         const routeName = route.split('/')[0];
-        console.log('askajhskjahshjkas', routeName);
+        // console.log('askajhskjahshjkas', routeName);
         if (routeName === 'test') {
             navigate('TestStack');
         };
