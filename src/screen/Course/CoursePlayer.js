@@ -72,6 +72,7 @@ const CoursePlayer = (props) => {
     const [full, setFull] = useState(false);
     const [visible, setVisible] = useState(false);
     const [paused, setPaused] = useState(false);
+    const [expandVideo, setExpandVideo] = useState(false);
 
     const timeOut = useRef();
     const mediaPlayer = useRef();
@@ -309,6 +310,7 @@ const CoursePlayer = (props) => {
                                                                 ...videoData.lecture_lesson ? videoData.lecture_lesson : [],
                                                                 ...videoData.video_relation ? videoData.video_relation : []
                                                             ]
+                                                                .slice(0, expandVideo ? 100 : 3)
                                                                 .filter(i => get(i, 'videos.id') !== lectureId)
                                                                 .map((item, index) => {
                                                                     return <RenderVideosRelated
@@ -318,6 +320,17 @@ const CoursePlayer = (props) => {
                                                                         setVisible={setVisible}
                                                                     />
                                                                 })
+                                                        }
+                                                        {
+                                                            (get(videoData, 'lecture_lesson.length', 0) + get(videoData, 'video_relation.length', 0)) > 3 && 
+                                                                <TouchableOpacity style={{ justifyContent: 'center', flexDirection: 'row', marginTop: 8 }} onPress={() => setExpandVideo(!expandVideo)}>
+                                                                    <Text style={{
+                                                                        color: COLOR.MAIN,
+                                                                        fontSize: 14,
+                                                                        ...fontMaker({ weight: fontStyles.Bold })
+                                                                    }}>{expandVideo ? 'Thu gọn' : `Xem thêm`}</Text>
+                                                                    <Icon name={!expandVideo ? 'arrow-down' : 'arrow-up'} style={{ fontSize: 16, color: COLOR.MAIN, marginLeft: 4 }} />
+                                                                </TouchableOpacity>
                                                         }
 
                                                     </View>
