@@ -162,7 +162,7 @@ const QnA = (props) => {
                     }
                     ListFooterComponent={
                         page.loading ? <View style={{ backgroundColor: '#fff', paddingHorizontal: 10 }}>
-                            <ActivityIndicator size="large" />
+                            <ActivityIndicator color="#000" size="large" />
                         </View> : null
                     }
                 // footter

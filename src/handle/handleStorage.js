@@ -19,6 +19,7 @@ const KEY = {
 	saved_video: 'saved_video',
 	soundOn: 'soundOn',
 	TIMETABLE: 'TIMETABLE',
+	SCORETABLE: 'SCORETABLE',
 };
 
 const saveItem = (key, value) => {

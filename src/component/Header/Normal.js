@@ -8,7 +8,7 @@ import { GradientText } from '../shared/GradientText';
 import { fontMaker, fontStyles } from '../../utils/fonts';
 
 
-export const HeaderBarWithBack = ({ text = 'Khoá học', RightAction = () => { }, leftAction = () => { } }) => {
+export const HeaderBarWithBack = ({ text = 'Khoá học', RightCom = null, leftAction = () => { } }) => {
     return (
         <View style={{ flexDirection: 'row', alignItems: 'center', paddingHorizontal: 10 }}>
 
@@ -22,12 +22,13 @@ export const HeaderBarWithBack = ({ text = 'Khoá học', RightAction = () => { 
                     <Icon type='AntDesign' name='arrowleft' style={{ fontSize: 26, color: 'rgba(0, 0, 0, 0.7)' }} />
                 </View>
             </TouchableOpacity>
-            <View style={{flex: 1, alignItems: 'center', marginRight: 10}}>
+            <View style={{ flex: 1, alignItems: 'center', marginRight: 10 }}>
                 <GradientText
                     colors={['#955DF9', '#aaa4f5', '#aaa4f5', '#aaa4f5']}
                     style={styles.headerText}
                 >{text}</GradientText>
             </View>
+            {RightCom && RightCom}
         </View>
     )
 }

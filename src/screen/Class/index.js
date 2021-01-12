@@ -364,7 +364,7 @@ const Class = memo((props) => {
 						</View>
 						<FlatList
 							style={{}}
-							data={LIST_UTILITIES.slice(0, 1)}
+							data={LIST_UTILITIES.slice(0, 3)}
 							numColumns={3}
 							renderItem={({ item, index }) => {
 								return (
