@@ -33,23 +33,36 @@ const plaidImg = (key) => imgSubject[key] ? imgSubject[key] : defaultImg
 
 const VideoItem = ({ data, handleNavigate, setVisible, SeeMore }) => {
     // console.log('video---item--------', data);
+    const [expand, setExpand] = useState(false);
     return (
         <View style={{ marginTop: 10 }}>
             <View style={{ flexDirection: 'row', justifyContent: 'space-between', paddingRight: 10, marginBottom: 20, alignItems: 'flex-end' }}>
                 <Text style={{ fontSize: 22, ...fontMaker({ weight: fontStyles.Regular }) }}>Video</Text>
                 <Text style={{ fontSize: 16, ...fontMaker({ weight: fontStyles.Regular }), color: '#777' }}>{data.length} videos</Text>
             </View>
-            {data.map((item, index) => {
+            {data.slice(0, expand ? 100 : 3).map((item, index) => {
                 return (
-                    <RenderVideoItem setVisible={setVisible} handleNavigate={handleNavigate} item={item} index={index} data={data} />
+                    <RenderVideoItem
+                        setVisible={setVisible}
+                        handleNavigate={handleNavigate}
+                        item={item}
+                        index={index}
+                        data={data} />
                 )
             })}
-            {/* {
-                data.length > 3 && <SeeMore
-                    onPress={() => handleNavigate('ListDetailLesson', { title: "Video", data })}
-                    count={data.length - 3}
-                />
-            } */}
+            {
+                data.length > 3 && <TouchableOpacity style={{ justifyContent: 'center', flexDirection: 'row', marginTop: 8 }} onPress={() => setExpand(!expand)}>
+
+                    <Text style={{
+                        color: COLOR.MAIN,
+                        fontSize: fontSize.h4,
+                        ...fontMaker({ weight: fontStyles.Bold })
+                    }}>{expand ? 'Thu gọn' : `Xem thêm ${data.length-3} bài khác`}</Text>
+                    <Icon name={!expand ? 'arrow-down' : 'arrow-up'} style={{ fontSize: 16, color: COLOR.MAIN, marginLeft: 4 }} />
+
+
+                </TouchableOpacity>
+            }
         </View>
     );
 }
