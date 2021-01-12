@@ -74,7 +74,7 @@ setJSExceptionHandler((error, isFatal) => {
 }, true);
 
 setNativeExceptionHandler(errorString => {
-	firebase.analytics().logEvent('native_error_event', errorString);
+	firebase.analytics().logEvent('native_error_event', { data: errorString });
 	// console.log('__native_error__:', error);
 	// do the things
 });

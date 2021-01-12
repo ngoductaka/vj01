@@ -39,11 +39,14 @@ const AdRequest = firebase.admob.AdRequest;
 let advert;
 let request;
 
+const TAG = 'view_answer';
+
 const ViewAnwser = ({ navigation }) => {
 
     const resultGlobal = navigation.getParam('resultGlobal', '');
     const dataCourseConvert = navigation.getParam('dataCourseConvert', '');
     const [delay, setDelay] = useState(false);
+    const screenAds = useSelector(state => get(state, 'subjects.screens', null));
 
     useEffect(() => {
         setTimeout(() => {
@@ -71,21 +74,22 @@ const ViewAnwser = ({ navigation }) => {
 
     // interstial ad
     useEffect(() => {
-        advert = firebase.admob().interstitial(unitIntertitialId);
-        request = new AdRequest();
-        request.addKeyword('facebook').addKeyword('google').addKeyword('instagram').addKeyword('zalo').addKeyword('google').addKeyword('pubg').addKeyword('asphalt').addKeyword('tiktok');
+        if (screenAds && screenAds[TAG] == "1") {
+            advert = firebase.admob().interstitial(unitIntertitialId);
+            request = new AdRequest();
+            request.addKeyword('facebook').addKeyword('google').addKeyword('instagram').addKeyword('zalo').addKeyword('google').addKeyword('pubg').addKeyword('asphalt').addKeyword('tiktok');
 
-        advert.loadAd(request.build());
+            advert.loadAd(request.build());
 
-        advert.on('onAdLoaded', () => {
-            // if (navigation.isFocused() && advert.isLoaded()) {
-            if (advert.isLoaded()) {
-                advert.show();
-            } else {
-                // console.log('---------interstitial fail---------', navigation.isFocused());
-            }
-        });
-        // }
+            advert.on('onAdLoaded', () => {
+                // if (navigation.isFocused() && advert.isLoaded()) {
+                if (advert.isLoaded()) {
+                    advert.show();
+                } else {
+                    // console.log('---------interstitial fail---------', navigation.isFocused());
+                }
+            });
+        }
     }, []);
 
     return (

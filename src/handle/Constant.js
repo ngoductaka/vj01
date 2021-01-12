@@ -56,7 +56,7 @@ const unitIntertitialId =
 		? 'ca-app-pub-4508913343091330/9354963926'
 		: 'ca-app-pub-4508913343091330/4960724660';
 
-export const TIMES_SHOW_FULL_ADS = 5;
+export const TIMES_SHOW_FULL_ADS = 6;
 export const CORRECT_POINT = 100;
 export const BONUS_TIME_POINT = 50;
 export const TIME_PER_QUESTION = 1000000;

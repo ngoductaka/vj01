@@ -32,11 +32,15 @@ const AdRequest = firebase.admob.AdRequest;
 let advert;
 let request;
 
+const TAG = 'list_test';
 
 const TestMenu = (props) => {
     const { navigation } = props;
     const chapter_id = navigation.getParam('chapter_id', '');
     const title = navigation.getParam('title', '');
+    const screenAds = useSelector(state => get(state, 'subjects.screens', null));
+    const frequency = useSelector(state => get(state, 'subjects.frequency', 6));
+    // console.log('-----asdasjdjasd-----', screenAds, frequency);
     const [testMenu, loading, err] = useRequest(`menu-items-test/${chapter_id}/lesson-chapter`, [chapter_id])
     // console.log('tes123tMenu', testMenu);
 
@@ -47,20 +51,22 @@ const TestMenu = (props) => {
     // interstial ad
     const learningTimes = useSelector(state => state.timeMachine.learning_times);
     useEffect(() => {
-        if (0 && learningTimes === 1 || (learningTimes > 0 && learningTimes % TIMES_SHOW_FULL_ADS === 0)) {
-            advert = firebase.admob().interstitial(unitIntertitialId);
-            request = new AdRequest();
-            request.addKeyword('facebook').addKeyword('google').addKeyword('instagram').addKeyword('zalo').addKeyword('google').addKeyword('pubg').addKeyword('asphalt').addKeyword('tiktok');
+        if (screenAds && screenAds[TAG] == "1") {
+            if (0 && learningTimes === 1 || (learningTimes > 0 && learningTimes % frequency === 0)) {
+                advert = firebase.admob().interstitial(unitIntertitialId);
+                request = new AdRequest();
+                request.addKeyword('facebook').addKeyword('google').addKeyword('instagram').addKeyword('zalo').addKeyword('google').addKeyword('pubg').addKeyword('asphalt').addKeyword('tiktok');
 
-            advert.loadAd(request.build());
+                advert.loadAd(request.build());
 
-            advert.on('onAdLoaded', () => {
-                if (advert.isLoaded()) {
-                    advert.show();
-                } else {
-                    // console.log('---------interstitial fail---------', navigation.isFocused());
-                }
-            });
+                advert.on('onAdLoaded', () => {
+                    if (advert.isLoaded()) {
+                        advert.show();
+                    } else {
+                        // console.log('---------interstitial fail---------', navigation.isFocused());
+                    }
+                });
+            }
         }
     }, [learningTimes]);
 

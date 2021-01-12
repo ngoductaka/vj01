@@ -138,7 +138,7 @@ android {
         }
         multiDexEnabled true
         versionCode 58
-        versionName "2.1.5"
+        versionName "2.1.8"
     }
     signingConfigs {
         release {

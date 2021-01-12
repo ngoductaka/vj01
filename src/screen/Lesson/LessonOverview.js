@@ -23,12 +23,11 @@ import { VideoItem } from './component/VideosList';
 import { ExcerciseItem } from './component/ExamList';
 import { ArticleItem } from './component/ArticleList'
 const { width, height } = Dimensions.get('window');
+import BackHeader from '../Bookmark/Component/BackHeader';
+import { fontMaker, fontStyles } from '../../utils/fonts';
 
 /**-------------interstitial ad----------------- */
 import firebase from 'react-native-firebase';
-import { fontMaker, fontStyles } from '../../utils/fonts';
-import FastImage from 'react-native-fast-image';
-import BackHeader from '../Bookmark/Component/BackHeader';
 import { setLearningTimes } from '../../redux/action/user_info';
 const AdRequest = firebase.admob.AdRequest;
 let advert;
@@ -49,6 +48,8 @@ const HEADER_MAX_HEIGHT = width * 9 / 16;
 
 const dnd = HEADER_MAX_HEIGHT - (helpers.isIOS ? helpers.statusBarHeight : 0) - (helpers.isIOS ? 20 : 40)
 
+const TAG = 'lesson_overview';
+
 const LessonOverview = (props) => {
     const { navigation } = props;
     const dispatch = useDispatch();
@@ -66,25 +67,31 @@ const LessonOverview = (props) => {
     const [showHeader, setShowHeader] = useState(null);
     const [visible, setVisible] = useState(false);
 
+    const screenAds = useSelector(state => get(state, 'subjects.screens', null));
+    const frequency = useSelector(state => get(state, 'subjects.frequency', 6));
+    // console.log('-----asdasjdjasd-----', screenAds, frequency);
+
     // interstial ad
     const learningTimes = useSelector(state => state.timeMachine.learning_times);
     useEffect(() => {
-        if (learningTimes % TIMES_SHOW_FULL_ADS === 0) {
-            advert = firebase.admob().interstitial(unitIntertitialId);
-            request = new AdRequest();
-            request.addKeyword('facebook').addKeyword('google').addKeyword('instagram').addKeyword('zalo').addKeyword('google').addKeyword('pubg').addKeyword('asphalt').addKeyword('covid-19');
+        if (screenAds && screenAds[TAG] == "1") {
+            if (learningTimes > 0 && learningTimes % frequency === 0) {
+                advert = firebase.admob().interstitial(unitIntertitialId);
+                request = new AdRequest();
+                request.addKeyword('facebook').addKeyword('google').addKeyword('instagram').addKeyword('zalo').addKeyword('google').addKeyword('pubg').addKeyword('asphalt').addKeyword('covid-19');
 
-            advert.loadAd(request.build());
+                advert.loadAd(request.build());
 
-            advert.on('onAdLoaded', () => {
-                // console.log('----------Advert ready to show.--------');
-                // if (navigation.isFocused() && advert.isLoaded()) {
-                if (advert.isLoaded()) {
-                    advert.show();
-                } else {
-                    // console.log('---------interstitial fail---------', navigation.isFocused());
-                }
-            });
+                advert.on('onAdLoaded', () => {
+                    // console.log('----------Advert ready to show.--------');
+                    // if (navigation.isFocused() && advert.isLoaded()) {
+                    if (advert.isLoaded()) {
+                        advert.show();
+                    } else {
+                        // console.log('---------interstitial fail---------', navigation.isFocused());
+                    }
+                });
+            }
         }
     }, [learningTimes]);
 

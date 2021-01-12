@@ -17,7 +17,8 @@ export const user_services = {
     updateProfile,
     savePracticeScore,
     getCurrentRaking,
-    postUserClickNoti
+    postUserClickNoti,
+    getListScreensForAds
 }
 
 async function savePracticeScore(body) {
@@ -50,6 +51,10 @@ async function bookmarkLesson(body) {
 
 async function postUserClickNoti(body) {
     return api.post('/admin/notification/user-click', body, {}, 'https://apps.vietjack.com:8081');
+}
+
+async function getListScreensForAds() {
+    return api.get('/admin/ads/screens', 'https://apps.vietjack.com:8081');
 }
 
 async function fetchAndUpdateCredentialState(updateCredentialStateForUser) {

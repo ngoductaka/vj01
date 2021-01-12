@@ -5,7 +5,7 @@ import {
     TouchableOpacity, Image, StatusBar, BackHandler,
     Dimensions, Alert
 } from 'react-native';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { Icon, Card } from 'native-base';
 import * as Animatable from 'react-native-animatable';
 import { Snackbar } from 'react-native-paper';
@@ -23,9 +23,12 @@ import { user_services } from '../../redux/services';
 const { height, width } = Dimensions.get('window');
 
 import firebase from 'react-native-firebase';
+import { get } from 'lodash';
 const AdRequest = firebase.admob.AdRequest;
 let advert;
 let request;
+
+const TAG = 'overview_test';
 
 const OverviewTest = (props) => {
 
@@ -37,6 +40,8 @@ const OverviewTest = (props) => {
     const lessonId = props.navigation.getParam('lessonId', '');
     const time = props.navigation.getParam('time', '');
     const count = props.navigation.getParam('count', '');
+    const showFullAds = props.navigation.getParam('showFullAds', true);
+    const screenAds = useSelector(state => get(state, 'subjects.screens', null));
 
     const [visible, setVisible] = useState(false);
 
@@ -48,21 +53,26 @@ const OverviewTest = (props) => {
     }
 
     useEffect(() => {
-        advert = firebase.admob().interstitial(unitIntertitialId);
-        request = new AdRequest();
-        request.addKeyword('facebook').addKeyword('google').addKeyword('instagram').addKeyword('zalo').addKeyword('google').addKeyword('pubg').addKeyword('asphalt').addKeyword('covid-19');
+        if (showFullAds) {
+            if (screenAds && screenAds[TAG] == "1") {
+                advert = firebase.admob().interstitial(unitIntertitialId);
+                request = new AdRequest();
+                request.addKeyword('facebook').addKeyword('google').addKeyword('instagram').addKeyword('zalo').addKeyword('google').addKeyword('pubg').addKeyword('asphalt').addKeyword('covid-19');
 
-        advert.loadAd(request.build());
+                advert.loadAd(request.build());
 
-        advert.on('onAdLoaded', () => {
-            // console.log('----------Advert ready to show.--------');
-            // if (navigation.isFocused() && advert.isLoaded()) {
-            if (advert.isLoaded()) {
-                advert.show();
-            } else {
-                // console.log('---------interstitial fail---------', navigation.isFocused());
+                advert.on('onAdLoaded', () => {
+                    // console.log('----------Advert ready to show.--------');
+                    // if (navigation.isFocused() && advert.isLoaded()) {
+                    if (advert.isLoaded()) {
+                        advert.show();
+                    } else {
+                        // console.log('---------interstitial fail---------', navigation.isFocused());
+                    }
+                });
             }
-        });
+        }
+
         BackHandler.addEventListener(
             'hardwareBackPress',
             handleBackButtonPressAndroid

@@ -234,6 +234,7 @@ const handleData = async (val_ = '') => {
             NavigationService.navigate('OverviewTest', {
                 idExam: id, title,
                 lessonId: get(dataDoc, 'lesson.menu_item_id', ''),
+                showFullAds: false
                 // time: get(item, 'partable.duration', 0),
                 // count: get(item, 'partable.questions_count', 0),
                 // source: 'LessonOverview'

@@ -26,6 +26,8 @@ import { test_services } from '../../redux/services/test.service';
 import { user_services } from '../../redux/services';
 import { setLearningTimes } from '../../redux/action/user_info';
 
+const TAG = 'analyse_test';
+
 const AnalyseTest = (props) => {
 
     const { navigation } = props;
