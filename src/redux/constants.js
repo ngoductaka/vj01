@@ -27,3 +27,6 @@ export const SET_LOW_DEVICE = 'SET_LOW_DEVICE';
 
 // subjects
 export const GET_LIST_SUBJECTS = 'GET_LIST_SUBJECTS';
+
+// ads
+export const GET_ALL_SCREENS_FOR_ADS = 'GET_ALL_SCREENS_FOR_ADS';

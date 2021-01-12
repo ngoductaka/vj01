@@ -6,7 +6,7 @@ import {
 import { Snackbar } from 'react-native-paper';
 import { Card, Icon } from 'native-base';
 import { isEmpty, get } from 'lodash';
-import { connect, useDispatch } from 'react-redux';
+import { connect, useDispatch, useSelector } from 'react-redux';
 import * as Animatable from 'react-native-animatable';
 import ImageZoom from 'react-native-image-pan-zoom';
 
@@ -14,21 +14,26 @@ import { useRequest } from '../../handle/api';
 import ErrorView from './component/ErrorsView';
 import { ExtendFeature, renderFooter } from './component/handleHtml';
 import { saveHistory, saveArticle, saveOfflineArticle } from './component/handleSave';
-import { insertItem, KEY, getItem, saveItem } from '../../handle/handleStorage';
 import { scrollToTop, helpers } from '../../utils/helpers';
 import BackHeader from '../Subject/component/BackHeader';
-import { COLOR } from '../../handle/Constant';
+import { COLOR, unitIntertitialId } from '../../handle/Constant';
 import { fontMaker, fontStyles } from '../../utils/fonts';
-import { setLearningTimes } from '../../redux/action/user_info';
-// import { RenderArticlRelated } from './component/ArticleList';
 import { RenderVideosRelated } from './component/VideosList';
 import { RenderExamRelated } from './component/ExamList';
 import { FeedbackModal } from '../../component/shared/ReportModal';
 import { RenderRow } from '../../component/shared/renderHtmlNew';
 import { user_services } from '../../redux/services';
-import BannerAd from '../../component/shared/BannerAd';
 const per_page = 30;
 const { width, height } = Dimensions.get("window")
+
+const TAG = 'lesson';
+
+/**-------------interstitial ad----------------- */
+import firebase from 'react-native-firebase';
+import { setLearningTimes } from '../../redux/action/user_info';
+const AdRequest = firebase.admob.AdRequest;
+let advert;
+let request;
 
 const Lesson = (props) => {
 	const { navigation } = props;
@@ -40,6 +45,8 @@ const Lesson = (props) => {
 
 	const [visible, setVisible] = useState(false);
 	const [offVisible, setOffVisible] = useState(false);
+
+	const showFullAds = navigation.getParam('showFullAds', true);
 
 	const scrollY = new Animated.Value(0)
 	const diffClamp = Animated.diffClamp(scrollY, 0, 100)
@@ -79,6 +86,36 @@ const Lesson = (props) => {
 
 	const [arrayHtmlContent, setDataHtml] = useState([]);
 	const [isShowLazy, setShowLazy] = useState(false);
+
+	const screenAds = useSelector(state => get(state, 'subjects.screens', null));
+	const frequency = useSelector(state => get(state, 'subjects.frequency', 6));
+	// console.log('-----asdasjdjasd-----', screenAds, frequency);
+
+	// interstial ad
+	const learningTimes = useSelector(state => state.timeMachine.learning_times);
+	useEffect(() => {
+		if (showFullAds) {
+			if (screenAds && screenAds[TAG] == "1") {
+				if (learningTimes > 0 && learningTimes % (3 * frequency) === 0) {
+					advert = firebase.admob().interstitial(unitIntertitialId);
+					request = new AdRequest();
+					request.addKeyword('facebook').addKeyword('google').addKeyword('instagram').addKeyword('zalo').addKeyword('google').addKeyword('pubg').addKeyword('asphalt').addKeyword('covid-19');
+
+					advert.loadAd(request.build());
+
+					advert.on('onAdLoaded', () => {
+						// console.log('----------Advert ready to show.--------');
+						// if (navigation.isFocused() && advert.isLoaded()) {
+						if (advert.isLoaded()) {
+							advert.show();
+						} else {
+							// console.log('---------interstitial fail---------', navigation.isFocused());
+						}
+					});
+				}
+			}
+		}
+	}, [learningTimes]);
 
 	useEffect(() => {
 		BackHandler.addEventListener(
@@ -416,7 +453,7 @@ const RenderRelatedArticle = ({ item, onPress }) => {
 			style={styles.relatedTopItemContainer}
 			onPress={onPress}
 		>
-			<View style={{flex: 1}}>
+			<View style={{ flex: 1 }}>
 				<Text numberOfLines={2} style={[styles.relatedItem, { color: '#1C1C20' }]} >{`${item.title}`}</Text>
 			</View>
 			<Icon name='ios-arrow-forward' style={{ color: COLOR.logo, fontSize: 20 }} />

@@ -52,6 +52,8 @@ const actions = {
 
 const useGlobal = globalHook(React, initialState, actions);
 
+const TAG = 'test';
+
 // main function
 const Test = (props) => {
     const { navigation } = props;

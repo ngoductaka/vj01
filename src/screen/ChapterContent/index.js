@@ -11,6 +11,8 @@ import { useSelector, useDispatch } from 'react-redux';
 
 const { height, width } = Dimensions.get('window');
 
+const TAG = 'chapter_content';
+
 const ChapterContent = (props) => {
 
     const listLesson = props.navigation.getParam('listLesson', []);

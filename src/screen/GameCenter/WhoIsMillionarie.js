@@ -18,8 +18,8 @@ import * as Animatable from 'react-native-animatable';
 import { COLOR } from '../../handle/Constant';
 import { fontMaker, fontStyles } from '../../utils/fonts';
 import { images } from '../../utils/images';
-import BackHeader from '../History/Component/BackHeader';
 import { Icon } from 'native-base';
+import SQLite from 'react-native-sqlite-storage';
 
 const { width, height } = Dimensions.get('window');
 
@@ -29,9 +29,56 @@ const WhoIsMillionaire = (props) => {
     const ref = useRef();
     const [step, setStep] = useState(0);
 
+    const success = () => {
+        db.transaction(tx => {
+            tx.executeSql('SELECT * FROM user', [], (tx, results) => {  // sql query to get all table data and storing it in 'results' variable
+                let data = results.rows.length;
+                let users = [];    //creating empty array to store the rows of the sql table data
+
+                for (let i = 0; i < results.rows.length; i++) {
+                    users.push(results.rows.item(i));                   //looping through each row in the table and storing it as object in the 'users' array
+                }
+
+                this.setState({ userList: users });         //setting the state(userlist) with users array which has all the table data
+            });
+        });
+        // alert("ok")
+    }
+
+    const fail = (error) => {
+        console.error(error) // logging out error if there is one
+    }
+
     useEffect(() => {
+        let db = SQLite.openDatabase(
+            {
+                name: 'user.db',
+                createFromLocation: 1,
+            },
+            (success) => {
+                console.log('success', success);
+                db.transaction(tx => {
+                    console.log('trans', tx);
+                    tx.executeSql("SELECT * FROM miilionaire", [], (tx, results) => {  // sql query to get all table data and storing it in 'results' variable
+                        console.log('-as-a-s-as', results);
+                        //   let data = results.rows.length;                          
+                        //   let users = [];    //creating empty array to store the rows of the sql table data
+
+                        //   for (let i = 0; i < results.rows.length; i++) {
+                        //     users.push(results.rows.item(i));                   //looping through each row in the table and storing it as object in the 'users' array
+                        //   }
+
+                        //    this.setState({ userList:users});         //setting the state(userlist) with users array which has all the table data
+                    });
+                });
+            },
+            (err) => {
+                console.log('----', err);
+            }
+        );
 
     }, []);
+
 
     return (
         <View style={{ flex: 1, backgroundColor: 'white' }}>
@@ -120,7 +167,6 @@ const WhoIsMillionaire = (props) => {
 export default WhoIsMillionaire;
 
 const AnswerOption = ({ index }) => {
-    console.log('asasasas', index);
     return (
         <Animatable.View animation={index % 2 ? 'slideInLeft' : 'slideInRight'} duration={1200}>
             <LinearGradient style={{ overflow: 'hidden', borderRadius: 30, marginTop: 20 }} colors={['#23308E', '#1D72D9', '#23308E']} start={{ x: 0, y: 0 }} end={{ x: 1, y: 0 }}>

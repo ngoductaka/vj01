@@ -1,6 +1,6 @@
-import React, { useState, useCallback, useEffect, useRef } from 'react';
+import React, { useState, useCallback, useEffect, useRef, } from 'react';
 import { FlatList, View, SafeAreaView, ScrollView, Text, StyleSheet, Platform, TouchableOpacity, Dimensions, Image, BackHandler } from 'react-native';
-import { connect } from 'react-redux';
+import { connect, useDispatch, useSelector } from 'react-redux';
 // import LinearGradient from 'react-native-linear-gradient';
 import { get, throttle, isEmpty } from 'lodash';
 // import { SCLAlert } from 'react-native-scl-alert';
@@ -17,15 +17,13 @@ import RenderTable from '../Test/component/renderTable';
 import { FeedbackModal } from './component/ModalReport';
 import RenderData, { ImageSVG } from './component/renderHtmlTest'
 import api, { Loading, useRequest } from '../../handle/api';
-import { COLOR, fontSize } from '../../handle/Constant';
+import { COLOR, fontSize, unitIntertitialId } from '../../handle/Constant';
 
 const { width, height } = Dimensions.get('window');
 //  ========== show list subject class====================
 
 // use state 
 import globalHook from './component/globalHook';
-// import { fontMaker, fontStyles } from '../../utils/fonts';
-// import { helpers } from '../../utils/helpers';
 import PracticeHeader from './component/PracticeHeader';
 import EndPracticeModal from './component/EndPracticeModal';
 const initialState = {};
@@ -44,10 +42,20 @@ const actions = {
 
 const useGlobal = globalHook(React, initialState, actions);
 
+/**-------------interstitial ad----------------- */
+import firebase from 'react-native-firebase';
+import { setLearningTimes } from '../../redux/action/user_info';
+const AdRequest = firebase.admob.AdRequest;
+let advert;
+let request;
+
+const TAG = 'practice_exam';
+
 // main function
 const PracticeExam = (props) => {
     const { navigation } = props;
     const idExam = navigation.getParam('idExam', '');
+    const dispatch = useDispatch();
 
     const iosAnimated = useRef();
     const [resultGlobal, actionGlobal] = useGlobal();
@@ -73,6 +81,34 @@ const PracticeExam = (props) => {
         if (refIos.current && refIos.current.scrollTo) refIos.current.scrollTo({ y: 0 })
     }, [index]);
 
+    const screenAds = useSelector(state => get(state, 'subjects.screens', null));
+    const frequency = useSelector(state => get(state, 'subjects.frequency', 6));
+    // interstial ad
+    const learningTimes = useSelector(state => state.timeMachine.learning_times);
+    // console.log('-----asdasjdjasd-----', screenAds, frequency);
+
+    useEffect(() => {
+        if (screenAds && screenAds[TAG] == "1") {
+            if (learningTimes > 0 && learningTimes % (3 * frequency) === 0) {
+                advert = firebase.admob().interstitial(unitIntertitialId);
+                request = new AdRequest();
+                request.addKeyword('facebook').addKeyword('google').addKeyword('instagram').addKeyword('zalo').addKeyword('google').addKeyword('pubg').addKeyword('asphalt').addKeyword('covid-19');
+
+                advert.loadAd(request.build());
+
+                advert.on('onAdLoaded', () => {
+                    // console.log('----------Advert ready to show.--------');
+                    // if (navigation.isFocused() && advert.isLoaded()) {
+                    if (advert.isLoaded()) {
+                        advert.show();
+                    } else {
+                        // console.log('---------interstitial fail---------', navigation.isFocused());
+                    }
+                });
+            }
+        }
+    }, [learningTimes]);
+
     useEffect(() => {
         BackHandler.addEventListener('hardwareBackPress', () => {
             if (!props.navigation.isFocused()) {
@@ -83,6 +119,7 @@ const PracticeExam = (props) => {
         });
 
         return () => {
+            dispatch(setLearningTimes());
             BackHandler.removeEventListener('hardwareBackPress', () => {
                 if (!props.navigation.isFocused()) {
                     return false;

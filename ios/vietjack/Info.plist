@@ -25,7 +25,7 @@
 		<dict>
 			<key>CFBundleURLSchemes</key>
 			<array>
-				<string>fb529056494590875</string>
+				<string>fb2793906684185797</string>
 			</array>
 		</dict>
 		<dict>
@@ -62,7 +62,7 @@
 	<key>CFBundleVersion</key>
 	<string>$(CURRENT_PROJECT_VERSION)</string>
 	<key>FacebookAppID</key>
-	<string>529056494590875</string>
+	<string>2793906684185797</string>
 	<key>FacebookDisplayName</key>
 	<string>VietJack</string>
 	<key>GADApplicationIdentifier</key>

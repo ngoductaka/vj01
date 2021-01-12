@@ -28,20 +28,22 @@ import LinearGradient from 'react-native-linear-gradient';
 import ViewContainer from '../../component/shared/ViewContainer';
 import { LargeVideo } from '../Lesson/component/VideosList';
 import { makeOptionShare } from '../../constant';
-import { actGetListSubjects } from '../../redux/action/class';
+import { actGetAllScreensForAds, actGetListSubjects } from '../../redux/action/class';
 import {
 	RenderArticlRelated,
 	RenderExamRelated,
 } from '../../component/shared/ItemDocument';
 import { LoadingCom } from './component/LoadingCom';
 import { saveItem, KEY, getItem } from '../../handle/handleStorage';
-import { common_services } from '../../redux/services';
+import { common_services, user_services } from '../../redux/services';
 import { _createNotificationListeners } from '../../utils/notificationHandler';
 import { localNotificationService } from '../../utils/notificationServices';
 import { GameItem } from '../GameCenter';
 import { UtilitiesItem } from '../Utilities';
 
 const { width } = Dimensions.get('window');
+
+const TAG = 'lesson';
 
 //  ========== show list subject class====================
 const Class = memo((props) => {
@@ -207,7 +209,7 @@ const Class = memo((props) => {
 	const _getToken = async () => {
 		const fcmToken = await firebase.messaging().getToken();
 		if (fcmToken) {
-			console.log('fcmToken22222-------', fcmToken);
+			// console.log('fcmToken22222-------', fcmToken);
 			const saved_firebase_token = await getItem(KEY.firebase_token);
 			if (saved_firebase_token != fcmToken) {
 				saveItem(KEY.firebase_token, fcmToken);
@@ -264,6 +266,14 @@ const Class = memo((props) => {
 
 
 	useEffect(() => {
+
+		async function getListScreenForAds() {
+			const data = await user_services.getListScreensForAds();
+			console.log('--------', data);
+			dispatch(actGetAllScreensForAds(data.data));
+		}
+
+		getListScreenForAds();
 
 		async function postActiveDaily() {
 			const date = moment().format('YYYY-MM-DD');
@@ -356,9 +366,9 @@ const Class = memo((props) => {
 
 						}}>
 							<Text style={{ fontSize: 18, ...fontMaker({ weight: fontStyles.SemiBold }) }}>Kho Tiện ích</Text>
-							<TouchableOpacity 
-							// onPress={() => navigation.navigate('GameCenter')}
-							 style={{}}>
+							<TouchableOpacity
+								// onPress={() => navigation.navigate('GameCenter')}
+								style={{}}>
 								<Text style={{ fontSize: 14, ...fontMaker({ weight: fontStyles.Regular }), textDecorationColor: COLOR.MAIN, color: COLOR.MAIN }}>Xem tất cả</Text>
 							</TouchableOpacity>
 						</View>
