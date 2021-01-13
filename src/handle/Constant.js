@@ -80,21 +80,21 @@ export const GAME_CENTERS = [
 export const LIST_UTILITIES = [
 	{
 		src: { uri: 'https://cdn2.iconfinder.com/data/icons/e-learning-17/96/timetable_classes_school_schedule-512.png' },
-		name: 'Thời gian biểu',
+		name: 'Thời khoá biểu',
 		slogan: 'Lên lịch học tập',
 		route: 'TimeTable'
 	},
 	{
 		src: { uri: 'https://cdn4.iconfinder.com/data/icons/education-3-22/66/102-512.png' },
-		name: 'Kết qủa học tập',
-		slogan: 'Lên mục tiêu và thống kê kết quả học tập',
+		name: 'Kết quả học tập',
+		slogan: 'Thống kê kết quả học tập',
 		route: 'ScroreAnalyse'
 	},
-	{
-		src: { uri: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSHXTrOauz14wsbttF6Z0gSqkA1PiJene6aKQ&usqp=CAU' },
-		name: '2048', slogan: 'Vui mà học, học mà chơi', route: 'Game2048'
-	},
-	{ src: images.flappybird, name: 'Flappy Bird', slogan: 'Vui mà học, học mà chơi', route: 'FlappyBird' },
+	// {
+	// 	src: { uri: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSHXTrOauz14wsbttF6Z0gSqkA1PiJene6aKQ&usqp=CAU' },
+	// 	name: '2048', slogan: 'Vui mà học, học mà chơi', route: 'Game2048'
+	// },
+	// { src: images.flappybird, name: 'Flappy Bird', slogan: 'Vui mà học, học mà chơi', route: 'FlappyBird' },
 ];
 
 export const avatarIndex = [

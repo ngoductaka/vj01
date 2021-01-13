@@ -1,10 +1,10 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, useRef } from 'react';
 import {
     SafeAreaView,
     StyleSheet,
     View,
     Alert, TextInput, TouchableOpacity,
-    Pressable, Text, Dimensions, ImageBackground
+    Pressable, Text, Dimensions, ImageBackground, FlatList
 } from 'react-native';
 import { cloneDeep } from 'lodash';
 import TimeTableView_, { genTimeBlock } from 'react-native-timetable';
@@ -13,6 +13,7 @@ import { Icon } from 'native-base';
 import ModalBox from 'react-native-modalbox';
 import TimePicker from 'react-native-simple-time-picker';
 import DropDownPicker from 'react-native-dropdown-picker';
+import { useSelector, useDispatch } from 'react-redux';
 import moment from 'moment';
 import Toast from 'react-native-simple-toast';
 import { get } from 'lodash';
@@ -21,7 +22,6 @@ import LinearGradient from 'react-native-linear-gradient';
 import { HeaderBarWithBack } from '../../component/Header/Normal';
 import ScoreTable, { listSubject, calScore, calAverage } from './com/ScoreTable'
 import { useStorage, KEY } from '../../handle/handleStorage';
-import { FlatList } from 'react-native-gesture-handler';
 import { COLOR } from '../../handle/Constant';
 import { GradientText } from '../../component/shared/GradientText';
 
@@ -31,7 +31,21 @@ const Timetable = (props) => {
     const { navigation } = props;
     const [isOpen, setOpen] = useState(false);
     const [view, setView] = useState(0);
-    const [events, setEvents] = useStorage(KEY.SCORETABLE, [])
+    const [events, setEvents] = useStorage(KEY.SCORETABLE, []);
+    const userInfo = useSelector(state => state.userInfo);
+    const [focus, setFocus] = useState(null);
+    const flatRef = useRef(null);
+
+    useEffect(() => {
+        setTimeout(() => {
+            // console.log('focusfocusfocusfocus', flatRef.current)
+            if (focus && flatRef.current && flatRef.current.scrollToIndex) {
+                // console.log('-------000000', focus)
+                flatRef.current.scrollToIndex({ animated: true, index: 5 });
+            }
+
+        }, 500)
+    }, [focus])
 
     const _hanldePress = (val) => {
         const [key] = Object.keys(val);
@@ -84,62 +98,78 @@ const Timetable = (props) => {
                     onPress={_hanldePress}
                 /> */}
                 <View style={{ alignItems: 'center', flexDirection: 'row', justifyContent: 'space-between', backgroundColor: '#fff' }}>
-                    <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-                        <Text>Lớp 12</Text>
-                    </View>
+                    <TouchableOpacity
+                        onPress={() => navigation.navigate('AccountStack')}
+                        style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+                        <Text style={{ fontSize: 19, marginBottom: 9, color: '#111' }}>{get(userInfo, 'user.name', '')}</Text>
+                        <Text style={{ color: '#333' }}>Lớp {userInfo.class}</Text>
+                    </TouchableOpacity>
                     <View style={{ alignItems: 'center', flex: 1 }}>
-
                         <ImageBackground
                             style={{ width: 100, height: 100, justifyContent: 'center', alignItems: 'center' }}
-                            resizeMethod="contain"
+                            resizeMode="contain"
                             source={{ uri: 'https://previews.123rf.com/images/jovanas/jovanas1602/jovanas160201067/52031553-laurel-icon.jpg' }}>
                             <GradientText>
-                                {calAverage(events)}
+                                {calAverage(events) || "..."}
                             </GradientText>
                         </ImageBackground>
-                        <Text>TB</Text>
+                        <Text>Trung bình môn</Text>
                     </View>
                     <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-                        <Text>Học kỳ 1</Text>
-
+                        <Text style={{ fontSize: 19, marginBottom: 9, color: '#111' }}>Học kỳ 1</Text>
                     </View>
-
                 </View>
 
                 <View style={{ overflow: 'hidden', backgroundColor: '#fff', flex: 1 }}>
-                    {view ? <ScoreTable onPress={_hanldePress} data={events} /> : <FlatList
+
+                    <ScoreTable
+                        refS={flatRef}
+                        style={{
+                            display: view ? 'flex' : 'none',
+                        }}
+                        onPress={_hanldePress} data={events}
+                        focus={view ? focus: null}
+                         />
+                    <FlatList
                         data={listSubject}
                         numColumns={2}
+                        style={{ display: view ? 'none' : 'flex' }}
                         renderItem={({ item, index }) => {
                             // const cl = randomColor() || 'febf6f';
                             // console.log('clclclclcl', cl)
-                            const colors = ['#febf6f', item.color];
+                            const colors = [item.color, hexToRGB(item.color)];
                             const tb = calScore(index, events)
 
                             return (
-                                <TouchableOpacity onPress={() => setView(1)}>
+                                <TouchableOpacity onPress={() => {
+                                    setView(1); setFocus(index);
+                                    console.log('indexindexindex', index)
+                                }}>
                                     <LinearGradient
                                         style={{
                                             height: 100,
-                                            width: width / 2 - 20,
+                                            width: width / 2 - 30,
                                             // backgroundColor: 'red',
                                             margin: 10, justifyContent: 'center',
                                             alignItems: 'center',
-                                            borderRadius: 10
+                                            borderRadius: 10,
+                                            marginHorizontal: 15,
                                         }}
                                         start={{ x: 0, y: 0 }}
                                         end={{ x: 1, y: 0 }}
                                         // style={{ flex: 1 }}
                                         // style={{ paddingHorizontal: 36, paddingVertical: 10, borderRadius: 24, minWidth: 150, justifyContent: 'center', alignItems: 'center' }}
-                                        colors={colors}>
+                                        // colors={['#ff7e5f', '#feb47b']}
+                                        colors={colors}
+                                    >
 
-                                        <Text style={{ fontWeight: 'bold', fontSize: 17 }}>{item.text}</Text>
-                                        <Text style={{ marginTop: 5 }}>{tb}</Text>
+                                        <Text style={{ fontWeight: 'bold', fontSize: 18, color: '#f2f2f2' }}>{item.text}</Text>
+                                        <Text style={{ marginTop: 5, color: '#f2f2f2' }}>{tb || "..."}</Text>
                                     </LinearGradient>
                                 </TouchableOpacity>
                             )
                         }}
-                    />}
+                    />
 
                     <TouchableOpacity
                         onPress={() => setView(!view)}
@@ -264,8 +294,18 @@ const ModalScore = ({
             try {
                 const { score, level, subject } = isOpen;
                 setTitle(`Môn ${get(listSubject, `[${subject}].text`)} • hệ số ${level}`)
-                const listScore = score.split('-')
-                setScoreSubject(listScore)
+                if (score) {
+                    const listScore = score.split('-');
+                    if (listScore < 4) {
+                        setScoreSubject([...listScore, ''])
+
+                    } else
+                        setScoreSubject(listScore)
+
+                } else {
+                    setScoreSubject([''])
+
+                }
 
             } catch (err) {
                 console.log(err)
@@ -446,3 +486,26 @@ const mapSession = {
 
 
 var randomColor = () => Math.floor(Math.random() * 16777215).toString(16)
+function componentToHex(c) {
+    var hex = c.toString(16);
+    return hex.length == 1 ? "0" + hex : hex;
+}
+
+function hexToRGB(h) {
+    let r = 0, g = 0, b = 0;
+
+    // 3 digits
+    if (h.length == 4) {
+        r = "0x" + h[1] + h[1];
+        g = "0x" + h[2] + h[2];
+        b = "0x" + h[3] + h[3];
+
+        // 6 digits
+    } else if (h.length == 7) {
+        r = "0x" + h[1] + h[2];
+        g = "0x" + h[3] + h[4];
+        b = "0x" + h[5] + h[6];
+    }
+
+    return "rgba(" + +r + "," + +g + "," + +b + ",0.5)";
+}

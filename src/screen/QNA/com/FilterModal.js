@@ -61,7 +61,7 @@ export const FilterModal = (props) => {
     }, [cls]);
 
     useEffect(() => {
-        console.log('filter-----', filter);
+        // console.log('filter-----', filter);
         if (filter.cls) {
             setCls('' + filter.cls);
             if (filter.cls == '13') {

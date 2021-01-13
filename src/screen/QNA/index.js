@@ -32,6 +32,7 @@ const { height } = Dimensions.get('screen');
 const QnA = (props) => {
     const onMomentumScrollBeginRef = useRef(true);
     const flatlistRef = useRef(null);
+    const userInfo = useSelector(state => state.userInfo);
     const current_class = useSelector(state => state.userInfo.class);
 
     const [filter, setFilter] = useState({ cls: current_class });
@@ -138,7 +139,7 @@ const QnA = (props) => {
                     }}
                     refreshing={refreshing}
                     showsVerticalScrollIndicator={false}
-                    ListHeaderComponent={() => renderHead({ filter, setFilter, setShowFilter, navigation: props.navigation, loading: page.loading })}
+                    ListHeaderComponent={() => renderHead({ filter, setFilter, setShowFilter, navigation: props.navigation, loading: page.loading, avatar: get(userInfo, 'user.photo', '') })}
                     renderItem={({ item, index }) => {
                         return <RenderQestion {...{
                             item, index, hanldleClick, _handleNavigate,
@@ -323,7 +324,7 @@ const userStyle = StyleSheet.create({
     }
 })
 
-const renderHead = ({ filter, setFilter, setShowFilter, navigation, loading }) => {
+const renderHead = ({ filter, setFilter, setShowFilter, navigation, loading, avatar }) => {
     return (
         <View style={styles.head}>
             <View style={{
@@ -332,15 +333,15 @@ const renderHead = ({ filter, setFilter, setShowFilter, navigation, loading }) =
                 borderBottomColor: '#ddd', borderBottomWidth: 1, paddingBottom: 10, paddingHorizontal: 10, alignItems: 'center'
             }}>
                 <TouchableOpacity
-                    onPress={() => navigation.navigate('SearchQnA')}
+                    onPress={() => navigation.navigate('MakeQuestion')}
                     style={{
                         flexDirection: 'row', alignItems: 'center', flex: 1
                     }}>
                     <View style={styles.largeImgWapper} >
-                        <Image style={userStyle.img} source={{ uri: userImg }} />
-                        <View style={{ backgroundColor: '#fff', position: 'absolute', right: -3, bottom: -3, borderRadius: 10 }}>
+                        <Image style={userStyle.img} source={{ uri: avatar }} />
+                        {/* <View style={{ backgroundColor: '#fff', position: 'absolute', right: -3, bottom: -3, borderRadius: 10 }}>
                             <Icon style={{ color: 'green', fontSize: 15, fontWeight: 'bolid' }} name="check-circle" type="FontAwesome" />
-                        </View>
+                        </View> */}
                     </View>
                     <Text style={{ fontSize: 16, marginLeft: 10 }}>Bạn muốn hỏi gì?</Text>
                 </TouchableOpacity>
@@ -479,7 +480,7 @@ const RenderQestion = ({ item, index, hanldleClick, _handleNavigate = () => { },
                     destructiveIndex={1}
                     options={[isFollow ? "Bỏ theo dõi" : 'Theo dõi', "Báo cáo", "Huỷ bỏ"]}
                     actions={[() => { _handleFollow(id, isFollow); setFollow(!isFollow) }, () => _handleReport(id)]} />
-                
+
             </View>
             {/* content */}
             <TouchableOpacity
@@ -542,7 +543,7 @@ const RenderQestion = ({ item, index, hanldleClick, _handleNavigate = () => { },
 
 const handleImgLink = (link) => {
     try {
-        if(!link) return "https://www.xaprb.com/media/2018/08/kitten.jpg"
+        if (!link) return "https://www.xaprb.com/media/2018/08/kitten.jpg"
         return link.includes('http') ? link : endpoints.BASE_HOI_DAP + link;
     } catch (err) {
         return link;

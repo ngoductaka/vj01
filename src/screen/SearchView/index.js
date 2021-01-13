@@ -24,8 +24,8 @@ import { FilterModal } from './Component/FilterModal';
 import { SeeMoreButton } from './Component/SeeMoreButton';
 import { search_services } from '../../redux/services/search.service';
 import AutoComplete from './AutoComplete';
+import api, { useRequest } from '../../handle/api';
 
-const api = 'elastic/search';
 //  ========== show list subject class====================
 const SearchView = memo((props) => {
 
@@ -51,8 +51,22 @@ const SearchView = memo((props) => {
 	const [examState, setExamState] = useState({ exam_total_page: 1000, exam_data: [], loading: false });
 	const [examCurrPage, setExamCurrPage] = useState(0);
 
-	useEffect(() => {
+	// const [ hostKeySearch, loadingHost, errHost ] = useRequest(`search/top?class_id=${}`, )
+	const [hotKeySearch, setHotKey] = useState([]);
 
+	useEffect(() => {
+		if (filter.cls && filter.cls != 13) {
+			api.get(`search/top?class_id=${filter.cls}`)
+				.then(({ data }) => {
+					setHotKey(data);
+				})
+				.catch(err => {
+					console.log('-err hot key', err)
+				})
+		}
+	}, [filter])
+	// 
+	useEffect(() => {
 		// get search history
 		async function getSearchHistory() {
 			const value = await getItem(KEY.history_search);
@@ -303,17 +317,17 @@ const SearchView = memo((props) => {
 
 							<Text style={styles.section}>HOT KEY</Text>
 							<View style={{ paddingVertical: 10, marginTop: 5, flexDirection: 'row', flexWrap: 'wrap' }}>
-								{
-									['Ngữ Văn', 'Toán', 'Tiếng Anh', 'Hoá Học', 'Soạn Văn'].map((item, index) => {
+								{hotKeySearch[0] ?
+									hotKeySearch.map(({ keyword = '' }, index) => {
 										return (<HistoryItem
 											key={index + 'hot_key'}
-											title={item}
+											title={keyword}
 											onPressItem={() => {
 												setIsBlank(false);
-												setSearchText(item);
+												setSearchText(keyword);
 											}}
 										/>)
-									})
+									}) : null
 								}
 							</View>
 						</ScrollView>
