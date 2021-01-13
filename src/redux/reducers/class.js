@@ -20,11 +20,10 @@ export default (state = INITIAL_STATE, action) => {
                 screens: get(action.data, 'data[0].screens', {
                     "overview_test": "1",
                     "lesson": "1",
-                    "lesson_overview": "1",
+                    "lesson_overview": "0",
                     "analyse_test": "0",
-                    "practice_exam": "1",
+                    "practice_exam": "0",
                     "view_answer": "1",
-                    "list_test": "0"
                 }),
                 frequency: get(action.data, 'data[0].frequency', 6),
             };

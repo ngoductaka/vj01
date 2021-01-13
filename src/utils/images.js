@@ -259,6 +259,7 @@ export const images = {
     game2: require('../public/image/game2.png'),
     '2048_logo': require('../public/image/2048_logo.png'),
     'flappybird': require('../public/image/flappybird.png'),
+    'sudoku': require('../public/image/sudoku.jpg'),
     milionBg: require('../public/image/milionBg.jpeg'),
 }
 

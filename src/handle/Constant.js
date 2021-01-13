@@ -73,6 +73,7 @@ export const fontSize = {
 
 export const GAME_CENTERS = [
 	{ src: images.game1, name: 'Ai là triệu phú', slogan: 'Vui mà học, học mà chơi', route: 'WhoIsMillionarie' },
+	{ src: images.sudoku, name: 'Sudoku', slogan: 'Vui mà học, học mà chơi', route: 'Sudoku' },
 	{ src: images.game2, name: 'Nối từ', slogan: 'Vui mà học, học mà chơi', route: 'WordCatcher' },
 	{ src: images["2048_logo"], name: '2048', slogan: 'Vui mà học, học mà chơi', route: 'Game2048' },
 	{ src: images.flappybird, name: 'Flappy Bird', slogan: 'Vui mà học, học mà chơi', route: 'FlappyBird' },

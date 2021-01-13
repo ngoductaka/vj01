@@ -10,7 +10,6 @@ import Auth from '../screen/Auth';
 
 import ClassScreen from '../screen/Class';
 import Subject from '../screen/Subject';
-import ChapterContent from '../screen/ChapterContent';
 import Book from '../screen/Book';
 import FeedBack from '../screen/FeedBack';
 import SavedArticle from '../screen/Lesson/SavedArticle';
@@ -59,6 +58,7 @@ import NotificationQnA from '../screen/QNA/Notification';
 import UserQnA from '../screen/QNA/Profile';
 import GameCenter from '../screen/GameCenter';
 import WhoIsMillionaire from '../screen/GameCenter/WhoIsMillionarie';
+import Sudoku from '../screen/GameCenter/Sudoku/index';
 import WordCatcher from '../screen/GameCenter/WordCatcher';
 import Game2048 from '../screen/GameCenter/Game2048';
 import FlappyBird from '../screen/GameCenter/FlappyBird';
@@ -379,6 +379,12 @@ const InAppStack = createStackNavigator({
 	},
 	WhoIsMillionarie: {
 		screen: WhoIsMillionaire,
+		navigationOptions: {
+			// ...TransitionPresets.ModalPresentationIOS,
+		}
+	},
+	Sudoku: {
+		screen: Sudoku,
 		navigationOptions: {
 			// ...TransitionPresets.ModalPresentationIOS,
 		}
