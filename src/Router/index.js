@@ -63,6 +63,7 @@ import WordCatcher from '../screen/GameCenter/WordCatcher';
 import Game2048 from '../screen/GameCenter/Game2048';
 import FlappyBird from '../screen/GameCenter/FlappyBird';
 import TimeTable from '../screen/Utilities/TimeTable';
+import ScroreAnalyse from '../screen/Utilities/ScroreAnalyse';
 
 const NUMBER_OF_TABS = 5;
 
@@ -414,6 +415,7 @@ const InAppStack = createStackNavigator({
 		}
 	},
 	TimeTable: TimeTable,
+	ScroreAnalyse: ScroreAnalyse,
 	// ConsultingForm:ConsultingForm,
 }, {
 	// defaultNavigationOptions: {

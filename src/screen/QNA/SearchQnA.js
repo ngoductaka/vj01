@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import {
     View, FlatList, Text, StyleSheet, Platform,
     TouchableOpacity, Dimensions, Image, ScrollView,
-    SafeAreaView, TextInput
+    SafeAreaView, TextInput, ActivityIndicator
 } from 'react-native';
 import * as Animatable from 'react-native-animatable';
 import { connect } from 'react-redux';
@@ -44,7 +44,9 @@ const QnA = (props) => {
     }
 
     const [searchText, setSearchText] = useState();
-    const [resultSearch, setResultSearch] = useState([])
+    const [resultSearch, setResultSearch] = useState([]);
+
+    const [loading, setLoading] = useState(false);
 
     useEffect(() => {
         if (searchText && filter) {
@@ -54,12 +56,15 @@ const QnA = (props) => {
             if (currSub && currSub.id) {
                 query.subject_id = currSub.id
             }
+            setLoading(true)
 
             search_services.handleSearch(searchText, query)
                 .then(({ data }) => {
                     setResultSearch(data);
+                    setLoading(false)
                 })
                 .catch(err => {
+                    setLoading(false)
                     Toast.showWithGravity("Load câu hỏi lỗi!", Toast.SHORT, Toast.CENTER);
                 })
         }
@@ -117,6 +122,7 @@ const QnA = (props) => {
                     </View>
 
                     <View style={{ flex: 1, paddingHorizontal: 15 }}>
+                        {loading ? <ActivityIndicator color="#000" size="large" /> : null}
                         <FlatList
                             showsVerticalScrollIndicator={false}
                             data={resultSearch}
