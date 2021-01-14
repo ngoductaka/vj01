@@ -261,6 +261,7 @@ export const images = {
     'flappybird': require('../public/image/flappybird.png'),
     'sudoku': require('../public/image/sudoku.jpg'),
     milionBg: require('../public/image/milionBg.jpeg'),
+    tetris: require('../public/image/tetris.jpg'),
 }
 
 export const mapImg = {
