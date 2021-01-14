@@ -366,11 +366,11 @@ const Class = memo((props) => {
 
 						}}>
 							<Text style={{ fontSize: 18, ...fontMaker({ weight: fontStyles.SemiBold }) }}>Kho Tiện ích</Text>
-							<TouchableOpacity
-								// onPress={() => navigation.navigate('GameCenter')}
+							{/* <TouchableOpacity
+								onPress={() => navigation.navigate('GameCenter')}
 								style={{}}>
 								<Text style={{ fontSize: 14, ...fontMaker({ weight: fontStyles.Regular }), textDecorationColor: COLOR.MAIN, color: COLOR.MAIN }}>Xem tất cả</Text>
-							</TouchableOpacity>
+							</TouchableOpacity> */}
 						</View>
 						<FlatList
 							style={{}}

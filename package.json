@@ -62,6 +62,7 @@
     "react-native-pagination": "^1.5.5",
     "react-native-paper": "^4.0.1",
     "react-native-parallax-scroll-view": "^0.21.3",
+    "react-native-permissions": "^3.0.0",
     "react-native-pie": "^1.1.2",
     "react-native-push-notification": "^6.1.1",
     "react-native-reanimated": "^1.8.0",

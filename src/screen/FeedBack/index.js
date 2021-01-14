@@ -19,19 +19,24 @@ const FeedBack = memo((props) => {
 	const [state, setState] = useState({ content: '', contact: null });
 
 	const sendFeedback = async () => {
-		// console.log('sendFeedback', state.content.trim());
-		if (!(state.content.trim().length > 0)) {
-			alert('Bạn cần nhập nội dung góp ý.');
-			return;
-		}
-		const result = await user_services.sendFeedback({
-			content: state.content, contact: state.contact
-		});
-		// console.log('-----handle send feedback----', result);
-		if (result.status === 200) {
-			setState({ content: '', contact: '' });
-			Toast.show('Cảm ơn bạn đã đóng góp ý kiến. Chúc bạn có những thời gian trải nghiệm ứng dụng vui vẻ!');
-		} else {
+		try {
+			// console.log('sendFeedback', state.content.trim());
+			if (!(state.content.trim().length > 0)) {
+				alert('Bạn cần nhập nội dung góp ý.');
+				return;
+			}
+			const result = await user_services.sendFeedback({
+				content: state.content, contact: state.contact
+			});
+			// console.log('-----handle send feedback----', result);
+			if (result.status === 200) {
+				setState({ content: '', contact: '' });
+				Toast.show('Cảm ơn bạn đã đóng góp ý kiến. Chúc bạn có những thời gian trải nghiệm ứng dụng vui vẻ!');
+			} else {
+				SimpleToast.show('Đã có lỗi khi gửi ý kiến góp ý, mời bạn thử lại sau!');
+			}
+
+		} catch (err) {
 			SimpleToast.show('Đã có lỗi khi gửi ý kiến góp ý, mời bạn thử lại sau!');
 		}
 

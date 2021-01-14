@@ -5,6 +5,7 @@ platform :ios, '10.0'
 
 target 'VietJack' do
   config = use_native_modules!
+  permissions_path = '../node_modules/react-native-permissions/ios'
 
   use_react_native!(:path => config["reactNativePath"])
 
@@ -13,6 +14,8 @@ target 'VietJack' do
   pod 'Firebase/AdMob', '~> 6.13.0'
   pod 'Firebase/Messaging', '~> 6.13.0'
   pod 'Firebase/Analytics'
+  pod 'Permission-Camera', :path => "#{permissions_path}/Camera"
+  pod 'Permission-PhotoLibrary', :path => "#{permissions_path}/PhotoLibrary"
 
   target 'VietJackTests' do
     inherit! :complete

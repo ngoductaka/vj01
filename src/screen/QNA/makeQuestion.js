@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import {
-    View, FlatList, Text, StyleSheet, Platform,
+    View, FlatList, Text, StyleSheet, Platform, Alert,
     TouchableOpacity, Dimensions, Image, ScrollView,
     SafeAreaView, TextInput, Keyboard, ActivityIndicator
 } from 'react-native';
@@ -8,6 +8,7 @@ import Toast from 'react-native-simple-toast';
 import { Icon } from 'native-base';
 import { useSelector, useDispatch } from 'react-redux';
 import { get } from 'lodash';
+import { check, PERMISSIONS, RESULTS, openSettings, request } from 'react-native-permissions';
 
 import { fontSize, COLOR } from '../../handle/Constant';
 import { fontMaker, fontStyles } from '../../utils/fonts';
@@ -19,6 +20,7 @@ import imagePicker from '../../utils/imagePicker';
 import { TollBar } from './com/com';
 import services from '../../handle/services';
 import api from '../../handle/api';
+import { helpers } from '../../utils/helpers';
 
 const { width, height } = Dimensions.get('window');
 const userImg = "https://www.xaprb.com/media/2018/08/kitten.jpg";
@@ -34,7 +36,7 @@ const QnA = (props) => {
     const current_class = useSelector(state => state.userInfo.class);
     useEffect(() => { setFilter({ cls: current_class }) }, [current_class])
 
-    console.log('userInfo42345', userInfo.user.photo)
+    // console.log('userInfo42345', userInfo.user.photo)
     const inputRef = useRef(null);
     const hanldleClick = (params) => {
         props.navigation.navigate("QuestionDetail", params);
@@ -51,20 +53,67 @@ const QnA = (props) => {
         setShowKeyboard(true);
     }, []);
 
-    const [photos, setPhotos] = useState([])
+    const [photos, setPhotos] = useState([]);
 
-    const handleChoosePhotos = () => {
+    const _handleOpenSetting = () => {
+        Alert.alert(
+            "Mở cài đặt",
+            "Vui lòng cấp quyền để upload ảnh",
+            [
+                {
+                    text: "Cancel",
+                    onPress: () => console.log("Cancel Pressed"),
+                    style: "cancel"
+                },
+                { text: "OK", onPress: openSettings }
+            ],
+            { cancelable: true }
+        );
+
+    }
+
+    const _handleClickPhoto = async () => {
+        // 
+        if (helpers.isIOS) {
+            const result = await check(PERMISSIONS.IOS.PHOTO_LIBRARY);
+            if (result == RESULTS.GRANTED) {
+                _handleSelectPhoto()
+            } else if (result === RESULTS.DENIED) {
+                const resultRequest = await request(PERMISSIONS.IOS.PHOTO_LIBRARY);
+                if (resultRequest === RESULTS.GRANTED) {
+                    _handleSelectPhoto()
+                } else {
+                    _handleOpenSetting()
+                }
+            } else {
+                _handleSelectPhoto()
+            }
+        } else {
+            const result = await check(PERMISSIONS.ANDROID.READ_EXTERNAL_STORAGE);
+            if (result === RESULTS.GRANTED) {
+                _handleSelectPhoto();
+            } else if (result === RESULTS.DENIED) {
+                const resultRequest = await request(PERMISSIONS.ANDROID.READ_EXTERNAL_STORAGE);
+                if (resultRequest === RESULTS.GRANTED) {
+                    _handleSelectPhoto()
+                } else {
+                    _handleOpenSetting()
+                }
+            } else {
+                _handleSelectPhoto()
+            }
+        }
+    };
+
+    const _handleSelectPhoto = () => {
         imagePicker.launchLibrary({ multiple: true }, {
             onChooseImage: (response) => {
                 if (response) {
-                    // console.log('responseresponseresponseresponseresponse', response)
                     try {
                         const arrImg = [...photos, ...response];
-                        // console.log('arrImg', arrImg)
                         if (arrImg.length < 4) {
                             setPhotos(arrImg);
                         }
-                        // setPhotos()
                         else
                             Toast.showWithGravity("Bạn chỉ được gửi tối đa 3 ảnh", Toast.SHORT, Toast.CENTER);
 
@@ -76,7 +125,8 @@ const QnA = (props) => {
         });
     };
 
-    const handleCammera = () => {
+    const _handleUseCamera = () => {
+
         imagePicker.launchCamera(false, {
             onChooseImage: (response) => {
                 if (response.path) {
@@ -93,6 +143,40 @@ const QnA = (props) => {
                 }
             }
         })
+    }
+
+    const _handleClickCamera = async () => {
+        // 
+        if (helpers.isIOS) {
+            const result = await check(PERMISSIONS.IOS.CAMERA);
+            if (result == RESULTS.GRANTED) {
+                _handleUseCamera()
+            } else if (result === RESULTS.DENIED) {
+                const resultRequest = await request(PERMISSIONS.IOS.CAMERA);
+                if (resultRequest === RESULTS.GRANTED) {
+                    _handleUseCamera()
+                } else {
+                    _handleOpenSetting()
+                }
+
+            } else {
+                _handleUseCamera()
+            }
+        } else {
+            const result = await check(PERMISSIONS.ANDROID.CAMERA);
+            if (result === RESULTS.GRANTED) {
+                _handleUseCamera();
+            } else if (result === RESULTS.DENIED) {
+                const resultRequest = await request(PERMISSIONS.ANDROID.CAMERA);
+                if (resultRequest === RESULTS.GRANTED) {
+                    _handleUseCamera()
+                } else {
+                    _handleOpenSetting()
+                }
+            } else {
+                _handleUseCamera()
+            }
+        }
     }
 
     const hanldeRemoveImg = (index) => {
@@ -288,10 +372,10 @@ const QnA = (props) => {
                             backgroundColor: '#fff'
                         }}>
                             <View style={{ flex: 1, flexDirection: 'row' }}>
-                                <TouchableOpacity onPress={handleChoosePhotos} style={{ paddingHorizontal: 10, marginLeft: 15 }} >
+                                <TouchableOpacity onPress={_handleClickPhoto} style={{ paddingHorizontal: 10, marginLeft: 15 }} >
                                     <Icon name="image" type='Entypo' />
                                 </TouchableOpacity>
-                                <TouchableOpacity onPress={handleCammera} style={{ paddingHorizontal: 10 }} >
+                                <TouchableOpacity onPress={_handleClickCamera} style={{ paddingHorizontal: 10 }} >
                                     <Icon name="camera" type='Entypo' />
                                 </TouchableOpacity>
                             </View>
