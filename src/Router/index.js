@@ -66,7 +66,7 @@ import FlappyBird from '../screen/GameCenter/FlappyBird';
 import TimeTable from '../screen/Utilities/TimeTable';
 import ScroreAnalyse from '../screen/Utilities/ScroreAnalyse';
 
-const NUMBER_OF_TABS = 5;
+const NUMBER_OF_TABS = 4;
 
 const TestStack = createStackNavigator({
 	HomeTest: HomeTest,
@@ -169,9 +169,9 @@ const MainContent = createBottomTabNavigator({
 	// SearchStack: {
 	// 	screen: SearchView
 	// },
-	CourseScreen: {
-		screen: Course,
-	},
+	// CourseScreen: {
+	// 	screen: Course,
+	// },
 	TestStack: {
 		screen: TestStack,
 	},
