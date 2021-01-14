@@ -103,7 +103,8 @@ function* loginWithFacebook() {
             const payload = {
                 ...result.user,
                 token: result.access_token,
-                device: result.device
+                device: result.device,
+                photo: get(data, 'avatar', '')
             }
             saveItem(KEY.saved_user, payload);
             saveItem(Constants.ACCESS_TOKEN, result.access_token);
@@ -134,7 +135,7 @@ function* loginWithGoogle() {
     try {
         yield GoogleSignin.hasPlayServices();
         const userInfo = yield GoogleSignin.signIn();
-        // console.log('---------', userInfo);
+        console.log('-----userInfouserInfouserInfo23----', userInfo.user);
         const result = yield api.post(endpoints.SOCIAL_LOGIN, {
             "token": userInfo.idToken,
             "type": 1,
@@ -143,7 +144,7 @@ function* loginWithGoogle() {
             const payload = {
                 ...result.user,
                 token: result.access_token,
-                // token: result.data.device,
+                photo: get(userInfo, 'user.photo', ''),
             }
             saveItem(KEY.saved_user, payload);
             saveItem(Constants.ACCESS_TOKEN, result.access_token);

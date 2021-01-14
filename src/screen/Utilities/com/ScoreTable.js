@@ -2,16 +2,18 @@ import React from 'react';
 import { View, Text, StyleSheet, ScrollView, Pressable, TouchableOpacity } from 'react-native';
 import { get } from 'lodash';
 import { FlatList } from 'react-native-gesture-handler';
+import { COLOR } from '../../../handle/Constant';
 
 
-const ScoreTable = ({ data, onPress }) => {
+const ScoreTable = ({ data, onPress, style, refS, focus }) => {
     return (
-        <View style={styles.container}>
+        <View style={[styles.container, style]}>
             {/* header */}
             <Header />
             {/* content */}
             <ScrollView>
                 <FlatList
+                    ref={refS}
                     style={{ marginBottom: 50 }}
                     data={listSubject}
                     renderItem={({ item, index }) => {
@@ -21,6 +23,7 @@ const ScoreTable = ({ data, onPress }) => {
                             key={index}
                             title={item.text}
                             data={data}
+                            active={focus === index}
                         />
                     }}
                 />
@@ -42,14 +45,13 @@ const styles = StyleSheet.create({
     }
 });
 
-
-const RenderRow = ({ title = '', data, onPress = () => { }, val }) => {
+const RenderRow = ({ title = '', data, onPress = () => { }, val, active }) => {
     const tb = calScore(val, data)
 
     return (
         <View style={{ flexDirection: 'row' }}>
-            <View style={{ borderColor: '#dedede', borderWidth: 1, width: 80, justifyContent: 'center', alignItems: 'center', paddingHorizontal: 5 }}>
-                <Text style={{ fontSize: 11, fontWeight: '600' }}>{title}</Text>
+            <View style={{ backgroundColor: active ? "#D2EEFD" : "#fff", borderColor: '#dedede', borderWidth: 1, width: 80, justifyContent: 'center', alignItems: 'center', paddingHorizontal: 5 }}>
+                <Text style={{ fontSize: 11, fontWeight: '600', color: '#111' }}>{title}</Text>
             </View>
             {/*  */}
             {
@@ -58,7 +60,7 @@ const RenderRow = ({ title = '', data, onPress = () => { }, val }) => {
                     return (
                         <TouchableOpacity style={{
                             flex: 1,
-                            backgroundColor: key & 1 ? '#f2f2f2' : '#fff'
+                            backgroundColor: active ? '#D2EEFD' : (key & 1) ? '#f2f2f2' : '#fff'
                         }} onPress={() => onPress({ [`${key}-${val}`]: score })}>
                             <View style={{ flex: 1, borderColor: '#dedede', borderWidth: 1, height: 50, justifyContent: 'center', alignItems: 'center' }}>
                                 <Text style={{ color: '#111', fontSize: 12, padding: 4 }}>{key == 0 ? tb : score.split('-').join('; ')}</Text>
@@ -116,7 +118,7 @@ export const listSubject = [
     },
     {
         text: "Ngoại ngữ",
-        color: '#e1b9e9'
+        color: '#f45044'
         //  "Văn", "Ngoại ng"
     },
     {
@@ -131,7 +133,7 @@ export const listSubject = [
     },
     {
         text: "Tin học",
-        color: '#12fa72'
+        color: '#b7855f'
         //  "Văn", "Ngoại ng"
     },
     {
@@ -141,7 +143,7 @@ export const listSubject = [
     },
     {
         text: "Giáo dục công dân",
-        color: '#feccd9'
+        color: '#21863e'
         //  "Văn", "Ngoại ng"
     },
     {
@@ -156,7 +158,7 @@ export const listSubject = [
     },
     {
         text: "Công nghệ",
-        color: '#cae9da'
+        color: '#224e6f'
         //  "Văn", "Ngoại ng"
     },
     {
@@ -212,16 +214,16 @@ export const calAverage = (data) => {
             const scoreAverage = calScore(index, data);
             // console.log(scoreAverage, '=------', index, '====', parseFloat(scoreAverage))
             if (+scoreAverage > 0 && scoreAverage) total += 1
-            
+
             return cal + (scoreAverage ? parseFloat(+scoreAverage) : 0)
         }, 0);
-        console.log('3-----', total, result)
+        // console.log('3-----', total, result)
 
-        return total ? (result / total).toFixed(2) : '...';
+        return total ? (result / total).toFixed(2) : '';
 
     } catch (err) {
         console.log(err, 'err cal ')
-        return '...'
+        return ''
     }
 
 }

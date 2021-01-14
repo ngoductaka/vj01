@@ -142,11 +142,12 @@ const QnA = (props) => {
                             }}
                             keyExtractor={(item, index) => item.id}
                             ListEmptyComponent={() => {
+                                if (loading) return null;
                                 return (
                                     <View style={{ alignItems: 'center', marginTop: 30 }}>
                                         {
-                                            !searchText ? <Text style={{fontSize: 20, color: '#333'}}> Vui lòng nhập từ khoá để tìm kiếm</Text> :
-                                                <View>
+                                            !searchText ? <Text style={{ fontSize: 20, color: '#333' }}> Vui lòng nhập từ khoá để tìm kiếm</Text> :
+                                                <View style={{ justifyContent: 'center', alignItems: 'center' }}>
                                                     <Image source={images.no_item} />
                                                     <Text style={{ fontSize: 20, color: '#666' }}>{"Không tìm thấy kết quả"}</Text>
                                                 </View>

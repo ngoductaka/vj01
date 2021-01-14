@@ -3,7 +3,8 @@ import {
     View, Text, SafeAreaView, StyleSheet,
     TouchableOpacity, FlatList, Image
 } from 'react-native';
-import { Icon, Toast } from 'native-base';
+import { Icon } from 'native-base';
+import Toast from 'react-native-simple-toast';
 import { get } from 'lodash';
 
 

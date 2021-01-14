@@ -34,6 +34,7 @@ const QnA = (props) => {
     const current_class = useSelector(state => state.userInfo.class);
     useEffect(() => { setFilter({ cls: current_class }) }, [current_class])
 
+    console.log('userInfo42345', userInfo.user.photo)
     const inputRef = useRef(null);
     const hanldleClick = (params) => {
         props.navigation.navigate("QuestionDetail", params);
@@ -171,8 +172,6 @@ const QnA = (props) => {
             }
 
         } catch (err) {
-            console.log('-d-d-d-d-d-', err)
-
             setLoading(false)
         }
 
@@ -198,10 +197,10 @@ const QnA = (props) => {
                         marginBottom: 10,
                     }}>
                         <View style={styles.largeImgWapper} >
-                            <Image style={userStyle.img} source={{ uri: userImg }} />
-                            <View style={{ backgroundColor: '#fff', position: 'absolute', right: -3, bottom: -3, borderRadius: 10 }}>
+                            <Image style={userStyle.img} source={{ uri: get(userInfo, 'user.photo', '') }} />
+                            {/* <View style={{ backgroundColor: '#fff', position: 'absolute', right: -3, bottom: -3, borderRadius: 10 }}>
                                 <Icon style={{ color: 'green', fontSize: 15, fontWeight: 'bolid' }} name="check-circle" type="FontAwesome" />
-                            </View>
+                            </View> */}
                         </View>
                         <View style={{ marginLeft: 10 }}>
                             <Text style={{ fontWeight: 'bold', fontSize: 14 }}>{userInfo.user.name}</Text>
