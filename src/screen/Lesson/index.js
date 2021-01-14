@@ -89,7 +89,7 @@ const Lesson = (props) => {
 
 	const screenAds = useSelector(state => get(state, 'subjects.screens', null));
 	const frequency = useSelector(state => get(state, 'subjects.frequency', 6));
-	// console.log('-----asdasjdjasd-----', screenAds, frequency);
+	// console.log('-----asdasjdjasd-----', showFullAds, frequency, screenAds[TAG] == "1");
 
 	// interstial ad
 	const learningTimes = useSelector(state => state.timeMachine.learning_times);

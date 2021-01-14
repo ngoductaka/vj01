@@ -15,9 +15,10 @@ export default (state = INITIAL_STATE, action) => {
                 subjects: action.data,
             };
         case GET_ALL_SCREENS_FOR_ADS:
+            // console.log('a,snalslansas', action.data);
             return {
                 ...state,
-                screens: get(action.data, 'data[0].screens', {
+                screens: get(action, 'data[0].screens', {
                     "overview_test": "1",
                     "lesson": "1",
                     "lesson_overview": "0",
@@ -25,7 +26,7 @@ export default (state = INITIAL_STATE, action) => {
                     "practice_exam": "0",
                     "view_answer": "1",
                 }),
-                frequency: get(action.data, 'data[0].frequency', 6),
+                frequency: get(action, 'data[0].frequency', 6),
             };
         case LOG_OUT_SUCCESS:
             return INITIAL_STATE;
