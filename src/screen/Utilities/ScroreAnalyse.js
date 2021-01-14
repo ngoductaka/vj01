@@ -97,11 +97,15 @@ const Timetable = (props) => {
                     data={events}
                     onPress={_hanldePress}
                 /> */}
+                <View style={{ alignItems: 'center', paddingTop: 10 }}>
+                    <GradientText style={{ fontSize: 18, marginBottom: 9, color: '#111' }}>
+                        {get(userInfo, 'user.name', '')}
+                    </GradientText>
+                </View>
                 <View style={{ alignItems: 'center', flexDirection: 'row', justifyContent: 'space-between', backgroundColor: '#fff' }}>
                     <TouchableOpacity
                         onPress={() => navigation.navigate('AccountStack')}
                         style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-                        <Text style={{ fontSize: 19, marginBottom: 9, color: '#111' }}>{get(userInfo, 'user.name', '')}</Text>
                         <Text style={{ color: '#333' }}>Lớp {userInfo.class}</Text>
                     </TouchableOpacity>
                     <View style={{ alignItems: 'center', flex: 1 }}>
@@ -128,8 +132,8 @@ const Timetable = (props) => {
                             display: view ? 'flex' : 'none',
                         }}
                         onPress={_hanldePress} data={events}
-                        focus={view ? focus: null}
-                         />
+                        focus={view ? focus : null}
+                    />
                     <FlatList
                         data={listSubject}
                         numColumns={2}
@@ -296,15 +300,13 @@ const ModalScore = ({
                 setTitle(`Môn ${get(listSubject, `[${subject}].text`)} • hệ số ${level}`)
                 if (score) {
                     const listScore = score.split('-');
-                    if (listScore < 4) {
-                        setScoreSubject([...listScore, ''])
-
+                    if (listScore.length < 4) {
+                        // console.log('=============listScore==', listScore)
+                        setScoreSubject([...listScore, '']);
                     } else
                         setScoreSubject(listScore)
-
                 } else {
                     setScoreSubject([''])
-
                 }
 
             } catch (err) {
