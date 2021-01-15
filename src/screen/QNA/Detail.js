@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import {
-    View, FlatList, Text, StyleSheet, Platform,
+    View, FlatList, Text, StyleSheet, Platform,Alert,
     TouchableOpacity, Dimensions, Image, ScrollView,
     SafeAreaView, TextInput, Keyboard, BackHandler, ActivityIndicator
 } from 'react-native';
@@ -16,12 +16,13 @@ import {
     PlaceholderLine,
     Fade,
 } from "rn-placeholder";
+import { check, PERMISSIONS, RESULTS, openSettings, request } from 'react-native-permissions';
 
 import ImageZoom from 'react-native-image-pan-zoom';
 import { SvgXml } from 'react-native-svg';
 
 import api from '../../handle/api';
-import { getDiffTime } from '../../utils/helpers'
+import { getDiffTime, helpers } from '../../utils/helpers'
 
 import { fontSize, COLOR } from '../../handle/Constant';
 import { fontMaker, fontStyles } from '../../utils/fonts';
@@ -662,6 +663,13 @@ const FormComment = ({
     const [commentText, setCommentText] = useState('');
     const [photos, setPhotos] = useState([]);
     const [loading, setLoading] = useState(false);
+
+    useEffect(() => {
+        if(commentType && commentType.type === 'comment') {
+            setPhotos([])
+        }
+
+    }, [commentType])
     // console.log('loading', loading)
     const hanldeRemoveImg = (index) => {
         photos.splice(index, 1);
@@ -687,6 +695,58 @@ const FormComment = ({
         });
     };
 
+
+
+    const _handleOpenSetting = () => {
+        Alert.alert(
+            "Mở cài đặt",
+            "Vui lòng cấp quyền để upload ảnh",
+            [
+                {
+                    text: "Cancel",
+                    onPress: () => console.log("Cancel Pressed"),
+                    style: "cancel"
+                },
+                { text: "OK", onPress: openSettings }
+            ],
+            { cancelable: true }
+        );
+
+    }
+
+    const _handleClickPhoto = async () => {
+        // 
+        if (helpers.isIOS) {
+            const result = await check(PERMISSIONS.IOS.PHOTO_LIBRARY);
+            if (result == RESULTS.GRANTED) {
+                handleChoosePhotos()
+            } else if (result === RESULTS.DENIED) {
+                const resultRequest = await request(PERMISSIONS.IOS.PHOTO_LIBRARY);
+                if (resultRequest === RESULTS.GRANTED) {
+                    handleChoosePhotos()
+                } else {
+                    _handleOpenSetting()
+                }
+            } else {
+                handleChoosePhotos()
+            }
+        } else {
+            const result = await check(PERMISSIONS.ANDROID.READ_EXTERNAL_STORAGE);
+            if (result === RESULTS.GRANTED) {
+                handleChoosePhotos();
+            } else if (result === RESULTS.DENIED) {
+                const resultRequest = await request(PERMISSIONS.ANDROID.READ_EXTERNAL_STORAGE);
+                if (resultRequest === RESULTS.GRANTED) {
+                    handleChoosePhotos()
+                } else {
+                    _handleOpenSetting()
+                }
+            } else {
+                handleChoosePhotos()
+            }
+        }
+    };
+
     const hanldePostAnswer = async () => {
         try {
             setLoading(true)
@@ -694,7 +754,7 @@ const FormComment = ({
                 const dataUpload = new FormData();
                 photos.map(file => {
                     let fileName = file.split('/');
-                    console.log('filefilefilefilefile34234', file)
+                    // console.log('filefilefilefilefile34234', file)
                     dataUpload.append("img[]", {
                         uri: file,
                         name: fileName[fileName.length - 1],
@@ -791,11 +851,11 @@ const FormComment = ({
                     {
                         photos[0] ? photos.map((p, index) => {
                             return (
-                                <View key={p} style={{ padding: 10, position: 'relative' }}>
+                                <View key={p} style={{ margin: 5, paddingHorizontal: 3, position: 'relative' }}>
                                     <Image
                                         source={{ uri: p }}
                                         style={{
-                                            flex: 1, width: undefined, height: width / 7, width: width / 7,
+                                            flex: 1, width: undefined, height: width / 6, width: width / 6,
                                             borderRadius: 10,
                                         }}
                                     // resizeMode='contain'
@@ -808,11 +868,12 @@ const FormComment = ({
                                             right: 0,
                                             // paddingHorizontal: 10, 
                                             justifyContent: 'center',
-                                            height: 20, width: 20,
+                                            height: 25, width: 25,
                                             alignItems: 'center', justifyContent: 'center',
-                                            borderRadius: 10,
+                                            borderRadius: 25,
+                                            backgroundColor: '#fff',
                                         }}>
-                                        <Icon name="close" style={{ color: 'red', marginTop: -5 }} />
+                                        <Icon name="close" style={{ color: 'red', fontSize: 19 }} />
                                     </TouchableOpacity>
 
                                 </View>
@@ -842,7 +903,7 @@ const FormComment = ({
             }}>
                 {commentType.type === 'answer' ? <View style={{ justifyContent: 'center', flexDirection: 'row' }}>
                     <TouchableOpacity
-                        onPress={handleChoosePhotos}
+                        onPress={_handleClickPhoto}
                         style={{
                             paddingLeft: 5,
                             marginLeft: 5
