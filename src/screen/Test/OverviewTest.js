@@ -3,7 +3,7 @@ import {
     View,
     SafeAreaView, ScrollView, Text, StyleSheet,
     TouchableOpacity, Image, StatusBar, BackHandler,
-    Dimensions, Alert
+    Dimensions, Alert, ActivityIndicator
 } from 'react-native';
 import { useDispatch, useSelector } from 'react-redux';
 import { Icon, Card } from 'native-base';
@@ -22,6 +22,7 @@ import { setLearningTimes } from '../../redux/action/user_info';
 import { user_services } from '../../redux/services';
 const { height, width } = Dimensions.get('window');
 
+/**-------------interstitial ad----------------- */
 import firebase from 'react-native-firebase';
 import { get } from 'lodash';
 const AdRequest = firebase.admob.AdRequest;
@@ -42,6 +43,7 @@ const OverviewTest = (props) => {
     const count = props.navigation.getParam('count', '');
     const showFullAds = props.navigation.getParam('showFullAds', true);
     const screenAds = useSelector(state => get(state, 'subjects.screens', null));
+    const [adsLoading, setAdsLoading] = useState(false);
 
     const [visible, setVisible] = useState(false);
 
@@ -55,6 +57,7 @@ const OverviewTest = (props) => {
     useEffect(() => {
         if (showFullAds) {
             if (screenAds && screenAds[TAG] == "1") {
+                setAdsLoading(true);
                 advert = firebase.admob().interstitial(unitIntertitialId);
                 request = new AdRequest();
                 request.addKeyword('facebook').addKeyword('google').addKeyword('instagram').addKeyword('zalo').addKeyword('google').addKeyword('pubg').addKeyword('asphalt').addKeyword('covid-19');
@@ -69,6 +72,9 @@ const OverviewTest = (props) => {
                     } else {
                         // console.log('---------interstitial fail---------', navigation.isFocused());
                     }
+                });
+                advert.on('onAdClosed', () => {
+                    setAdsLoading(false);
                 });
             }
         }
@@ -171,6 +177,11 @@ const OverviewTest = (props) => {
                         </LinearGradient>
                     </TouchableOpacity>
                 </View>
+                {adsLoading && (
+                    <View style={{ position: 'absolute', top: 0, left: 0, bottom: 0, right: 0, backgroundColor: COLOR.white(1), justifyContent: 'center', alignItems: 'center' }}>
+                        <ActivityIndicator animating={true} size='large' color={COLOR.MAIN} />
+                    </View>
+                )}
             </SafeAreaView>
             <Snackbar
                 visible={visible}

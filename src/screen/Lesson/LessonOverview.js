@@ -5,7 +5,8 @@ import {
     Dimensions,
     ImageBackground,
     BackHandler,
-    Image
+    Image,
+    ActivityIndicator
 } from 'react-native';
 
 import { Card, Icon } from 'native-base';
@@ -61,36 +62,45 @@ const LessonOverview = (props) => {
     // get lesson by lesson id
     else if (lesson_id) endPoint = `/lessons/${lesson_id}`;
 
+    const showFullAds = navigation.getParam('showFullAds', true);
+
     const [_dataLesson, loading, err] = useRequest(endPoint, [lessonId + lesson_id]);
     const [dataLesson, setDataLesson] = useState([]);
     const [dataLecture, setLecture] = useState([]);
     const [showHeader, setShowHeader] = useState(null);
     const [visible, setVisible] = useState(false);
+    const [adsLoading, setAdsLoading] = useState(false);
 
     const screenAds = useSelector(state => get(state, 'subjects.screens', null));
     const frequency = useSelector(state => get(state, 'subjects.frequency', 6));
-    console.log('-----asdasjdjasd-----', screenAds, frequency);
+    // console.log('-----asdasjdjasd-----', screenAds, frequency);
 
     // interstial ad
     const learningTimes = useSelector(state => state.timeMachine.learning_times);
     useEffect(() => {
-        if (screenAds && screenAds[TAG] == "1") {
-            if (learningTimes > 0 && learningTimes % frequency === 0) {
-                advert = firebase.admob().interstitial(unitIntertitialId);
-                request = new AdRequest();
-                request.addKeyword('facebook').addKeyword('google').addKeyword('instagram').addKeyword('zalo').addKeyword('google').addKeyword('pubg').addKeyword('asphalt').addKeyword('covid-19');
+        if (showFullAds) {
+            if (screenAds && screenAds[TAG] == "1") {
+                if (learningTimes > 0 && learningTimes % frequency === 0) {
+                    setAdsLoading(true);
+                    advert = firebase.admob().interstitial(unitIntertitialId);
+                    request = new AdRequest();
+                    request.addKeyword('facebook').addKeyword('google').addKeyword('instagram').addKeyword('zalo').addKeyword('google').addKeyword('pubg').addKeyword('asphalt').addKeyword('covid-19');
 
-                advert.loadAd(request.build());
+                    advert.loadAd(request.build());
 
-                advert.on('onAdLoaded', () => {
-                    // console.log('----------Advert ready to show.--------');
-                    // if (navigation.isFocused() && advert.isLoaded()) {
-                    if (advert.isLoaded()) {
-                        advert.show();
-                    } else {
-                        // console.log('---------interstitial fail---------', navigation.isFocused());
-                    }
-                });
+                    advert.on('onAdLoaded', () => {
+                        // console.log('----------Advert ready to show.--------');
+                        // if (navigation.isFocused() && advert.isLoaded()) {
+                        if (advert.isLoaded()) {
+                            advert.show();
+                        } else {
+                            // console.log('---------interstitial fail---------', navigation.isFocused());
+                        }
+                    });
+                    advert.on('onAdClosed', () => {
+                        setAdsLoading(false);
+                    });
+                }
             }
         }
     }, [learningTimes]);
@@ -369,6 +379,11 @@ const LessonOverview = (props) => {
 
                     </ScrollView>
                 }
+                {adsLoading && (
+                    <View style={{ position: 'absolute', top: 0, left: 0, bottom: 0, right: 0, backgroundColor: COLOR.white(1), justifyContent: 'center', alignItems: 'center' }}>
+                        <ActivityIndicator animating={true} size='large' color={COLOR.MAIN} />
+                    </View>
+                )}
             </Loading>
             <SafeAreaView />
             <Snackbar

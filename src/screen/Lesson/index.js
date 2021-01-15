@@ -1,7 +1,7 @@
 import React, { useState, useCallback, useEffect, useRef } from 'react';
 import {
 	View, SafeAreaView, Text, StyleSheet, TouchableOpacity,
-	FlatList, ScrollView, Dimensions, Animated, Alert, BackHandler, Image
+	FlatList, ScrollView, Dimensions, Animated, Alert, BackHandler, Image, ActivityIndicator
 } from 'react-native';
 import { Snackbar } from 'react-native-paper';
 import { Card, Icon } from 'native-base';
@@ -45,6 +45,7 @@ const Lesson = (props) => {
 
 	const [visible, setVisible] = useState(false);
 	const [offVisible, setOffVisible] = useState(false);
+	const [adsLoading, setAdsLoading] = useState(false);
 
 	const showFullAds = navigation.getParam('showFullAds', true);
 
@@ -97,6 +98,7 @@ const Lesson = (props) => {
 		if (showFullAds) {
 			if (screenAds && screenAds[TAG] == "1") {
 				if (learningTimes % frequency === 0) {
+					setAdsLoading(true);
 					advert = firebase.admob().interstitial(unitIntertitialId);
 					request = new AdRequest();
 					request.addKeyword('facebook').addKeyword('google').addKeyword('instagram').addKeyword('zalo').addKeyword('google').addKeyword('pubg').addKeyword('asphalt').addKeyword('covid-19');
@@ -111,6 +113,9 @@ const Lesson = (props) => {
 						} else {
 							// console.log('---------interstitial fail---------', navigation.isFocused());
 						}
+					});
+					advert.on('onAdClosed', () => {
+						setAdsLoading(false);
 					});
 				}
 			}
@@ -347,6 +352,11 @@ const Lesson = (props) => {
 						:
 						null
 				}
+				{adsLoading && (
+					<View style={{ position: 'absolute', top: 0, left: 0, bottom: 0, right: 0, backgroundColor: COLOR.white(1), justifyContent: 'center', alignItems: 'center' }}>
+						<ActivityIndicator animating={true} size='large' color={COLOR.MAIN} />
+					</View>
+				)}
 			</SafeAreaView>
 			<View style={{ position: 'absolute', top: 0, left: 0, right: 0, height: null, backgroundColor: '#fff' }}>
 				<BackHeader

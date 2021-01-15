@@ -4,7 +4,8 @@ import {
     FlatList,
     // ScrollView, Image, Animated, StatusBar, Platform, NativeModules,
     // PixelRatio,
-    Dimensions
+    Dimensions,
+    ActivityIndicator
 } from 'react-native';
 import { Card, Icon } from 'native-base';
 import { isEmpty, get } from 'lodash';
@@ -40,6 +41,7 @@ const TestMenu = (props) => {
     const title = navigation.getParam('title', '');
     const screenAds = useSelector(state => get(state, 'subjects.screens', null));
     const frequency = useSelector(state => get(state, 'subjects.frequency', 6));
+    const [adsLoading, setAdsLoading] = useState(false);
     // console.log('-----asdasjdjasd-----', screenAds, frequency);
     const [testMenu, loading, err] = useRequest(`menu-items-test/${chapter_id}/lesson-chapter`, [chapter_id])
     // console.log('tes123tMenu', testMenu);
@@ -53,6 +55,7 @@ const TestMenu = (props) => {
     useEffect(() => {
         if (screenAds && screenAds[TAG] == "1") {
             if (0 && learningTimes === 1 || (learningTimes > 0 && learningTimes % frequency === 0)) {
+                setAdsLoading(true);
                 advert = firebase.admob().interstitial(unitIntertitialId);
                 request = new AdRequest();
                 request.addKeyword('facebook').addKeyword('google').addKeyword('instagram').addKeyword('zalo').addKeyword('google').addKeyword('pubg').addKeyword('asphalt').addKeyword('tiktok');
@@ -65,6 +68,9 @@ const TestMenu = (props) => {
                     } else {
                         // console.log('---------interstitial fail---------', navigation.isFocused());
                     }
+                });
+                advert.on('onAdClosed', () => {
+                    setAdsLoading(false);
                 });
             }
         }
@@ -108,6 +114,11 @@ const TestMenu = (props) => {
                         keyExtractor={(item, index) => 'LessonCard' + index}
                     />
                 </View>
+                {adsLoading && (
+                    <View style={{ position: 'absolute', top: 0, left: 0, bottom: 0, right: 0, backgroundColor: COLOR.white(1), justifyContent: 'center', alignItems: 'center' }}>
+                        <ActivityIndicator animating={true} size='large' color={COLOR.MAIN} />
+                    </View>
+                )}
             </Loading>
         </ViewContainer>
     );

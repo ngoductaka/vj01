@@ -16,6 +16,7 @@ import {
     Dimensions,
     Image,
     BackHandler,
+    ActivityIndicator,
 } from 'react-native';
 import {
     Placeholder,
@@ -47,6 +48,7 @@ const ViewAnwser = ({ navigation }) => {
     const dataCourseConvert = navigation.getParam('dataCourseConvert', '');
     const [delay, setDelay] = useState(false);
     const screenAds = useSelector(state => get(state, 'subjects.screens', null));
+    const [adsLoading, setAdsLoading] = useState(false);
 
     useEffect(() => {
         setTimeout(() => {
@@ -75,6 +77,7 @@ const ViewAnwser = ({ navigation }) => {
     // interstial ad
     useEffect(() => {
         if (screenAds && screenAds[TAG] == "1") {
+            setAdsLoading(true);
             advert = firebase.admob().interstitial(unitIntertitialId);
             request = new AdRequest();
             request.addKeyword('facebook').addKeyword('google').addKeyword('instagram').addKeyword('zalo').addKeyword('google').addKeyword('pubg').addKeyword('asphalt').addKeyword('tiktok');
@@ -88,6 +91,9 @@ const ViewAnwser = ({ navigation }) => {
                 } else {
                     // console.log('---------interstitial fail---------', navigation.isFocused());
                 }
+            });
+            advert.on('onAdClosed', () => {
+                setAdsLoading(false);
             });
         }
     }, []);
@@ -187,8 +193,12 @@ const ViewAnwser = ({ navigation }) => {
                             </View>
                         </View>
                 }
+                {adsLoading && (
+                    <View style={{ position: 'absolute', top: 0, left: 0, bottom: 0, right: 0, backgroundColor: COLOR.white(1), justifyContent: 'center', alignItems: 'center' }}>
+                        <ActivityIndicator animating={true} size='large' color={COLOR.MAIN} />
+                    </View>
+                )}
             </View>
-
         </SafeAreaView>
     )
 };

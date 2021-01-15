@@ -1,5 +1,5 @@
 import React, { useState, useCallback, useEffect, useRef, } from 'react';
-import { FlatList, View, SafeAreaView, ScrollView, Text, StyleSheet, Platform, TouchableOpacity, Dimensions, Image, BackHandler } from 'react-native';
+import { FlatList, View, SafeAreaView, ScrollView, Text, StyleSheet, Platform, TouchableOpacity, Dimensions, Image, BackHandler, ActivityIndicator } from 'react-native';
 import { connect, useDispatch, useSelector } from 'react-redux';
 // import LinearGradient from 'react-native-linear-gradient';
 import { get, throttle, isEmpty } from 'lodash';
@@ -71,6 +71,7 @@ const PracticeExam = (props) => {
     // modal
     const [showEnd, setShowEnd] = useState(false);
     const [showImg, setShowImg] = useState(false);
+    const [adsLoading, setAdsLoading] = useState(false);
 
     const dataCourseConvert = get(listCourse, 'data.questions', []);
 
@@ -90,6 +91,7 @@ const PracticeExam = (props) => {
     useEffect(() => {
         if (screenAds && screenAds[TAG] == "1") {
             if (learningTimes > 0 && learningTimes % (3 * frequency) === 0) {
+                setAdsLoading(true);
                 advert = firebase.admob().interstitial(unitIntertitialId);
                 request = new AdRequest();
                 request.addKeyword('facebook').addKeyword('google').addKeyword('instagram').addKeyword('zalo').addKeyword('google').addKeyword('pubg').addKeyword('asphalt').addKeyword('covid-19');
@@ -104,6 +106,9 @@ const PracticeExam = (props) => {
                     } else {
                         // console.log('---------interstitial fail---------', navigation.isFocused());
                     }
+                });
+                advert.on('onAdClosed', () => {
+                    setAdsLoading(false);
                 });
             }
         }
@@ -253,6 +258,11 @@ const PracticeExam = (props) => {
                         </View>
                     </View>
                 </Loading>
+                {adsLoading && (
+                    <View style={{ position: 'absolute', top: 0, left: 0, bottom: 0, right: 0, backgroundColor: COLOR.white(1), justifyContent: 'center', alignItems: 'center' }}>
+                        <ActivityIndicator animating={true} size='large' color={COLOR.MAIN} />
+                    </View>
+                )}
             </SafeAreaView>
             <EndPracticeModal
                 setClose={setShowEnd}
