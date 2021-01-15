@@ -25,6 +25,7 @@ const Notication = (props) => {
         return <NotiItem
             item={item}
             onPress={() => {
+                // console.log('itemitemitemitem', item)
                 if (item.question_status) {
                     props.navigation.navigate('QuestionDetail', { questionId: item.question_id })
                 } else {
@@ -100,7 +101,7 @@ const headerStyles = StyleSheet.create({
 });
 
 
-const NotiItem = ({ item, index, onPress }) => {
+const NotiItem = ({ item = {}, index, onPress }) => {
     return (
         <View style={styleNoti.container}>
             <View>
@@ -187,7 +188,7 @@ const User = ({ style = {}, uri, isCheck }) => {
             <Image style={[userStyle.img, {}]} source={{ uri: handleImgLink(uri) }} />
             {isCheck ? <View style={{ backgroundColor: '#fff', position: 'absolute', right: -3, bottom: -3, borderRadius: 10 }}>
                 <Icon style={{ color: 'green', fontSize: 15, fontWeight: 'bolid' }} name="check-circle" type="FontAwesome" />
-            </View>: null}
+            </View> : null}
         </View>
     )
 }

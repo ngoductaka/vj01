@@ -114,13 +114,15 @@ const UserProfile = (props) => {
                             <FlatList
                                 data={get(userData, 'data.list_answer', [])}
                                 renderItem={({ item, index }) => {
+                                    if(item.question_status == 0) return null;
+                                    // console.log('itemitemitem', item.question_status)
                                     return (
                                         <TouchableOpacity
                                             onPress={() => {
                                                 if (item.question_status == 0) {
-                                                    Toast.show('Câu hỏi không khả dụng')
+                                                    Toast.show('Câu hỏi đã bị xoá do vi phạm')
                                                 } else {
-                                                    props.navigation.navigate('QuestionDetail', { questionId: item.question_id })
+                                                    props.navigation.navigate('QuestionDetail', { questionId: item.question_id, contentQuestion: '' })
                                                 }
                                             }}
                                             style={{
@@ -163,9 +165,9 @@ const UserProfile = (props) => {
                                         <TouchableOpacity
                                             onPress={() => {
                                                 if (item.question_status == 0) {
-                                                    Toast.show('Câu hỏi không khả dụng')
+                                                    Toast.show('Câu hỏi đã bị xoá do vi phạm')
                                                 } else {
-                                                    props.navigation.navigate('QuestionDetail', { questionId: item.id })
+                                                    props.navigation.navigate('QuestionDetail', { questionId: item.id, contentQuestion: '' })
                                                 }
                                             }}
                                             style={{ paddingHorizontal: 8, marginBottom: 15, borderBottomColor: '#dedede', borderBottomWidth: 1 }}
