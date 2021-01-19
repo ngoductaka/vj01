@@ -60,6 +60,7 @@ import GameCenter from '../screen/GameCenter';
 import WhoIsMillionaire from '../screen/GameCenter/WhoIsMillionarie';
 import Sudoku from '../screen/GameCenter/Sudoku/index';
 import Tetris from '../screen/GameCenter/Tetris/index';
+import SnakeApp from '../screen/GameCenter/Snake/index';
 import WordCatcher from '../screen/GameCenter/WordCatcher';
 import Game2048 from '../screen/GameCenter/Game2048';
 import FlappyBird from '../screen/GameCenter/FlappyBird';
@@ -387,6 +388,12 @@ const InAppStack = createStackNavigator({
 	},
 	Sudoku: {
 		screen: Sudoku,
+		navigationOptions: {
+			// ...TransitionPresets.ModalPresentationIOS,
+		}
+	},
+	Snake: {
+		screen: SnakeApp,
 		navigationOptions: {
 			// ...TransitionPresets.ModalPresentationIOS,
 		}
