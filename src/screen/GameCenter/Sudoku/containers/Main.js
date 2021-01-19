@@ -1,5 +1,6 @@
 'use strict';
 
+import { Icon } from 'native-base';
 import React, { Component } from 'react';
 
 import {
@@ -12,7 +13,9 @@ import {
   Image,
   View,
   Text,
+  SafeAreaView,
 } from 'react-native';
+import { COLOR } from '../../../../handle/Constant';
 
 import {
   Size,
@@ -91,39 +94,42 @@ class Main extends Component {
     }
     return (
       <View style={styles.container} >
-        <View style={styles.header} >
-          <Touchable disabled={initing} onPress={this.onShowModal} >
-            <Image style={[styles.icon, initing && styles.disabled]} source={require('../images/menu.png')} />
-          </Touchable>
-          <Timer ref={ref => this.timer = ref} style={styles.timer} disabledStyle={styles.disabled} />
-          <Touchable disabled={!playing} onPress={this.onToggleEditing} >
-            <Image style={[styles.icon, editing && { tintColor: 'khaki' }, !playing && styles.disabled]} source={require('../images/edit.png')} />
-          </Touchable>
-        </View>
-        <Board puzzle={puzzle} solve={this.solve} editing={editing}
-          onInit={this.onInit} onErrorMove={this.onErrorMove} onFinish={this.onFinish} />
-        <Modal animationType='slide' visible={showModal} transparent={true} onRequestClose={this.onCloseModal} >
-          <View style={styles.modal} >
-            <View style={[styles.modalContainer, { marginTop: showOnline ? -onlineHeight : 0 }]} >
-              <Touchable disabled={disabled} style={styles.button} onPress={this.onResume} >
-                <Image style={[styles.buttonIcon, disabled && styles.disabled]} source={require('../images/play.png')} />
-                <Text style={[styles.buttonText, disabled && styles.disabled]} >Continue</Text>
-              </Touchable>
-              <Touchable disabled={disabled} style={styles.button} onPress={this.onClear} >
-                <Image style={[styles.buttonIcon, disabled && styles.disabled]} source={require('../images/reload.png')} />
-                <Text style={[styles.buttonText, disabled && styles.disabled]} >Chơi lại</Text>
-              </Touchable>
-              <Touchable style={styles.button} onPress={this.onCreate} >
-                <Image style={styles.buttonIcon} source={require('../images/shuffle.png')} />
-                <Text style={styles.buttonText} >Trò chơi mới</Text>
-              </Touchable>
-              <Touchable style={styles.button} onPress={this.onCreate} >
-                <Image style={styles.buttonIcon} source={require('../images/shuffle.png')} />
-                <Text style={styles.buttonText} >Thoát trò chơi</Text>
-              </Touchable>
-            </View>
+        <SafeAreaView style={{ flex: 1, justifyContent: 'space-between' }}>
+          <View style={styles.header} >
+            <Touchable disabled={initing} onPress={this.onShowModal} >
+              <Icon name='menu' type='Feather' style={[styles.icon, initing && styles.disabled]} />
+            </Touchable>
+            <Timer ref={ref => this.timer = ref} style={styles.timer} disabledStyle={styles.disabled} />
+            <Touchable disabled={!playing} onPress={this.onToggleEditing} >
+              <Icon name='edit' type='Feather' style={[styles.icon, editing && { tintColor: 'khaki' }, !playing && styles.disabled]} />
+            </Touchable>
           </View>
-        </Modal>
+          <Board puzzle={puzzle} solve={this.solve} editing={editing}
+            onInit={this.onInit} onErrorMove={this.onErrorMove} onFinish={this.onFinish} />
+          <View />
+          <Modal animationType='slide' visible={showModal} transparent={true} onRequestClose={this.onCloseModal} >
+            <View style={styles.modal} >
+              <View style={[styles.modalContainer, { marginTop: showOnline ? -onlineHeight : 0 }]} >
+                <Touchable disabled={disabled} style={styles.button} onPress={this.onResume} >
+                  <Icon name='play' type='AntDesign' style={[styles.buttonIcon, disabled && styles.disabled]} />
+                  <Text style={[styles.buttonText, disabled && styles.disabled]} >Continue</Text>
+                </Touchable>
+                <Touchable disabled={disabled} style={styles.button} onPress={this.onClear} >
+                  <Icon name='replay' type='MaterialIcons' style={[styles.buttonIcon, disabled && styles.disabled]} />
+                  <Text style={[styles.buttonText, disabled && styles.disabled]} >Chơi lại</Text>
+                </Touchable>
+                <Touchable style={styles.button} onPress={this.onCreate} >
+                  <Icon name='shuffle' type='Ionicons' style={styles.buttonIcon} />
+                  <Text style={styles.buttonText} >Trò chơi mới</Text>
+                </Touchable>
+                <Touchable style={styles.button} onPress={() => this.props.navigation.goBack()} >
+                  <Icon name='exit-outline' type='Ionicons' style={styles.buttonIcon} />
+                  <Text style={styles.buttonText} >Thoát trò chơi</Text>
+                </Touchable>
+              </View>
+            </View>
+          </Modal>
+        </SafeAreaView>
       </View>
     );
   }
@@ -296,8 +302,6 @@ class Main extends Component {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
     backgroundColor: 'cadetblue',
     paddingBottom: CellSize,
   },
@@ -311,9 +315,10 @@ const styles = StyleSheet.create({
   icon: {
     width: CellSize,
     height: CellSize,
+    color: COLOR.white(1)
   },
   timer: {
-    fontSize: CellSize * 3 / 4,
+    fontSize: CellSize * 2.5 / 4,
     alignSelf: 'center',
     color: '#fff',
     opacity: 1,
@@ -361,12 +366,14 @@ const styles = StyleSheet.create({
   buttonIcon: {
     width: CellSize,
     height: CellSize,
+    color: COLOR.white(1)
   },
   buttonText: {
     marginLeft: CellSize / 2,
     color: '#fff',
-    fontSize: CellSize * 3 / 4,
+    fontSize: CellSize * 2 / 4,
     fontFamily: 'Menlo',
+    marginBottom: 10
   },
   record: {
     backgroundColor: 'cadetblue',

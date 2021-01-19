@@ -8,6 +8,7 @@ import {
     TouchableOpacity,
     StyleSheet
 } from 'react-native';
+import { COLOR } from '../../../../handle/Constant';
 
 export default class Cell extends Component {
     constructor(props) {
@@ -44,8 +45,7 @@ export default class Cell extends Component {
 
 var styles = StyleSheet.create({
     cell: {
-        borderColor: 'black',
-
+        borderColor: COLOR.black(.6),
     }
 
 })

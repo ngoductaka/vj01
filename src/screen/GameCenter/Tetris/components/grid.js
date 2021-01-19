@@ -10,11 +10,15 @@ import {
     Modal,
     TouchableOpacity
 } from 'react-native';
+import numeral from 'numeral';
 
 import Cell from './cell';
 import Preview from './preview';
 import { belongs, createRandomBlock } from './helpers';
 import { rotate } from './rotation';
+import { fontMaker, fontStyles } from '../../../../utils/fonts';
+import BackHeader from '../../../History/Component/BackHeader';
+import { COLOR } from '../../../../handle/Constant';
 
 export default class Grid extends Component {
     constructor(props) {
@@ -457,22 +461,18 @@ export default class Grid extends Component {
     renderButtons() {
         return (
             <View style={{ flexDirection: 'row', justifyContent: 'space-around' }}>
+                <TouchableOpacity onPress={() => this.down()}>
+                    <Image style={styles.img} source={require('../img/down_arrow.png')} />
+                </TouchableOpacity>
                 <TouchableOpacity onPress={() => this.shiftCells('left')}>
                     <Image style={styles.img} source={require('../img/left-filled.png')} />
                 </TouchableOpacity>
                 <TouchableOpacity onPress={() => this.shiftCells('right')}>
                     <Image style={styles.img} source={require('../img/right-filled.png')} />
                 </TouchableOpacity>
-                <TouchableOpacity onPress={() => this.down()}>
-                    <Image style={styles.img} source={require('../img/down_arrow.png')} />
-                </TouchableOpacity>
-
                 <TouchableOpacity onPress={() => this.rotate()}>
                     <Image style={styles.img} source={require('../img/rotate_arrow.png')} />
                 </TouchableOpacity>
-
-
-
             </View>
         )
 
@@ -487,8 +487,8 @@ export default class Grid extends Component {
                 style={{ flex: 1 }}
             >
                 <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: 'rgba(0,0,0,.5)' }}>
-                    <Text style={{ fontSize: 64, fontWeight: '800' }}>
-                        <Text style={{ color: 'blue' }}>T</Text>
+                    <Text style={{ fontSize: 64, ...fontMaker({ weight: fontStyles.Black }) }}>
+                        <Text style={{ color: 'blue', }}>T</Text>
                         <Text style={{ color: 'orange' }}>E</Text>
                         <Text style={{ color: 'yellow' }}>T</Text>
                         <Text style={{ color: 'green' }}>R</Text>
@@ -497,8 +497,8 @@ export default class Grid extends Component {
                     </Text>
 
                     <TouchableOpacity onPress={() => { this.state.started ? this.tryAgain() : this.startGame() }}>
-                        <Text style={{ fontSize: 32, color: 'white', fontWeight: '500' }}>
-                            {this.state.started ? 'TRY AGAIN' : 'START'}</Text>
+                        <Text style={{ fontSize: 32, color: 'white', ...fontMaker({ weight: fontStyles.SemiBold }) }}>
+                            {this.state.started ? 'TRY AGAIN' : 'Bắt đầu'}</Text>
                     </TouchableOpacity>
                 </View>
             </Modal>
@@ -507,23 +507,25 @@ export default class Grid extends Component {
 
     render() {
         return (
-            <View style={{ flex: 1, justifyContent: 'space-around' }}>
-                <View style={{ paddingTop: 40, justifyContent: 'center', alignItems: 'center' }}>
-                    <Text style={{ fontWeight: '700', fontSize: 26 }}>REACT-NATIVE-TETRIS</Text>
-                    <Text style={{ paddingTop: 10, fontSize: 16 }}>Score: {this.state.score}</Text>
-                </View>
-                <View style={{ flexDirection: 'row', justifyContent: 'center' }}>
-                    <View style={{ backgroundColor: 'white' }}>
-                        {this.renderCells()}
+            <View style={{ flex: 1 }}>
+                <BackHeader title='Tetris' showRight={false} />
+                <View style={{ flex: 1, justifyContent: 'space-around' }}>
+                    <View style={{ justifyContent: 'center', alignItems: 'center', alignSelf: 'center', backgroundColor: '#20D03A', padding: 10, minWidth: 160, borderRadius: 12 }}>
+                        <Text style={{ fontSize: 30, color: COLOR.white(1), ...fontMaker({ weight: fontStyles.Regular }) }}>{numeral(this.state.score).format(0, 0)}</Text>
                     </View>
-                    <View style={{ marginLeft: 20, alignItems: 'center' }}>
-                        <Text style={{ fontSize: 16, fontWeight: '600' }}>NEXT</Text>
-                        <Preview blocks={this.state.blocks} />
+                    <View style={{ flexDirection: 'row', justifyContent: 'center' }}>
+                        <View style={{ backgroundColor: 'white' }}>
+                            {this.renderCells()}
+                        </View>
+                        <View style={{ marginLeft: 20, alignItems: 'center' }}>
+                            <Text style={{ fontSize: 16, ...fontMaker({ weight: fontStyles.SemiBold }) }}>TIẾP THEO</Text>
+                            <Preview blocks={this.state.blocks} />
+                        </View>
                     </View>
-                </View>
-                {this.renderButtons()}
+                    {this.renderButtons()}
 
-                {this.renderStart()}
+                    {this.renderStart()}
+                </View>
             </View>
         )
     }

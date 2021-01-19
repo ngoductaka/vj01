@@ -18,7 +18,7 @@ class App extends Component {
     return (
       <View style={styles.container} >
         <StatusBar backgroundColor='transparent' animated={true} translucent={true} barStyle="light-content"/>
-        <Main />
+        <Main navigation={this.props.navigation} />
       </View>
     );
   }
