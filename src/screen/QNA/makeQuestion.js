@@ -365,12 +365,14 @@ const QnA = (props) => {
                         <View style={{
                             flex: 1,
                             width: width,
-                            height: 50,
+                            height: 55,
                             borderTopColor: '#dedede',
                             borderTopWidth: 1,
                             flexDirection: 'row',
                             alignItems: 'center',
-                            backgroundColor: '#fff'
+                            backgroundColor: '#fff',
+                            paddingBottom: 15,
+                            paddingTop: 5,
                         }}>
                             <View style={{ flex: 1, flexDirection: 'row' }}>
                                 <TouchableOpacity onPress={_handleClickPhoto} style={{ paddingHorizontal: 10, marginLeft: 15 }} >

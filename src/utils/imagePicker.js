@@ -34,7 +34,7 @@ class ImagePickerModule {
       mediaType: "photo",
     })
       .then(response => {
-        console.log("ImagePicker Success: ", response);
+        // console.log("ImagePicker Success: ", response);
         onChooseImage && onChooseImage(response);
       })
       .catch(err => {
@@ -45,7 +45,7 @@ class ImagePickerModule {
   }
 
   launchLibrary(otherOption, { onChooseImage, onDidCancel, onError }) {
-    console.log('=======1111111===')
+    // console.log('=======1111111===')
     try {
       // ImagePickerCrop.openPicker({
       //   compressImageMaxWidth: 1920,
@@ -68,7 +68,7 @@ class ImagePickerModule {
         ...otherOption,
       })
         .then(response => {
-          console.log("ImagePicker Success: ", response);
+          // console.log("ImagePicker Success: ", response);
           onChooseImage && onChooseImage(response);
         })
         .catch(err => {

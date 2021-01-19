@@ -389,7 +389,7 @@ const Class = memo((props) => {
 						{/* continue learning */}
 						<ContinueLearn setVisible={setVisible} dataContinue={dataContinue} navigate={navigation.navigate} />
 						{/* fanpage */}
-						<FanpageBanner />
+						{/* <FanpageBanner /> */}
 						{/* resume learning */}
 						<RecommendCoure dataRecommend={dataRecommend} dataContinue={dataContinue} setVisible={setVisible} navigate={navigation.navigate} />
 
