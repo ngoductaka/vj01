@@ -153,7 +153,19 @@ export const mapScreenName = {
 	ListTest: 'Danh sách bài test',
 	GeneralAnalysis: 'Thống kê học tập',
 	ViewAnswer: 'Xem đáp án thi',
-	Bookmark: 'Bookmark'
+	Bookmark: 'Bookmark',
+	ScroreAnalyse: 'Kết quả học tập',
+	TimeTable: 'Thời khoá biểu',
+	FlappyBird: 'FlappyBird',
+	Game2048: 'Game2048',
+	WordCatcher: 'Nối chữ',
+	Tetris: "Xếp hình",
+	Sudoku: 'Sudoku',
+	WhoIsMillionaire: "Ai là triệu phú",
+	QnA: "Hỏi đáp",
+	QuestionDetail: "Chi tiết câu hỏi",
+	MakeQuestion: "Tạo câu hỏi",
+	SearchQnA: "Tìm kiếm câu hỏi"
 };
 
 const HOT_SUBJECT_CLASS = {

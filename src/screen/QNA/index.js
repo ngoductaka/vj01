@@ -246,7 +246,7 @@ const styles = StyleSheet.create({
         paddingVertical: 10,
         // padding: 10,
         // borderRadius: 10,
-        marginTop: 10
+        marginTop: 7
     },
     itemHead: {
         fontSize: 17,
@@ -497,8 +497,10 @@ const RenderQestion = ({ item, index, hanldleClick, _handleNavigate = () => { },
             <RenderListImg setVisible={setVisible} listImg={image} />
             {/* footer */}
             <View style={{
-                flexDirection: 'row', borderTopColor: '#cecece',
-                borderTopWidth: 1, alignItems: 'flex-end',
+                flexDirection: 'row',
+                //  borderTopColor: '#cecece',
+                // borderTopWidth: 1, 
+                alignItems: 'flex-end',
                 paddingTop: 8, marginTop: 5, paddingHorizontal: 8
             }}>
                 {/* <ListUser /> */}
@@ -508,7 +510,7 @@ const RenderQestion = ({ item, index, hanldleClick, _handleNavigate = () => { },
                         style={{ justifyContent: 'center', alignItems: 'center', flexDirection: 'row', marginRight: 10 }}
                     >
                         <Icon name="heart" type="EvilIcons"
-                            style={{ fontSize: 24, marginHorizontal: 4, color: like ? COLOR.MAIN : "#333" }} />
+                            style={{ fontSize: 35, marginHorizontal: 4, color: like ? COLOR.MAIN : "#333" }} />
                         <Text style={{ color: like ? COLOR.MAIN : "#333" }}>{likeCount + (like ? 1 : 0)}</Text>
                     </TouchableOpacity>
                     <TouchableOpacity
@@ -518,8 +520,8 @@ const RenderQestion = ({ item, index, hanldleClick, _handleNavigate = () => { },
                                 questionId: id,
                             })
                         }}
-                        style={{ justifyContent: 'center', alignItems: 'center', flexDirection: 'row', marginRight: 10 }} >
-                        <Icon name="comment" type="EvilIcons" style={{ fontSize: 24, marginHorizontal: 4, }} />
+                        style={{ justifyContent: 'center', alignItems: 'center', flexDirection: 'row', marginRight: 20 }} >
+                        <Icon name="comment" type="EvilIcons" style={{ fontSize: 35, marginHorizontal: 4, }} />
                         <Text>{commentCount}</Text>
                     </TouchableOpacity>
                     {/* <ListUser /> */}

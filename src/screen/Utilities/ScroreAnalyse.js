@@ -318,6 +318,7 @@ const ModalScore = ({
     }, [isOpen])
     return (
         <ModalBox
+            backButtonClose
             onClosed={() => setOpen(false)}
             isOpen={!!isOpen}
             animationDuration={300}

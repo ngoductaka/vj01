@@ -46,14 +46,14 @@ const ViewContainer = (props) => {
                         onScroll={_onScroll}
                         showsVerticalScrollIndicator={false}
                     >
-                        {!isHome &&
+                        {/* {!isHome &&
                             <Animatable.View animation="slideInRight" style={{ position: 'absolute', top: 0, right: 0, width: width / 2, height: 200 }}>
                                 <Image
                                     source={images.header2}
                                     style={{ flex: 1, width: null, height: null, resizeMode: 'cover' }}
                                 />
                             </Animatable.View>
-                        }
+                        } */}
                         {headerView}
                         {children}
                     </ScrollView>

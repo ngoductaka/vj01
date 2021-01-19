@@ -33,6 +33,7 @@ const App = () => {
 						const currentRouteName = getActiveRouteName(currentState);
 						const previousRouteName = getActiveRouteName(prevState);
 						if (previousRouteName !== currentRouteName) {
+							// console.log('currentRouteName', currentRouteName)
 							// the line below uses the @react-native-firebase/analytics tracker
 							// change the tracker here to use other Mobile analytics SDK.
 							const dataSend = mapScreenName[currentRouteName] ? mapScreenName[currentRouteName] : currentRouteName

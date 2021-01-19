@@ -77,7 +77,8 @@ export const FilterModal = (props) => {
     }, [filter]);
 
     useEffect(() => {
-        setCls('' + current_class)
+        setCls('' + current_class);
+        setFilter({ cls: '' + current_class });
     }, [current_class])
 
     const handleSubmit = () => {

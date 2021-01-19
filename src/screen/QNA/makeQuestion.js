@@ -263,7 +263,7 @@ const QnA = (props) => {
 
     return (
         <View style={styles.container}>
-            <SafeAreaView style={{ flex: 1 }}>
+            <SafeAreaView style={{ flex: 1, position: 'relative' }}>
                 {/* top */}
                 <TollBar
                     leftAction={() => props.navigation.goBack()}
@@ -314,10 +314,11 @@ const QnA = (props) => {
                             ref={inputRef}
                             multiline
                             numberOfLines={4}
-                            placeholder={`Câu hỏi của bạn là gì? Hãy chia nhỏ câu hỏi để có lời giải nhanh nhất nhé `}
+                            placeholder={`Hãy hỏi 1 câu duy nhất hoặc chia nhỏ câu hỏi để có lời giải nhanh nhất nhé `}
                             style={[{
                                 maxHeight: height / 5,
-                                borderBottomColor: '#dedede',
+                                borderBottomColor: '#efefef',
+                                paddingBottom: 20,
                                 borderBottomWidth: 1,
                                 textAlignVertical: 'top',
                                 fontSize: 18,
@@ -365,7 +366,7 @@ const QnA = (props) => {
                             flex: 1,
                             width: width,
                             height: 50,
-                            borderTopColor: '#ddd',
+                            borderTopColor: '#dedede',
                             borderTopWidth: 1,
                             flexDirection: 'row',
                             alignItems: 'center',

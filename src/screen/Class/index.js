@@ -384,7 +384,6 @@ const Class = memo((props) => {
 							keyExtractor={(item, index) => index + 'game_item'}
 						/>
 
-
 						{/* hot exam */}
 						<HotExam classId={props.userInfo.class} loading={hostLoading} hotSubIdx={hotSubIdx} setHotSubIdx={setHotSubIdx} hotExamData={get(hostLesson, 'exams', [])} navigation={navigation} />
 						{/* continue learning */}
@@ -395,25 +394,11 @@ const Class = memo((props) => {
 						<RecommendCoure dataRecommend={dataRecommend} dataContinue={dataContinue} setVisible={setVisible} navigate={navigation.navigate} />
 
 						{/* share app */}
-						{/* <View style={{ width: '100%', height: 0.5, backgroundColor: blackColor(0.1), marginBottom: 10, marginTop: 5 }} /> */}
 						<Text style={{ ...fontMaker({ weight: fontStyles.SemiBold }), fontSize: 18, marginTop: 20, marginBottom: 5, }}>Chia sẻ ứng dụng</Text>
 						<RecommendShareCard
 							onPress={() => Share.open(makeOptionShare())}
 						/>
 					</View>
-					{/* continue learning */}
-					<ContinueLearn setVisible={setVisible} dataContinue={dataContinue} navigate={navigation.navigate} />
-					{/* fanpage */}
-					<FanpageBanner />
-					{/* resume learning */}
-					<RecommendCoure dataRecommend={dataRecommend} dataContinue={dataContinue} setVisible={setVisible} navigate={navigation.navigate} />
-
-					{/* share app */}
-					{/* <View style={{ width: '100%', height: 0.5, backgroundColor: blackColor(0.1), marginBottom: 10, marginTop: 5 }} /> */}
-					<Text style={{ ...fontMaker({ weight: fontStyles.SemiBold }), fontSize: 18, marginTop: 15, marginBottom: 5, }}>Chia sẻ ứng dụng</Text>
-					<RecommendShareCard
-						onPress={() => Share.open(makeOptionShare())}
-					/>
 				</View>
 			</ViewContainer>
 			<RatingModal
@@ -817,7 +802,7 @@ const HeaderView = (props, noti = 0, getNumberOfUnseenNoti = () => { }, avatarId
 
 					<TouchableOpacity onPress={() => props.navigation.navigate('SearchView')} style={{ flex: 1, borderRadius: 38, flexDirection: 'row', alignItems: 'center', paddingVertical: 8, paddingLeft: 10, backgroundColor: 'white', backgroundColor: '#F3F3F3', }}>
 						<Icon name='search' type='Feather' style={{ fontSize: 20, color: '#888888' }} />
-						<Text numberOfLines={1} style={{ ...fontMaker({ weight: fontStyles.Regular }), fontSize: 16, marginHorizontal: 10, color: '#888888', flex: 1 }}>Tìm kiếm bài tập, đề thi, bài giảng...</Text>
+						<Text numberOfLines={1} style={{ ...fontMaker({ weight: fontStyles.Regular }), marginHorizontal: 10, color: '#888888', flex: 1 }}>Tìm kiếm bài tập, đề thi, bài giảng...</Text>
 					</TouchableOpacity>
 					<TouchableOpacity onPress={() => props.navigation.navigate('Notification', { getNumberOfUnseenNoti })} style={{ alignItems: 'center', paddingLeft: 10, }}>
 						<Icon name='bell' type='Entypo' style={{ fontSize: 28, color: noti > 0 ? COLOR.MAIN_GREEN : COLOR.black(.6), alignSelf: 'center' }} />
