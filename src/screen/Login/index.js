@@ -123,7 +123,7 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         width: helpers.isTablet ? 380 : '100%',
         paddingVertical: 14,
-        borderRadius: 24, marginTop: 20
+        borderRadius: 5, marginTop: 20
     },
     appleButton: {
         width: helpers.isTablet ? 380 : '100%',

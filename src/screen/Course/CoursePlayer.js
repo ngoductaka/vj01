@@ -310,7 +310,7 @@ const CoursePlayer = (props) => {
                                                                 ...videoData.lecture_lesson ? videoData.lecture_lesson : [],
                                                                 ...videoData.video_relation ? videoData.video_relation : []
                                                             ]
-                                                                .slice(0, expandVideo ? 100 : 3)
+                                                                .slice(0, expandVideo ? 100 : 5)
                                                                 .filter(i => get(i, 'videos.id') !== lectureId)
                                                                 .map((item, index) => {
                                                                     return <RenderVideosRelated
@@ -322,7 +322,7 @@ const CoursePlayer = (props) => {
                                                                 })
                                                         }
                                                         {
-                                                            (get(videoData, 'lecture_lesson.length', 0) + get(videoData, 'video_relation.length', 0)) > 3 && 
+                                                            (get(videoData, 'lecture_lesson.length', 0) + get(videoData, 'video_relation.length', 0)) > 5 && 
                                                                 <TouchableOpacity style={{ justifyContent: 'center', flexDirection: 'row', marginTop: 8 }} onPress={() => setExpandVideo(!expandVideo)}>
                                                                     <Text style={{
                                                                         color: COLOR.MAIN,

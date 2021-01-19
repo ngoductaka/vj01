@@ -289,12 +289,19 @@ const Lesson = (props) => {
 
 										{
 											!dataLesson || (isEmpty(dataLesson.videos) && isEmpty(dataLesson.lectures)) ? null : (
+												<ListVideos
+													listVideos={[...dataLesson.videos, ...dataLesson.lectures]}
+													handleNavigate={props.navigation.navigate}
+													setVisible={setVisible}
+												/>
+											)
+										}
+										{/* {
+											!dataLesson || (isEmpty(dataLesson.videos) && isEmpty(dataLesson.lectures)) ? null : (
 												<View style={{ borderTopColor: '#ddd', borderTopWidth: 2, marginTop: 20, paddingTop: 10 }}>
 													<View style={{ flexDirection: 'row', justifyContent: 'space-between', paddingRight: 10, paddingBottom: 10, alignItems: 'flex-end' }}>
 														<Text style={{ fontSize: 20, ...fontMaker({ weight: fontStyles.Regular }) }}>Các Videos liên quan</Text>
 													</View>
-
-													{/* <ScrollView horizontal> */}
 													{[...dataLesson.videos, ...dataLesson.lectures].map((item, index) => {
 														return <RenderVideosRelated
 															handleNavigate={props.navigation.navigate}
@@ -303,10 +310,9 @@ const Lesson = (props) => {
 															setVisible={setVisible}
 														/>
 													})}
-													{/* </ScrollView> */}
 												</View>
 											)
-										}
+										} */}
 										{
 											dataLesson && !isEmpty(dataLesson.exams) ? (
 												<View style={{ borderTopColor: '#ddd', borderTopWidth: 2, marginTop: 20, paddingTop: 10 }}>
@@ -470,6 +476,47 @@ const RenderRelatedArticle = ({ item, onPress }) => {
 		</TouchableOpacity>
 	);
 };
+
+
+const ListVideos = ({
+	listVideos = [],
+	handleNavigate,
+	setVisible
+}) => {
+	const [expand, setExpand] = useState(false)
+	return (
+
+		<View style={{ borderTopColor: '#ddd', borderTopWidth: 2, marginTop: 20, paddingTop: 10 }}>
+			<View style={{ flexDirection: 'row', justifyContent: 'space-between', paddingRight: 10, paddingBottom: 10, alignItems: 'flex-end' }}>
+				<Text style={{ fontSize: 20, ...fontMaker({ weight: fontStyles.Regular }) }}>Các Videos liên quan</Text>
+			</View>
+
+			{/* <ScrollView horizontal> */}
+			{listVideos
+				.slice(0, expand ? 100 : 5)
+				.map((item, index) => {
+					return <RenderVideosRelated
+						handleNavigate={handleNavigate}
+						item={item}
+						index={index}
+						setVisible={setVisible}
+					/>
+				})}
+
+			{listVideos.length > 5 &&
+				<TouchableOpacity
+					style={{ justifyContent: 'center', flexDirection: 'row', marginTop: 8 }}
+					onPress={() => setExpand(!expand)}>
+					<Text style={{
+						color: COLOR.MAIN,
+						fontSize: 14,
+						...fontMaker({ weight: fontStyles.Bold })
+					}}>{expand ? 'Thu gọn' : `Xem thêm`}</Text>
+					<Icon name={!expand ? 'arrow-down' : 'arrow-up'} style={{ fontSize: 16, color: COLOR.MAIN, marginLeft: 4 }} />
+				</TouchableOpacity>}
+		</View>
+	)
+}
 
 export default connect(
 	(state) => ({ bookInfo: state.bookInfo }),
