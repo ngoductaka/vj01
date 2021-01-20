@@ -1,4 +1,4 @@
-import React, { useState, useEffect, memo, useRef } from 'react';
+import React, { useState, useEffect, memo, useRef, useCallback } from 'react';
 import { View, FlatList, SafeAreaView, Text, TouchableOpacity, StyleSheet, Image, Keyboard, ScrollView, Alert } from 'react-native';
 import { Tab, Tabs, Icon } from 'native-base';
 import { isEmpty, get, throttle } from 'lodash';
@@ -25,6 +25,7 @@ import { SeeMoreButton } from './Component/SeeMoreButton';
 import { search_services } from '../../redux/services/search.service';
 import AutoComplete from './AutoComplete';
 import api, { useRequest } from '../../handle/api';
+import { saveKeyword } from './services';
 
 //  ========== show list subject class====================
 const SearchView = memo((props) => {
@@ -53,6 +54,12 @@ const SearchView = memo((props) => {
 
 	// const [ hostKeySearch, loadingHost, errHost ] = useRequest(`search/top?class_id=${}`, )
 	const [hotKeySearch, setHotKey] = useState([]);
+
+	const _recordSearch = useCallback((text) => {
+		console.log('==========asdfadvaefasd=====', { grade_id: filter.cls, q: text });
+		saveKeyword({ grade_id: filter.cls, q: text })
+			.catch(console.log)
+	}, [filter])
 
 	useEffect(() => {
 		if (filter.cls && filter.cls != 13) {
@@ -108,6 +115,7 @@ const SearchView = memo((props) => {
 
 	const handleSaveSearchingKey = (searchText) => {
 		if (searchText) {
+			_recordSearch(searchText)
 			getItem(KEY.history_search)
 				.then(val => {
 					if (!isEmpty(val)) {
@@ -301,6 +309,7 @@ const SearchView = memo((props) => {
 														setIsBlank(false);
 														setSearchText(item);
 														handleSaveSearchingKey(item);
+														_recordSearch(item)
 													}}
 												/>)
 											})
@@ -325,6 +334,7 @@ const SearchView = memo((props) => {
 											onPressItem={() => {
 												setIsBlank(false);
 												setSearchText(keyword);
+												_recordSearch(keyword)
 											}}
 										/>)
 									}) : null
