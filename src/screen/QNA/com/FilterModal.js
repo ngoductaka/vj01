@@ -61,7 +61,6 @@ export const FilterModal = (props) => {
     }, [cls]);
 
     useEffect(() => {
-        // console.log('filter-----', filter);
         if (filter.cls) {
             setCls('' + filter.cls);
             if (filter.cls == '13') {
@@ -71,14 +70,10 @@ export const FilterModal = (props) => {
                 setCurrIndex(0);
             }
         }
-        // if (filter.currSub) {
-        //     setCurrIndex(filter.currSub.index);
-        // }
-    }, [filter]);
+    }, [filter.cls]);
 
     useEffect(() => {
         setCls('' + current_class);
-        setFilter({ cls: '' + current_class });
     }, [current_class])
 
     const handleSubmit = () => {

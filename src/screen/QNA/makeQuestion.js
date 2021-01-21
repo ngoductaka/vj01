@@ -27,7 +27,7 @@ const userImg = "https://www.xaprb.com/media/2018/08/kitten.jpg";
 
 const QnA = (props) => {
     const [filter, setFilter] = useState({ cls: 13 });
-    const [showFilter, setShowFilter] = useState(true);
+    const [showFilter, setShowFilter] = useState(false);
     const [questionContent, setContent] = useState('');
     const [showKeyboad, setShowKeyboard] = useState(false);
 
@@ -49,6 +49,10 @@ const QnA = (props) => {
         //         inputRef.current.focus();
         //     }, 1000)
         // }
+
+        setTimeout(() => {
+            setShowFilter(true)
+        }, 700)
 
         setShowKeyboard(true);
     }, []);
@@ -486,6 +490,7 @@ const styles = StyleSheet.create({
     contentTag: {
         color: COLOR.black(0.7),
         fontSize: 12,
+        marginLeft: 4,
         ...fontMaker({ weight: fontStyles.SemiBold })
     },
 

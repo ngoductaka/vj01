@@ -37,7 +37,7 @@ const QnA = (props) => {
     const currentClass = useSelector(state => state.userInfo.class);
 
     const [filter, setFilter] = useState({ cls: currentClass });
-    const [showFilter, setShowFilter] = useState(true);
+    const [showFilter, setShowFilter] = useState(false);
 
     const hanldleClick = (params) => {
         props.navigation.navigate("QuestionDetail", params);
