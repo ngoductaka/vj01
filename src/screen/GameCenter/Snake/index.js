@@ -1,89 +1,85 @@
 import React, { Component } from "react";
-import { StyleSheet, StatusBar, View, Alert, Button, TouchableOpacity } from "react-native";
-import { GameEngine, dispatch } from "react-native-game-engine";
-import { Head } from "./head";
-import { Food } from "./food";
-import { Tail } from "./tail";
-import { GameLoop } from "./systems";
+import { StyleSheet, StatusBar, Text, Dimensions, View, Alert, Button, TouchableOpacity, ImageBackground, Pressable, Image, SafeAreaView } from "react-native";
+import ModalBox from 'react-native-modalbox';
 import Constants from './Constants';
+import { images } from "../../../utils/images";
+import { fontMaker, fontStyles } from "../../../utils/fonts";
+import { COLOR, fontSize } from "../../../handle/Constant";
+import AsyncStorage from "@react-native-community/async-storage";
+
+const { width, height } = Dimensions.get('window');
 
 export default class SnakeApp extends Component {
     constructor(props) {
         super(props);
-        this.boardSize = Constants.GRID_SIZE * Constants.CELL_SIZE;
-        this.engine = null;
         this.state = {
-            running: true
+            showGuide: false,
+            showSettings: false
         }
-    }
-
-    randomBetween = (min, max) => {
-        return Math.floor(Math.random() * (max - min + 1) + min);
-    }
-
-    onEvent = (e) => {
-        if (e.type === "game-over") {
-            this.setState({
-                running: false
-            });
-            Alert.alert("Game Over");
-        }
-    }
-
-    reset = () => {
-        this.engine.swap({
-            head: { position: [0, 0], xspeed: 1, yspeed: 0, nextMove: 10, updateFrequency: 10, size: 20, renderer: <Head /> },
-            food: { position: [this.randomBetween(0, Constants.GRID_SIZE - 1), this.randomBetween(0, Constants.GRID_SIZE - 1)], size: 20, renderer: <Food /> },
-            tail: { size: 20, elements: [], renderer: <Tail /> }
-        });
-        this.setState({
-            running: true
-        });
     }
 
     render() {
         return (
-            <View style={styles.container}>
-                <GameEngine
-                    ref={(ref) => { this.engine = ref; }}
-                    style={[{ width: this.boardSize, height: this.boardSize, backgroundColor: '#ffffff', flex: null }]}
-                    systems={[GameLoop]}
-                    entities={{
-                        head: { position: [0, 0], xspeed: 1, yspeed: 0, nextMove: 10, updateFrequency: 10, size: 20, renderer: <Head /> },
-                        food: { position: [this.randomBetween(0, Constants.GRID_SIZE - 1), this.randomBetween(0, Constants.GRID_SIZE - 1)], size: 20, renderer: <Food /> },
-                        tail: { size: 20, elements: [], renderer: <Tail /> }
-                    }}
-                    running={this.state.running}
-                    onEvent={this.onEvent}>
-
-                    <StatusBar hidden={true} />
-
-                </GameEngine>
-
-                <Button title="New Game" onPress={this.reset} />
-
-                <View style={styles.controls}>
-                    <View style={styles.controlRow}>
-                        <TouchableOpacity onPress={() => { this.engine.dispatch({ type: "move-up" }) }}>
-                            <View style={styles.control} />
-                        </TouchableOpacity>
-                    </View>
-                    <View style={styles.controlRow}>
-                        <TouchableOpacity onPress={() => { this.engine.dispatch({ type: "move-left" }) }}>
-                            <View style={styles.control} />
-                        </TouchableOpacity>
-                        <View style={[styles.control, { backgroundColor: null }]} />
-                        <TouchableOpacity onPress={() => { this.engine.dispatch({ type: "move-right" }) }}>
-                            <View style={styles.control} />
-                        </TouchableOpacity>
-                    </View>
-                    <View style={styles.controlRow}>
-                        <TouchableOpacity onPress={() => { this.engine.dispatch({ type: "move-down" }) }}>
-                            <View style={styles.control} />
-                        </TouchableOpacity>
-                    </View>
+            <View style={{ flex: 1, backgroundColor: '#56BCE8' }}>
+                <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', paddingTop: 40 }}>
+                    <Text style={{ fontSize: 50, textAlign: 'center', ...fontMaker({ weight: fontStyles.SemiBold }), color: '#fff' }}>VIET TRAIN</Text>
+                    <Pressable onPress={() => this.props.navigation.navigate('SnakeApp')} style={{ backgroundColor: '#2a9d8f', padding: 12, width: 200, borderRadius: 30, alignItems: 'center', marginTop: 30 }}>
+                        <Text style={{ color: COLOR.white(1), fontSize: 18, ...fontMaker({ weight: fontStyles.SemiBold }) }}>Bắt đầu</Text>
+                    </Pressable>
+                    <Pressable onPress={() => this.setState({ showGuide: true })} style={{ backgroundColor: '#e9c46a', padding: 12, width: 200, borderRadius: 30, alignItems: 'center', marginTop: 30 }}>
+                        <Text style={{ color: COLOR.white(1), fontSize: 18, ...fontMaker({ weight: fontStyles.SemiBold }) }}>Hướng dẫn</Text>
+                    </Pressable>
+                    <Pressable onPress={() => this.setState({ showSettings: true })} style={{ backgroundColor: '#f4a261', padding: 12, width: 200, borderRadius: 30, alignItems: 'center', marginTop: 30 }}>
+                        <Text style={{ color: COLOR.white(1), fontSize: 18, ...fontMaker({ weight: fontStyles.SemiBold }) }}>Cài đặt</Text>
+                    </Pressable>
+                    <Pressable onPress={() => this.props.navigation.goBack()} style={{ backgroundColor: '#e76f51', padding: 12, width: 200, borderRadius: 30, alignItems: 'center', marginTop: 30 }}>
+                        <Text style={{ color: COLOR.white(1), fontSize: 18, ...fontMaker({ weight: fontStyles.SemiBold }) }}>Thoát trò chơi</Text>
+                    </Pressable>
                 </View>
-            </View>
+                <Image source={images.trainbg} style={{ width: height > width ? width : height, height: height > width ? width * 3.6 / 4 : height * 3.6 / 4, resizeMode: 'stretch', alignSelf: 'center' }} />
+                <ModalBox
+                    isOpen={this.state.showGuide}
+                    backdropPressToClose={true}
+                    swipeToClose={true}
+                    style={{ width: 320, height: null, borderRadius: 8, overflow: 'hidden', padding: 30 }}
+                    onClosed={() => this.setState({ showGuide: false })}
+                    position='center'
+                >
+                    <Text style={{ textAlign: 'center', fontSize: 20, color: COLOR.MAIN, ...fontMaker({ weight: fontStyles.Bold }) }}>Hướng dẫn</Text>
+                    <Text style={{ fontSize: 16, textAlign: 'center', lineHeight: 24, marginTop: 10, ...fontMaker({ weight: fontStyles.Regular }) }}>Hãy cố gắng dùng những phím di chuyển để có thể điều hướng đoàn tàu của bạn có thể thu hoạch được nhiều chiến lợi phẩm tốt nhất nhé</Text>
+                    <Pressable onPress={() => this.setState({ showGuide: false })} style={{ alignSelf: 'center', marginTop: 20, paddingHorizontal: 40, paddingVertical: 12, backgroundColor: COLOR.MAIN_GREEN, borderRadius: 30 }}>
+                        <Text style={{ color: COLOR.white(1), fontSize: 17, ...fontMaker({ weight: fontStyles.SemiBold }) }}>Đã hiểu</Text>
+                    </Pressable>
+                </ModalBox>
+                <ModalBox
+                    isOpen={this.state.showSettings}
+                    backdropPressToClose={true}
+                    swipeToClose={true}
+                    style={{ width: 320, height: null, borderRadius: 8, overflow: 'hidden', padding: 30 }}
+                    onClosed={() => this.setState({ showSettings: false })}
+                    position='center'
+                >
+                    <Text style={{ textAlign: 'center', fontSize: 20, color: COLOR.black(1), ...fontMaker({ weight: fontStyles.Bold }) }}>Chọn mức độ</Text>
+                    <Pressable onPress={async () => {
+                        await AsyncStorage.setItem(Constants.SNAKE_LEVEL, '1');
+                        this.setState({ showSettings: false })
+                    }} style={{ alignSelf: 'center', marginTop: 20, paddingVertical: 12, backgroundColor: '#06d6a0', borderRadius: 30, width: 160, alignItems: 'center' }}>
+                        <Text style={{ color: COLOR.white(1), fontSize: 17, ...fontMaker({ weight: fontStyles.SemiBold }) }}>Dễ</Text>
+                    </Pressable>
+                    <Pressable onPress={async () => {
+                        await AsyncStorage.setItem(Constants.SNAKE_LEVEL, '2');
+                        this.setState({ showSettings: false });
+                    }} style={{ alignSelf: 'center', marginTop: 20, paddingVertical: 12, backgroundColor: '#f8961e', borderRadius: 30, width: 160, alignItems: 'center' }}>
+                        <Text style={{ color: COLOR.white(1), fontSize: 17, ...fontMaker({ weight: fontStyles.SemiBold }) }}>Trung bình</Text>
+                    </Pressable>
+                    <Pressable onPress={async () => {
+                        await AsyncStorage.setItem(Constants.SNAKE_LEVEL, '3');
+                        this.setState({ showSettings: false });
+                    }} style={{ alignSelf: 'center', marginTop: 20, paddingVertical: 12, backgroundColor: '#d62828', borderRadius: 30, width: 160, alignItems: 'center' }}>
+                        <Text style={{ color: COLOR.white(1), fontSize: 17, ...fontMaker({ weight: fontStyles.SemiBold }) }}>Khó</Text>
+                    </Pressable>
+                </ModalBox>
+            </View >
         );
     }
 }
@@ -91,9 +87,8 @@ export default class SnakeApp extends Component {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: '#000000',
-        alignItems: 'center',
-        justifyContent: 'center'
+        justifyContent: 'center',
+        alignItems: 'center'
     },
     controls: {
         width: 300,

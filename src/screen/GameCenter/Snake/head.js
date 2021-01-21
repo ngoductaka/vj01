@@ -1,5 +1,6 @@
 import React, { Component } from "react";
-import { StyleSheet, View } from "react-native";
+import { Image, StyleSheet, View } from "react-native";
+import { images } from "../../../utils/images";
 
 class Head extends Component {
     constructor(props) {
@@ -10,14 +11,15 @@ class Head extends Component {
         const x = this.props.position[0];
         const y = this.props.position[1];
         return (
-            <View style={[styles.finger, { width: this.props.size, height: this.props.size, left: x * this.props.size, top: y * this.props.size }]} />
+            <View style={[styles.finger, { width: this.props.size, height: this.props.size, left: x * this.props.size, top: y * this.props.size }]}>
+                <Image source={images.head} style={{ width: null, height: null, flex: 1 }} />
+            </View>
         );
     }
 }
 
 const styles = StyleSheet.create({
     finger: {
-        backgroundColor: '#888888',
         position: "absolute"
     }
 });

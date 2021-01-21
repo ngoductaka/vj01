@@ -461,11 +461,11 @@ export default class Grid extends Component {
     renderButtons() {
         return (
             <View style={{ flexDirection: 'row', justifyContent: 'space-around' }}>
-                <TouchableOpacity onPress={() => this.down()}>
-                    <Image style={styles.img} source={require('../img/down_arrow.png')} />
-                </TouchableOpacity>
                 <TouchableOpacity onPress={() => this.shiftCells('left')}>
                     <Image style={styles.img} source={require('../img/left-filled.png')} />
+                </TouchableOpacity>
+                <TouchableOpacity onPress={() => this.down()}>
+                    <Image style={styles.img} source={require('../img/down_arrow.png')} />
                 </TouchableOpacity>
                 <TouchableOpacity onPress={() => this.shiftCells('right')}>
                     <Image style={styles.img} source={require('../img/right-filled.png')} />

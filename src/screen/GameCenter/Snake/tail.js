@@ -1,5 +1,6 @@
 import React, { Component } from "react";
-import { StyleSheet, View } from "react-native";
+import { Image, StyleSheet, View } from "react-native";
+import { images } from "../../../utils/images";
 import Constants from './Constants';
 
 class Tail extends Component {
@@ -10,7 +11,9 @@ class Tail extends Component {
     render() {
 
         let tailList = this.props.elements.map((el, idx) => {
-            return <View key={idx} style={{ width: this.props.size, height: this.props.size, position: 'absolute', left: el[0] * this.props.size, top: el[1] * this.props.size, backgroundColor: 'blue' }} />
+            return <View key={idx} style={{ width: this.props.size, height: this.props.size, position: 'absolute', left: el[0] * this.props.size, top: el[1] * this.props.size }}>
+                <Image source={images.gift} style={{ flex: 1, width: null, height: null }} />
+            </View>
         });
 
         return (

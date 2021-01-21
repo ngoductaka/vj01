@@ -85,7 +85,7 @@ const GameLoop = (entities, { touches, dispatch, events }) => {
             if (head.position[0] === food.position[0] && head.position[1] === food.position[1]) {
                 // eating Food
                 tail.elements = [[food.position[0], food.position[1]]].concat(tail.elements);
-
+                dispatch({ type: "achieve-bonus" });
                 food.position[0] = randomBetween(0, Constants.GRID_SIZE - 1);
                 food.position[1] = randomBetween(0, Constants.GRID_SIZE - 1);
             }

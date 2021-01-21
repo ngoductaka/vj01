@@ -262,7 +262,12 @@ export const images = {
     'sudoku': require('../public/image/sudoku.jpg'),
     milionBg: require('../public/image/milionBg.jpeg'),
     tetris: require('../public/image/tetris.jpg'),
-    snake: require('../public/image/snake.jpg'),
+    snake: require('../public/image/snake.png'),
+    gift: require('../public/image/gift.png'),
+    head: require('../public/image/head.png'),
+    train_body: require('../public/image/train_body.png'),
+    trainbg: require('../public/image/trainbg.jpg'),
+    gametrainbg: require('../public/image/gametrainbg.png'),
 }
 
 export const mapImg = {

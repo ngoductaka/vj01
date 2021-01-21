@@ -72,8 +72,8 @@ export const fontSize = {
 };
 
 export const GAME_CENTERS = [
-	// { src: images.game1, name: 'Ai là triệu phú', slogan: 'Vui mà học, học mà chơi', route: 'WhoIsMillionarie' },
-	{ src: images.snake, name: 'Snake', slogan: 'Vui mà học, học mà chơi', route: 'Snake' },
+	{ src: images.game1, name: 'Ai là triệu phú', slogan: 'Vui mà học, học mà chơi', route: 'WhoIsMillionarie' },
+	{ src: images.snake, name: 'Viet Train', slogan: 'Vui mà học, học mà chơi', route: 'SnakeGameCenter' },
 	{ src: images.sudoku, name: 'Sudoku', slogan: 'Vui mà học, học mà chơi', route: 'Sudoku' },
 	{ src: images.tetris, name: 'Tetris', slogan: 'Vui mà học, học mà chơi', route: 'Tetris' },
 	// { src: images.game2, name: 'Nối từ', slogan: 'Vui mà học, học mà chơi', route: 'WordCatcher' },
@@ -93,10 +93,10 @@ export const LIST_UTILITIES = [
 		slogan: 'Thống kê kết quả học tập',
 		route: 'ScroreAnalyse'
 	},
-	// {
-	// 	src: { uri: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSHXTrOauz14wsbttF6Z0gSqkA1PiJene6aKQ&usqp=CAU' },
-	// 	name: '2048', slogan: 'Vui mà học, học mà chơi', route: 'Game2048'
-	// },
+	{
+		src: { uri: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSHXTrOauz14wsbttF6Z0gSqkA1PiJene6aKQ&usqp=CAU' },
+		name: '2048', slogan: 'Vui mà học, học mà chơi', route: 'Game2048'
+	},
 	// { src: images.flappybird, name: 'Flappy Bird', slogan: 'Vui mà học, học mà chơi', route: 'FlappyBird' },
 ];
 
