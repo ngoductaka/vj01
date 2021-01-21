@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import {
-    View, FlatList, Text, StyleSheet, Platform,Alert,
+    View, FlatList, Text, StyleSheet, Platform, Alert,
     TouchableOpacity, Dimensions, Image, ScrollView,
     SafeAreaView, TextInput, Keyboard, BackHandler, ActivityIndicator
 } from 'react-native';
@@ -199,6 +199,7 @@ const QnA = (props) => {
                                 questionId={questionId}
                                 handleClickAnswer={handleComment}
                                 setListShowImg={setListShowImg}
+                                setShowImg={setShowImg}
                             />
                         }
                         // render list anwer
@@ -421,7 +422,7 @@ const mapImg = {
     // 3: 3,
 }
 
-const RenderQuestion = ({ questionId, item, index, handleClickAnswer = () => { }, setListShowImg = () => { } }) => {
+const RenderQuestion = ({ questionId, item, index, handleClickAnswer = () => { }, setListShowImg = () => { }, setShowImg }) => {
     // console.log('item.image[0]', endpoints.BASE_URL)
     const [like, setLike] = useState(false);
     const _handleLike = useCallback(() => {
@@ -437,7 +438,7 @@ const RenderQuestion = ({ questionId, item, index, handleClickAnswer = () => { }
     return (
         <View style={[styles.itemQ]} >
             <View style={{ paddingHorizontal: 8 }}>
-                <RenderDataJson indexItem={index} content={item.content || ''} />
+                <RenderDataJson indexItem={index} content={item.content || ''} setShowImg={setShowImg} />
             </View>
             <RenderListImg listImg={item.image} setVisible={setListShowImg} />
             <View style={{
@@ -665,7 +666,7 @@ const FormComment = ({
     const [loading, setLoading] = useState(false);
 
     useEffect(() => {
-        if(commentType && commentType.type === 'comment') {
+        if (commentType && commentType.type === 'comment') {
             setPhotos([])
         }
 

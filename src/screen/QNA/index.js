@@ -19,7 +19,9 @@ import { fontMaker, fontStyles } from '../../utils/fonts';
 import { GradientText } from '../../component/shared/GradientText';
 import { FilterModal, mapTypeQestion } from './com/FilterModal';
 import api from '../../handle/api';
-import { RenderDataJson } from '../../component/shared/renderHtmlNew';
+// import { RenderDataJson } from '../../component/shared/renderHtmlNew';
+import RenderData, { RenderDataJson } from '../../component/shared/renderHtmlQuestion';
+
 import { search_services } from './service';
 import { images } from '../../utils/images';
 import { endpoints } from '../../constant/endpoints';
