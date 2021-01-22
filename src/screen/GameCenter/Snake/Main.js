@@ -87,15 +87,15 @@ export default class SnakeApp extends Component {
                         <Pressable onPress={() => this.props.navigation.goBack()} style={{ padding: 10 }} >
                             <Icon name='arrow-back' style={{ color: COLOR.MAIN, fontSize: 32 }} />
                         </Pressable>
-                        <Text numberOfLines={1} style={{ ...fontMaker({ weight: fontStyles.SemiBold }), fontSize: fontSize.h2 }}>Viet Train</Text>
+                        <Text numberOfLines={1} style={{ ...fontMaker({ weight: fontStyles.SemiBold }), fontSize: fontSize.h2 }}>Snake</Text>
                         <Pressable onPress={this.reset} style={{ padding: 10 }}>
                             <Icon name='reload' type='Ionicons' style={{ color: COLOR.MAIN_GREEN, fontSize: 26 }} />
                         </Pressable>
                     </Header>
                     <View style={styles.container}>
-                        <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', width: '100%', paddingHorizontal: 10 }}>
+                        <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', width: '100%', paddingHorizontal: 5 }}>
                             <View style={{ alignItems: 'center', justifyContent: 'center', height: 48, paddingHorizontal: 20, alignItems: 'center', paddingVertical: 8, backgroundColor: this.state.level == 1 ? '#06d6a0' : this.state.level == 2 ? '#f8961e' : '#d62828', borderRadius: 8, marginVertical: 20 }}>
-                                <Text style={{ color: COLOR.white(1), }}>Mức độ: {this.state.level == 1 ? 'Dễ' : this.state.level == 2 ? 'Trung bình' : 'Khó'}</Text>
+                                <Text style={{ color: COLOR.white(1), ...fontMaker({weight: fontStyles.Regular}) }}>Mức độ: {this.state.level == 1 ? 'Dễ' : this.state.level == 2 ? 'Trung bình' : 'Khó'}</Text>
                             </View>
                             <View style={{ width: 160, alignItems: 'center', justifyContent: 'center', height: 48, backgroundColor: COLOR.MAIN_GREEN, borderRadius: 8, marginVertical: 20 }}>
                                 <Text style={{ color: COLOR.white(1), fontSize: 30 }}>{this.state.point}</Text>

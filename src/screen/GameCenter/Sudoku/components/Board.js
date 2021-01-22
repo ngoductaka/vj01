@@ -280,14 +280,16 @@ class Board extends Component {
 
 const styles = StyleSheet.create({
   boardContainer: {
-    marginTop: 20,
     alignItems: 'center',
     width: BoardWidth,
   },
   board: {
     flexDirection: 'row',
     flexWrap: 'wrap',
-    backgroundColor: 'orange',
+    backgroundColor: 'transparent',
+    // borderWidth: 1,
+    // borderColor: '#6B3658',
+    // borderRadius: 16,
     padding: BorderWidth,
   },
   row: {

@@ -24,16 +24,16 @@ class Stack extends Component {
   render() {
     return (
       <View style={styles.container} >
-      {
-        stack.map((item, i) => {
-          return stack.map((item, j) => {
-            return (
-              <StackCell ref={ref => this.stacks[j][i] = ref} key={i+'-'+j} 
-                index={i} number={item} onPress={this.props.onPress} />
-            )
+        {
+          stack.map((item, i) => {
+            return stack.map((item, j) => {
+              return (
+                <StackCell ref={ref => this.stacks[j][i] = ref} key={i + '-' + j}
+                  index={i} number={item} onPress={this.props.onPress} />
+              )
+            })
           })
-        })
-      }
+        }
       </View>
     );
   }

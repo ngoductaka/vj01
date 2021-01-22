@@ -1,7 +1,8 @@
 'use strict';
 
-import { Icon } from 'native-base';
+import { Header, Icon } from 'native-base';
 import React, { Component } from 'react';
+import ModalBox from 'react-native-modalbox';
 
 import {
   LayoutAnimation,
@@ -14,8 +15,11 @@ import {
   View,
   Text,
   SafeAreaView,
+  Pressable,
 } from 'react-native';
-import { COLOR } from '../../../../handle/Constant';
+import { get } from 'lodash';
+import { avatarIndex, COLOR } from '../../../../handle/Constant';
+import { fontMaker, fontStyles } from '../../../../utils/fonts';
 
 import {
   Size,
@@ -30,6 +34,8 @@ import {
   Store,
   sudoku,
 } from '../utils';
+import LinearGradient from 'react-native-linear-gradient';
+import { connect, useSelector } from 'react-redux';
 
 const formatTime = Timer.formatTime;
 
@@ -43,6 +49,7 @@ class Main extends Component {
     showModal: false,
     showRecord: false,
     showOnline: false,
+    showGuide: false
   }
   puzzle = null
   solve = null
@@ -94,43 +101,141 @@ class Main extends Component {
     }
     return (
       <View style={styles.container} >
-        <SafeAreaView style={{ flex: 1, justifyContent: 'space-between' }}>
-          <View style={styles.header} >
-            <Touchable disabled={initing} onPress={this.onShowModal} >
-              <Icon name='menu' type='Feather' style={[styles.icon, initing && styles.disabled]} />
-            </Touchable>
-            <Timer ref={ref => this.timer = ref} style={styles.timer} disabledStyle={styles.disabled} />
-            <Touchable disabled={!playing} onPress={this.onToggleEditing} >
-              <Icon name='edit' type='Feather' style={[styles.icon, editing && { tintColor: 'khaki' }, !playing && styles.disabled]} />
-            </Touchable>
+        <View style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0 }}>
+          <View style={{ flex: 1, backgroundColor: '#6A4E6A' }} />
+          <View style={{ flex: 1.8, backgroundColor: '#9D5E75' }} />
+        </View>
+        <SafeAreaView style={{ flex: 1 }}>
+          <Header style={styles.header}>
+            <View style={{ width: 56, height: 56, borderWidth: 6, borderColor: '#663059', borderRadius: 50, overflow: 'hidden', backgroundColor: COLOR.white(1) }}>
+              <Image
+                source={avatarIndex[this.props.avatar_id || 0].img}
+                style={{ flex: 1, width: null, height: null, resizeMode: 'contain', padding: 3 }}
+              />
+            </View>
+            <Pressable disabled={initing} style={{ backgroundColor: initing ? '#B8858C' : '#9D5E75', width: 44, height: 44, borderRadius: 30, justifyContent: 'center', alignItems: 'center' }} onPress={this.onShowModal} >
+              <Icon name='close' type='AntDesign' style={[styles.icon, initing && styles.disabled]} />
+            </Pressable>
+          </Header>
+          <View style={{ flex: 1, }}>
+            <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', padding: 20, paddingVertical: 45 }}>
+              <View style={{}}>
+                <View style={{ paddingVertical: 8, backgroundColor: '#B593B7', borderRadius: 30, alignSelf: 'baseline', width: 100, justifyContent: 'center', alignItems: 'center' }}>
+                  <Text style={{ color: COLOR.white(1), fontSize: 17, ...fontMaker({ weight: fontStyles.SemiBold }) }}>Lỗi: {this.error}</Text>
+                </View>
+              </View>
+              <Timer ref={ref => this.timer = ref} style={styles.timer} disabledStyle={styles.disabled} />
+              <Pressable style={{ paddingVertical: 9, backgroundColor: '#B593B7', borderRadius: 30, alignSelf: 'baseline', width: 100, justifyContent: 'center', alignItems: 'center' }} disabled={!playing} onPress={this.onToggleEditing} >
+                <Icon name='edit' type='Feather' style={[styles.icon, editing && { color: '#118ab2' }, !playing && styles.disabled]} />
+              </Pressable>
+            </View>
+            <Board puzzle={puzzle} solve={this.solve} editing={editing}
+              onInit={this.onInit} onErrorMove={this.onErrorMove} onFinish={this.onFinish} />
           </View>
-          <Board puzzle={puzzle} solve={this.solve} editing={editing}
-            onInit={this.onInit} onErrorMove={this.onErrorMove} onFinish={this.onFinish} />
-          <View />
           <Modal animationType='slide' visible={showModal} transparent={true} onRequestClose={this.onCloseModal} >
             <View style={styles.modal} >
-              <View style={[styles.modalContainer, { marginTop: showOnline ? -onlineHeight : 0 }]} >
-                <Touchable disabled={disabled} style={styles.button} onPress={this.onResume} >
-                  <Icon name='play' type='AntDesign' style={[styles.buttonIcon, disabled && styles.disabled]} />
-                  <Text style={[styles.buttonText, disabled && styles.disabled]} >Continue</Text>
-                </Touchable>
-                <Touchable disabled={disabled} style={styles.button} onPress={this.onClear} >
-                  <Icon name='replay' type='MaterialIcons' style={[styles.buttonIcon, disabled && styles.disabled]} />
-                  <Text style={[styles.buttonText, disabled && styles.disabled]} >Chơi lại</Text>
-                </Touchable>
-                <Touchable style={styles.button} onPress={this.onCreate} >
-                  <Icon name='shuffle' type='Ionicons' style={styles.buttonIcon} />
-                  <Text style={styles.buttonText} >Trò chơi mới</Text>
-                </Touchable>
-                <Touchable style={styles.button} onPress={() => this.props.navigation.goBack()} >
-                  <Icon name='exit-outline' type='Ionicons' style={styles.buttonIcon} />
-                  <Text style={styles.buttonText} >Thoát trò chơi</Text>
-                </Touchable>
-              </View>
+              <LinearGradient style={{ flex: 1 }} colors={['#6C4F6A', '#9B5D74']} >
+                <SafeAreaView style={{ flex: 1 }}>
+                  <View style={{ flexDirection: 'row', alignItems: 'center', marginLeft: 20, marginTop: 20 }}>
+                    <View style={{ backgroundColor: '#663059', paddingTop: 4, paddingBottom: 6, marginLeft: 35, borderTopRightRadius: 20, borderBottomRightRadius: 20 }}>
+                      <Text style={{ color: COLOR.white(1), paddingLeft: 28, paddingRight: 15, ...fontMaker({ weight: fontStyles.SemiBold }), fontSize: 16 }}>{this.props.name}</Text>
+                    </View>
+                    <View style={{ position: 'absolute', left: 0, alignSelf: 'center', width: 56, height: 56, borderWidth: 6, borderColor: '#663059', borderRadius: 50, overflow: 'hidden', backgroundColor: COLOR.white(1) }}>
+                      <Image
+                        source={avatarIndex[this.props.avatar_id || 0].img}
+                        style={{ flex: 1, width: null, height: null, resizeMode: 'contain', padding: 3 }}
+                      />
+                    </View>
+                  </View>
+                  <View style={[styles.modalContainer, { marginTop: showOnline ? -onlineHeight : 0 }]} >
+                    <Text style={{ textAlign: 'center', color: COLOR.white(1), fontSize: 40, marginBottom: 80, letterSpacing: 8, ...fontMaker({ weight: fontStyles.SemiBold }) }}>SUDOKU</Text>
+                    <Pressable disabled={disabled} style={{ width: 320, alignSelf: 'center' }} onPress={this.onResume} >
+                      <View style={{ height: 20, width: '100%', borderBottomLeftRadius: 20, borderBottomRightRadius: 20, backgroundColor: '#A33C4E', position: 'absolute', bottom: -5 }} />
+                      <View style={styles.button}>
+                        <View style={{ backgroundColor: '#C7445A', justifyContent: 'center', alignItems: 'center', padding: 12, borderTopLeftRadius: 8, borderBottomLeftRadius: 8 }}>
+                          <Icon name='play' type='Feather' style={[styles.buttonIcon, disabled && styles.disabled]} />
+                        </View>
+                        <View style={{ flex: 1 }}>
+                          <Text style={[styles.buttonText, disabled && styles.disabled]}>TIẾP TỤC</Text>
+                        </View>
+                      </View>
+                    </Pressable>
+
+                    {/* play again  */}
+                    <Pressable onPress={this.onClear} disabled={disabled} style={{ width: 320, alignSelf: 'center', marginTop: 25 }}>
+                      <View style={{ height: 20, width: '100%', borderBottomLeftRadius: 20, borderBottomRightRadius: 20, backgroundColor: '#31799E', position: 'absolute', bottom: -5 }} />
+                      <View style={[styles.button, { backgroundColor: '#469DC8' }]}>
+                        <View style={{ backgroundColor: '#39AFE9', justifyContent: 'center', alignItems: 'center', padding: 12, borderTopLeftRadius: 8, borderBottomLeftRadius: 8 }}>
+                          <Icon name='replay' type='MaterialIcons' style={[styles.buttonIcon, disabled && styles.disabled]} />
+                        </View>
+                        <View style={{ flex: 1 }}>
+                          <Text style={[styles.buttonText, disabled && styles.disabled]} >CHƠI LẠI</Text>
+                        </View>
+                      </View>
+                    </Pressable>
+
+                    {/* new game */}
+                    <Pressable onPress={this.onCreate} disabled={disabled} style={{ width: 320, alignSelf: 'center', marginTop: 25 }}>
+                      <View style={{ height: 20, width: '100%', borderBottomLeftRadius: 20, borderBottomRightRadius: 20, backgroundColor: '#B5903C', position: 'absolute', bottom: -5 }} />
+                      <View style={[styles.button, { backgroundColor: '#F2C960' }]}>
+                        <View style={{ backgroundColor: '#CAAB56', justifyContent: 'center', alignItems: 'center', padding: 12, borderTopLeftRadius: 8, borderBottomLeftRadius: 8 }}>
+                          <Icon name='shuffle' type='Ionicons' style={[styles.buttonIcon, disabled && styles.disabled]} />
+                        </View>
+                        <View style={{ flex: 1 }}>
+                          <Text style={[styles.buttonText, disabled && styles.disabled]} >TRÒ CHƠI MỚI</Text>
+                        </View>
+                      </View>
+                    </Pressable>
+
+                    {/* guide */}
+                    <Pressable onPress={() => {
+                      this.setState({ showModal: false });
+                      this.props.navigation.navigate('SudokuInstruction', { callback: () => this.setState({ showModal: true }) });
+                    }} style={{ width: 320, alignSelf: 'center', marginTop: 25 }} >
+                      <View style={{ height: 20, width: '100%', borderBottomLeftRadius: 20, borderBottomRightRadius: 20, backgroundColor: '#D58843', position: 'absolute', bottom: -5 }} />
+                      <View style={[styles.button, { backgroundColor: '#F59331' }]}>
+                        <View style={{ backgroundColor: '#D58843', justifyContent: 'center', alignItems: 'center', padding: 12, borderTopLeftRadius: 8, borderBottomLeftRadius: 8 }}>
+                          <Icon name='information' type='Ionicons' style={[styles.buttonIcon, disabled && styles.disabled]} />
+                        </View>
+                        <View style={{ flex: 1 }}>
+                          <Text style={[styles.buttonText, disabled && styles.disabled]} >HƯỚNG DẪN</Text>
+                        </View>
+                      </View>
+                    </Pressable>
+
+                    {/* exit game */}
+                    <Pressable onPress={() => this.props.navigation.goBack()} disabled={disabled} style={{ width: 320, alignSelf: 'center', marginTop: 25 }} >
+                      <View style={{ height: 20, width: '100%', borderBottomLeftRadius: 20, borderBottomRightRadius: 20, backgroundColor: '#6D5E61', position: 'absolute', bottom: -5 }} />
+                      <View style={[styles.button, { backgroundColor: '#94918A' }]}>
+                        <View style={{ backgroundColor: '#77746D', justifyContent: 'center', alignItems: 'center', padding: 12, borderTopLeftRadius: 8, borderBottomLeftRadius: 8 }}>
+                          <Icon name='ios-exit-outline' type='Ionicons' style={[styles.buttonIcon, disabled && styles.disabled]} />
+                        </View>
+                        <View style={{ flex: 1 }}>
+                          <Text style={[styles.buttonText, disabled && styles.disabled]} >THOÁT TRÒ CHƠI</Text>
+                        </View>
+                      </View>
+                    </Pressable>
+                  </View>
+                </SafeAreaView>
+              </LinearGradient>
             </View>
           </Modal>
         </SafeAreaView>
-      </View>
+        {/* <ModalBox
+          isOpen={this.state.showGuide}
+          backdropPressToClose={true}
+          swipeToClose={true}
+          style={{ width: 320, height: null, borderRadius: 8, overflow: 'hidden', padding: 30 }}
+          onClosed={() => this.setState({ showGuide: false })}
+          position='center'
+        >
+          <Text style={{ textAlign: 'center', fontSize: 20, color: COLOR.MAIN, ...fontMaker({ weight: fontStyles.Bold }) }}>Hướng dẫn</Text>
+          <Text style={{ fontSize: 16, textAlign: 'center', lineHeight: 24, marginTop: 10, ...fontMaker({ weight: fontStyles.Regular }) }}>Hãy cố gắng dùng những phím di chuyển để có thể điều hướng đoàn tàu của bạn có thể thu hoạch được nhiều chiến lợi phẩm tốt nhất nhé</Text>
+          <Pressable onPress={() => this.setState({ showGuide: false })} style={{ alignSelf: 'center', marginTop: 20, paddingHorizontal: 40, paddingVertical: 12, backgroundColor: COLOR.MAIN_GREEN, borderRadius: 30 }}>
+            <Text style={{ color: COLOR.white(1), fontSize: 17, ...fontMaker({ weight: fontStyles.SemiBold }) }}>Đã hiểu</Text>
+          </Pressable>
+        </ModalBox> */}
+      </View >
     );
   }
 
@@ -302,30 +407,33 @@ class Main extends Component {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: 'cadetblue',
+    // backgroundColor: 'cadetblue',
     paddingBottom: CellSize,
   },
   header: {
-    width: BoardWidth,
+    width: '100%',
     paddingHorizontal: 10,
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
+    backgroundColor: 'transparent',
+    borderBottomWidth: 0,
+    elevation: 0,
+    borderBottomColor: 'transparent'
   },
   icon: {
-    width: CellSize,
-    height: CellSize,
+    fontSize: 22,
     color: COLOR.white(1)
   },
   timer: {
-    fontSize: CellSize * 2.5 / 4,
+    fontSize: 22,
     alignSelf: 'center',
     color: '#fff',
     opacity: 1,
   },
   modal: {
     flex: 1,
-    backgroundColor: 'teal',
+    // backgroundColor: 'teal',
   },
   modalContainer: {
     flex: 1,
@@ -358,22 +466,25 @@ const styles = StyleSheet.create({
     justifyContent: 'space-around',
   },
   button: {
-    padding: Size.height > 500 ? 20 : 10,
+    // padding: Size.height > 500 ? 20 : 10,
     flexDirection: 'row',
     alignItems: 'center',
-    justifyContent: 'center',
+    // justifyContent: 'center',
+    backgroundColor: '#EE4F68',
+    width: 320,
+    borderRadius: 8
   },
   buttonIcon: {
-    width: CellSize,
-    height: CellSize,
-    color: COLOR.white(1)
+    fontSize: 26,
+    color: '#fff',
+    ...fontMaker({ weight: fontStyles.Regular })
   },
   buttonText: {
-    marginLeft: CellSize / 2,
+    marginLeft: 50,
     color: '#fff',
-    fontSize: CellSize * 2 / 4,
-    fontFamily: 'Menlo',
-    marginBottom: 10
+    fontSize: 18,
+    ...fontMaker({ weight: fontStyles.SemiBold })
+    // fontFamily: 'Menlo',
   },
   record: {
     backgroundColor: 'cadetblue',
@@ -410,5 +521,11 @@ const styles = StyleSheet.create({
   },
 });
 
+const mapStateToProps = (state) => {
+  return {
+    avatar_id: get(state, 'userInfo.user.avatar_id', 0),
+    name: get(state, 'userInfo.user.name', '')
+  };
+}
 
-export default Main;
+export default connect(mapStateToProps, {})(Main);

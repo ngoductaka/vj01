@@ -67,6 +67,7 @@ import Game2048 from '../screen/GameCenter/Game2048';
 import FlappyBird from '../screen/GameCenter/FlappyBird';
 import TimeTable from '../screen/Utilities/TimeTable';
 import ScroreAnalyse from '../screen/Utilities/ScroreAnalyse';
+import SudokuInstruction from '../screen/GameCenter/Sudoku/containers/Instruction';
 
 const NUMBER_OF_TABS = 4;
 
@@ -391,6 +392,12 @@ const InAppStack = createStackNavigator({
 		screen: Sudoku,
 		navigationOptions: {
 			// ...TransitionPresets.ModalPresentationIOS,
+		}
+	},
+	SudokuInstruction: {
+		screen: SudokuInstruction,
+		navigationOptions: {
+			...TransitionPresets.ModalPresentationIOS,
 		}
 	},
 	SnakeGameCenter: {

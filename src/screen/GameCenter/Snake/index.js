@@ -21,18 +21,18 @@ export default class SnakeApp extends Component {
     render() {
         return (
             <View style={{ flex: 1, backgroundColor: '#56BCE8' }}>
-                <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', paddingTop: 40 }}>
-                    <Text style={{ fontSize: 50, textAlign: 'center', ...fontMaker({ weight: fontStyles.SemiBold }), color: '#fff' }}>VIET TRAIN</Text>
-                    <Pressable onPress={() => this.props.navigation.navigate('SnakeApp')} style={{ backgroundColor: '#2a9d8f', padding: 12, width: 200, borderRadius: 30, alignItems: 'center', marginTop: 30 }}>
+                <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', paddingTop: 90 }}>
+                    <Text style={{ fontSize: 50, textAlign: 'center', ...fontMaker({ weight: fontStyles.SemiBold }), color: '#fff', letterSpacing: 10 }}>SNAKE</Text>
+                    <Pressable onPress={() => this.props.navigation.navigate('SnakeApp')} style={{ backgroundColor: '#2a9d8f', padding: 12, width: 180, borderRadius: 30, alignItems: 'center', marginTop: 30 }}>
                         <Text style={{ color: COLOR.white(1), fontSize: 18, ...fontMaker({ weight: fontStyles.SemiBold }) }}>Bắt đầu</Text>
                     </Pressable>
-                    <Pressable onPress={() => this.setState({ showGuide: true })} style={{ backgroundColor: '#e9c46a', padding: 12, width: 200, borderRadius: 30, alignItems: 'center', marginTop: 30 }}>
+                    <Pressable onPress={() => this.setState({ showGuide: true })} style={{ backgroundColor: '#e9c46a', padding: 12, width: 180, borderRadius: 30, alignItems: 'center', marginTop: 30 }}>
                         <Text style={{ color: COLOR.white(1), fontSize: 18, ...fontMaker({ weight: fontStyles.SemiBold }) }}>Hướng dẫn</Text>
                     </Pressable>
-                    <Pressable onPress={() => this.setState({ showSettings: true })} style={{ backgroundColor: '#f4a261', padding: 12, width: 200, borderRadius: 30, alignItems: 'center', marginTop: 30 }}>
+                    <Pressable onPress={() => this.setState({ showSettings: true })} style={{ backgroundColor: '#f4a261', padding: 12, width: 180, borderRadius: 30, alignItems: 'center', marginTop: 30 }}>
                         <Text style={{ color: COLOR.white(1), fontSize: 18, ...fontMaker({ weight: fontStyles.SemiBold }) }}>Cài đặt</Text>
                     </Pressable>
-                    <Pressable onPress={() => this.props.navigation.goBack()} style={{ backgroundColor: '#e76f51', padding: 12, width: 200, borderRadius: 30, alignItems: 'center', marginTop: 30 }}>
+                    <Pressable onPress={() => this.props.navigation.goBack()} style={{ backgroundColor: '#e76f51', padding: 12, width: 180, borderRadius: 30, alignItems: 'center', marginTop: 30 }}>
                         <Text style={{ color: COLOR.white(1), fontSize: 18, ...fontMaker({ weight: fontStyles.SemiBold }) }}>Thoát trò chơi</Text>
                     </Pressable>
                 </View>

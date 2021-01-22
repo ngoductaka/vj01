@@ -11,7 +11,7 @@ export const BoardWidth = Size.width;
 
 export const CellSize = Math.floor(BoardWidth / 10);
 
-export const BorderWidth = 2;
+export const BorderWidth = 0.75;
 
 export const Color = {
 
