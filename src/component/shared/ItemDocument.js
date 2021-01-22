@@ -178,7 +178,7 @@ const RenderQnASearch = ({ title, onPress, viewCount, index, book, grade }) => {
 						borderWidth: 1
 					}}
 				>
-					<Icon type='MaterialCommunityIcons' name='question' style={{ color: COLOR.MAIN, fontSize: 18, marginLeft: 3 }} />
+					<Icon type='FontAwesome' name='question' style={{ color: COLOR.MAIN, fontSize: 18 }} />
 				</View>
 				<View style={{ flex: 1 }}>
 					<Text numberOfLines={2} style={stylesComponent.textContent}>

@@ -110,16 +110,16 @@ const QnA = (props) => {
     };
 
     const _handleSelectPhoto = () => {
-        imagePicker.launchLibrary({ multiple: true }, {
+        imagePicker.launchLibrary({}, {
             onChooseImage: (response) => {
                 if (response) {
                     try {
-                        const arrImg = [...photos, ...response];
-                        if (arrImg.length < 4) {
+                        const arrImg = [...photos, response];
+                        if (arrImg.length < 2) {
                             setPhotos(arrImg);
                         }
                         else
-                            Toast.showWithGravity("Bạn chỉ được gửi tối đa 3 ảnh", Toast.SHORT, Toast.CENTER);
+                            Toast.showWithGravity("Bạn chỉ được chọn 1 ảnh", Toast.SHORT, Toast.CENTER);
 
                     } catch (err) {
                         console.log(err)
@@ -139,7 +139,7 @@ const QnA = (props) => {
                         if (photos.length < 3)
                             setPhotos([...photos, response])
                         else
-                            Toast.showWithGravity("Bạn chỉ được gửi tối đa 3 ảnh", Toast.SHORT, Toast.CENTER);
+                            Toast.showWithGravity("Bạn chỉ được chọn 1 ảnh", Toast.SHORT, Toast.CENTER);
 
                     } catch (err) {
                         console.log(err)
