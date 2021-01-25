@@ -614,18 +614,12 @@ const RenderQestion = ({ item, index, hanldleClick, _handleNavigate = () => { },
                 //  borderTopColor: '#cecece',
                 // borderTopWidth: 1, 
                 alignItems: 'flex-end',
+                justifyContent: 'space-between',
                 paddingTop: 8, marginTop: 5, paddingHorizontal: 8
             }}>
                 {/* <ListUser /> */}
                 <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-                    <TouchableOpacity
-                        onPress={_handleLike}
-                        style={{ justifyContent: 'center', alignItems: 'center', flexDirection: 'row', marginRight: 10 }}
-                    >
-                        <Icon name="heart" type="EvilIcons"
-                            style={{ fontSize: 35, marginHorizontal: 4, color: like ? COLOR.MAIN : "#333" }} />
-                        <Text style={{ color: like ? COLOR.MAIN : "#333" }}>{likeCount + (like ? 1 : 0)}</Text>
-                    </TouchableOpacity>
+
                     <TouchableOpacity
                         onPress={() => {
                             hanldleClick({
@@ -634,15 +628,27 @@ const RenderQestion = ({ item, index, hanldleClick, _handleNavigate = () => { },
                             })
                         }}
                         style={{ justifyContent: 'center', alignItems: 'center', flexDirection: 'row', marginRight: 20 }} >
-                        <Icon name="comment" type="EvilIcons" style={{ fontSize: 35, marginHorizontal: 4, }} />
-                        <Text>{commentCount}</Text>
+                        {/* <Icon name="comment" type="EvilIcons" style={{ fontSize: 35, marginHorizontal: 4, }} /> */}
+                        <Text style={{ color: '#74B2D6', fontWeight: 'bold' }}>{commentCount} câu trả lời</Text>
                     </TouchableOpacity>
                     {/* <ListUser /> */}
                 </View>
-                <View style={{ flex: 1, alignItems: 'flex-end' }}>
+                <View style={{ flexDirection: 'row' }}>
                     <View style={{ justifyContent: 'center', alignItems: 'center', flexDirection: 'row', marginRight: 15 }} >
-                        <Text style={{ fontSize: 13, color: '#333' }}> {image[0] ? `${image.length} ảnh • ` : ''} {viewCount} lượt xem</Text>
+                        {/* <Text style={{ fontSize: 13, color: '#333' }}> {image[0] ? `${image.length} ảnh • ` : ''} {viewCount} lượt xem</Text> */}
+                        <Icon name="star" type="AntDesign" style={{fontSize: 20, color: COLOR.MAIN, marginHorizontal: 4,}} />
+                        <Text style={{ color: "#333", fontWeight: 'bold' }}>5.0</Text>
+
                     </View>
+                    <TouchableOpacity
+                        onPress={_handleLike}
+                        style={{ justifyContent: 'center', alignItems: 'center', flexDirection: 'row', marginRight: 10 }}
+                    >
+                        <Icon name="heart" type="Entypo"
+                            style={{ fontSize: 20, marginHorizontal: 4, 
+                            color: "#FC786D" }} />
+                        <Text style={{ color: "#333", fontWeight: 'bold' }}>{likeCount + (like ? 1 : 0)}</Text>
+                    </TouchableOpacity>
                 </View>
             </View>
             <ImageView

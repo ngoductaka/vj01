@@ -29,12 +29,10 @@ const FeedBack = memo((props) => {
 				content: state.content, contact: state.contact
 			});
 			// console.log('-----handle send feedback----', result);
-			if (result.status === 200) {
-				setState({ content: '', contact: '' });
-				Toast.show('Cảm ơn bạn đã đóng góp ý kiến. Chúc bạn có những thời gian trải nghiệm ứng dụng vui vẻ!');
-			} else {
-				SimpleToast.show('Đã có lỗi khi gửi ý kiến góp ý, mời bạn thử lại sau!');
-			}
+
+			setState({ content: '', contact: '' });
+			Toast.show('Cảm ơn bạn đã đóng góp ý kiến. Chúc bạn có những thời gian trải nghiệm ứng dụng vui vẻ!');
+
 
 		} catch (err) {
 			SimpleToast.show('Đã có lỗi khi gửi ý kiến góp ý, mời bạn thử lại sau!');

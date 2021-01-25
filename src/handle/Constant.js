@@ -92,10 +92,10 @@ export const LIST_UTILITIES = [
 		slogan: 'Thống kê kết quả học tập',
 		route: 'ScroreAnalyse'
 	},
-	// {
-	// 	src: { uri: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSHXTrOauz14wsbttF6Z0gSqkA1PiJene6aKQ&usqp=CAU' },
-	// 	name: '2048', slogan: 'Vui mà học, học mà chơi', route: 'Game2048'
-	// },
+	{
+		src: { uri: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSHXTrOauz14wsbttF6Z0gSqkA1PiJene6aKQ&usqp=CAU' },
+		name: 'Máy tính', slogan: 'Thay thế máy tính', route: 'Calculator'
+	},
 	// { src: images.flappybird, name: 'Flappy Bird', slogan: 'Vui mà học, học mà chơi', route: 'FlappyBird' },
 ];
 
