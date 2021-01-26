@@ -95,7 +95,7 @@ const Login = (props) => {
 
                             {isSupported &&
                                 <Animatable.View delay={400} animation='slideInRight' style={styles.shadow}>
-                                    <View style={{ borderRadius: 24, overflow: 'hidden', marginTop: 20, }}>
+                                    <View style={{ borderRadius: 5, overflow: 'hidden', marginTop: 20, }}>
                                         <AppleButton
                                             style={styles.appleButton}
                                             cornerRadius={5}

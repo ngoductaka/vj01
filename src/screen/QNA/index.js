@@ -365,7 +365,6 @@ const userStyle = StyleSheet.create({
 })
 
 const RenderHead = ({ filter, setFilter, setShowFilter, navigation, loading, avatar }) => {
-    console.log('=======0939393')
     return (
         <View style={styles.head}>
             <View style={{
@@ -629,15 +628,20 @@ const RenderQestion = ({ item, index, hanldleClick, _handleNavigate = () => { },
                         }}
                         style={{ justifyContent: 'center', alignItems: 'center', flexDirection: 'row', marginRight: 20 }} >
                         {/* <Icon name="comment" type="EvilIcons" style={{ fontSize: 35, marginHorizontal: 4, }} /> */}
-                        <Text style={{ color: '#74B2D6', fontWeight: 'bold' }}>{commentCount} câu trả lời</Text>
+                        <Text style={{ color: '#74B2D6', fontWeight: 'bold' }}> {commentCount ? `${commentCount} câu trả lời`: "Chưa có câu trả lời" }</Text>
                     </TouchableOpacity>
                     {/* <ListUser /> */}
                 </View>
                 <View style={{ flexDirection: 'row' }}>
                     <View style={{ justifyContent: 'center', alignItems: 'center', flexDirection: 'row', marginRight: 15 }} >
-                        {/* <Text style={{ fontSize: 13, color: '#333' }}> {image[0] ? `${image.length} ảnh • ` : ''} {viewCount} lượt xem</Text> */}
-                        <Icon name="star" type="AntDesign" style={{fontSize: 20, color: COLOR.MAIN, marginHorizontal: 4,}} />
-                        <Text style={{ color: "#333", fontWeight: 'bold' }}>5.0</Text>
+                        <Icon name="eye" type="Entypo" style={{ fontSize: 20, color: '#333', marginHorizontal: 4, }} />
+                        <Text style={{ fontSize: 13, color: '#333' }}>
+                            {/* {image[0] ? `${image.length} ảnh • ` : ''} */}
+                            {viewCount}
+                        </Text>
+
+                        {/* <Icon name="star" type="AntDesign" style={{fontSize: 20, color: COLOR.MAIN, marginHorizontal: 4,}} />
+                        <Text style={{ color: "#333", fontWeight: 'bold' }}>5.0</Text> */}
 
                     </View>
                     <TouchableOpacity
@@ -645,8 +649,10 @@ const RenderQestion = ({ item, index, hanldleClick, _handleNavigate = () => { },
                         style={{ justifyContent: 'center', alignItems: 'center', flexDirection: 'row', marginRight: 10 }}
                     >
                         <Icon name="heart" type="Entypo"
-                            style={{ fontSize: 20, marginHorizontal: 4, 
-                            color: "#FC786D" }} />
+                            style={{
+                                fontSize: 20, marginHorizontal: 4,
+                                color: "#FC786D"
+                            }} />
                         <Text style={{ color: "#333", fontWeight: 'bold' }}>{likeCount + (like ? 1 : 0)}</Text>
                     </TouchableOpacity>
                 </View>
