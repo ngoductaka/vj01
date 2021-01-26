@@ -91,7 +91,7 @@ export default class CreateBlock extends Component {
             return (
                 <View key={i} style={{ flexDirection: 'row' }}>
                     {row.map((cell, j) => {
-                        var c = 'white';
+                        var c = 'transparent';
                         if (cell == 1) {
                             c = color;
                         }
@@ -104,7 +104,7 @@ export default class CreateBlock extends Component {
 
     render() {
         return (
-            <View style={{ margin: 10 }}>
+            <View style={{ margin: 10, }}>
                 {this.renderBlockGrid()}
             </View>
         )

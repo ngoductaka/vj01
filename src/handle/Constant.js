@@ -72,7 +72,7 @@ export const fontSize = {
 };
 
 export const GAME_CENTERS = [
-	{ src: images.game1, name: 'Ai là triệu phú', slogan: 'Vui mà học, học mà chơi', route: 'WhoIsMillionarie' },
+	// { src: images.game1, name: 'Ai là triệu phú', slogan: 'Vui mà học, học mà chơi', route: 'WhoIsMillionarie' },
 	{ src: images.snake, name: 'Snake', slogan: 'Vui mà học, học mà chơi', route: 'SnakeGameCenter' },
 	{ src: images.sudoku, name: 'Sudoku', slogan: 'Vui mà học, học mà chơi', route: 'Sudoku' },
 	{ src: images.tetris, name: 'Tetris', slogan: 'Vui mà học, học mà chơi', route: 'Tetris' },
@@ -117,6 +117,7 @@ export const Constants = {
 	TYPE_LOGIN: 'type_login',
 	USER_INFO: 'user_info',
 	ACCOUNT_ID: 'account_id',
+	TETRIS_HIGHSCORE: 'TETRIS_HIGHSCORE',
 };
 
 export const TIMEOUT = 20000;

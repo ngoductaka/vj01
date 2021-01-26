@@ -45,7 +45,7 @@ export default class Cell extends Component {
 
 var styles = StyleSheet.create({
     cell: {
-        borderColor: COLOR.black(.6),
+        borderColor: COLOR.black(.05),
     }
 
 })

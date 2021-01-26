@@ -199,7 +199,7 @@ export const NavigateIndex = ({ handleChangeIndex, index, max, openMod }) => {
 					style={stNavigate.next}
 					colors={['#f48e37', '#f6a048', '#f7d87e']}
 				> */}
-					<Text style={[stNavigate.text, { color: COLOR.MAIN }]}> Tiếp theo </Text>
+					<Text style={[stNavigate.text, { color: COLOR.MAIN }]}>Tiếp theo </Text>
 					<Icon type='MaterialCommunityIcons' name="chevron-right" style={{ color: COLOR.MAIN }} />
 					{/* </LinearGradient> */}
 				</TouchableOpacity> :

@@ -268,6 +268,7 @@ export const images = {
     train_body: require('../public/image/train_body.png'),
     trainbg: require('../public/image/trainbg.jpg'),
     gametrainbg: require('../public/image/gametrainbg.png'),
+    gameTetris: require('../public/image/tetrisgame.png'),
 }
 
 export const mapImg = {

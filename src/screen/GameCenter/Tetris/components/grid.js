@@ -8,9 +8,14 @@ import {
     Image,
     Text,
     Modal,
-    TouchableOpacity
+    TouchableOpacity,
+    Pressable,
+    SafeAreaView,
+    StatusBar,
+    Dimensions
 } from 'react-native';
 import numeral from 'numeral';
+import LinearGradient from 'react-native-linear-gradient';
 
 import Cell from './cell';
 import Preview from './preview';
@@ -18,9 +23,15 @@ import { belongs, createRandomBlock } from './helpers';
 import { rotate } from './rotation';
 import { fontMaker, fontStyles } from '../../../../utils/fonts';
 import BackHeader from '../../../History/Component/BackHeader';
-import { COLOR } from '../../../../handle/Constant';
+import { avatarIndex, COLOR, Constants } from '../../../../handle/Constant';
+import { Header, Icon } from 'native-base';
+import { images } from '../../../../utils/images';
+import { getItem, saveItem } from '../../../../handle/handleStorage';
+import { connect } from 'react-redux';
+import { get } from 'lodash';
 
-export default class Grid extends Component {
+const { width, height } = Dimensions.get('window');
+class Grid extends Component {
     constructor(props) {
         super(props);
         this.state = {
@@ -31,21 +42,31 @@ export default class Grid extends Component {
             numBlocks: 5,
             score: 0,
             started: false,
-            gameOver: true
+            gameOver: true,
+            highScore: 0
         }
 
         this.grid = [];
         this.currentBlock = 'J';
         this.rotation = 0;
-        this.speed = 450;
+        this.speed = 650;
         this.changeColor = this.changeColor.bind(this);
         this.checkColor = this.checkColor.bind(this);
 
     }
 
-    componentDidMount() {
+    async componentDidMount() {
+        const currentHighScore = await getItem(Constants.TETRIS_HIGHSCORE);
+        if (currentHighScore) this.setState({ highScore: currentHighScore });
         this.createGrid();
         this.generateBlocks();
+    }
+
+    async componentWillUnmount() {
+        const currentHighScore = await getItem(Constants.TETRIS_HIGHSCORE);
+        if (this.state.score > currentHighScore) {
+            saveItem(Constants.TETRIS_HIGHSCORE, this.state.score);
+        }
     }
 
     createGrid() {
@@ -224,7 +245,7 @@ export default class Grid extends Component {
     }
 
     loadNextBlock() {
-        this.speed = 450;
+        this.speed = 650;
         clearInterval(this.interval);
         this.interval = setInterval(() => {
             this.tick()
@@ -461,16 +482,16 @@ export default class Grid extends Component {
     renderButtons() {
         return (
             <View style={{ flexDirection: 'row', justifyContent: 'space-around' }}>
-                <TouchableOpacity onPress={() => this.shiftCells('left')}>
+                <TouchableOpacity style={{ backgroundColor: '#FD676A', justifyContent: 'center', alignItems: 'center', borderRadius: 30, padding: 10 }} onPress={() => this.shiftCells('left')}>
                     <Image style={styles.img} source={require('../img/left-filled.png')} />
                 </TouchableOpacity>
-                <TouchableOpacity onPress={() => this.down()}>
+                <TouchableOpacity style={{ backgroundColor: '#FD676A', justifyContent: 'center', alignItems: 'center', borderRadius: 30, padding: 10 }} onPress={() => this.down()}>
                     <Image style={styles.img} source={require('../img/down_arrow.png')} />
                 </TouchableOpacity>
-                <TouchableOpacity onPress={() => this.shiftCells('right')}>
+                <TouchableOpacity style={{ backgroundColor: '#FD676A', justifyContent: 'center', alignItems: 'center', borderRadius: 30, padding: 10 }} onPress={() => this.shiftCells('right')}>
                     <Image style={styles.img} source={require('../img/right-filled.png')} />
                 </TouchableOpacity>
-                <TouchableOpacity onPress={() => this.rotate()}>
+                <TouchableOpacity style={{ backgroundColor: '#FD676A', justifyContent: 'center', alignItems: 'center', borderRadius: 30, padding: 10 }} onPress={() => this.rotate()}>
                     <Image style={styles.img} source={require('../img/rotate_arrow.png')} />
                 </TouchableOpacity>
             </View>
@@ -486,7 +507,7 @@ export default class Grid extends Component {
                 visible={this.state.gameOver}
                 style={{ flex: 1 }}
             >
-                <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: 'rgba(0,0,0,.5)' }}>
+                <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: 'rgba(0,0,0,1)' }}>
                     <Text style={{ fontSize: 64, ...fontMaker({ weight: fontStyles.Black }) }}>
                         <Text style={{ color: 'blue', }}>T</Text>
                         <Text style={{ color: 'orange' }}>E</Text>
@@ -498,7 +519,7 @@ export default class Grid extends Component {
 
                     <TouchableOpacity onPress={() => { this.state.started ? this.tryAgain() : this.startGame() }}>
                         <Text style={{ fontSize: 32, color: 'white', ...fontMaker({ weight: fontStyles.SemiBold }) }}>
-                            {this.state.started ? 'TRY AGAIN' : 'Bắt đầu'}</Text>
+                            {this.state.started ? 'Chơi lại' : 'Bắt đầu'}</Text>
                     </TouchableOpacity>
                 </View>
             </Modal>
@@ -507,33 +528,85 @@ export default class Grid extends Component {
 
     render() {
         return (
-            <View style={{ flex: 1 }}>
-                <BackHeader title='Tetris' showRight={false} />
-                <View style={{ flex: 1, justifyContent: 'space-around' }}>
-                    <View style={{ justifyContent: 'center', alignItems: 'center', alignSelf: 'center', backgroundColor: '#20D03A', padding: 10, minWidth: 160, borderRadius: 12 }}>
-                        <Text style={{ fontSize: 30, color: COLOR.white(1), ...fontMaker({ weight: fontStyles.Regular }) }}>{numeral(this.state.score).format(0, 0)}</Text>
-                    </View>
-                    <View style={{ flexDirection: 'row', justifyContent: 'center' }}>
-                        <View style={{ backgroundColor: 'white' }}>
-                            {this.renderCells()}
+            <LinearGradient colors={['#1F5A90', '#0E1D33']} style={{ flex: 1 }}>
+                <StatusBar backgroundColor='#1F5A90' barStyle='light-content' />
+                <View style={{ flex: 1 }}>
+                    <SafeAreaView style={{ flex: 1 }}>
+                        <View style={{ flexDirection: 'row', alignItems: 'center', backgroundColor: 'transparent', height: 44, padding: 3 }}>
+                            <View style={{ width: 80, justifyContent: 'center', alignItems: 'center', backgroundColor: '#1F2634', borderColor: '#105088', height: '100%' }}>
+                                <Text style={{ color: '#fff', ...fontMaker({ weight: fontStyles.Bold }), fontSize: 18, }}>ĐIỂM</Text>
+                            </View>
+                            <View style={{ flex: 1, backgroundColor: '#1F2634', height: '100%', marginHorizontal: 3, justifyContent: 'center', alignItems: 'center' }}>
+                                <Text style={{ fontSize: 22, color: COLOR.white(1), ...fontMaker({ weight: fontStyles.SemiBold }) }}>{numeral(this.state.score).format(0, 0)}</Text>
+                            </View>
+                            <LinearGradient start={{ x: 0, y: 0 }} end={{ x: 1, y: 0 }} colors={['#DA0A18', '#FC4047', '#DA0A18']}>
+                                <Pressable onPress={() => this.setState({ gameOver: true })} style={{ width: 80, justifyContent: 'center', alignItems: 'center', height: '100%', borderWidth: 2, borderColor: '#fff' }}>
+                                    <Icon name='exit-to-app' type='MaterialIcons' style={{ fontSize: 24, color: 'white' }} />
+                                </Pressable>
+                            </LinearGradient>
                         </View>
-                        <View style={{ marginLeft: 20, alignItems: 'center' }}>
-                            <Text style={{ fontSize: 16, ...fontMaker({ weight: fontStyles.SemiBold }) }}>TIẾP THEO</Text>
-                            <Preview blocks={this.state.blocks} />
-                        </View>
-                    </View>
-                    {this.renderButtons()}
 
-                    {this.renderStart()}
+                        <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', width: '100%', paddingVertical: 4, paddingHorizontal: 6, backgroundColor: 'rgba(209, 145, 250, .3)', marginTop: 8 }}>
+                            <LinearGradient style={{ position: 'absolute', top: 0, left: 0, bottom: 0, width: (this.state.score >= this.state.highScore || this.state.highScore == 0) ? width : width * this.state.score * 1.0 / this.state.highScore }} start={{ x: 0, y: 0 }} end={{ x: 1, y: 0 }} colors={['#8C5EBC', '#8C5EBC', '#8C5EBC', '#8C5EBC', '#8C5EBC', '#8C5EBC', '#8C5EBC', '#8C5EBC', '#8C5EBC', '#8C5EBC', '#8C5EBC', '#8C5EBC', '#8C5EBC', '#8C5EBC', '#BC78D5']}>
+                            </LinearGradient>
+                            <Text style={{ color: '#fff', ...fontMaker({ weight: fontStyles.Bold }), fontSize: 18 }}>ĐIỂM CAO NHẤT</Text>
+                            <Text style={{ color: '#fff', ...fontMaker({ weight: fontStyles.Bold }), fontSize: 18 }}>{numeral(this.state.highScore > this.state.score ? this.state.highScore : this.state.score).format(0, 0)}</Text>
+                        </View>
+                        <View style={{ flex: 1, justifyContent: 'space-around' }}>
+                            <View style={{ flexDirection: 'row', }}>
+                                <View style={{ flex: 1, }}>
+                                    {/* <Image source={images.gameTetris} style={{ width: '100%', height: 30, resizeMode: 'st', }} /> */}
+                                    <View style={{ backgroundColor: 'black' }}>
+                                        <Text style={{ fontSize: 22, ...fontMaker({ weight: fontStyles.Black }), alignSelf: 'center', textAlign: 'center' }}>
+                                            <Text style={{ color: 'blue', }}>T</Text>
+                                            <Text style={{ color: 'orange' }}>E</Text>
+                                            <Text style={{ color: 'yellow' }}>T</Text>
+                                            <Text style={{ color: 'green' }}>R</Text>
+                                            <Text style={{ color: 'red' }}>I</Text>
+                                            <Text style={{ color: 'cyan' }}>S</Text>
+                                        </Text>
+                                    </View>
+
+                                    <View style={{ alignSelf: 'center', width: 56, height: 56, borderWidth: 6, borderColor: '#663059', borderRadius: 50, overflow: 'hidden', backgroundColor: COLOR.white(1), marginTop: 15 }}>
+                                        <Image
+                                            source={avatarIndex[this.props.avatar_id || 0].img}
+                                            style={{ flex: 1, width: null, height: null, resizeMode: 'contain', padding: 3 }}
+                                        />
+                                    </View>
+                                </View>
+                                <View style={{}}>
+                                    {this.renderCells()}
+                                </View>
+                                <View style={{ alignItems: 'center', flex: 1 }}>
+                                    <Text style={{ fontSize: 13, ...fontMaker({ weight: fontStyles.SemiBold }), color: '#fff', marginBottom: 20 }}>TIẾP THEO</Text>
+                                    <Preview blocks={this.state.blocks} />
+                                </View>
+                            </View>
+                            {this.renderButtons()}
+
+                            {this.renderStart()}
+                        </View>
+                    </SafeAreaView>
                 </View>
-            </View>
+            </LinearGradient>
         )
     }
 }
 
 var styles = StyleSheet.create({
     img: {
-        width: 50,
-        height: 50
+        width: 40,
+        height: 40,
+        tintColor: 'white'
     }
 })
+
+
+const mapStateToProps = (state) => {
+    return {
+        avatar_id: get(state, 'userInfo.user.avatar_id', 0),
+        name: get(state, 'userInfo.user.name', '')
+    };
+}
+
+export default connect(mapStateToProps, {})(Grid);
