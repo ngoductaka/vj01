@@ -557,7 +557,7 @@ class Grid extends Component {
                                 <View style={{ flex: 1, }}>
                                     {/* <Image source={images.gameTetris} style={{ width: '100%', height: 30, resizeMode: 'st', }} /> */}
                                     <View style={{ backgroundColor: 'black' }}>
-                                        <Text style={{ fontSize: 22, ...fontMaker({ weight: fontStyles.Black }), alignSelf: 'center', textAlign: 'center' }}>
+                                        <Text style={{ fontSize: 21, ...fontMaker({ weight: fontStyles.Black }), alignSelf: 'center', textAlign: 'center' }}>
                                             <Text style={{ color: 'blue', }}>T</Text>
                                             <Text style={{ color: 'orange' }}>E</Text>
                                             <Text style={{ color: 'yellow' }}>T</Text>
@@ -579,7 +579,7 @@ class Grid extends Component {
                                 </View>
                                 <View style={{ alignItems: 'center', flex: 1 }}>
                                     <View style={{ backgroundColor: 'black', width: '100%', justifyContent: 'center', alignItems: 'center', marginBottom: 20,}}>
-                                        <Text style={{ fontSize: 22, ...fontMaker({ weight: fontStyles.Bold }), color: '#fff', }}>TIẾP</Text>
+                                        <Text style={{ fontSize: 21, ...fontMaker({ weight: fontStyles.Black }), color: '#fff', }}>TIẾP</Text>
                                     </View>
                                     <Preview blocks={this.state.blocks} />
                                 </View>
