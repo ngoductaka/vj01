@@ -14,12 +14,19 @@ import { isEmpty, get } from 'lodash';
 import * as Animatable from 'react-native-animatable';
 
 import { useRequest, Loading } from '../handle/api';
-import { fontSize, COLOR, blackColor } from '../handle/Constant';
+import { fontSize, COLOR, blackColor, unitIntertitialId } from '../handle/Constant';
 import LinearGradient from 'react-native-linear-gradient';
 import { fontMaker, fontStyles } from '../utils/fonts';
 import { LargeVideo } from '../screen/Lesson/component/VideosList';
 import { RenderExamRelated, RenderArticlRelated } from './shared/ItemDocument';
 const { height, width } = Dimensions.get('window');
+
+/**-------------interstitial ad----------------- */
+import firebase from 'react-native-firebase';
+import { useSelector } from 'react-redux';
+const AdRequest = firebase.admob.AdRequest;
+let advert;
+let request;
 
 // http://103.28.37.214:8080/categories-url/soan-van-7_index
 // main function 
@@ -52,6 +59,19 @@ const ListLesson = (props) => {
 		bookData = allBookData.data;
 	}
 
+	// interstial ad
+	const learningTimes = useSelector(state => state.timeMachine.learning_times);
+	const frequency = useSelector(state => get(state, 'subjects.frequency', 6));
+	useEffect(() => {
+		if (learningTimes % frequency === 0) {
+			console.log('kajskjadkasjdksj');
+			advert = firebase.admob().interstitial(unitIntertitialId);
+			request = new AdRequest();
+			request.addKeyword('facebook').addKeyword('google').addKeyword('instagram').addKeyword('zalo').addKeyword('google').addKeyword('pubg').addKeyword('asphalt').addKeyword('covid-19');
+			advert.loadAd(request.build());
+		}
+	}, [learningTimes]);
+
 	useEffect(() => {
 		setTimeout(() => {
 			setShowContent(true);
@@ -78,7 +98,8 @@ const ListLesson = (props) => {
 		// navigation.navigate("Lesson", { key: item.url, subjectID, title: item.title });
 		navigation.navigate("LessonOverview", {
 			// key: item.url, subjectID, title: item.title
-			lessonId: item.id
+			lessonId: item.id,
+			advert
 		});
 		if (isBar) closeBar();
 	}
@@ -131,6 +152,7 @@ const ListLesson = (props) => {
 												// lessonId: lessonId,
 												time: get(item, 'duration', 0),
 												count: get(item, 'questions_count', 0),
+												advert
 											})
 										}}
 									/>
@@ -163,7 +185,7 @@ const ListLesson = (props) => {
 									title={title}
 									viewCount={view_count}
 									contentType={content_type}
-									onPress={() => navigation.navigate("Lesson", { articleId, lesson_id })}
+									onPress={() => navigation.navigate("Lesson", { articleId, lesson_id, advert })}
 								/>
 							)
 						})
@@ -233,7 +255,7 @@ const RenderDetailLesson = ({ lessonItem, isBar, _handleSelect, activeDetail }) 
 			// 	setExpandedDetail(activeIndex);
 			// }
 
-			if(lessonItem.children && lessonItem.children[0] ) {
+			if (lessonItem.children && lessonItem.children[0]) {
 				setExpandedDetail(0)
 			}
 

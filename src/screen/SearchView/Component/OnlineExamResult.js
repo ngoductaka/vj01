@@ -5,7 +5,7 @@ import { RenderArticlSearch, RenderExamRelated } from '../../../component/shared
 import { get } from 'lodash';
 import { helpers } from '../../../utils/helpers';
 
-export const OnlineExamResult = ({ data, navigation }) => {
+export const OnlineExamResult = ({ data, navigation, advert = null }) => {
 
     const renderFooter = () => {
         if (!get(data, 'loading', false)) return null;
@@ -38,7 +38,7 @@ export const OnlineExamResult = ({ data, navigation }) => {
                         const { title = '', questions_count = 0, duration = 0, id = '', subject, lesson_id } = item;
                         return (
                             <RenderExamRelated
-                                onPress={() => { navigation.navigate('OverviewTest', { title, subject, count: questions_count, time: duration, idExam: id, lessonId: lesson_id }) }}
+                                onPress={() => { navigation.navigate('OverviewTest', { title, subject, count: questions_count, time: duration, idExam: id, lessonId: lesson_id, advert }) }}
                                 {...{ title, time: duration, totalQues: questions_count }}
                             />
                         )

@@ -341,14 +341,14 @@ const Class = memo((props) => {
 						numColumns={NUMBER_COLUMS}
 						keyExtractor={(_, index) => 'book_item' + index.toString()}
 					/>
-					{/* <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', marginBottom: 10, }}>
+					<View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', marginBottom: 10, }}>
 						<Text style={{ fontSize: 18, ...fontMaker({ weight: fontStyles.SemiBold }) }}>Kho trò chơi</Text>
 						<TouchableOpacity onPress={() => navigation.navigate('GameCenter')} style={{}}>
 							<Text style={{ fontSize: 14, ...fontMaker({ weight: fontStyles.Regular }), textDecorationColor: COLOR.MAIN, color: COLOR.MAIN }}>Xem tất cả</Text>
 						</TouchableOpacity>
-					</View> */}
+					</View>
 					<View style={{ marginBottom: 30 }}>
-						{/* <FlatList
+						<FlatList
 							style={{}}
 							data={GAME_CENTERS.slice(0, 3)}
 							numColumns={3}
@@ -358,7 +358,7 @@ const Class = memo((props) => {
 								);
 							}}
 							keyExtractor={(item, index) => index + 'game_item'}
-						/> */}
+						/>
 						{/* utiliti */}
 						<View style={{
 							flexDirection: 'row', alignItems: 'center',
@@ -391,7 +391,7 @@ const Class = memo((props) => {
 						{/* fanpage */}
 						{/* <FanpageBanner /> */}
 						{/* resume learning */}
-						<RecommendCoure dataRecommend={dataRecommend} dataContinue={dataContinue} setVisible={setVisible} navigate={navigation.navigate} />
+						{/* <RecommendCoure dataRecommend={dataRecommend} dataContinue={dataContinue} setVisible={setVisible} navigate={navigation.navigate} /> */}
 
 						{/* share app */}
 						<Text style={{ ...fontMaker({ weight: fontStyles.SemiBold }), fontSize: 18, marginTop: 20, marginBottom: 5, }}>Chia sẻ ứng dụng</Text>

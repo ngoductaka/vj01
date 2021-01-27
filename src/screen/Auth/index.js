@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { View, Platform, Image, Linking } from 'react-native';
+import { View, Platform, Image, Linking, LogBox } from 'react-native';
 import AsyncStorage from '@react-native-community/async-storage';
 import { connect } from 'react-redux';
 import SplashScreen from 'react-native-splash-screen';
@@ -57,7 +57,7 @@ const Auth = (props) => {
     }, []);
 
     const handleOpenURL = (event) => { // D
-        console.log('asakjhskajhsas', event);
+        // console.log('asakjhskajhsas', event);
         navigate(event.url);
     }
     const navigate = (url) => { // E
@@ -163,7 +163,8 @@ const Auth = (props) => {
         }
     };
 
-    console.disableYellowBox = true;
+    // console.disableYellowBox = true;
+    LogBox.ignoreAllLogs(true);
     return (
         <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', paddingTop: 10 }}>
             {Platform.OS === 'ios' ?

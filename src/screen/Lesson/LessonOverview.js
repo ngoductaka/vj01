@@ -63,13 +63,13 @@ const LessonOverview = (props) => {
     else if (lesson_id) endPoint = `/lessons/${lesson_id}`;
 
     const showFullAds = navigation.getParam('showFullAds', true);
+    const advertParam = navigation.getParam('advert', null);
 
     const [_dataLesson, loading, err] = useRequest(endPoint, [lessonId + lesson_id]);
     const [dataLesson, setDataLesson] = useState([]);
     const [dataLecture, setLecture] = useState([]);
     const [showHeader, setShowHeader] = useState(null);
     const [visible, setVisible] = useState(false);
-    const [adsLoading, setAdsLoading] = useState(false);
 
     const screenAds = useSelector(state => get(state, 'subjects.screens', null));
     const frequency = useSelector(state => get(state, 'subjects.frequency', 6));
@@ -80,28 +80,26 @@ const LessonOverview = (props) => {
     useEffect(() => {
         if (showFullAds) {
             if (screenAds && screenAds[TAG] == "1") {
-                if (learningTimes > 0 && learningTimes % frequency === 0) {
-                    setAdsLoading(true);
-                    advert = firebase.admob().interstitial(unitIntertitialId);
-                    request = new AdRequest();
-                    request.addKeyword('facebook').addKeyword('google').addKeyword('instagram').addKeyword('zalo').addKeyword('google').addKeyword('pubg').addKeyword('asphalt').addKeyword('covid-19');
-
-                    advert.loadAd(request.build());
-
-                    advert.on('onAdLoaded', () => {
-                        // console.log('----------Advert ready to show.--------');
-                        // if (navigation.isFocused() && advert.isLoaded()) {
-                        if (advert.isLoaded()) {
-                            advert.show();
-                        } else {
-                            // console.log('---------interstitial fail---------', navigation.isFocused());
-                        }
-                    });
-                    advert.on('onAdClosed', () => {
-                        setAdsLoading(false);
-                    });
+                if (learningTimes % frequency === 0) {
+                    // console.log('----------');
+                    if (advertParam) {
+                        advertParam.show();
+                    }
+                    // advert.on('onAdClosed', () => {
+                    //     setAdsLoading(false);
+                    // });
                 }
             }
+        }
+    }, []);
+
+    useEffect(() => {
+        if ((learningTimes + 3) % frequency === 0) {
+            console.log('---1-1-2-1-2');
+            advert = firebase.admob().interstitial(unitIntertitialId);
+            request = new AdRequest();
+            request.addKeyword('facebook').addKeyword('google').addKeyword('instagram').addKeyword('zalo').addKeyword('google').addKeyword('pubg').addKeyword('asphalt').addKeyword('covid-19');
+            advert.loadAd(request.build());
         }
     }, [learningTimes]);
 
@@ -362,16 +360,16 @@ const LessonOverview = (props) => {
                         <View style={{ padding: 10, flex: 1 }}>
                             {
                                 dataLesson.map(((item, index) => {
-                                    if (item.type == 'sgk') return <ArticleItem data={item.data} handleNavigate={handleNavigate} SeeMore={SeeMore} title="Sách giáo khoa" />
-                                    if (item.type == 'sbt') return <ArticleItem data={item.data} handleNavigate={handleNavigate} SeeMore={SeeMore} title="Sách bài tập" />
-                                    if (item.type == 'vbt') return <ArticleItem data={item.data} handleNavigate={handleNavigate} SeeMore={SeeMore} title="Vở bài tập" />
-                                    if (item.type == 'bookType1') return <ArticleItem data={item.data} handleNavigate={handleNavigate} SeeMore={SeeMore} title="Tài liệu" />
-                                    if (item.type == 'bookType2') return <ArticleItem data={item.data} handleNavigate={handleNavigate} SeeMore={SeeMore} title="Soạn văn" />
-                                    if (item.type == 'bookType3') return <ArticleItem data={item.data} handleNavigate={handleNavigate} SeeMore={SeeMore} title="Lý thuyết" />
-                                    if (item.type == 'bookType4') return <ArticleItem data={item.data} handleNavigate={handleNavigate} SeeMore={SeeMore} title="Tác giả-tác phẩm" />
+                                    if (item.type == 'sgk') return <ArticleItem data={item.data} advertParam={advert} handleNavigate={handleNavigate} SeeMore={SeeMore} title="Sách giáo khoa" />
+                                    if (item.type == 'sbt') return <ArticleItem data={item.data} advertParam={advert} handleNavigate={handleNavigate} SeeMore={SeeMore} title="Sách bài tập" />
+                                    if (item.type == 'vbt') return <ArticleItem data={item.data} advertParam={advert} handleNavigate={handleNavigate} SeeMore={SeeMore} title="Vở bài tập" />
+                                    if (item.type == 'bookType1') return <ArticleItem data={item.data} advertParam={advert} handleNavigate={handleNavigate} SeeMore={SeeMore} title="Tài liệu" />
+                                    if (item.type == 'bookType2') return <ArticleItem data={item.data} advertParam={advert} handleNavigate={handleNavigate} SeeMore={SeeMore} title="Soạn văn" />
+                                    if (item.type == 'bookType3') return <ArticleItem data={item.data} advertParam={advert} handleNavigate={handleNavigate} SeeMore={SeeMore} title="Lý thuyết" />
+                                    if (item.type == 'bookType4') return <ArticleItem data={item.data} advertParam={advert} handleNavigate={handleNavigate} SeeMore={SeeMore} title="Tác giả-tác phẩm" />
 
-                                    if (item.type == 'video') return <VideoItem setVisible={setVisible} data={item.data} handleNavigate={handleNavigate} />
-                                    if (item.type == 'exam') return <ExcerciseItem data={item.data} handleNavigate={handleNavigate} book={get(_dataLesson, 'data.book')} lessonId={lessonId} SeeMore={SeeMore} />
+                                    if (item.type == 'video') return <VideoItem setVisible={setVisible} advertParam={advert} data={item.data} handleNavigate={handleNavigate} />
+                                    if (item.type == 'exam') return <ExcerciseItem data={item.data} advertParam={advert} handleNavigate={handleNavigate} book={get(_dataLesson, 'data.book')} lessonId={lessonId} SeeMore={SeeMore} />
                                     return null;
                                 }))
                             }
@@ -379,11 +377,11 @@ const LessonOverview = (props) => {
 
                     </ScrollView>
                 }
-                {adsLoading && (
+                {/* {adsLoading && (
                     <View style={{ position: 'absolute', top: 0, left: 0, bottom: 0, right: 0, backgroundColor: COLOR.white(1), justifyContent: 'center', alignItems: 'center' }}>
                         <ActivityIndicator animating={true} size='large' color={COLOR.MAIN} />
                     </View>
-                )}
+                )} */}
             </Loading>
             <SafeAreaView />
             <Snackbar

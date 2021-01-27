@@ -40,8 +40,9 @@ const TestMenu = (props) => {
     const chapter_id = navigation.getParam('chapter_id', '');
     const title = navigation.getParam('title', '');
     const screenAds = useSelector(state => get(state, 'subjects.screens', null));
-    const frequency = useSelector(state => get(state, 'subjects.frequency', 6));
-    const [adsLoading, setAdsLoading] = useState(false);
+    const advertParam = navigation.getParam('advert', null);
+    // console.log('-a-sd-s-dasd', advertParam);
+    // const [adsLoading, setAdsLoading] = useState(false);
     // console.log('-----asdasjdjasd-----', screenAds, frequency);
     const [testMenu, loading, err] = useRequest(`menu-items-test/${chapter_id}/lesson-chapter`, [chapter_id])
     // console.log('tes123tMenu', testMenu);
@@ -52,27 +53,21 @@ const TestMenu = (props) => {
 
     // interstial ad
     const learningTimes = useSelector(state => state.timeMachine.learning_times);
+    const frequency = useSelector(state => get(state, 'subjects.frequency', 6));
     useEffect(() => {
         if (screenAds && screenAds[TAG] == "1") {
-            if (0 && learningTimes === 1 || (learningTimes > 0 && learningTimes % frequency === 0)) {
-                setAdsLoading(true);
-                advert = firebase.admob().interstitial(unitIntertitialId);
-                request = new AdRequest();
-                request.addKeyword('facebook').addKeyword('google').addKeyword('instagram').addKeyword('zalo').addKeyword('google').addKeyword('pubg').addKeyword('asphalt').addKeyword('tiktok');
-
-                advert.loadAd(request.build());
-
-                advert.on('onAdLoaded', () => {
-                    if (advert.isLoaded()) {
-                        advert.show();
-                    } else {
-                        // console.log('---------interstitial fail---------', navigation.isFocused());
-                    }
-                });
-                advert.on('onAdClosed', () => {
-                    setAdsLoading(false);
-                });
+            if (advertParam) {
+                advertParam.show();
             }
+        }
+    }, []);
+    useEffect(() => {
+        if ((learningTimes + 3) % frequency === 0) {
+            // console.log('---1-1-TestMenu-1-2');
+            advert = firebase.admob().interstitial(unitIntertitialId);
+            request = new AdRequest();
+            request.addKeyword('facebook').addKeyword('google').addKeyword('instagram').addKeyword('zalo').addKeyword('google').addKeyword('pubg').addKeyword('asphalt').addKeyword('covid-19');
+            advert.loadAd(request.build());
         }
     }, [learningTimes]);
 
@@ -109,16 +104,17 @@ const TestMenu = (props) => {
                                 index={index}
                                 handleNavigate={handleNavigate}
                                 isExpandDefalt={index == 0}
+                                advert={advert}
                             />
                         }}
                         keyExtractor={(item, index) => 'LessonCard' + index}
                     />
                 </View>
-                {adsLoading && (
+                {/* {adsLoading && (
                     <View style={{ position: 'absolute', top: 0, left: 0, bottom: 0, right: 0, backgroundColor: COLOR.white(1), justifyContent: 'center', alignItems: 'center' }}>
                         <ActivityIndicator animating={true} size='large' color={COLOR.MAIN} />
                     </View>
-                )}
+                )} */}
             </Loading>
         </ViewContainer>
     );
@@ -126,7 +122,7 @@ const TestMenu = (props) => {
 
 
 
-const ExcerciseItem = ({ data, handleNavigate, isExpandDefalt = false, index }) => {
+const ExcerciseItem = ({ data, advert = null, handleNavigate, isExpandDefalt = false, index }) => {
     const [expand, setExpand] = useState(isExpandDefalt);
     return (
         <Animatable.View animation="fadeIn" delay={index * 100} style={[{ marginVertical: 10, marginHorizontal: 5 }, stylesComponent.shadowStyle]}>
@@ -141,7 +137,7 @@ const ExcerciseItem = ({ data, handleNavigate, isExpandDefalt = false, index }) 
             </TouchableOpacity>
             {!expand || isEmpty(get(data, 'lesson.parts', [])) ? null :
                 get(data, 'lesson.parts', []).map((item, index) => {
-                    return <RenderItemLesson expand={expand} item={item} handleNavigate={handleNavigate} isLast={index == get(data, 'lesson.parts', []).length - 1} index={index} />
+                    return <RenderItemLesson advert={advert} expand={expand} item={item} handleNavigate={handleNavigate} isLast={index == get(data, 'lesson.parts', []).length - 1} index={index} />
                 })
             }
         </Animatable.View>
@@ -154,7 +150,7 @@ export default connect(
     null
 )(React.memo(TestMenu));
 
-const RenderItemLesson = ({ item, handleNavigate, expand, isLast, index }) => {
+const RenderItemLesson = ({ item, advert = null, handleNavigate, expand, isLast, index }) => {
     return (
         <Animatable.View
             key={item.id}
@@ -167,6 +163,7 @@ const RenderItemLesson = ({ item, handleNavigate, expand, isLast, index }) => {
                     icon: get(item, 'partable.icon', ''),
                     time: get(item, 'partable.duration'),
                     source: 'ListTest',
+                    advert
                     // isTest: true,
                 })}
                 style={[stylesComponent.textItem, isLast ? { borderBottomWidth: 0, paddingBottom: 10 } : {}]}

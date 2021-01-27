@@ -23,6 +23,7 @@ const ListLesson = (props) => {
 	const {
 		subjectID = '',
 		navigation,
+		advert = null
 	} = props;
 	let endPoint = ``;
 	const currentClass = useSelector(state => state.userInfo.class);
@@ -39,7 +40,7 @@ const ListLesson = (props) => {
 						keyExtractor={(item) => `${item._id}_header`}
 						extraData={chapterData}
 						renderItem={({ item: lessonItem, index }) =>
-							_renderTitleLesson({ lessonItem, navigation, subjectID, index })}
+							_renderTitleLesson({ lessonItem, navigation, subjectID, index, advert })}
 					/>
 				</View>
 			</Loading>
@@ -49,7 +50,7 @@ const ListLesson = (props) => {
 
 
 const _renderTitleLesson = (props) => {
-	const { lessonItem, navigation, subjectID, index } = props;
+	const { lessonItem, navigation, subjectID, index, advert = null } = props;
 	const {
 		title = '',
 		id,
@@ -61,7 +62,7 @@ const _renderTitleLesson = (props) => {
 			animation='zoomIn'
 			delay={index * 150} >
 			<TouchableOpacity
-				onPress={() => { navigation.navigate('ListTest', { chapter_id: id, subject_id: subjectID, title, subject_title: lessonItem["subject_title "] }) }}
+				onPress={() => { navigation.navigate('ListTest', { chapter_id: id, advert, subject_id: subjectID, title, subject_title: lessonItem["subject_title "] }) }}
 				style={[{
 					height: null,
 					width: '100%',

@@ -27,7 +27,7 @@
 		78DB0F89F7C29FC2D7AF1A9F /* libPods-VietJack-VietJackTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 30EB9A2E8C2F70B23A3B80BB /* libPods-VietJack-VietJackTests.a */; };
 		81AB9BB82411601600AC10FF /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */; };
 		8433CC858F7E4DFCB08518BD /* Roboto-Bold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 085C721B1765431B8F500E22 /* Roboto-Bold.ttf */; };
-		84BA5C2C25AC306B00067A7E /* www in Resources */ = {isa = PBXBuildFile; fileRef = 84BA5C2B25AC306B00067A7E /* www */; };
+		845720D125B8342A008F2273 /* www in Resources */ = {isa = PBXBuildFile; fileRef = 845720D025B8342A008F2273 /* www */; };
 		8FCEB3C9D92B4E6FBE6E7DD2 /* Roboto-Medium.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 94D425BBA3A244AFAD57FB84 /* Roboto-Medium.ttf */; };
 		A19049BE417E488AADCA0E19 /* Roboto-Thin.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 824A200A91864D3F81C52C24 /* Roboto-Thin.ttf */; };
 		AC6A7DE0A2D84DFD937BAA0A /* Roboto-Black.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 7BE23F37674341DAB2B09930 /* Roboto-Black.ttf */; };
@@ -110,7 +110,7 @@
 		8098107E402F1741DD20D976 /* Pods-VietJack-VietJackTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-VietJack-VietJackTests.release.xcconfig"; path = "Target Support Files/Pods-VietJack-VietJackTests/Pods-VietJack-VietJackTests.release.xcconfig"; sourceTree = "<group>"; };
 		81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; name = LaunchScreen.storyboard; path = VietJack/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		824A200A91864D3F81C52C24 /* Roboto-Thin.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Roboto-Thin.ttf"; path = "../src/fonts/Roboto-Thin.ttf"; sourceTree = "<group>"; };
-		84BA5C2B25AC306B00067A7E /* www */ = {isa = PBXFileReference; lastKnownFileType = folder; path = www; sourceTree = "<group>"; };
+		845720D025B8342A008F2273 /* www */ = {isa = PBXFileReference; lastKnownFileType = folder; name = www; path = ../../www; sourceTree = "<group>"; };
 		85A60AA5D17F4EF288A2B79B /* Fontisto.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = Fontisto.ttf; path = "../node_modules/native-base/Fonts/Fontisto.ttf"; sourceTree = "<group>"; };
 		862EF7A3B13048F7A164A3AA /* SimpleLineIcons.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = SimpleLineIcons.ttf; path = "../node_modules/native-base/Fonts/SimpleLineIcons.ttf"; sourceTree = "<group>"; };
 		8AC03CF9AD98831A4E9061CA /* Pods-VietJack.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-VietJack.release.xcconfig"; path = "Target Support Files/Pods-VietJack/Pods-VietJack.release.xcconfig"; sourceTree = "<group>"; };
@@ -203,10 +203,10 @@
 				047AB73A2599C370000BE712 /* clock.mp3 */,
 				047AB72A2599C32B000BE712 /* GoogleService-Info.plist */,
 				008F07F21AC5B25A0029DE68 /* main.jsbundle */,
+				845720D025B8342A008F2273 /* www */,
 				13B07FAF1A68108700A75B9A /* AppDelegate.h */,
 				13B07FB01A68108700A75B9A /* AppDelegate.m */,
 				13B07FB51A68108700A75B9A /* Images.xcassets */,
-				84BA5C2B25AC306B00067A7E /* www */,
 				13B07FB61A68108700A75B9A /* Info.plist */,
 				81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */,
 				13B07FB71A68108700A75B9A /* main.m */,
@@ -340,12 +340,10 @@
 			buildConfigurationList = 00E357021AD99517003FC87E /* Build configuration list for PBXNativeTarget "VietJackTests" */;
 			buildPhases = (
 				E4A92B376F2CB39ACFC2C3BA /* [CP] Check Pods Manifest.lock */,
-				8893FA566540B5773ECC322D /* [CP] Prepare Artifacts */,
 				00E356EA1AD99517003FC87E /* Sources */,
 				00E356EB1AD99517003FC87E /* Frameworks */,
 				00E356EC1AD99517003FC87E /* Resources */,
 				EAE3B256D232E8C3031B916B /* [CP] Copy Pods Resources */,
-				D58129648BEE9674116E7B33 /* [CP] Embed Pods Frameworks */,
 			);
 			buildRules = (
 			);
@@ -363,13 +361,11 @@
 			buildPhases = (
 				35857183F7FBEFC81DEB6A23 /* [CP] Check Pods Manifest.lock */,
 				FD10A7F022414F080027D42C /* Start Packager */,
-				69DBD8B34BD8A3A211FF2E56 /* [CP] Prepare Artifacts */,
 				13B07F871A680F5B00A75B9A /* Sources */,
 				13B07F8C1A680F5B00A75B9A /* Frameworks */,
 				13B07F8E1A680F5B00A75B9A /* Resources */,
 				00DD1BFF1BD5951E006B06BC /* Bundle React Native code and images */,
 				D128CCDC0F201CE483467C71 /* [CP] Copy Pods Resources */,
-				1BF3C09BCC1EE1C28F9C6AB2 /* [CP] Embed Pods Frameworks */,
 			);
 			buildRules = (
 			);
@@ -488,7 +484,7 @@
 				AC6A7DE0A2D84DFD937BAA0A /* Roboto-Black.ttf in Resources */,
 				F8B2B6475C724192BE082266 /* Roboto-BlackItalic.ttf in Resources */,
 				8433CC858F7E4DFCB08518BD /* Roboto-Bold.ttf in Resources */,
-				84BA5C2C25AC306B00067A7E /* www in Resources */,
+				845720D125B8342A008F2273 /* www in Resources */,
 				F5E790C803314DF9A67700D1 /* Roboto-BoldItalic.ttf in Resources */,
 				BD16AE6B59AA493EA608939F /* Roboto-Italic.ttf in Resources */,
 				CAE42A763748446A8C760F40 /* Roboto-Light.ttf in Resources */,
@@ -534,23 +530,6 @@
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
 			shellScript = "export NODE_BINARY=node\n../node_modules/react-native/scripts/react-native-xcode.sh";
-		};
-		1BF3C09BCC1EE1C28F9C6AB2 /* [CP] Embed Pods Frameworks */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-VietJack/Pods-VietJack-frameworks.sh",
-				"${BUILT_PRODUCTS_DIR}/cocoapods-artifacts-${CONFIGURATION}.txt",
-			);
-			name = "[CP] Embed Pods Frameworks";
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-VietJack/Pods-VietJack-frameworks.sh\"\n";
-			showEnvVarsInLog = 0;
 		};
 		2D02E4CB1E0B4B27006451C7 /* Bundle React Native Code And Images */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -608,42 +587,6 @@
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
 			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
-			showEnvVarsInLog = 0;
-		};
-		69DBD8B34BD8A3A211FF2E56 /* [CP] Prepare Artifacts */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-VietJack/Pods-VietJack-artifacts.sh",
-				"${PODS_ROOT}/GoogleUserMessagingPlatform/Frameworks/Release/UserMessagingPlatform.xcframework",
-			);
-			name = "[CP] Prepare Artifacts";
-			outputPaths = (
-				"${BUILT_PRODUCTS_DIR}/cocoapods-artifacts-${CONFIGURATION}.txt",
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-VietJack/Pods-VietJack-artifacts.sh\"\n";
-			showEnvVarsInLog = 0;
-		};
-		8893FA566540B5773ECC322D /* [CP] Prepare Artifacts */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-VietJack-VietJackTests/Pods-VietJack-VietJackTests-artifacts.sh",
-				"${PODS_ROOT}/GoogleUserMessagingPlatform/Frameworks/Release/UserMessagingPlatform.xcframework",
-			);
-			name = "[CP] Prepare Artifacts";
-			outputPaths = (
-				"${BUILT_PRODUCTS_DIR}/cocoapods-artifacts-${CONFIGURATION}.txt",
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-VietJack-VietJackTests/Pods-VietJack-VietJackTests-artifacts.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
 		95943875ED7859FFE4C9D5F8 /* [CP] Check Pods Manifest.lock */ = {
@@ -726,23 +669,6 @@
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
 			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-VietJack/Pods-VietJack-resources.sh\"\n";
-			showEnvVarsInLog = 0;
-		};
-		D58129648BEE9674116E7B33 /* [CP] Embed Pods Frameworks */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-VietJack-VietJackTests/Pods-VietJack-VietJackTests-frameworks.sh",
-				"${BUILT_PRODUCTS_DIR}/cocoapods-artifacts-${CONFIGURATION}.txt",
-			);
-			name = "[CP] Embed Pods Frameworks";
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-VietJack-VietJackTests/Pods-VietJack-VietJackTests-frameworks.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
 		E4A92B376F2CB39ACFC2C3BA /* [CP] Check Pods Manifest.lock */ = {

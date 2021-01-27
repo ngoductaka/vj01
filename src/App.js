@@ -3,6 +3,7 @@ import { Provider } from 'react-redux';
 import firebase from 'react-native-firebase';
 import { Provider as PaperProvider } from 'react-native-paper';
 import Icon from 'react-native-vector-icons/MaterialIcons'
+import 'react-native-gesture-handler';
 
 import createRootNavigator from './Router';
 import store from './redux/store';

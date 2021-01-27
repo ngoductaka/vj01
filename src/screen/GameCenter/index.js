@@ -58,7 +58,7 @@ export const GameItem = ({ src = images.game1, name, slogan, navigation, route }
             <View style={{ width: (width - 40) / 3, height: (width - 40) / 3, padding: 10 }}>
                 <Image
                     source={src}
-                    style={{ width: null, height: null, flex: 1, resizeMode: 'contain' }}
+                    style={{ width: null, height: null, flex: 1, resizeMode: 'contain', borderRadius: 20, }}
                 />
             </View>
             <View style={{ padding: 5 }}>

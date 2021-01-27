@@ -43,7 +43,9 @@ const OverviewTest = (props) => {
     const count = props.navigation.getParam('count', '');
     const showFullAds = props.navigation.getParam('showFullAds', true);
     const screenAds = useSelector(state => get(state, 'subjects.screens', null));
-    const [adsLoading, setAdsLoading] = useState(false);
+    const advertParam = props.navigation.getParam('advert', null);
+    console.log('-----', advertParam);
+    // const [adsLoading, setAdsLoading] = useState(false);
 
     const [visible, setVisible] = useState(false);
 
@@ -57,25 +59,28 @@ const OverviewTest = (props) => {
     useEffect(() => {
         if (showFullAds) {
             if (screenAds && screenAds[TAG] == "1") {
-                setAdsLoading(true);
-                advert = firebase.admob().interstitial(unitIntertitialId);
-                request = new AdRequest();
-                request.addKeyword('facebook').addKeyword('google').addKeyword('instagram').addKeyword('zalo').addKeyword('google').addKeyword('pubg').addKeyword('asphalt').addKeyword('covid-19');
+                if (advertParam) {
+                    advertParam.show();
+                }
+                // setAdsLoading(true);
+                // advert = firebase.admob().interstitial(unitIntertitialId);
+                // request = new AdRequest();
+                // request.addKeyword('facebook').addKeyword('google').addKeyword('instagram').addKeyword('zalo').addKeyword('google').addKeyword('pubg').addKeyword('asphalt').addKeyword('covid-19');
 
-                advert.loadAd(request.build());
+                // advert.loadAd(request.build());
 
-                advert.on('onAdLoaded', () => {
-                    // console.log('----------Advert ready to show.--------');
-                    // if (navigation.isFocused() && advert.isLoaded()) {
-                    if (advert.isLoaded()) {
-                        advert.show();
-                    } else {
-                        // console.log('---------interstitial fail---------', navigation.isFocused());
-                    }
-                });
-                advert.on('onAdClosed', () => {
-                    setAdsLoading(false);
-                });
+                // advert.on('onAdLoaded', () => {
+                //     // console.log('----------Advert ready to show.--------');
+                //     // if (navigation.isFocused() && advert.isLoaded()) {
+                //     if (advert.isLoaded()) {
+                //         advert.show();
+                //     } else {
+                //         // console.log('---------interstitial fail---------', navigation.isFocused());
+                //     }
+                // });
+                // advert.on('onAdClosed', () => {
+                //     setAdsLoading(false);
+                // });
             }
         }
 
@@ -177,11 +182,11 @@ const OverviewTest = (props) => {
                         </LinearGradient>
                     </TouchableOpacity>
                 </View>
-                {adsLoading && (
+                {/* {adsLoading && (
                     <View style={{ position: 'absolute', top: 0, left: 0, bottom: 0, right: 0, backgroundColor: COLOR.white(1), justifyContent: 'center', alignItems: 'center' }}>
                         <ActivityIndicator animating={true} size='large' color={COLOR.MAIN} />
                     </View>
-                )}
+                )} */}
             </SafeAreaView>
             <Snackbar
                 visible={visible}

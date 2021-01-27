@@ -60,12 +60,15 @@ import GameCenter from '../screen/GameCenter';
 import WhoIsMillionaire from '../screen/GameCenter/WhoIsMillionarie';
 import Sudoku from '../screen/GameCenter/Sudoku/index';
 import Tetris from '../screen/GameCenter/Tetris/index';
+import SnakeApp from '../screen/GameCenter/Snake/Main';
+import SnakeGameCenter from '../screen/GameCenter/Snake/index';
 import WordCatcher from '../screen/GameCenter/WordCatcher';
 import Game2048 from '../screen/GameCenter/Game2048';
 import FlappyBird from '../screen/GameCenter/FlappyBird';
 import TimeTable from '../screen/Utilities/TimeTable';
 import ScroreAnalyse from '../screen/Utilities/ScroreAnalyse';
 import Calculator from '../screen/Utilities/Calculator';
+import SudokuInstruction from '../screen/GameCenter/Sudoku/containers/Instruction';
 
 const NUMBER_OF_TABS = 4;
 
@@ -142,19 +145,19 @@ const CustomBottomBar = (props) => {
 						props.navigation.popToTop();
 						animate(0, route.key);
 						break;
-					case 'CourseScreen':
+					// case 'CourseScreen':
+					// 	animate(width - (NUMBER_OF_TABS - 1) * width / NUMBER_OF_TABS, route.key);
+					// 	props.navigation.popToTop();
+					// 	break;
+					case 'TestStack':
 						animate(width - (NUMBER_OF_TABS - 1) * width / NUMBER_OF_TABS, route.key);
 						props.navigation.popToTop();
 						break;
-					case 'TestStack':
-						animate(width - (NUMBER_OF_TABS - 2) * width / NUMBER_OF_TABS, route.key);
-						props.navigation.popToTop();
-						break;
 					case 'QnA':
-						animate(width - (NUMBER_OF_TABS - 3) * width / NUMBER_OF_TABS, route.key);
+						animate(width - (NUMBER_OF_TABS - 2) * width / NUMBER_OF_TABS, route.key);
 						break;
 					case 'AccountStack':
-						animate(width - (NUMBER_OF_TABS - 4) * width / NUMBER_OF_TABS, route.key);
+						animate(width - (NUMBER_OF_TABS - 3) * width / NUMBER_OF_TABS, route.key);
 						props.navigation.popToTop();
 						break;
 				}
@@ -194,7 +197,6 @@ const MainContent = createBottomTabNavigator({
 			if (routeName === 'CourseScreen') {
 				// src = 'search1';
 				// text = "Tìm kiếm";
-
 				src = 'chalkboard-teacher';
 				text = "Khoá học";
 				type = "FontAwesome5"
@@ -388,6 +390,24 @@ const InAppStack = createStackNavigator({
 	},
 	Sudoku: {
 		screen: Sudoku,
+		navigationOptions: {
+			// ...TransitionPresets.ModalPresentationIOS,
+		}
+	},
+	SudokuInstruction: {
+		screen: SudokuInstruction,
+		navigationOptions: {
+			...TransitionPresets.ModalPresentationIOS,
+		}
+	},
+	SnakeGameCenter: {
+		screen: SnakeGameCenter,
+		navigationOptions: {
+			// ...TransitionPresets.ModalPresentationIOS,
+		}
+	},
+	SnakeApp: {
+		screen: SnakeApp,
 		navigationOptions: {
 			// ...TransitionPresets.ModalPresentationIOS,
 		}

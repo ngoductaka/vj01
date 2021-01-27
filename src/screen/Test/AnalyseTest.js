@@ -11,7 +11,7 @@ import { isEmpty, get } from 'lodash';
 import { useSelector, useDispatch } from 'react-redux';
 
 import { fontMaker, fontStyles } from '../../utils/fonts';
-import { fontSize, blackColor, COLOR } from '../../handle/Constant';
+import { fontSize, blackColor, COLOR, unitIntertitialId } from '../../handle/Constant';
 import { GradientText } from '../../component/shared/GradientText';
 import { helpers } from '../../utils/helpers';
 import ViewContainer from '../../component/shared/ViewContainer';
@@ -25,6 +25,12 @@ import SimpleToast from 'react-native-simple-toast';
 import { test_services } from '../../redux/services/test.service';
 import { user_services } from '../../redux/services';
 import { setLearningTimes } from '../../redux/action/user_info';
+
+/**-------------interstitial ad----------------- */
+import firebase from 'react-native-firebase';
+const AdRequest = firebase.admob.AdRequest;
+let advert;
+let request;
 
 const TAG = 'analyse_test';
 
@@ -59,6 +65,16 @@ const AnalyseTest = (props) => {
     useEffect(() => {
         setDataAnalyse(navigation.getParam('dataAnalyse', ''));
     }, [navigation.getParam('dataAnalyse', '')]);
+
+    // interstial ad
+    const learningTimes = useSelector(state => state.timeMachine.learning_times);
+    useEffect(() => {
+        console.log('---1-1-AnalyseTest-1-2');
+        advert = firebase.admob().interstitial(unitIntertitialId);
+        request = new AdRequest();
+        request.addKeyword('facebook').addKeyword('google').addKeyword('instagram').addKeyword('zalo').addKeyword('google').addKeyword('pubg').addKeyword('asphalt').addKeyword('covid-19');
+        advert.loadAd(request.build());
+    }, [learningTimes]);
 
     useEffect(() => {
         async function getExamDashboard() {
@@ -164,8 +180,8 @@ const AnalyseTest = (props) => {
                             // </TouchableOpacity>
                             <TouchableOpacity onPress={() => {
                                 if (dataCourseConvert && resultGlobal) {
-                                    navigation.navigate('ViewAnswer', { dataCourseConvert, resultGlobal });
-                                    dispatch(setLearningTimes());
+                                    navigation.navigate('ViewAnswer', { dataCourseConvert, resultGlobal, advert });
+                                    // dispatch(setLearningTimes());
                                 }
                             }} style={{}}>
                                 <View style={{ backgroundColor: '#febf6f', flex: 1, width: '100%', justifyContent: 'center', alignItems: 'center', paddingVertical: 12, borderRadius: 12, zIndex: 1001 }}>
