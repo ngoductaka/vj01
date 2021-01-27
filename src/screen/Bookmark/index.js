@@ -6,7 +6,7 @@ import { connect, useSelector } from 'react-redux';
 import LottieView from 'lottie-react-native';
 
 import { useRequest, Loading } from '../../handle/api';
-import { COLOR } from '../../handle/Constant';
+import { COLOR, unitIntertitialId } from '../../handle/Constant';
 import { setBookInfo } from '../../redux/action/book_info';
 
 import { Colors } from '../../utils/colors';
@@ -15,6 +15,11 @@ import { FilterModal, mapDoc } from './Component/FilterModal';
 import BackHeader from './Component/BackHeader';
 import { fontMaker, fontStyles } from '../../utils/fonts';
 
+/**-------------interstitial ad----------------- */
+import firebase from 'react-native-firebase';
+const AdRequest = firebase.admob.AdRequest;
+let advert;
+let request;
 
 //  ========== show list subject class====================
 const Bookmark = memo((props) => {
@@ -35,6 +40,18 @@ const Bookmark = memo((props) => {
             setFocus(onFocus + 1)
         }
     }, [props.navigation]);
+
+    const learningTimes = useSelector(state => state.timeMachine.learning_times);
+    const frequency = useSelector(state => get(state, 'subjects.frequency', 6));
+    useEffect(() => {
+        if (learningTimes % frequency === 0) {
+            console.log('---1-1-ContentTabResult-1-2', learningTimes);
+            advert = firebase.admob().interstitial(unitIntertitialId);
+            request = new AdRequest();
+            request.addKeyword('facebook').addKeyword('google').addKeyword('instagram').addKeyword('zalo').addKeyword('google').addKeyword('pubg').addKeyword('asphalt').addKeyword('covid-19');
+            advert.loadAd(request.build());
+        }
+    }, [learningTimes]);
 
     useEffect(() => {
         const data = {}
@@ -130,6 +147,7 @@ const Bookmark = memo((props) => {
                                     navigate={navigation.navigate}
                                     maxItem={3}
                                     reload={() => setFocus(onFocus + 1)}
+                                    advert={advert}
                                 /> : null}
                             </Tab>
                             {data && Object.keys(data).map((item, index) => (
@@ -147,6 +165,7 @@ const Bookmark = memo((props) => {
                                         navigate={navigation.navigate}
                                         isSub
                                         reload={() => setFocus(onFocus + 1)}
+                                        advert={advert}
                                     />
                                 </Tab>
                             ))}

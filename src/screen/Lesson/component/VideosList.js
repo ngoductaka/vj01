@@ -47,7 +47,8 @@ const VideoItem = ({ data, handleNavigate, setVisible, SeeMore }) => {
                         handleNavigate={handleNavigate}
                         item={item}
                         index={index}
-                        data={data} />
+                        data={data}
+                    />
                 )
             })}
             {
@@ -57,7 +58,7 @@ const VideoItem = ({ data, handleNavigate, setVisible, SeeMore }) => {
                         color: COLOR.MAIN,
                         fontSize: fontSize.h4,
                         ...fontMaker({ weight: fontStyles.Bold })
-                    }}>{expand ? 'Thu gọn' : `Xem thêm ${data.length-3} bài khác`}</Text>
+                    }}>{expand ? 'Thu gọn' : `Xem thêm ${data.length - 3} bài khác`}</Text>
                     <Icon name={!expand ? 'arrow-down' : 'arrow-up'} style={{ fontSize: 16, color: COLOR.MAIN, marginLeft: 4 }} />
 
 

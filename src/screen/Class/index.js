@@ -391,7 +391,7 @@ const Class = memo((props) => {
 						{/* fanpage */}
 						{/* <FanpageBanner /> */}
 						{/* resume learning */}
-						<RecommendCoure dataRecommend={dataRecommend} dataContinue={dataContinue} setVisible={setVisible} navigate={navigation.navigate} />
+						{/* <RecommendCoure dataRecommend={dataRecommend} dataContinue={dataContinue} setVisible={setVisible} navigate={navigation.navigate} /> */}
 
 						{/* share app */}
 						<Text style={{ ...fontMaker({ weight: fontStyles.SemiBold }), fontSize: 18, marginTop: 20, marginBottom: 5, }}>Chia sẻ ứng dụng</Text>

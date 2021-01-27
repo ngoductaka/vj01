@@ -5,7 +5,7 @@ import {
 } from 'react-native';
 import { connect } from 'react-redux';
 import { Icon } from 'native-base';
-import { isEmpty } from 'lodash';
+import { get, isEmpty } from 'lodash';
 import {
 	Placeholder,
 	PlaceholderMedia,
@@ -21,7 +21,7 @@ import { useRequest as useRequest_ } from '../../handle/api';
 
 import RenderLesson from './component/RenderLesson';
 import { SubjectChoosenModal } from '../../component/shared/SubjectChoosenModal';
-import { fontSize } from '../../handle/Constant';
+import { fontSize, unitIntertitialId } from '../../handle/Constant';
 import { fontMaker, fontStyles } from '../../utils/fonts';
 import { helpers } from '../../utils/helpers';
 import { GradientText } from '../../component/shared/GradientText';
@@ -30,6 +30,14 @@ import SubjectContent from './component/ListLesson';
 import ViewContainer from '../../component/shared/ViewContainer';
 
 const { width, height } = Dimensions.get('window');
+
+
+/**-------------interstitial ad----------------- */
+import firebase from 'react-native-firebase';
+import { setLearningTimes } from '../../redux/action/user_info';
+const AdRequest = firebase.admob.AdRequest;
+let advert;
+let request;
 
 //  ========== show list subject class====================
 const Test = (props) => {
@@ -58,6 +66,14 @@ const Test = (props) => {
 			setCurrSubject({ id, title })
 		}
 	}, [classData])
+
+	// interstial ad
+	useEffect(() => {
+		advert = firebase.admob().interstitial(unitIntertitialId);
+		request = new AdRequest();
+		request.addKeyword('facebook').addKeyword('google').addKeyword('instagram').addKeyword('zalo').addKeyword('google').addKeyword('pubg').addKeyword('asphalt').addKeyword('covid-19');
+		advert.loadAd(request.build());
+	}, []);
 
 	useEffect(() => {
 		if (props.isFocused) {
@@ -108,6 +124,7 @@ const Test = (props) => {
 				<SubjectContent
 					subjectID={currSubject.id}
 					navigation={props.navigation}
+					advert={advert}
 				/>
 			</Loading>
 

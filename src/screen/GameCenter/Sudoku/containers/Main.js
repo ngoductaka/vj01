@@ -175,14 +175,14 @@ class Main extends Component {
                     </Pressable>
 
                     {/* new game */}
-                    <Pressable onPress={this.onCreate} disabled={disabled} style={{ width: 320, alignSelf: 'center', marginTop: 25 }}>
+                    <Pressable onPress={this.onCreate} style={{ width: 320, alignSelf: 'center', marginTop: 25 }}>
                       <View style={{ height: 20, width: '100%', borderBottomLeftRadius: 20, borderBottomRightRadius: 20, backgroundColor: '#B5903C', position: 'absolute', bottom: -5 }} />
                       <View style={[styles.button, { backgroundColor: '#F2C960' }]}>
                         <View style={{ backgroundColor: '#CAAB56', justifyContent: 'center', alignItems: 'center', padding: 12, borderTopLeftRadius: 8, borderBottomLeftRadius: 8 }}>
-                          <Icon name='shuffle' type='Ionicons' style={[styles.buttonIcon, disabled && styles.disabled]} />
+                          <Icon name='shuffle' type='Ionicons' style={[styles.buttonIcon]} />
                         </View>
                         <View style={{ flex: 1 }}>
-                          <Text style={[styles.buttonText, disabled && styles.disabled]} >TRÒ CHƠI MỚI</Text>
+                          <Text style={[styles.buttonText]} >TRÒ CHƠI MỚI</Text>
                         </View>
                       </View>
                     </Pressable>
@@ -195,23 +195,23 @@ class Main extends Component {
                       <View style={{ height: 20, width: '100%', borderBottomLeftRadius: 20, borderBottomRightRadius: 20, backgroundColor: '#D58843', position: 'absolute', bottom: -5 }} />
                       <View style={[styles.button, { backgroundColor: '#F59331' }]}>
                         <View style={{ backgroundColor: '#D58843', justifyContent: 'center', alignItems: 'center', padding: 12, borderTopLeftRadius: 8, borderBottomLeftRadius: 8 }}>
-                          <Icon name='information' type='Ionicons' style={[styles.buttonIcon, disabled && styles.disabled]} />
+                          <Icon name='information' type='Ionicons' style={[styles.buttonIcon]} />
                         </View>
                         <View style={{ flex: 1 }}>
-                          <Text style={[styles.buttonText, disabled && styles.disabled]} >HƯỚNG DẪN</Text>
+                          <Text style={[styles.buttonText]} >HƯỚNG DẪN</Text>
                         </View>
                       </View>
                     </Pressable>
 
                     {/* exit game */}
-                    <Pressable onPress={() => this.props.navigation.goBack()} disabled={disabled} style={{ width: 320, alignSelf: 'center', marginTop: 25 }} >
+                    <Pressable onPress={() => this.props.navigation.goBack()} style={{ width: 320, alignSelf: 'center', marginTop: 25 }} >
                       <View style={{ height: 20, width: '100%', borderBottomLeftRadius: 20, borderBottomRightRadius: 20, backgroundColor: '#6D5E61', position: 'absolute', bottom: -5 }} />
                       <View style={[styles.button, { backgroundColor: '#94918A' }]}>
                         <View style={{ backgroundColor: '#77746D', justifyContent: 'center', alignItems: 'center', padding: 12, borderTopLeftRadius: 8, borderBottomLeftRadius: 8 }}>
-                          <Icon name='ios-exit-outline' type='Ionicons' style={[styles.buttonIcon, disabled && styles.disabled]} />
+                          <Icon name='ios-exit-outline' type='Ionicons' style={[styles.buttonIcon]} />
                         </View>
                         <View style={{ flex: 1 }}>
-                          <Text style={[styles.buttonText, disabled && styles.disabled]} >THOÁT TRÒ CHƠI</Text>
+                          <Text style={[styles.buttonText]} >THOÁT TRÒ CHƠI</Text>
                         </View>
                       </View>
                     </Pressable>

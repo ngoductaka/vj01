@@ -2,14 +2,14 @@ import React, { useState, useEffect, memo, useRef } from 'react';
 import { View, FlatList, SafeAreaView, Text, TouchableOpacity, StyleSheet, Image, Keyboard, ScrollView, Alert } from 'react-native';
 import { Tab, Tabs, Icon } from 'native-base';
 import { isEmpty, get, throttle } from 'lodash';
-import { connect } from 'react-redux';
+import { connect, useSelector } from 'react-redux';
 
 import { helpers } from '../../utils/helpers';
 // import Header from '../../component/Header';
 import Search from '../../component/Search';
 
 import { KEY, insertItem, saveItem, getItem, useStorage } from '../../handle/handleStorage';
-import { array_move, COLOR } from '../../handle/Constant';
+import { array_move, COLOR, unitIntertitialId } from '../../handle/Constant';
 import HistoryItem from '../../component/HistoryItem';
 import { setBookInfo } from '../../redux/action/book_info';
 
@@ -25,6 +25,12 @@ import { SeeMoreButton } from './Component/SeeMoreButton';
 import { search_services } from '../../redux/services/search.service';
 import AutoComplete from './AutoComplete';
 import api, { useRequest } from '../../handle/api';
+
+/**-------------interstitial ad----------------- */
+import firebase from 'react-native-firebase';
+const AdRequest = firebase.admob.AdRequest;
+let advert;
+let request;
 
 //  ========== show list subject class====================
 const SearchView = memo((props) => {
@@ -88,6 +94,15 @@ const SearchView = memo((props) => {
 			keyboardDidHideListener.remove()
 		}
 	}, []);
+
+	const learningTimes = useSelector(state => state.timeMachine.learning_times);
+	useEffect(() => {
+		console.log('---Search advert');
+		advert = firebase.admob().interstitial(unitIntertitialId);
+		request = new AdRequest();
+		request.addKeyword('facebook').addKeyword('google').addKeyword('instagram').addKeyword('zalo').addKeyword('google').addKeyword('pubg').addKeyword('asphalt').addKeyword('covid-19');
+		advert.loadAd(request.build());
+	}, [learningTimes]);
 
 	const clearSearchHistory = async () => {
 		saveItem(KEY.history_search, null);
@@ -342,12 +357,14 @@ const SearchView = memo((props) => {
 									articleState={get(articleState, 'article_data', [])}
 									examState={get(examState, 'exam_data', [])}
 									videoState={get(videoState, 'video_data', [])}
+									advert={advert}
 								/>
 							</Tab>
 							<Tab textStyle={styles.textStyle} activeTextStyle={styles.activeTextStyle} activeTabStyle={styles.activeTabStyle} tabStyle={styles.tabStyle} heading="TÀI LIỆU">
 								<ArticleResult
 									data={articleState}
 									navigation={navigation}
+									advert={advert}
 								// handleLoadMore={() => {
 								// 	setArticleState({ ...articleState, loading: true });
 								// 	setArticleCurrPage(articleCurrPage + 1);
@@ -368,6 +385,7 @@ const SearchView = memo((props) => {
 								<OnlineExamResult
 									data={examState}
 									navigation={navigation}
+									advert={advert}
 								// handleLoadMore={() => {
 								// 	setArticleState({ ...articleState, loading: true });
 								// 	setArticleCurrPage(articleCurrPage + 1);

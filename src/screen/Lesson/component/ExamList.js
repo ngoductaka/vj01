@@ -9,7 +9,7 @@ import * as Animatable from 'react-native-animatable';
 import { COLOR, fontSize, blackColor } from '../../../handle/Constant';
 import { fontMaker, fontStyles } from '../../../utils/fonts';
 
-const ExcerciseItem = ({ data, handleNavigate, book, lessonId, SeeMore }) => {
+const ExcerciseItem = ({ data, advertParam = null, handleNavigate, book, lessonId, SeeMore }) => {
     const [expand, setExpand] = useState(true);
     return (
         <View style={{ overflow: 'hidden', marginBottom: 20 }}>
@@ -23,7 +23,7 @@ const ExcerciseItem = ({ data, handleNavigate, book, lessonId, SeeMore }) => {
                         {
                             data.slice(0, 3).map((item, index) => {
                                 return (
-                                    <RenderItemExam handleNavigate={handleNavigate} item={item} book={book} lessonId={lessonId} />
+                                    <RenderItemExam handleNavigate={handleNavigate} advertParam={advertParam} item={item} book={book} lessonId={lessonId} />
                                 )
                             })
                         }
@@ -64,7 +64,7 @@ const stylesComponent = StyleSheet.create({
     }
 });
 
-const RenderItemExam = ({ handleNavigate, item, book, lessonId }) => {
+const RenderItemExam = ({ handleNavigate, advertParam = null, item, book, lessonId }) => {
     return (
         <TouchableOpacity
             onPress={() => handleNavigate('OverviewTest', {
@@ -75,7 +75,8 @@ const RenderItemExam = ({ handleNavigate, item, book, lessonId }) => {
                 lessonId: lessonId,
                 time: get(item, 'partable.duration', 0),
                 count: get(item, 'partable.questions_count', 0),
-                source: 'LessonOverview'
+                source: 'LessonOverview',
+                advert: advertParam
             })}
             style={[stylesComponent.textItem, { paddingLeft: 2 }]}
         >

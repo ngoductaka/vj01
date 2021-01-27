@@ -11,7 +11,7 @@ import { COLOR, fontSize, blackColor } from '../../../handle/Constant';
 import { fontMaker, fontStyles } from '../../../utils/fonts';
 
 
-const ArticleItem = ({ data, handleNavigate, SeeMore, title = 'Giải bài tập' }) => {
+const ArticleItem = ({ data, advertParam = null, handleNavigate, SeeMore, title = 'Giải bài tập' }) => {
     const [expand, setExpand] = useState(false);
     return (
         <View style={{ overflow: 'hidden', marginBottom: 20 }}>
@@ -32,6 +32,7 @@ const ArticleItem = ({ data, handleNavigate, SeeMore, title = 'Giải bài tập
                                             item={item}
                                             index={index}
                                             relatedArticle={data}
+                                            advertParam={advertParam}
                                         />
                                     )
                                 })
@@ -53,10 +54,10 @@ const ArticleItem = ({ data, handleNavigate, SeeMore, title = 'Giải bài tập
 }
 
 
-const RenderArticle = ({ handleNavigate, item, index, relatedArticle = [] }) => {
+const RenderArticle = ({ handleNavigate, advertParam = null, item, index, relatedArticle = [] }) => {
     return (
         <TouchableOpacity
-            onPress={() => { handleNavigate('Lesson', { articleId: get(item, 'partable.id', ''), relatedArticle }) }}
+            onPress={() => { handleNavigate('Lesson', { articleId: get(item, 'partable.id', ''), relatedArticle, advert: advertParam }) }}
             style={stylesComponent.textItem}>
             <View style={{ flexDirection: 'row', paddingRight: 3 }}>
                 <Text>{`${index + 1}.  `}</Text>
@@ -69,12 +70,12 @@ const RenderArticle = ({ handleNavigate, item, index, relatedArticle = [] }) => 
     )
 }
 
-const RenderArticlRelated = ({ handleNavigate, item, index, stopPlayer = () => { }, relatedArticle = [] }) => {
+const RenderArticlRelated = ({ handleNavigate, advertParam = null, item, index, stopPlayer = () => { }, relatedArticle = [] }) => {
     return (
         <TouchableOpacity
             onPress={() => {
                 stopPlayer();
-                handleNavigate('Lesson', { articleId: get(item, 'id', '') });
+                handleNavigate('Lesson', { articleId: get(item, 'id', ''), advert: advertParam });
             }}
             style={[stylesComponent.textItem, { paddingLeft: 0, borderBottomWidth: 0 }]}
         >

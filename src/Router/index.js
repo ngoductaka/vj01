@@ -144,19 +144,19 @@ const CustomBottomBar = (props) => {
 						props.navigation.popToTop();
 						animate(0, route.key);
 						break;
-					case 'CourseScreen':
+					// case 'CourseScreen':
+					// 	animate(width - (NUMBER_OF_TABS - 1) * width / NUMBER_OF_TABS, route.key);
+					// 	props.navigation.popToTop();
+					// 	break;
+					case 'TestStack':
 						animate(width - (NUMBER_OF_TABS - 1) * width / NUMBER_OF_TABS, route.key);
 						props.navigation.popToTop();
 						break;
-					case 'TestStack':
-						animate(width - (NUMBER_OF_TABS - 2) * width / NUMBER_OF_TABS, route.key);
-						props.navigation.popToTop();
-						break;
 					case 'QnA':
-						animate(width - (NUMBER_OF_TABS - 3) * width / NUMBER_OF_TABS, route.key);
+						animate(width - (NUMBER_OF_TABS - 2) * width / NUMBER_OF_TABS, route.key);
 						break;
 					case 'AccountStack':
-						animate(width - (NUMBER_OF_TABS - 4) * width / NUMBER_OF_TABS, route.key);
+						animate(width - (NUMBER_OF_TABS - 3) * width / NUMBER_OF_TABS, route.key);
 						props.navigation.popToTop();
 						break;
 				}
@@ -196,7 +196,6 @@ const MainContent = createBottomTabNavigator({
 			if (routeName === 'CourseScreen') {
 				// src = 'search1';
 				// text = "Tìm kiếm";
-
 				src = 'chalkboard-teacher';
 				text = "Khoá học";
 				type = "FontAwesome5"
