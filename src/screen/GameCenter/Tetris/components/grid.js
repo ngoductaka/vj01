@@ -354,7 +354,7 @@ class Grid extends Component {
         });
 
         if (row_was_cleared) {
-            this.setState({ score: this.state.score + 1000 * num_rows_cleared });
+            this.setState({ score: this.state.score + 100 * num_rows_cleared });
         }
     }
 
@@ -578,7 +578,9 @@ class Grid extends Component {
                                     {this.renderCells()}
                                 </View>
                                 <View style={{ alignItems: 'center', flex: 1 }}>
-                                    <Text style={{ fontSize: 13, ...fontMaker({ weight: fontStyles.SemiBold }), color: '#fff', marginBottom: 20 }}>TIẾP THEO</Text>
+                                    <View style={{ backgroundColor: 'black', width: '100%', justifyContent: 'center', alignItems: 'center', marginBottom: 20,}}>
+                                        <Text style={{ fontSize: 22, ...fontMaker({ weight: fontStyles.Bold }), color: '#fff', }}>TIẾP</Text>
+                                    </View>
                                     <Preview blocks={this.state.blocks} />
                                 </View>
                             </View>

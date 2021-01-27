@@ -17,7 +17,7 @@ class Tail extends Component {
         });
 
         return (
-            <View style={{ width: Constants.GRID_SIZE * this.props.size, height: Constants.GRID_SIZE * this.props.size }}>
+            <View style={{ width: Constants.GRID_HORIZONTAL_SIZE * this.props.size, height: Constants.GRID_VERTICAL_SIZE * this.props.size }}>
                 {tailList}
             </View>
         );
