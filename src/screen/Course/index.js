@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { View, StyleSheet, TouchableOpacity, Image, Text, SafeAreaView, ImageBackground, ScrollView, FlatList, Dimensions } from 'react-native';
 // import FastImage from 'react-native-fast-image';
 import { useSelector } from 'react-redux';
@@ -15,7 +15,10 @@ import { ListLesson } from './component/ListLesson';
 import MenuItem from '../../component/menuItem';
 import HeaderBar from '../../component/Header/Normal';
 import { User } from '../../component/User';
-import { LargeVideo } from '../Lesson/component/VideosList';
+import { LargeVideo } from './component/VideoItem';
+
+import { getCouse } from './services';
+import { convertImgLink } from './utis'
 
 const { width } = Dimensions.get('window');
 
@@ -25,12 +28,43 @@ const Course = (props) => {
 
     const { navigation } = props;
     const [visible, setVisible] = useState(false);
+    const [gradeCourse, setGradeCourse] = useState([]);
+    const [loadGrade, setLoadingGradle] = useState(false);
 
     const userInfo = useSelector(state => state.userInfo);
     // console.log('userInfo123', userInfo)
     const [currentClass, setClass] = useState(userInfo && userInfo.class ? userInfo.class : '');
     const [classModal, setShowClassModal] = useState(false);
 
+    console.log('gradeCourse', gradeCourse)
+
+    useEffect(() => {
+        if (userInfo.class) {
+            _setCurrentClass(userInfo.class);
+            _getCourseViaGrade(userInfo.class)
+        }
+    }, [userInfo.class]);
+    const _getCourseViaGrade = (grade) => {
+        setLoadingGradle(true)
+        getCouse({ classlevel: grade })
+            .then(({ data }) => {
+                setGradeCourse(data)
+            })
+            .catch(err => {
+
+            })
+            .finally(() => {
+                setLoadingGradle(false)
+
+            })
+
+    }
+
+
+
+    const _handlePressLesson = (item) => {
+        navigation.navigate('CourseDetail', {});
+    }
     const _onClose = () => {
         setShowClassModal(false);
     }
@@ -39,20 +73,31 @@ const Course = (props) => {
         setClass(cls);
         setShowClassModal(false);
     }
-    useEffect(() => {
-        if (userInfo.class) _setCurrentClass(userInfo.class)
-    }, [userInfo.class]);
-
-    const _handlePressLesson = (item) => {
-        navigation.navigate('CourseDetail', {});
-    }
 
     return (
         <View style={styles.container}>
             {/* <NormalHeader onPressSearch={() => props.navigation.navigate('SearchView', { searchText: '' })} onRightAccount={() => setRightAction(!rightAction)} /> */}
             <SafeAreaView style={{ flex: 1 }}>
                 <HeaderBar navigation={props.navigation} />
-                <FlatList
+                <ScrollView>
+
+                    <View style={{ backgroundColor: '#fff', marginBottom: 10, padding: 10 }}>
+                        <SeeAllTitle
+                            onPress={() => props.navigation.navigate('TopicCourse', { topic: item })}
+                            text={`Khoá học lớp ${currentClass}`} />
+                        <ScrollView horizontal showsHorizontalScrollIndicator={false}>
+                            {gradeCourse.slice(0, 5).map(videoItem => {
+                                return <VideoContinue
+                                    navigate={navigation.navigate}
+                                    setVisible={() => { }}
+                                    videos={videoItem}
+                                    style={{ marginRight: 20, width: width * 4 / 5 }}
+                                />
+                            })}
+                        </ScrollView>
+                    </View>
+
+                    {/* <FlatList
                     style={{ marginTop: 8, backgroundColor: '#ddd' }}
                     data={[`Khoá học lớp ${currentClass}`, 'Luyện thi THPT', 'KHoá học của bạn']}
                     renderItem={({ item, index }) => {
@@ -62,7 +107,7 @@ const Course = (props) => {
                                     onPress={() => props.navigation.navigate('TopicCourse', { topic: item })}
                                     text={currentClass ? item : ''} />
                                 <ScrollView horizontal showsHorizontalScrollIndicator={false}>
-                                    {[1, 2, 3].map(videoItem => {
+                                    {gradeCourse.slice(0, 5).map(videoItem => {
                                         return <VideoContinue
                                             navigate={navigation.navigate}
                                             setVisible={() => { }}
@@ -76,7 +121,9 @@ const Course = (props) => {
                         )
                     }}
                     keyExtractor={({ item, index }) => `${index}`}
-                />
+                /> */}
+
+                </ScrollView>
                 <ClassChoosenModal
                     isShowMore="true"
                     show={classModal}
@@ -225,20 +272,29 @@ const stylesHeader = StyleSheet.create({
 
 
 const VideoContinue = ({ navigate, setVisible, videos = {}, style = {}, widthImg = width * 3 / 4 }) => {
+    // console.log('videos', videos);
+
+    const teacher = get(videos, 'owner', {});
+    console.log('----', get(videos, 'get_ldp.thumbnail', ''))
+    const videoItem = {
+        imgLecture: convertImgLink(get(videos, 'get_ldp.thumbnail', '')),
+        title: get(videos, 'name', ''),
+        viewCount: get(videos, 'view', '1k'),
+        teacher: {
+            ...teacher,
+            name: teacher.first_name,
+            img: convertImgLink(teacher.avatar)
+        },
+        price: get(videos, 'price', ''),
+        bought: get(videos, 'bought', ''),
+    }
+
     const propsVideo = {
-        isLecture: !!videos.preview_img,
         setVisible,
         widthImg,
-        item: {
-            imgLecture: get(videos, 'preview_img', ''),
-            lectureId: get(videos, 'id', ''),
-            videoUrl: get(videos, 'url', 'https://www.youtube.com/watch?v=COfrDO4lV-k'),
-            duration: get(videos, 'length', 0),
-            title: get(videos, 'title', ' test title'),
-            viewCount: get(videos, 'view_count', '1k')
-        },
+        item: videoItem,
         _handlePress: () => {
-            navigate('CourseDetail', { lectureId: get(videos, 'id', ''), view_count: get(videos, 'view_count', '') })
+            navigate('CourseDetail', videoItem)
         },
     };
     return (

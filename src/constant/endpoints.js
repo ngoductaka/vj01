@@ -8,6 +8,7 @@ export const endpoints = {
     // BASE_URL:'https://testapps.vietjack.com:4443/api',
     BASE_URL_EXAM: 'https://khoahoc.vietjack.com/mobile-api/v2/exam/',
     BASE_HOI_DAP: 'https://hoidap.vietjack.com',
+    BASE_COURSE_IMG: 'https://khoahoc.vietjack.com/',
 
     PREFIX: {
         ACCOUNT: '/account',
