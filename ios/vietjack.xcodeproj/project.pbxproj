@@ -28,6 +28,7 @@
 		81AB9BB82411601600AC10FF /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */; };
 		8433CC858F7E4DFCB08518BD /* Roboto-Bold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 085C721B1765431B8F500E22 /* Roboto-Bold.ttf */; };
 		845720D125B8342A008F2273 /* www in Resources */ = {isa = PBXBuildFile; fileRef = 845720D025B8342A008F2273 /* www */; };
+		846AB1B925C16FB500665795 /* bg.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 846AB1B825C16FB500665795 /* bg.mp3 */; };
 		8FCEB3C9D92B4E6FBE6E7DD2 /* Roboto-Medium.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 94D425BBA3A244AFAD57FB84 /* Roboto-Medium.ttf */; };
 		A19049BE417E488AADCA0E19 /* Roboto-Thin.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 824A200A91864D3F81C52C24 /* Roboto-Thin.ttf */; };
 		AC6A7DE0A2D84DFD937BAA0A /* Roboto-Black.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 7BE23F37674341DAB2B09930 /* Roboto-Black.ttf */; };
@@ -111,6 +112,7 @@
 		81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; name = LaunchScreen.storyboard; path = VietJack/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		824A200A91864D3F81C52C24 /* Roboto-Thin.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Roboto-Thin.ttf"; path = "../src/fonts/Roboto-Thin.ttf"; sourceTree = "<group>"; };
 		845720D025B8342A008F2273 /* www */ = {isa = PBXFileReference; lastKnownFileType = folder; name = www; path = ../../www; sourceTree = "<group>"; };
+		846AB1B825C16FB500665795 /* bg.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; name = bg.mp3; path = ../android/app/src/main/res/raw/bg.mp3; sourceTree = "<group>"; };
 		85A60AA5D17F4EF288A2B79B /* Fontisto.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = Fontisto.ttf; path = "../node_modules/native-base/Fonts/Fontisto.ttf"; sourceTree = "<group>"; };
 		862EF7A3B13048F7A164A3AA /* SimpleLineIcons.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = SimpleLineIcons.ttf; path = "../node_modules/native-base/Fonts/SimpleLineIcons.ttf"; sourceTree = "<group>"; };
 		8AC03CF9AD98831A4E9061CA /* Pods-VietJack.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-VietJack.release.xcconfig"; path = "Target Support Files/Pods-VietJack/Pods-VietJack.release.xcconfig"; sourceTree = "<group>"; };
@@ -200,6 +202,7 @@
 			children = (
 				047AB7D32599CE2B000BE712 /* VietJack.entitlements */,
 				047AB7302599C368000BE712 /* start.mp3 */,
+				846AB1B825C16FB500665795 /* bg.mp3 */,
 				047AB73A2599C370000BE712 /* clock.mp3 */,
 				047AB72A2599C32B000BE712 /* GoogleService-Info.plist */,
 				008F07F21AC5B25A0029DE68 /* main.jsbundle */,
@@ -484,6 +487,7 @@
 				AC6A7DE0A2D84DFD937BAA0A /* Roboto-Black.ttf in Resources */,
 				F8B2B6475C724192BE082266 /* Roboto-BlackItalic.ttf in Resources */,
 				8433CC858F7E4DFCB08518BD /* Roboto-Bold.ttf in Resources */,
+				846AB1B925C16FB500665795 /* bg.mp3 in Resources */,
 				845720D125B8342A008F2273 /* www in Resources */,
 				F5E790C803314DF9A67700D1 /* Roboto-BoldItalic.ttf in Resources */,
 				BD16AE6B59AA493EA608939F /* Roboto-Italic.ttf in Resources */,
