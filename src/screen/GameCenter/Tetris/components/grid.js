@@ -518,8 +518,11 @@ class Grid extends Component {
                     </Text>
 
                     <TouchableOpacity onPress={() => { this.state.started ? this.tryAgain() : this.startGame() }}>
-                        <Text style={{ fontSize: 32, color: 'white', ...fontMaker({ weight: fontStyles.SemiBold }) }}>
+                        <Text style={{ fontSize: 28, color: 'white', paddingVertical: 15, ...fontMaker({ weight: fontStyles.SemiBold }), marginTop: 10 }}>
                             {this.state.started ? 'Chơi lại' : 'Bắt đầu'}</Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity onPress={() => { this.props.navigation.goBack() }}>
+                        <Text style={{ fontSize: 28, color: 'white', paddingVertical: 15, ...fontMaker({ weight: fontStyles.SemiBold }) }}>Thoát trò chơi</Text>
                     </TouchableOpacity>
                 </View>
             </Modal>
@@ -578,7 +581,7 @@ class Grid extends Component {
                                     {this.renderCells()}
                                 </View>
                                 <View style={{ alignItems: 'center', flex: 1 }}>
-                                    <View style={{ backgroundColor: 'black', width: '100%', justifyContent: 'center', alignItems: 'center', marginBottom: 20,}}>
+                                    <View style={{ backgroundColor: 'black', width: '100%', justifyContent: 'center', alignItems: 'center', marginBottom: 20, }}>
                                         <Text style={{ fontSize: 21, ...fontMaker({ weight: fontStyles.Black }), color: '#fff', }}>TIẾP</Text>
                                     </View>
                                     <Preview blocks={this.state.blocks} />

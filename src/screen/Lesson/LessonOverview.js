@@ -64,6 +64,7 @@ const LessonOverview = (props) => {
 
     const showFullAds = navigation.getParam('showFullAds', true);
     const advertParam = navigation.getParam('advert', null);
+    console.log('adverrrrr', advertParam);
 
     const [_dataLesson, loading, err] = useRequest(endPoint, [lessonId + lesson_id]);
     const [dataLesson, setDataLesson] = useState([]);
@@ -80,15 +81,15 @@ const LessonOverview = (props) => {
     useEffect(() => {
         if (showFullAds) {
             if (screenAds && screenAds[TAG] == "1") {
-                if (learningTimes % frequency === 0) {
-                    // console.log('----------');
-                    if (advertParam) {
-                        advertParam.show();
-                    }
-                    // advert.on('onAdClosed', () => {
-                    //     setAdsLoading(false);
-                    // });
+                // if (learningTimes % frequency === 0) {
+                // console.log('----------');
+                if (advertParam) {
+                    advertParam.show();
                 }
+                // advert.on('onAdClosed', () => {
+                //     setAdsLoading(false);
+                // });
+                // }
             }
         }
     }, []);

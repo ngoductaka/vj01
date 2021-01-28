@@ -4,13 +4,20 @@ import {
     View,
     Dimensions,
     Text, StyleSheet,
-    TouchableOpacity
+    TouchableOpacity,
+    SafeAreaView,
+    Image,
+    Pressable
 } from 'react-native';
 import GestureRecognizer, { swipeDirections } from 'react-native-swipe-gestures';
 import { get, cloneDeep } from 'lodash';
 
 import AwesomeAlert from 'react-native-awesome-alerts';
 import BackHeader from '../History/Component/BackHeader';
+import { images } from '../../utils/images';
+import { COLOR, Constants } from '../../handle/Constant';
+import { fontMaker, fontStyles } from '../../utils/fonts';
+import { getItem, saveItem } from '../../handle/handleStorage';
 
 const handleCheckLoose = (data) => {
     for (let row = 3; row >= 0; row--) {
@@ -70,15 +77,48 @@ const plusIn1 = {
         scale: 1,
     },
 }
-const Game2048 = () => {
-    const [data, setData] = useState(initArr);
+const Game2048 = (props) => {
+    const [data, setData] = useState([]);
     const [isLoosed, setLoosed] = useState(false);
+    const [visible, setVisible] = useState(false);
+    const [highScore, setHighScore] = useState(0);
+    const [reload, setReload] = useState(0);
     const that = useRef(null);
+
+    useEffect(() => {
+        async function getInitData() {
+            const res = await getItem(Constants['2048_HIGHSCORE']);
+            const initMap = await getItem(Constants.STORED_2048_MAP);
+            const currentScore = await getItem(Constants.CURRENT_SCORE_2048);
+            // console.log('---getHighScore---', res);
+            // console.log('---initMap---', initMap);
+            if (currentScore) {
+                setReload(currentScore);
+            }
+            if (initMap && initMap.length > 0) {
+                setData(initMap);
+            } else {
+                const [initData] = randomInsert([
+                    [{ ...base }, { ...base }, { ...base }, { ...base }],
+                    [{ ...base }, { ...base }, { ...base }, { ...base }],
+                    [{ ...base }, { ...base }, { ...base }, { ...base }],
+                    [{ ...base }, { ...base }, { ...base }, { ...base }],
+
+                ])
+                setData(initData);
+            }
+            if (res) {
+                setHighScore(res);
+            }
+        }
+        getInitData();
+    }, []);
+
     const config = {
         velocityThreshold: 0.3,
         directionalOffsetThreshold: 80
     };
-    const [reload, setReload] = useState(0)
+
 
     const onSwipe = useCallback((gestureName, gestureState) => {
         const { SWIPE_UP, SWIPE_DOWN, SWIPE_LEFT, SWIPE_RIGHT } = swipeDirections;
@@ -111,19 +151,48 @@ const Game2048 = () => {
             that.current = direct;
             setReload(score);
             if (isLoose) {
+                if (highScore < score) {
+                    setHighScore(score);
+                    saveItem(Constants['2048_HIGHSCORE'], score);
+                }
                 setLoosed(true);
             }
-            // alert('you are loose')
         }
 
     }, [data, reload]);
 
     return (
-        <View style={{ flex: 1 }}>
-            <BackHeader
+        <SafeAreaView style={{ flex: 1 }}>
+            {/* <BackHeader
                 title={'2048'}
                 showRight={false}
-            />
+            /> */}
+            <View style={{ flexDirection: 'row', alignItems: 'center', padding: 10 }}>
+                <View style={{ justifyContent: 'center', alignItems: 'center', borderRadius: 4, backgroundColor: '#EBCB67', width: 120, height: 120, }}>
+                    <Text style={{ color: COLOR.white(1), fontSize: 40, ...fontMaker({ weight: fontStyles.Bold }) }}>2048</Text>
+                </View>
+                <View style={{ flex: 1, paddingLeft: 10 }}>
+                    <View style={{ flexDirection: 'row', alignItems: 'center', marginBottom: 10, }}>
+                        <View style={{ flex: 1, backgroundColor: '#3D3A33', height: 65, marginRight: 10, borderRadius: 4, justifyContent: 'center', alignItems: 'center' }}>
+                            <Text style={{ color: COLOR.white(1), ...fontMaker({ weight: fontStyles.SemiBold }), fontSize: 16 }}>ĐIỂM</Text>
+                            <Text style={{ color: COLOR.white(1), ...fontMaker({ weight: fontStyles.Bold }), fontSize: 24, marginTop: 4 }}>{reload}</Text>
+                        </View>
+                        <View style={{ flex: 1, backgroundColor: '#3D3A33', height: 65, borderRadius: 4, justifyContent: 'center', alignItems: 'center' }}>
+                            <Text style={{ color: COLOR.white(1), ...fontMaker({ weight: fontStyles.SemiBold }), fontSize: 16 }}>KỶ LỤC</Text>
+                            <Text style={{ color: COLOR.white(1), ...fontMaker({ weight: fontStyles.Bold }), fontSize: 24, marginTop: 4 }}>{highScore}</Text>
+                        </View>
+                    </View>
+                    <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                        <Pressable onPress={() => setLoosed(true)} style={{ flex: 1, backgroundColor: '#D0513B', height: 45, marginRight: 10, borderRadius: 4, justifyContent: 'center', alignItems: 'center' }}>
+                            <Text style={{ color: COLOR.white(1), ...fontMaker({ weight: fontStyles.SemiBold }), fontSize: 16 }}>CHƠI LẠI</Text>
+                        </Pressable>
+                        <Pressable onPress={() => setVisible(true)} style={{ flex: 1, backgroundColor: '#D0513B', height: 45, borderRadius: 4, justifyContent: 'center', alignItems: 'center' }}>
+                            <Text style={{ color: COLOR.white(1), ...fontMaker({ weight: fontStyles.SemiBold }), fontSize: 16 }}>THOÁT GAME</Text>
+                        </Pressable>
+                    </View>
+                </View>
+            </View>
+            <Text style={{ color: '#766F65', ...fontMaker({ weight: fontStyles.SemiBold }), textAlign: 'center', marginTop: 20, marginBottom: 30, fontSize: 18, paddingHorizontal: 30, lineHeight: 26 }}>Kết hợp các con số để có thể đạt được số điểm cao nhất nhé!</Text>
             <GestureRecognizer
                 onSwipe={onSwipe}
                 config={config}
@@ -132,7 +201,6 @@ const Game2048 = () => {
                 }}
             >
                 <View style={styles.container}>
-                    <Text style={{ fontSize: 16 }}>Score: {reload}</Text>
                     <View style={styles.main}>
                         {
                             data.map((item, indexRow) => {
@@ -155,6 +223,7 @@ const Game2048 = () => {
                                                             // adjustsFontSizeToFit={true}
                                                             // minimumFontScale={0.5}
                                                             style={{
+                                                                ...fontMaker({ weight: fontStyles.Regular }),
                                                                 textAlign: 'center',
                                                                 fontSize: ((width - 20) / 4 - 10) / 3 - 2,
                                                                 color: i > 1022 ? '#f9f6f2' : '#706e60'
@@ -174,24 +243,75 @@ const Game2048 = () => {
                         show={isLoosed}
                         showProgress={false}
                         title="Game Over"
-                        message="Do you want a new game"
+                        titleStyle={{ fontSize: 18, ...fontMaker({ weight: fontStyles.Bold }), color: COLOR.MAIN }}
+                        message="Bạn có muốn chơi lại không?"
+                        messageStyle={{ fontSize: 16 }}
                         closeOnTouchOutside={true}
                         closeOnHardwareBackPress={false}
                         showCancelButton={true}
                         showConfirmButton={true}
-                        cancelText="Close"
-                        confirmText="New Game"
+                        onDismiss={() => setLoosed(false)}
+                        cancelText="Đóng"
+                        confirmText="Trò chơi mới"
+                        confirmButtonStyle={{ width: 120, justifyContent: 'center', alignItems: 'center', paddingVertical: 10 }}
+                        confirmButtonTextStyle={{ fontSize: 16, ...fontMaker({ weight: fontStyles.Regular }) }}
+                        cancelButtonStyle={{ width: 120, justifyContent: 'center', alignItems: 'center', paddingVertical: 10 }}
+                        cancelButtonTextStyle={{ fontSize: 16, ...fontMaker({ weight: fontStyles.Regular }) }}
                         confirmButtonColor="#DD6B55"
                         onCancelPressed={() => {
-                            setLoosed(false)
+                            setLoosed(false);
                         }}
                         onConfirmPressed={() => {
-                            setLoosed(false); setReload(0); setData(initArr)
+                            const [temp] = randomInsert([
+                                [{ ...base }, { ...base }, { ...base }, { ...base }],
+                                [{ ...base }, { ...base }, { ...base }, { ...base }],
+                                [{ ...base }, { ...base }, { ...base }, { ...base }],
+                                [{ ...base }, { ...base }, { ...base }, { ...base }],
+
+                            ])
+                            setData(temp);
+                            setReload(0);
+                            setLoosed(false);
+                        }}
+                    />
+                    <AwesomeAlert
+                        show={visible}
+                        showProgress={false}
+                        title="Thoát trò chơi?"
+                        titleStyle={{ fontSize: 18, ...fontMaker({ weight: fontStyles.Bold }), color: COLOR.MAIN }}
+                        message="Bạn có muốn thoát trò chơi không?"
+                        messageStyle={{ fontSize: 16 }}
+                        closeOnTouchOutside={true}
+                        closeOnHardwareBackPress={false}
+                        showCancelButton={true}
+                        showConfirmButton={true}
+                        onDismiss={() => setLoosed(false)}
+                        cancelText="Đóng"
+                        confirmText="Thoát"
+                        confirmButtonStyle={{ width: 120, justifyContent: 'center', alignItems: 'center', paddingVertical: 10 }}
+                        confirmButtonTextStyle={{ fontSize: 16, ...fontMaker({ weight: fontStyles.Regular }) }}
+                        cancelButtonStyle={{ width: 120, justifyContent: 'center', alignItems: 'center', paddingVertical: 10 }}
+                        cancelButtonTextStyle={{ fontSize: 16, ...fontMaker({ weight: fontStyles.Regular }) }}
+                        confirmButtonColor="#DD6B55"
+                        onCancelPressed={() => {
+                            setVisible(false);
+                        }}
+                        onConfirmPressed={() => {
+                            if (highScore < reload) {
+                                setHighScore(reload);
+                                saveItem(Constants['2048_HIGHSCORE'], reload);
+                            }
+                            saveItem(Constants.STORED_2048_MAP, data);
+                            saveItem(Constants.CURRENT_SCORE_2048, reload);
+                            setVisible(false);
+                            setTimeout(() => {
+                                props.navigation.goBack();
+                            }, 401);
                         }}
                     />
                 </View>
             </GestureRecognizer>
-        </View>
+        </SafeAreaView>
     )
 }
 
@@ -199,7 +319,7 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         // backgroundColor: "#fff2cd",//"#f7d87e"
-        justifyContent: 'center',
+        // justifyContent: 'center',
         alignItems: 'center',
     },
     main: {
@@ -296,12 +416,6 @@ const convertUp = (data) => {
     }
     return data;
 }
-
-
-
-
-
-
 
 const coreHandleHorizontal = (data, row, col, next) => {
     if (data[row][col].val === 0) return 1;

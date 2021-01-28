@@ -99,10 +99,10 @@ const Lesson = (props) => {
 	useEffect(() => {
 		if (showFullAds) {
 			if (screenAds && screenAds[TAG] == "1") {
-				if (learningTimes % frequency === 0) {
-					if (advertParam) {
-						advertParam.show();
-					}
+				// if ((learningTimes + 3) % frequency === 0) {
+				if (advertParam) {
+					advertParam.show();
+					// }
 					// setAdsLoading(true);
 					// advert = firebase.admob().interstitial(unitIntertitialId);
 					// request = new AdRequest();

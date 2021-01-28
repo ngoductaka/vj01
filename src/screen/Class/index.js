@@ -341,24 +341,9 @@ const Class = memo((props) => {
 						numColumns={NUMBER_COLUMS}
 						keyExtractor={(_, index) => 'book_item' + index.toString()}
 					/>
-					<View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', marginBottom: 10, }}>
-						<Text style={{ fontSize: 18, ...fontMaker({ weight: fontStyles.SemiBold }) }}>Kho trò chơi</Text>
-						<TouchableOpacity onPress={() => navigation.navigate('GameCenter')} style={{}}>
-							<Text style={{ fontSize: 14, ...fontMaker({ weight: fontStyles.Regular }), textDecorationColor: COLOR.MAIN, color: COLOR.MAIN }}>Xem tất cả</Text>
-						</TouchableOpacity>
-					</View>
+
 					<View style={{ marginBottom: 30 }}>
-						<FlatList
-							style={{}}
-							data={GAME_CENTERS.slice(0, 3)}
-							numColumns={3}
-							renderItem={({ item, index }) => {
-								return (
-									<GameItem src={item.src} name={item.name} slogan={item.slogan} navigation={navigation} route={item.route} />
-								);
-							}}
-							keyExtractor={(item, index) => index + 'game_item'}
-						/>
+
 						{/* utiliti */}
 						<View style={{
 							flexDirection: 'row', alignItems: 'center',
@@ -379,6 +364,24 @@ const Class = memo((props) => {
 							renderItem={({ item, index }) => {
 								return (
 									<UtilitiesItem src={item.src} name={item.name} slogan={item.slogan} navigation={navigation} route={item.route} />
+								);
+							}}
+							keyExtractor={(item, index) => index + 'game_item'}
+						/>
+
+						<View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', marginBottom: 10, marginTop: 30 }}>
+							<Text style={{ fontSize: 18, ...fontMaker({ weight: fontStyles.SemiBold }) }}>Kho trò chơi</Text>
+							<TouchableOpacity onPress={() => navigation.navigate('GameCenter')} style={{}}>
+								<Text style={{ fontSize: 14, ...fontMaker({ weight: fontStyles.Regular }), textDecorationColor: COLOR.MAIN, color: COLOR.MAIN }}>Xem tất cả</Text>
+							</TouchableOpacity>
+						</View>
+						<FlatList
+							style={{}}
+							data={GAME_CENTERS.slice(0, 3)}
+							numColumns={3}
+							renderItem={({ item, index }) => {
+								return (
+									<GameItem src={item.src} name={item.name} slogan={item.slogan} navigation={navigation} route={item.route} />
 								);
 							}}
 							keyExtractor={(item, index) => index + 'game_item'}
@@ -530,7 +533,7 @@ const GetTime = () => {
 const HotExam = ({ navigate, hotExamData, classId = null, setHotSubIdx = () => { }, hotSubIdx, loading, navigation }) => {
 	// if (!helpers.objNoData(dataContinue) || !dataContinue) return null;
 	return (
-		<View style={{}}>
+		<View style={{marginTop: 20}}>
 			<View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', marginTop: 15, marginBottom: 10, }}>
 				<Text style={{ fontSize: 18, ...fontMaker({ weight: fontStyles.SemiBold }) }}>
 					Đang thi nhiều
@@ -617,7 +620,7 @@ const ContinueLearn = ({ navigate, dataContinue, setVisible }) => {
 	if (!helpers.objNoData(dataContinue) || !dataContinue) return null;
 	return (
 		<View style={{ marginTop: 15 }}>
-			<View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', marginTop: 15, marginBottom: 5, }}>
+			<View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', marginTop: 15, marginBottom: 15, }}>
 				<Text style={{ fontSize: 18, ...fontMaker({ weight: fontStyles.SemiBold }) }}>
 					Tiếp tục học
 				</Text>
