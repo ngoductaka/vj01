@@ -49,14 +49,15 @@ const styleBtnFullWidth = StyleSheet.create({
 // 
 
 
-
-
 const TitleCourse = ({
     title = '',
     subTitle = '',
     prePrice = 0,
     price = 0,
     vote = 4.5,
+    bought = 0,
+    content = {},
+
 }) => {
     const [showMore, setShowMore] = useState(false);
     return (
@@ -77,7 +78,7 @@ const TitleCourse = ({
                             disabled
                         />
                     </View>
-                    <Text>{123400} học viên</Text>
+                    {bought ? <Text>{bought} học viên</Text> : null}
                 </View>
                 {
                     [
@@ -87,7 +88,7 @@ const TitleCourse = ({
                                 type: "FontAwesome5"
                             },
                             title: 'Giáo viên',
-                            content: '---'
+                            content: content.teacher
                         },
                         {
 
@@ -96,7 +97,7 @@ const TitleCourse = ({
                                 type: "Feather"
                             },
                             title: 'Trình độ',
-                            content: '-------'
+                            content: content.grade,
                         },
                         {
 
@@ -105,7 +106,7 @@ const TitleCourse = ({
                                 type: "Entypo"
                             },
                             title: 'Cấp độ',
-                            content: '-------'
+                            content: content.level
                         },
                         {
 
@@ -114,7 +115,7 @@ const TitleCourse = ({
                                 type: "FontAwesome"
                             },
                             title: 'Thời lượng',
-                            content: '-------'
+                            content: content.time
                         },
                         {
 
@@ -123,7 +124,7 @@ const TitleCourse = ({
                                 type: "Entypo"
                             },
                             title: 'Bài giảng',
-                            content: '-------'
+                            content: content.courseCount
                         },
                         {
 
@@ -132,7 +133,7 @@ const TitleCourse = ({
                                 type: "MaterialCommunityIcons"
                             },
                             title: 'Học liệu',
-                            content: '-------'
+                            content: content.doc
                         },
                         {
 
@@ -141,7 +142,7 @@ const TitleCourse = ({
                                 type: "MaterialCommunityIcons"
                             },
                             title: 'Cập nhật',
-                            content: '-------'
+                            content: content.update
                         },
                     ].map(item => {
                         return (
@@ -157,15 +158,17 @@ const TitleCourse = ({
                         )
                     })
                 }
-                <View>
-                    <Text style={stylesTitle.subTitle} numberOfLines={showMore ? 15 : 3}>{subTitle} </Text>
-                    <TouchableOpacity onPress={() => setShowMore(!showMore)} style={{ alignItems: 'flex-end' }}>
-                        <Text>{showMore ? "Thu gọn" : "Xem thêm"}</Text>
-                    </TouchableOpacity>
-                </View>
-                <View style={stylesTitle.bottomTile}>
+                {subTitle ?
+                    <View>
+                        <Text style={stylesTitle.subTitle} numberOfLines={showMore ? 15 : 3}>{subTitle} </Text>
+                        <TouchableOpacity onPress={() => setShowMore(!showMore)} style={{ alignItems: 'flex-end' }}>
+                            <Text>{showMore ? "Thu gọn" : "Xem thêm"}</Text>
+                        </TouchableOpacity>
+                    </View>
+                    : null}
+                {/* <View style={stylesTitle.bottomTile}>
 
-                </View>
+                </View> */}
             </View>
             {/* <ImgCourse style={{ height: helpers.isTablet ? 350 : 200 }} /> */}
         </View>

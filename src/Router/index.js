@@ -33,6 +33,7 @@ import CourseDetail from '../screen/Course/CourseDetail';
 import ConsultingForm from '../screen/Course/ConsultingForm';
 import TopicCourse from '../screen/Course/TopicCourse';
 import CoursePlayer from '../screen/Course/CoursePlayer';
+import VideoLesson from '../screen/Course/VideoLesson';
 import { fontMaker } from '../utils/fonts';
 import { helpers } from '../utils/helpers';
 import OverviewTest from '../screen/Test/OverviewTest';
@@ -425,6 +426,7 @@ const InAppStack = createStackNavigator({
 	TimeTable: TimeTable,
 	ScroreAnalyse: ScroreAnalyse,
 	Calculator: Calculator,
+	VideoLesson: VideoLesson,
 	// ConsultingForm:ConsultingForm,
 }, {
 	// defaultNavigationOptions: {

@@ -6,6 +6,7 @@ import {
     SafeAreaView, ScrollView, Text, StyleSheet, Linking, Platform, ImageBackground, TouchableOpacity, Image
 } from 'react-native';
 import { Icon } from 'native-base';
+import { get } from 'lodash';
 
 import { Loading } from '../../handle/api';
 
@@ -18,31 +19,59 @@ import TableContent from './component/TableContent';
 import CourseHeader from './component/CourseHeader';
 import { BtnFullWidth, TitleCourse } from './component/BtnFullWidth';
 import ConsultingForm from '../../component/ConsultingForm';
+import { getDetailCourse } from './services';
 
 const CourseDetail = (props) => {
     const { navigation } = props;
+    const [dataCourse, setDataCouse] = useState({});
+    const [listCourse, setListCourse] = useState([]);
 
-    const [listCourse, setListCourse] = useState(tableContent);
+    useEffect(() => {
+        setDataCouse(props.navigation.state.params);
+        if (props.navigation.state.params.id) {
+            getDetailCourse(props.navigation.state.params.id)
+                .then(({ data }) => {
+                    console.log('data=-===', data)
+                    setListCourse(data.get_curriculum)
+
+                })
+                .catch(() => {
+
+                })
+        }
+    }, [props.navigation.state.params])
+
     const [isOpen, setOpen] = useState(false);
 
     const _navigateToCourse = useCallback((params) => {
-        navigation.navigate('CoursePlayer', { lectureId: 5601, view_count: 0 })
+        navigation.navigate('VideoLesson', params)
     })
     // return <View />
     return (
         <SafeAreaView style={styles.container}>
             <ScrollView>
-                <CourseHeader navigation={navigation} imgCourse={undefined} />
+                <CourseHeader navigation={navigation} imgCourse={dataCourse.imgLecture} />
                 {/* content  */}
                 <Loading>
                     <View style={{ flex: 1 }}>
                         <TitleCourse
-                            title={'luyen thi trung hoc pho thong quoc gia'}
-                            subTitle={'Khóa học này tập trung vào 20 chuyên đề ngữ pháp Tiếng Anh ôn thi THPT Quốc gia, cùng với đó là thủ thuật giải nhanh đề thi trắc nghiệm, cung cấp kiến thức từ cơ bản đến chuyên sâu ,các lời khuyên về định hướng cách học Tiếng Anh, các bí quyết ôn tập Tiếng Anh hiệu quả, phương pháp làm bài hiệu quả, hướng dẫn giải bài tập và đề thi một cách cụ thể, chi tiết nhất. '}
+                            title={dataCourse.name}
+                            subTitle={get(dataCourse, 'description', '')}
                             prePrice={2000000}
-                            price={100000}
+                            price={dataCourse.price}
+                            vote={4.5}
+                            content={{
+                                teacher: get(dataCourse, 'owner.first_name'),
+                                grade: get(dataCourse, 'classlevel', ''),
+                                level: get(dataCourse, 'level', ''),
+                                // time: get(dataCourse, 'level', ''),
+                                // courseCount: get(dataCourse, 'level', ''),
+                                // doc: get(dataCourse, 'level', ''),
+                                update: get(dataCourse, 'updated_at', ''),
+                            }}
+
                         />
-                     <TableContent _navigateToCourse={_navigateToCourse} listCourse={listCourse} />
+                        <TableContent _navigateToCourse={_navigateToCourse} listCourse={listCourse} />
                     </View>
                 </Loading>
             </ScrollView>

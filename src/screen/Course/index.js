@@ -36,7 +36,7 @@ const Course = (props) => {
     const [currentClass, setClass] = useState(userInfo && userInfo.class ? userInfo.class : '');
     const [classModal, setShowClassModal] = useState(false);
 
-    console.log('gradeCourse', gradeCourse)
+    // console.log('gradeCourse', gradeCourse)
 
     useEffect(() => {
         if (userInfo.class) {
@@ -275,18 +275,15 @@ const VideoContinue = ({ navigate, setVisible, videos = {}, style = {}, widthImg
     // console.log('videos', videos);
 
     const teacher = get(videos, 'owner', {});
-    console.log('----', get(videos, 'get_ldp.thumbnail', ''))
+    // console.log('----', get(videos, 'get_ldp.thumbnail', ''))
     const videoItem = {
         imgLecture: convertImgLink(get(videos, 'get_ldp.thumbnail', '')),
-        title: get(videos, 'name', ''),
-        viewCount: get(videos, 'view', '1k'),
         teacher: {
             ...teacher,
             name: teacher.first_name,
             img: convertImgLink(teacher.avatar)
         },
-        price: get(videos, 'price', ''),
-        bought: get(videos, 'bought', ''),
+        ...videos,
     }
 
     const propsVideo = {

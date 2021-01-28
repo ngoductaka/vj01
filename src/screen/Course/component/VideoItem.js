@@ -34,8 +34,8 @@ export const LargeVideo = (props) => {
         lectureId, //get(item, 'partable.videos.id', '')
         videoUrl, //get(item, 'partable.url', 'https://www.youtube.com/watch?v=L3NKVP92WPM')
         duration, //get(item, 'partable.length', 0))
-        title, // get(item, 'partable.title', '')
-        viewCount, //get(item, 'partable.view_count', '')
+        name, // get(item, 'partable.name', '')
+        view, //get(item, 'partable.view_count', '')
         teacher = {}
     } = item;
     const watchLater = () => {
@@ -79,13 +79,13 @@ export const LargeVideo = (props) => {
             <View style={[stylesVideoItem.textWapper]}>
                 <View style={{ flex: 1, paddingLeft: 3, marginVertical: 5 }}>
                     <Text style={[stylesVideo.mainText, { fontSize: 18, marginBottom: 2 }]} numberOfLines={2}>
-                        {title}
+                        {name}
                     </Text>
                     <Teacher {...teacher} />
                     <View style={stylesVideo.wapperText}>
                         <Icon style={stylesVideo.icon} name={"eye"} type='Feather' />
                         <Text style={stylesVideo.subText} numberOfLines={3}>
-                            {viewCount} lượt xem
+                            {view} lượt xem
                         </Text>
                     </View>
                 </View>
