@@ -73,10 +73,13 @@ const Test = (props) => {
 		request = new AdRequest();
 		request.addKeyword('facebook').addKeyword('google').addKeyword('instagram').addKeyword('zalo').addKeyword('google').addKeyword('pubg').addKeyword('asphalt').addKeyword('covid-19');
 		advert.loadAd(request.build());
+		if (!props.isFocused) {
+			setShowSubjectModal(false);
+		}
 	}, []);
 
 	useEffect(() => {
-		if (props.isFocused) {
+		if (props.isFocused && userInfo.class) {
 			setTimeout(() => {
 				setShowSubjectModal(true);
 			}, 600);
