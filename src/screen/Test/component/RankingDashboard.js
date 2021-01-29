@@ -120,7 +120,7 @@ const RankingDashboard = ({
                             }}
                             keyExtractor={(item, index) => index + 'ranking_item_opponent'}
                             ListFooterComponent={
-                                <View style={{paddingBottom: 30}}>
+                                <View style={{ paddingBottom: 30 }}>
                                     <Text style={{ color: 'white', marginLeft: 40, fontSize: 30, marginTop: -25 }}>.</Text>
                                     {/* <Text style={{ color: 'white', marginLeft: 40, fontSize: 30, marginTop: -20 }}>.</Text> */}
                                     <Text style={{ color: 'white', marginLeft: 40, fontSize: 30, marginTop: -20 }}>.</Text>

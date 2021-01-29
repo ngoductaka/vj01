@@ -23,6 +23,8 @@ import SQLite from 'react-native-sqlite-storage';
 
 const { width, height } = Dimensions.get('window');
 
+let db;
+
 const WhoIsMillionaire = (props) => {
 
     const { navigation } = props;
@@ -50,7 +52,7 @@ const WhoIsMillionaire = (props) => {
     }
 
     useEffect(() => {
-        let db = SQLite.openDatabase(
+        db = SQLite.openDatabase(
             {
                 name: 'user.db',
                 createFromLocation: 1,
@@ -59,14 +61,14 @@ const WhoIsMillionaire = (props) => {
                 console.log('success', success);
                 db.transaction(tx => {
                     console.log('trans', tx);
-                    tx.executeSql("SELECT * FROM miilionaire", [], (tx, results) => {  // sql query to get all table data and storing it in 'results' variable
+                    tx.executeSql("SELECT * FROM millionaire WHERE id = 1", [], (tx, results) => {  // sql query to get all table data and storing it in 'results' variable
                         console.log('-as-a-s-as', results);
-                        //   let data = results.rows.length;                          
-                        //   let users = [];    //creating empty array to store the rows of the sql table data
+                          let data = results.rows.length;                          
+                          let users = [];    //creating empty array to store the rows of the sql table data
 
-                        //   for (let i = 0; i < results.rows.length; i++) {
-                        //     users.push(results.rows.item(i));                   //looping through each row in the table and storing it as object in the 'users' array
-                        //   }
+                          for (let i = 0; i < results.rows.length; i++) {
+                            users.push(results.rows.item(i));                   //looping through each row in the table and storing it as object in the 'users' array
+                          }
 
                         //    this.setState({ userList:users});         //setting the state(userlist) with users array which has all the table data
                     });

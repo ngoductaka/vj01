@@ -12,7 +12,8 @@ export const AllResult = (props) => {
         handleNavigate,
         articleState = [],
         videoState = [],
-        examState = []
+        examState = [],
+        advert = null
     } = props;
 
     return (
@@ -31,7 +32,7 @@ export const AllResult = (props) => {
                                             const { title = '', grade = '', book = '', lesson_id = '', id: articleId = '' } = item
                                             return (
                                                 <RenderArticlSearch
-                                                    onPress={() => { navigation.navigate('Lesson', { articleId, lesson_id }) }}
+                                                    onPress={() => { navigation.navigate('Lesson', { articleId, lesson_id, advert }) }}
                                                     {...{ title, grade, book }}
                                                 />
                                             )
@@ -76,7 +77,7 @@ export const AllResult = (props) => {
                                             return (
                                                 <RenderExamRelated
                                                     onPress={() => {
-                                                        navigation.navigate('OverviewTest', { title, subject, count: questions_count, time: duration, idExam: id, lessonId: lesson_id })
+                                                        navigation.navigate('OverviewTest', { title, subject, count: questions_count, time: duration, idExam: id, lessonId: lesson_id, advert })
                                                     }}
                                                     {...{ title, time: duration, totalQues: questions_count }}
                                                 />

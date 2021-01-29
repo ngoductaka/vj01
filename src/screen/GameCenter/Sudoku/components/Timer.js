@@ -7,6 +7,7 @@ import {
   View,
   Text,
 } from 'react-native';
+import { fontMaker, fontStyles } from '../../../../utils/fonts';
 
 function formatTime(elapsed) {
   const hour = Math.floor(elapsed / 60 / 60);
@@ -107,9 +108,10 @@ class Timer extends Component {
 const styles = StyleSheet.create({
   text: {
     color: '#fff',
-    fontSize: 14,
-    fontWeight: '100',
-    fontFamily: 'Menlo',
+    // fontSize: 18,
+    // fontWeight: '100',
+    ...fontMaker({ weight: fontStyles.SemiBold })
+    // fontFamily: 'Menlo',
   },
 });
 

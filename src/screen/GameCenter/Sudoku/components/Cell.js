@@ -126,8 +126,8 @@ const styles = StyleSheet.create({
   cell: {
     width: CellSize,
     height: CellSize,
-    backgroundColor: 'lightyellow',
-    borderColor: 'orange',
+    backgroundColor: '#FDFDFD',
+    borderColor: '#D8CED1',
     borderWidth: StyleSheet.hairlineWidth,
     borderRadius: BorderWidth,
     alignItems: 'center',
@@ -135,14 +135,14 @@ const styles = StyleSheet.create({
     overflow: 'hidden',
   },
   text: {
-    color: '#333',
+    color: '#74696D',
     fontSize: CellSize * 2 / 3,
-    fontFamily: 'HelveticaNeue',
+    // fontFamily: 'HelveticaNeue',
   },
   editingText: {
     textAlign: 'center',
     textAlignVertical: 'center',
-    color: 'teal',
+    color: 'green',
     fontSize: CellSize * 2 / 5,
     marginHorizontal: CellSize / 8,
     ...Platform.select({
@@ -156,16 +156,16 @@ const styles = StyleSheet.create({
     })
   },
   filledCell: {
-    backgroundColor: 'moccasin',
+    backgroundColor: '#F0DCEE',
   },
   fixedCell: {
-    backgroundColor: 'khaki',
+    backgroundColor: '#FAFDFD',
   },
   fixedText: {
     color: '#666',
   },
   highlightCell: {
-    backgroundColor: 'peru',
+    backgroundColor: '#EEDAEE',
   },
   highlightText: {
     color: '#fff',

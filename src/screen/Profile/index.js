@@ -6,6 +6,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import { useNetInfo } from "@react-native-community/netinfo";
 import AsyncStorage from '@react-native-community/async-storage';
 import Share from 'react-native-share';
+import { withNavigationFocus } from 'react-navigation';
 
 import { ConfirmBox as ModalInfoBox } from '../../component/ModalConfirm';
 import { actLogout } from '../../redux/action/user_info';
@@ -26,7 +27,7 @@ import { get } from 'lodash';
 
 const Profile = (props) => {
 
-    const { navigation } = props;
+    const { navigation, isFocused } = props;
 
     const dispatch = useDispatch();
     const [show, setShow] = useState(false);
@@ -45,6 +46,14 @@ const Profile = (props) => {
 
     const [currentClass, setClass] = useState('');
     const [isShowClassModal, setShowClassModal] = useState(false);
+
+    useEffect(() => {
+        console.log('isFocuseddndd', isFocused)
+        if (!isFocused && isShowClassModal) {
+            setShowClassModal(false)
+        }
+
+    }, [isFocused])
 
     useEffect(() => {
         setTimeout(() => {
@@ -80,12 +89,15 @@ const Profile = (props) => {
 
     useEffect(() => {
         console.log('currnet', currentClass);
-        api.post(`/grades/${parseInt(currentClass)}/user`, {
-            "user_id": userInfo.id,
-            "class_id": parseInt(currentClass)
-        })
-            .then(response => console.log('--------', response))
-            .catch(err => console.log('----errr----', err));
+        if (currentClass) {
+            api.post(`/grades/${parseInt(currentClass)}/user`, {
+                "user_id": userInfo.id,
+                "class_id": parseInt(currentClass)
+            })
+                .then(response => console.log('--------', response))
+                .catch(err => console.log('----errr----', err));
+
+        }
     }, [currentClass]);
 
     const _onLogout = () => {
@@ -260,4 +272,4 @@ const styles = StyleSheet.create({
     }
 });
 
-export default Profile;
+export default withNavigationFocus(Profile);

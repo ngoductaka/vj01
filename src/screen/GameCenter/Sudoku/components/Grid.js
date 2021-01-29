@@ -56,7 +56,9 @@ const styles = StyleSheet.create({
     width: CellSize * 9 + BorderWidth * 6,
     flexDirection: 'row',
     flexWrap: 'wrap',
-    backgroundColor: 'orange',
+    backgroundColor: '#6B3658',
+    borderRadius: 16,
+    overflow: 'hidden'
   },
   grid: {
     margin: BorderWidth,

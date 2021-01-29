@@ -66,7 +66,7 @@ export const _createNotificationListeners = async () => {
             soundName: 'default',
             playSound: true
         };
-        console.log('foreground=======', notification.data)
+        console.log('notidata=======', notification.data)
 
         localNotificationService.showNotification(
             0,
@@ -189,7 +189,7 @@ const handleData = async (val_ = '') => {
         if (notiDataRaw) {
             notiData = JSON.parse(notiDataRaw);
         }
-        if(val_.type == 'question') {
+        if (val_.type == 'question') {
             NavigationService.navigate('QuestionDetail', {
                 questionId: val_.question,
             })

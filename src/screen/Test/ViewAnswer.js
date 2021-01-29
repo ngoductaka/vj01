@@ -29,13 +29,14 @@ import * as Animatable from 'react-native-animatable';
 
 import { COLOR, TIMES_SHOW_FULL_ADS, unitIntertitialId } from '../../handle/Constant';
 import { fontMaker, fontStyles } from '../../utils/fonts';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import RenderData from './component/renderHtmlTest';
 
 const { width, height } = Dimensions.get('window');
 
 /**-------------interstitial ad----------------- */
 import firebase from 'react-native-firebase';
+import { setLearningTimes } from '../../redux/action/user_info';
 const AdRequest = firebase.admob.AdRequest;
 let advert;
 let request;
@@ -48,9 +49,17 @@ const ViewAnwser = ({ navigation }) => {
     const dataCourseConvert = navigation.getParam('dataCourseConvert', '');
     const [delay, setDelay] = useState(false);
     const screenAds = useSelector(state => get(state, 'subjects.screens', null));
-    const [adsLoading, setAdsLoading] = useState(false);
+    // const [adsLoading, setAdsLoading] = useState(false);
+    const advertParam = navigation.getParam('advert', null);
+    console.log('-a-sa-s--a-sdasd', advertParam);
+    const dispatch = useDispatch();
 
     useEffect(() => {
+        if (screenAds && screenAds[TAG] == "1") {
+            if (advertParam) {
+                advertParam.show();
+            }
+        }
         setTimeout(() => {
             setDelay(true)
         }, 50)
@@ -64,36 +73,13 @@ const ViewAnwser = ({ navigation }) => {
         });
 
         return () => {
+            dispatch(setLearningTimes());
             BackHandler.removeEventListener('hardwareBackPress', () => {
                 if (!navigation.isFocused()) {
                     return false;
                 }
                 navigation.goBack();
                 return true;
-            });
-        }
-    }, []);
-
-    // interstial ad
-    useEffect(() => {
-        if (screenAds && screenAds[TAG] == "1") {
-            setAdsLoading(true);
-            advert = firebase.admob().interstitial(unitIntertitialId);
-            request = new AdRequest();
-            request.addKeyword('facebook').addKeyword('google').addKeyword('instagram').addKeyword('zalo').addKeyword('google').addKeyword('pubg').addKeyword('asphalt').addKeyword('tiktok');
-
-            advert.loadAd(request.build());
-
-            advert.on('onAdLoaded', () => {
-                // if (navigation.isFocused() && advert.isLoaded()) {
-                if (advert.isLoaded()) {
-                    advert.show();
-                } else {
-                    // console.log('---------interstitial fail---------', navigation.isFocused());
-                }
-            });
-            advert.on('onAdClosed', () => {
-                setAdsLoading(false);
             });
         }
     }, []);
@@ -193,11 +179,11 @@ const ViewAnwser = ({ navigation }) => {
                             </View>
                         </View>
                 }
-                {adsLoading && (
+                {/* {adsLoading && (
                     <View style={{ position: 'absolute', top: 0, left: 0, bottom: 0, right: 0, backgroundColor: COLOR.white(1), justifyContent: 'center', alignItems: 'center' }}>
                         <ActivityIndicator animating={true} size='large' color={COLOR.MAIN} />
                     </View>
-                )}
+                )} */}
             </View>
         </SafeAreaView>
     )

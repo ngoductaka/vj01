@@ -7,7 +7,7 @@ import { fontMaker } from '../../../utils/fonts';
 import { COLOR } from '../../../handle/Constant';
 import { delBookmarks } from './service';
 
-export const ContentTabResult = ({ data, navigate, maxItem = null, isSub = false, handleNavigate, reload = () => { } }) => {
+export const ContentTabResult = ({ data, advert = null, navigate, maxItem = null, isSub = false, handleNavigate, reload = () => { } }) => {
     const handleDel = (body) => {
         Alert.alert(
             "Xoá bookmark",
@@ -76,6 +76,7 @@ export const ContentTabResult = ({ data, navigate, maxItem = null, isSub = false
                                                     time: get(item, 'partable.duration', ''),
                                                     idExam: get(item, 'partable.id', ''),
                                                     lessonId: get(item, 'partable.lesson_id', ''),
+                                                    advert
                                                 })
                                             }}
                                             onDelete={() => handleDel({
@@ -89,7 +90,7 @@ export const ContentTabResult = ({ data, navigate, maxItem = null, isSub = false
                                     return <RenderArticlRelated
                                         key={String(indexSub)}
                                         title={get(item, 'partable.title', '')}
-                                        onPress={() => navigate("Lesson", { articleId: get(item, 'partable.id', ''), lesson_id: get(item, 'partable.lesson_id', '') })}
+                                        onPress={() => navigate("Lesson", { articleId: get(item, 'partable.id', ''), lesson_id: get(item, 'partable.lesson_id', ''), advert })}
                                         onDelete={() => handleDel({
                                             bookmark_id: get(item, 'partable.id', ''),
                                             bookmark_type: 'article'

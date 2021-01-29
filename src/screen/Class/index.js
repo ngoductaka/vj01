@@ -273,24 +273,42 @@ const Class = memo((props) => {
 			dispatch(actGetAllScreensForAds(data.data));
 		}
 
-		getListScreenForAds();
+		setTimeout(() => {
+			getListScreenForAds()
+				.catch(err => {
+					console.log('err <getListScreenForAds>', err)
+				});
+		}, 100)
 
 		async function postActiveDaily() {
 			const date = moment().format('YYYY-MM-DD');
-			const result = await common_services.postActiveDaily({
-				date
-			});
+			const result = await common_services.postActiveDaily({ date });
 			console.log('--postActiveDaily--', result);
 		}
 
 		setTimeout(() => {
 			// checkLowDevice();
-			postActiveDaily();
-			getNumberOfUnseenNoti();
+			postActiveDaily()
+				.catch(err => {
+					console.log('err <postActiveDaily>', err)
+				});
+			getNumberOfUnseenNoti()
+				.catch(err => {
+					console.log('err <getNumberOfUnseenNoti>', err)
+				});
 		}, 1500);
-		handleTimeInfo();
-		// setTimeout(() => {
-		_checkFirebase();
+		handleTimeInfo()
+			.catch(err => {
+				console.log('err <handleTimeInfo>', err)
+			});
+
+		// handle noti
+		_checkFirebase()
+			.catch(err => {
+				console.log('err <_checkFirebase>', err)
+			});
+
+
 		// }, 5000);
 		BackHandler.addEventListener(
 			'hardwareBackPress',
@@ -320,7 +338,7 @@ const Class = memo((props) => {
 	}, [props.userInfo.class, dataAllBook]);
 
 	const [dataContinue] = useRequest('/lessons/continue/learn', [1]);
-	const [dataRecommend] = useRequest('/lessons/recommend/learn', [1]);
+	// const [dataRecommend] = useRequest('/lessons/recommend/learn', [1]);
 
 	return (
 		<View style={{ flex: 1 }}>
@@ -341,24 +359,9 @@ const Class = memo((props) => {
 						numColumns={NUMBER_COLUMS}
 						keyExtractor={(_, index) => 'book_item' + index.toString()}
 					/>
-					{/* <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', marginBottom: 10, }}>
-						<Text style={{ fontSize: 18, ...fontMaker({ weight: fontStyles.SemiBold }) }}>Kho trò chơi</Text>
-						<TouchableOpacity onPress={() => navigation.navigate('GameCenter')} style={{}}>
-							<Text style={{ fontSize: 14, ...fontMaker({ weight: fontStyles.Regular }), textDecorationColor: COLOR.MAIN, color: COLOR.MAIN }}>Xem tất cả</Text>
-						</TouchableOpacity>
-					</View> */}
+
 					<View style={{ marginBottom: 30 }}>
-						{/* <FlatList
-							style={{}}
-							data={GAME_CENTERS.slice(0, 3)}
-							numColumns={3}
-							renderItem={({ item, index }) => {
-								return (
-									<GameItem src={item.src} name={item.name} slogan={item.slogan} navigation={navigation} route={item.route} />
-								);
-							}}
-							keyExtractor={(item, index) => index + 'game_item'}
-						/> */}
+
 						{/* utiliti */}
 						<View style={{
 							flexDirection: 'row', alignItems: 'center',
@@ -384,6 +387,24 @@ const Class = memo((props) => {
 							keyExtractor={(item, index) => index + 'game_item'}
 						/>
 
+						<View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', marginBottom: 10, marginTop: 30 }}>
+							<Text style={{ fontSize: 18, ...fontMaker({ weight: fontStyles.SemiBold }) }}>Kho trò chơi</Text>
+							<TouchableOpacity onPress={() => navigation.navigate('GameCenter')} style={{}}>
+								<Text style={{ fontSize: 14, ...fontMaker({ weight: fontStyles.Regular }), textDecorationColor: COLOR.MAIN, color: COLOR.MAIN }}>Xem tất cả</Text>
+							</TouchableOpacity>
+						</View>
+						<FlatList
+							style={{}}
+							data={GAME_CENTERS.slice(0, 3)}
+							numColumns={3}
+							renderItem={({ item, index }) => {
+								return (
+									<GameItem src={item.src} name={item.name} slogan={item.slogan} navigation={navigation} route={item.route} />
+								);
+							}}
+							keyExtractor={(item, index) => index + 'game_item'}
+						/>
+
 						{/* hot exam */}
 						<HotExam classId={props.userInfo.class} loading={hostLoading} hotSubIdx={hotSubIdx} setHotSubIdx={setHotSubIdx} hotExamData={get(hostLesson, 'exams', [])} navigation={navigation} />
 						{/* continue learning */}
@@ -391,7 +412,7 @@ const Class = memo((props) => {
 						{/* fanpage */}
 						{/* <FanpageBanner /> */}
 						{/* resume learning */}
-						<RecommendCoure dataRecommend={dataRecommend} dataContinue={dataContinue} setVisible={setVisible} navigate={navigation.navigate} />
+						{/* <RecommendCoure dataRecommend={dataRecommend} dataContinue={dataContinue} setVisible={setVisible} navigate={navigation.navigate} /> */}
 
 						{/* share app */}
 						<Text style={{ ...fontMaker({ weight: fontStyles.SemiBold }), fontSize: 18, marginTop: 20, marginBottom: 5, }}>Chia sẻ ứng dụng</Text>
@@ -530,7 +551,7 @@ const GetTime = () => {
 const HotExam = ({ navigate, hotExamData, classId = null, setHotSubIdx = () => { }, hotSubIdx, loading, navigation }) => {
 	// if (!helpers.objNoData(dataContinue) || !dataContinue) return null;
 	return (
-		<View style={{}}>
+		<View style={{ marginTop: 20 }}>
 			<View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', marginTop: 15, marginBottom: 10, }}>
 				<Text style={{ fontSize: 18, ...fontMaker({ weight: fontStyles.SemiBold }) }}>
 					Đang thi nhiều
@@ -617,7 +638,7 @@ const ContinueLearn = ({ navigate, dataContinue, setVisible }) => {
 	if (!helpers.objNoData(dataContinue) || !dataContinue) return null;
 	return (
 		<View style={{ marginTop: 15 }}>
-			<View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', marginTop: 15, marginBottom: 5, }}>
+			<View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', marginTop: 15, marginBottom: 15, }}>
 				<Text style={{ fontSize: 18, ...fontMaker({ weight: fontStyles.SemiBold }) }}>
 					Tiếp tục học
 				</Text>

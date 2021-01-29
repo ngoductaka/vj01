@@ -5,7 +5,7 @@ import { RenderArticlSearch } from '../../../component/shared/ItemDocument'
 import { get } from 'lodash';
 import { helpers } from '../../../utils/helpers';
 
-export const ArticleResult = ({ data, navigation }) => {
+export const ArticleResult = ({ data, navigation, advert = null }) => {
 
     const renderFooter = () => {
         if (!get(data, 'loading', false)) return null;
@@ -38,7 +38,7 @@ export const ArticleResult = ({ data, navigation }) => {
                         const { title = '', grade = '', book = '', lesson_id = '', id: articleId = '' } = item
                         return (
                             <RenderArticlSearch
-                                onPress={() => { navigation.navigate('Lesson', { articleId, lesson_id }) }}
+                                onPress={() => { navigation.navigate('Lesson', { articleId, lesson_id, advert }) }}
                                 {...{ title, grade, book }}
                             />
                         )
