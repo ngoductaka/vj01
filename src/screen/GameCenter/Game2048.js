@@ -35,21 +35,21 @@ const base = {
     ani: null,
 }
 const { width } = Dimensions.get('window');
-const [initArr] = randomInsert([
-    [{ ...base }, { ...base }, { ...base }, { ...base }],
-    [{ ...base }, { ...base }, { ...base }, { ...base }],
-    [{ ...base }, { ...base }, { ...base }, { ...base }],
-    [{ ...base }, { ...base }, { ...base }, { ...base }],
+// const [initArr] = randomInsert([
+//     [{ ...base }, { ...base }, { ...base }, { ...base }],
+//     [{ ...base }, { ...base }, { ...base }, { ...base }],
+//     [{ ...base }, { ...base }, { ...base }, { ...base }],
+//     [{ ...base }, { ...base }, { ...base }, { ...base }],
 
-])
+// ])
 
-const [initArrFail] = randomInsert([
-    [{ ...base, val: 2 }, { ...base, val: 4 }, { ...base, val: 2 }, { ...base, val: 4 }],
-    [{ ...base, val: 4 }, { ...base, val: 2 }, { ...base, val: 4 }, { ...base, val: 2 }],
-    [{ ...base, val: 2 }, { ...base, val: 4 }, { ...base, val: 2 }, { ...base, val: 4 }],
-    [{ ...base, val: 4 }, { ...base, val: 2 }, { ...base, val: 4 }, { ...base, val: 2 }],
+// const [initArrFail] = randomInsert([
+//     [{ ...base, val: 2 }, { ...base, val: 4 }, { ...base, val: 2 }, { ...base, val: 4 }],
+//     [{ ...base, val: 4 }, { ...base, val: 2 }, { ...base, val: 4 }, { ...base, val: 2 }],
+//     [{ ...base, val: 2 }, { ...base, val: 4 }, { ...base, val: 2 }, { ...base, val: 4 }],
+//     [{ ...base, val: 4 }, { ...base, val: 2 }, { ...base, val: 4 }, { ...base, val: 2 }],
 
-])
+// ])
 // fadeOutDown
 const fadeOutDown = {
     0: {

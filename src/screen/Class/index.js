@@ -273,24 +273,42 @@ const Class = memo((props) => {
 			dispatch(actGetAllScreensForAds(data.data));
 		}
 
-		getListScreenForAds();
+		setTimeout(() => {
+			getListScreenForAds()
+				.catch(err => {
+					console.log('err <getListScreenForAds>', err)
+				});
+		}, 100)
 
 		async function postActiveDaily() {
 			const date = moment().format('YYYY-MM-DD');
-			const result = await common_services.postActiveDaily({
-				date
-			});
+			const result = await common_services.postActiveDaily({ date });
 			console.log('--postActiveDaily--', result);
 		}
 
 		setTimeout(() => {
 			// checkLowDevice();
-			postActiveDaily();
-			getNumberOfUnseenNoti();
+			postActiveDaily()
+				.catch(err => {
+					console.log('err <postActiveDaily>', err)
+				});
+			getNumberOfUnseenNoti()
+				.catch(err => {
+					console.log('err <getNumberOfUnseenNoti>', err)
+				});
 		}, 1500);
-		handleTimeInfo();
-		// setTimeout(() => {
-		_checkFirebase();
+		handleTimeInfo()
+			.catch(err => {
+				console.log('err <handleTimeInfo>', err)
+			});
+
+		// handle noti
+		_checkFirebase()
+			.catch(err => {
+				console.log('err <_checkFirebase>', err)
+			});
+
+
 		// }, 5000);
 		BackHandler.addEventListener(
 			'hardwareBackPress',
@@ -320,7 +338,7 @@ const Class = memo((props) => {
 	}, [props.userInfo.class, dataAllBook]);
 
 	const [dataContinue] = useRequest('/lessons/continue/learn', [1]);
-	const [dataRecommend] = useRequest('/lessons/recommend/learn', [1]);
+	// const [dataRecommend] = useRequest('/lessons/recommend/learn', [1]);
 
 	return (
 		<View style={{ flex: 1 }}>
@@ -533,7 +551,7 @@ const GetTime = () => {
 const HotExam = ({ navigate, hotExamData, classId = null, setHotSubIdx = () => { }, hotSubIdx, loading, navigation }) => {
 	// if (!helpers.objNoData(dataContinue) || !dataContinue) return null;
 	return (
-		<View style={{marginTop: 20}}>
+		<View style={{ marginTop: 20 }}>
 			<View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', marginTop: 15, marginBottom: 10, }}>
 				<Text style={{ fontSize: 18, ...fontMaker({ weight: fontStyles.SemiBold }) }}>
 					Đang thi nhiều

@@ -80,12 +80,15 @@ const Profile = (props) => {
 
     useEffect(() => {
         console.log('currnet', currentClass);
-        api.post(`/grades/${parseInt(currentClass)}/user`, {
-            "user_id": userInfo.id,
-            "class_id": parseInt(currentClass)
-        })
-            .then(response => console.log('--------', response))
-            .catch(err => console.log('----errr----', err));
+        if (currentClass) {
+            api.post(`/grades/${parseInt(currentClass)}/user`, {
+                "user_id": userInfo.id,
+                "class_id": parseInt(currentClass)
+            })
+                .then(response => console.log('--------', response))
+                .catch(err => console.log('----errr----', err));
+
+        }
     }, [currentClass]);
 
     const _onLogout = () => {
