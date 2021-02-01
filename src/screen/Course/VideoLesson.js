@@ -18,7 +18,8 @@ import { withNavigationFocus } from 'react-navigation';
 import YoutubePlayer from 'react-native-youtube-iframe';
 import KeepAwake from 'react-native-keep-awake';
 import Orientation from 'react-native-orientation-locker';
-import { Snackbar } from 'react-native-paper';
+import { Snackbar, TextInput } from 'react-native-paper';
+import Toast from 'react-native-simple-toast';
 
 import { Loading, useRequest } from '../../handle/api';
 
@@ -34,6 +35,8 @@ import { RenderVideosRelated } from '../Lesson/component/VideosList'
 import { RenderExamRelated } from '../Lesson/component/ExamList';
 import { useDispatch } from 'react-redux';
 import { setLearningTimes } from '../../redux/action/user_info';
+import { convertImgLink } from './utis';
+import TableContent from './component/TableContent';
 
 const { width, height } = Dimensions.get('window');
 
@@ -67,13 +70,29 @@ const Colors = {
 const CoursePlayer = (props) => {
     const { navigation } = props;
     const dispatch = useDispatch();
-    const [videoLesson, setDataLesson] = useState({});
 
-    console.log('0----------', navigation.getParam('videoData', {}))
+    const [videoLesson, setDataLesson] = useState({});
+    const [listDoc, setListDoc] = useState([]);
+    const [listCourse, setListCourse] = useState([]);
+    const [pathPlay, setPathPlay] = useState([]);
+    const [videoSrc, setVideoSrc] = useState('');
+
 
     useEffect(() => {
         if (navigation.getParam('videoData', {})) {
+
+            // listPdf,
+            // course
             setDataLesson(navigation.getParam('videoData', {}))
+            setListDoc(navigation.getParam('listPdf', {}))
+            setListCourse(navigation.getParam('listCourse', {}));
+            setPathPlay(navigation.getParam('pathPlay', {}));
+
+            setVideoSrc(navigation.getParam('videoData.raw_url', ''))
+            setErrVideo(false)
+
+        } else {
+
         }
     }, [navigation]);
 
@@ -93,23 +112,16 @@ const CoursePlayer = (props) => {
     const [currentPlay, setCurrentPlay] = useState(-1);
     const [showFeedback, setShowFeedback] = useState(false);
     const [convertTimeStamp, setTimeConvert] = useState({});
+    const [errVideo, setErrVideo] = useState(false);
     // throttle set new index
     const throttled = useRef(throttle((newValue) => _onProgress(newValue), 1000));
 
     useEffect(() => {
         changeKeepAwake(true);
-        if (!isEmpty(get(videoData, 'data.timestamps', []))) {
-            const convertTime = get(videoData, 'data.timestamps', []).reduce((car, cur, index) => {
-                car[cur.time] = index
-                return car;
-            }, {});
-            setTimeConvert(convertTime);
-        }
-
         return () => {
             changeKeepAwake(false)
         }
-    }, [videoData]);
+    }, [videoLesson]);
 
     useEffect(() => {
         throttled.current = throttle((newValue) => _onProgress(newValue), 1000)
@@ -165,33 +177,6 @@ const CoursePlayer = (props) => {
         setPaused(!navigation.isFocused());
     }, [navigation.isFocused()]);
 
-    useEffect(() => {
-        const dataTime = get(videoData, 'data.timestamps', null);
-        if (mediaPlayer && mediaPlayer.current && mediaPlayer.current.getCurrentTime && !isEmpty(convertTimeStamp) && isPlay) {
-            timeOut.current = setInterval(() => {
-                if (mediaPlayer && mediaPlayer.current && mediaPlayer.current.getCurrentTime)
-                    mediaPlayer.current.getCurrentTime().then(currentTime => {
-                        _onProgress({ currentTime })
-                        // const indexTime = convertTimeStamp[Math.floor(currentTime)];
-                        // if (indexTime !== undefined) {
-                        //     setCurrentPlay(indexTime)
-                        // }
-                        if (dataTime && currentTime >= dataTime[dataTime.length - 1].time) {
-                            clearInterval(timeOut.current);
-                        }
-                    });
-            }, 1000);
-
-        }
-        if (!isPlay) {
-            clearInterval(timeOut.current);
-        }
-
-        return () => {
-            clearInterval(timeOut.current);
-        }
-    }, [mediaPlayer.current, convertTimeStamp, isPlay, lectureId]);
-
     const handleBackFullScreen = () => {
         setFull(false);
         Orientation.lockToPortrait();
@@ -202,6 +187,17 @@ const CoursePlayer = (props) => {
             dispatch(setLearningTimes());
         }
     }, []);
+
+    const _navigateToCourse = (params) => {
+        console.log('params', params)
+        navigation.setParams(params)
+    }
+    // console.log('0----------', get(videoLesson, 'raw_url', ''))
+
+    const _loadVideoFail = () => {
+        Toast.showWithGravity("Video không khả dụng, vui lòng thử lại sau", Toast.SHORT, Toast.CENTER);
+        setErrVideo(true)
+    }
 
     return (
         <View style={{ flex: 1 }}>
@@ -216,13 +212,13 @@ const CoursePlayer = (props) => {
             <SafeAreaView style={styles.container}>
                 <View style={{ width: '100%', height: (helpers.isAndroid && full) ? '100%' : width * 9 / 16 }}>
                     <Loading
-                        isLoading={false} err={null}
+                        isLoading={false} err={errVideo}
                     >
                         <View style={{ flex: 1 }}>
                             <Video
                                 source={{ uri: get(videoLesson, 'raw_url', '') }}
                                 ref={mediaPlayer}
-                                // onError={(err) => console.log('err video ios khoahoc', err)}
+                                onError={_loadVideoFail}
                                 onEnd={_onEnd}
                                 paused={paused}
                                 onReadyForDisplay={_onReadyForDisplay}
@@ -230,7 +226,7 @@ const CoursePlayer = (props) => {
                                 preventsDisplaySleepDuringVideoPlayback={true}
                                 progressUpdateInterval={1}
                                 controls={true}
-                                poster={get(videoData, 'data.preview_img', 'https://baconmockup.com/300/200/')}
+                                poster={convertImgLink(get(videoLesson, 'thumbnail', 'https://baconmockup.com/300/200/'))}
                                 posterResizeMode='cover'
                                 resizeMode='contain'
                                 fullscreen={helpers.isIOS}
@@ -255,12 +251,53 @@ const CoursePlayer = (props) => {
                                 </TouchableOpacity>
                             }
                         </View>
-
                     </Loading>
                 </View>
+
                 {!(full && helpers.isAndroid) &&
                     <View style={{ flex: 1 }}>
                         <Toolbar showLater={visible} setShowLater={setVisible} videoData={videoData} />
+
+                        <View style={{ flex: 1 }}>
+
+                            <Tabs tabContainerStyle={{ elevation: 0, borderTopWidth: 0.5, borderTopColor: 'white', }} tabBarUnderlineStyle={{ height: 2, backgroundColor: Colors.pri, }} tabBarActiveTextColor={Colors.pri} tabBarBackgroundColor={Colors.white} >
+                                <Tab textStyle={styles.textStyle} activeTextStyle={styles.activeTextStyle} activeTabStyle={styles.activeTabStyle} tabStyle={styles.tabStyle} heading="Nội dung khoá học">
+
+                                    <TableContent
+                                        _navigateToCourse={_navigateToCourse}
+                                        listCourse={listCourse}
+                                        playPath={pathPlay}
+                                    />
+                                    {/* </ScrollView> */}
+                                </Tab>
+                                <Tab textStyle={styles.textStyle} activeTextStyle={styles.activeTextStyle} activeTabStyle={styles.activeTabStyle} tabStyle={styles.tabStyle} heading="Tài liệu">
+
+                                    {listDoc[0] ? <View style={{ marginTop: 10 }}>
+                                        {listDoc.map((doc, index) => {
+                                            return (
+                                                <TouchableOpacity
+                                                    key={index + ''}
+                                                    onPress={() => {
+                                                        navigation.navigate('PdfView', { uri: doc.raw_url })
+                                                    }}
+                                                    style={{
+                                                        flexDirection: 'row', marginBottom: 15,
+                                                        marginHorizontal: 10, paddingVertical: 10,
+                                                    }}
+                                                >
+                                                    <Icon name="pdffile1" type="AntDesign" style={{ fontSize: 19, marginRight: 5, color: COLOR.MAIN }} />
+                                                    <View style={{ flex: 1 }}>
+                                                        <Text numberOfLines={2} >{(index + 1) + ". " + doc.name}</Text>
+                                                    </View>
+
+                                                </TouchableOpacity>
+                                            )
+                                        })}
+                                    </View> : null}
+                                </Tab>
+                            </Tabs>
+
+                        </View>
                     </View>
                 }
                 <Snackbar

@@ -15,7 +15,9 @@ import { ListLesson } from './component/ListLesson';
 import MenuItem from '../../component/menuItem';
 import { HeaderBarWithBack } from '../../component/Header/Normal';
 import { User } from '../../component/User';
-import { LargeVideo } from '../Lesson/component/VideosList';
+import { LargeVideo } from './component/VideoItem';
+import { MAP_SUBJECT } from '../../constant';
+import { convertImgLink } from './utis'
 
 const { width } = Dimensions.get('window');
 
@@ -25,8 +27,24 @@ const Course = (props) => {
 
     const { navigation } = props;
     const [visible, setVisible] = useState(false);
+    const [dataTopic, setDataTopic] = useState(false);
     // 
     const topic = navigation.getParam('topic', topic)
+    const data = navigation.getParam('data', []);
+
+    useEffect(() => {
+        console.log('datadatadatadata', data);
+        const dataConvert = data.reduce((cal, cur) => {
+            const { subject } = cur;
+            if (subject) {
+                cal[subject] = cal[subject] ? [...cal[subject], cur] : [cur];
+            }
+            return cal;
+        }, {});
+
+        setDataTopic(dataConvert);
+
+    }, [data])
 
     const userInfo = useSelector(state => state.userInfo);
     // console.log('userInfo123', userInfo)
@@ -59,18 +77,18 @@ const Course = (props) => {
                 />
                 <ScrollView style={{ marginTop: 8, backgroundColor: '#ddd' }}>
                     {/* current class */}
-                    {["Toán", "Văn", "Hoá", 'Lý', "Sinh"].map(i => {
+                    {Object.keys(dataTopic).map(key => {
                         return (
-                            <View key={i} style={{ backgroundColor: '#fff', marginBottom: 10, padding: 10 }}>
+                            <View key={key} style={{ backgroundColor: '#fff', marginBottom: 10, padding: 10 }}>
                                 <SeeAllTitle
                                     onPress={() => props.navigation.navigate('CourseDetail')}
-                                    text={i} />
+                                    text={MAP_SUBJECT[key]} />
                                 <ScrollView horizontal showsHorizontalScrollIndicator={false}>
-                                    {[1, 2, 3].map(item => {
+                                    {data.map(item => {
                                         return <VideoContinue
                                             navigate={navigation.navigate}
                                             setVisible={() => { }}
-                                            videos={{}}
+                                            videos={item}
                                             style={{ marginRight: 20, width: width * 4 / 5 }}
                                         />
                                     })}
@@ -225,23 +243,27 @@ const stylesHeader = StyleSheet.create({
     },
 })
 
-
-
 const VideoContinue = ({ navigate, setVisible, videos = {}, style = {}, widthImg = width * 3 / 4 }) => {
+    // console.log('videos', videos);
+
+    const teacher = get(videos, 'owner', {});
+    // console.log('----', get(videos, 'get_ldp.thumbnail', ''))
+    const videoItem = {
+        imgLecture: convertImgLink(get(videos, 'get_ldp.thumbnail', '')),
+        teacher: {
+            ...teacher,
+            name: teacher.first_name,
+            img: convertImgLink(teacher.avatar)
+        },
+        ...videos,
+    }
+
     const propsVideo = {
-        isLecture: !!videos.preview_img,
         setVisible,
         widthImg,
-        item: {
-            imgLecture: get(videos, 'preview_img', ''),
-            lectureId: get(videos, 'id', ''),
-            videoUrl: get(videos, 'url', 'https://www.youtube.com/watch?v=COfrDO4lV-k'),
-            duration: get(videos, 'length', 0),
-            title: get(videos, 'title', ' test title'),
-            viewCount: get(videos, 'view_count', '1k')
-        },
+        item: videoItem,
         _handlePress: () => {
-            navigate('CourseDetail', { lectureId: get(videos, 'id', ''), view_count: get(videos, 'view_count', '') })
+            navigate('CourseDetail', videoItem)
         },
     };
     return (

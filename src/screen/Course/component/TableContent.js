@@ -11,13 +11,18 @@ import { get } from 'lodash';
 import { helpers } from '../../../utils/helpers';
 
 
-const TableContent = ({ _navigateToCourse, listCourse = [] }) => {
+const TableContent = ({ _navigateToCourse, listCourse = [], playPath = [] }) => {
+    const [l1 = null, l2 = null] = playPath;
     const [active, setActive] = useState(0);
 
-    return (
-        <View style={{ backgroundColor: '#fff', paddingHorizontal: 10, marginVertical: 20, paddingVertical: 15, borderRadius: 10 }}>
-            <Text style={{ fontSize: 27 }}>Nội dung khoá học: </Text>
+    useEffect(() => {
+        if (l1 !== null) {
+            setActive(l1);
+        }
+    }, [l1]);
 
+    return (
+        <ScrollView style={{}}>
             {
                 listCourse.map((chapter = {}, index) => {
                     return (
@@ -34,56 +39,87 @@ const TableContent = ({ _navigateToCourse, listCourse = [] }) => {
                                 <Icon type="AntDesign" name={index === active ? "minus" : "plus"} />
                             </TouchableOpacity>
                             <Collapsible collapsed={!(index === active)}>
-                                <View style={{ marginHorizontal: 5 }}>
-                                    {get(chapter, 'get_child_curriculum', []).map((course, index) => {
-                                        const media = course.get_media;
-                                        const videoData = media.find(m => m.type == "video/mp4");
-                                        const listPdf = media.filter(m => m.type == "application/pdf");
-                                        // "preview": "active",
-
-                                        if (course.status !== 'active') return null;
-
-                                        return (
-                                            <View>
-                                                <TouchableOpacity
-                                                    onPress={() => _navigateToCourse({
-                                                        videoData,
-                                                        listPdf,
-                                                        course
-                                                    })}
-                                                    style={{ paddingTop: 5, flexDirection: 'row', alignItems: 'center', paddingBottom: 10 }}
-                                                >
-                                                    <Text style={{ fontSize: 16, marginHorizontal: 15 }}>{index + 1}.</Text>
-                                                    <View style={{ flex: 1 }}>
-                                                        <Text style={{ fontSize: 20, textTransform: 'capitalize' }} numberOfLines={2}>{course.name}</Text>
-                                                        <Text style={{ marginTop: 4, color: '#222', fontSize: 12 }}>
-                                                            Video - {helpers.convertTime(videoData.duration)} {listPdf.length ? `(${listPdf.length} tài liệu)` : ''}
-                                                        </Text>
-                                                    </View>
-                                                    {course.preview === 'active' ? <View style={{ borderWidth: 1, borderColor: '#6992A8', paddingHorizontal: 5, paddingVertical: 2, borderRadius: 3 }}>
-                                                        <Text style={{ color: '#6992A8' }}>preview</Text>
-                                                    </View> : null}
-                                                </TouchableOpacity>
-                                            </View>
-                                        )
-                                    })}
-                                </View>
+                                <RenderListLesson
+                                    chapter={chapter} index={index}
+                                    l1={l1} l2={l2} _navigateToCourse={_navigateToCourse}
+                                    listCourse={listCourse}
+                                />
                             </Collapsible>
                         </View>
                     )
                 })
             }
 
-        </View>
+        </ScrollView>
 
     )
 }
 
-const RenderCourse = ({ name, data, index }) => {
-
-
-}
-
-
-
 export default TableContent;
+
+
+const RenderListLesson = ({ chapter, index, l1, l2, _navigateToCourse, listCourse }) => {
+    const refFlatlist = useRef(null);
+    const [active, setActive] = useState(false);
+    useEffect(() => {
+        // if() {
+        //     setActive(true)
+        // }
+        setTimeout(() => {
+            if (index == l1 && refFlatlist && refFlatlist.current && refFlatlist.current.scrollToIndex) {
+                refFlatlist.current.scrollToIndex({ animated: true, index: l2 });
+            }
+        }, 1000)
+    }, [l1, l2])
+
+    return (
+        <View style={{ marginHorizontal: 5 }}>
+            <FlatList
+                ref={refFlatlist}
+                data={get(chapter, 'get_child_curriculum', [])}
+                // stickyHeaderIndices={[0,2,3]}
+                renderItem={({ item: course, index: indexVideo }) => {
+
+                    const media = course.get_media;
+                    const videoData = media.find(m => m.type == "video/mp4") || {};
+                    const listPdf = media.filter(m => m.type == "application/pdf");
+                    // "preview": "active",
+
+                    if (course.status !== 'active') return null;
+                    return (
+                        <View style={{ backgroundColor: (indexVideo == l2 && index == l1) ? 'rgba(252, 165, 3, 0.3)' : '#fff', borderRadius: 4, paddingRight: 3 }}>
+                            <TouchableOpacity
+                                onPress={() => {
+                                    _navigateToCourse({
+                                        videoData,
+                                        listPdf,
+                                        listCourse,
+                                        pathPlay: [index, indexVideo]
+                                    })
+                                }}
+                                style={{ paddingTop: 5, flexDirection: 'row', alignItems: 'center', paddingBottom: 10 }}
+                            >
+                                <Text style={{ fontSize: 16, marginHorizontal: 10 }}>{indexVideo + 1}.</Text>
+                                <View style={{ flex: 1 }}>
+                                    <Text style={{ fontSize: 20, textTransform: 'capitalize' }} numberOfLines={2}>{course.name}</Text>
+                                    <Text style={{ marginTop: 4, color: '#222', fontSize: 12 }}>
+                                        Video - {helpers.convertTime(videoData.duration)} {listPdf.length ? `(${listPdf.length} tài liệu)` : ''}
+                                    </Text>
+                                </View>
+                                {course.preview === 'active' ? <View style={{ borderWidth: 1, borderColor: '#6992A8', paddingHorizontal: 5, paddingVertical: 2, borderRadius: 3 }}>
+                                    <Text style={{ color: '#6992A8' }}>preview</Text>
+                                </View> : null}
+                            </TouchableOpacity>
+                        </View>
+                    )
+
+                }}
+                keyExtractor={({ item, index }) => index + ''}
+            />
+
+            {/* {get(chapter, 'get_child_curriculum', []).map(
+            )} */}
+        </View>
+
+    )
+}

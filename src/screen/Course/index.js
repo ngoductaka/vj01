@@ -29,6 +29,7 @@ const Course = (props) => {
     const { navigation } = props;
     const [visible, setVisible] = useState(false);
     const [gradeCourse, setGradeCourse] = useState([]);
+    const [groupCourse, setGroupCourse] = useState([]);
     const [loadGrade, setLoadingGradle] = useState(false);
 
     const userInfo = useSelector(state => state.userInfo);
@@ -41,7 +42,8 @@ const Course = (props) => {
     useEffect(() => {
         if (userInfo.class) {
             _setCurrentClass(userInfo.class);
-            _getCourseViaGrade(userInfo.class)
+            _getCourseViaGrade(userInfo.class);
+            _getCourseViaGroup()
         }
     }, [userInfo.class]);
     const _getCourseViaGrade = (grade) => {
@@ -56,6 +58,21 @@ const Course = (props) => {
             .finally(() => {
                 setLoadingGradle(false)
 
+            })
+
+    }
+
+
+    const _getCourseViaGroup = () => {
+        setLoadingGradle(true)
+        getCouse({ group: 'luyen_thi_thpt_qg' })
+            .then(({ data }) => {
+                setGroupCourse(data)
+            })
+            .catch(err => {
+            })
+            .finally(() => {
+                setLoadingGradle(false)
             })
 
     }
@@ -80,13 +97,29 @@ const Course = (props) => {
             <SafeAreaView style={{ flex: 1 }}>
                 <HeaderBar navigation={props.navigation} />
                 <ScrollView>
-
                     <View style={{ backgroundColor: '#fff', marginBottom: 10, padding: 10 }}>
                         <SeeAllTitle
-                            onPress={() => props.navigation.navigate('TopicCourse', { topic: item })}
+                            onPress={() => props.navigation.navigate('TopicCourse', { topic: `Khoá học lớp ${currentClass}`, data: gradeCourse })}
                             text={`Khoá học lớp ${currentClass}`} />
                         <ScrollView horizontal showsHorizontalScrollIndicator={false}>
                             {gradeCourse.slice(0, 5).map(videoItem => {
+                                return <VideoContinue
+                                    navigate={navigation.navigate}
+                                    setVisible={() => { }}
+                                    videos={videoItem}
+                                    style={{ marginRight: 20, width: width * 4 / 5 }}
+                                />
+                            })}
+                        </ScrollView>
+                    </View>
+
+
+                    <View style={{ backgroundColor: '#fff', marginBottom: 10, padding: 10 }}>
+                        <SeeAllTitle
+                            onPress={() => props.navigation.navigate('TopicCourse', { topic: `Khoá học lớp ${currentClass}`, data: gradeCourse })}
+                            text={'Luyện thi THPT quốc gia'} />
+                        <ScrollView horizontal showsHorizontalScrollIndicator={false}>
+                            {groupCourse.slice(0, 5).map(videoItem => {
                                 return <VideoContinue
                                     navigate={navigation.navigate}
                                     setVisible={() => { }}

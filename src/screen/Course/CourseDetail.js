@@ -71,11 +71,18 @@ const CourseDetail = (props) => {
                             }}
 
                         />
-                        <TableContent _navigateToCourse={_navigateToCourse} listCourse={listCourse} />
+                        <View style={{ backgroundColor: '#fff', paddingHorizontal: 10, marginVertical: 20, paddingVertical: 15, borderRadius: 10 }}>
+                            <Text style={{ fontSize: 27 }}>Nội dung khoá học: </Text>
+                            <TableContent _navigateToCourse={_navigateToCourse} listCourse={listCourse} />
+                        </View>
                     </View>
                 </Loading>
             </ScrollView>
-            <BtnFullWidth onPress={() => navigation.navigate('ConsultingForm')} text={"Nhận tư vấn khoá học"} styles={{ marginHorizontal: 15 }} />
+            <BtnFullWidth
+                onPress={() => navigation.navigate('ConsultingForm')}
+                text={"Nhận tư vấn khoá học"}
+                styles={{ marginHorizontal: 15, marginVertical: 0, }}
+            />
         </SafeAreaView>
     )
 };

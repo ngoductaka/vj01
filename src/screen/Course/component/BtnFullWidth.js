@@ -34,7 +34,7 @@ const styleBtnFullWidth = StyleSheet.create({
         justifyContent: 'center',
         alignItems: 'center',
         backgroundColor: '#dedede',
-        paddingVertical: Platform.OS === 'ios' ? 12 : 8,
+        paddingVertical: Platform.OS === 'ios' ? 10 : 8,
         marginVertical: 10,
         borderRadius: 10,
     },

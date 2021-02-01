@@ -33,6 +33,7 @@ import CourseDetail from '../screen/Course/CourseDetail';
 import ConsultingForm from '../screen/Course/ConsultingForm';
 import TopicCourse from '../screen/Course/TopicCourse';
 import CoursePlayer from '../screen/Course/CoursePlayer';
+import PdfView from '../screen/Course/PdfView';
 import VideoLesson from '../screen/Course/VideoLesson';
 import { fontMaker } from '../utils/fonts';
 import { helpers } from '../utils/helpers';
@@ -146,19 +147,19 @@ const CustomBottomBar = (props) => {
 						props.navigation.popToTop();
 						animate(0, route.key);
 						break;
-					// case 'CourseScreen':
-					// 	animate(width - (NUMBER_OF_TABS - 1) * width / NUMBER_OF_TABS, route.key);
-					// 	props.navigation.popToTop();
-					// 	break;
-					case 'TestStack':
+					case 'CourseScreen':
 						animate(width - (NUMBER_OF_TABS - 1) * width / NUMBER_OF_TABS, route.key);
 						props.navigation.popToTop();
 						break;
-					case 'QnA':
+					case 'TestStack':
 						animate(width - (NUMBER_OF_TABS - 2) * width / NUMBER_OF_TABS, route.key);
+						props.navigation.popToTop();
+						break;
+					case 'QnA':
+						animate(width - (NUMBER_OF_TABS - 3) * width / NUMBER_OF_TABS, route.key);
 						break;
 					case 'AccountStack':
-						animate(width - (NUMBER_OF_TABS - 3) * width / NUMBER_OF_TABS, route.key);
+						animate(width - (NUMBER_OF_TABS - 4) * width / NUMBER_OF_TABS, route.key);
 						props.navigation.popToTop();
 						break;
 				}
@@ -447,6 +448,7 @@ const InAppStack = createStackNavigator({
 	ScroreAnalyse: ScroreAnalyse,
 	Calculator: Calculator,
 	VideoLesson: VideoLesson,
+	PdfView: PdfView,
 	// ConsultingForm:ConsultingForm,
 }, {
 	// defaultNavigationOptions: {
