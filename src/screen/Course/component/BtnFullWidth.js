@@ -70,7 +70,7 @@ const TitleCourse = ({
                     <Text style={stylesTitle.price}>{convertMoney(price)} </Text>
                     <View style={{ alignItems: 'flex-start', marginBottom: 10 }}>
                         <StarRating
-                            disabled={true}
+                            // disabled={true}
                             maxStars={5}
                             rating={vote}
                             fullStarColor={COLOR.MAIN}

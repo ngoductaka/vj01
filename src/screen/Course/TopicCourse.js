@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { View, StyleSheet, TouchableOpacity, Image, Text, SafeAreaView, ImageBackground, ScrollView, FlatList, Dimensions } from 'react-native';
+import * as Animatable from 'react-native-animatable';
 // import FastImage from 'react-native-fast-image';
 import { useSelector } from 'react-redux';
 import { Icon, Card } from 'native-base';
@@ -33,7 +34,7 @@ const Course = (props) => {
     const data = navigation.getParam('data', []);
 
     useEffect(() => {
-        console.log('datadatadatadata', data);
+        // console.log('datadatadatadata', data);
         const dataConvert = data.reduce((cal, cur) => {
             const { subject } = cur;
             if (subject) {
@@ -77,23 +78,30 @@ const Course = (props) => {
                 />
                 <ScrollView style={{ marginTop: 8, backgroundColor: '#ddd' }}>
                     {/* current class */}
-                    {Object.keys(dataTopic).map(key => {
+                    {Object.keys(dataTopic).map((key, indexTop) => {
                         return (
-                            <View key={key} style={{ backgroundColor: '#fff', marginBottom: 10, padding: 10 }}>
+                            <Animatable.View animation="fadeIn" delay={indexTop * 1500} key={key} style={{ backgroundColor: '#fff', marginBottom: 10, padding: 10 }}>
                                 <SeeAllTitle
                                     onPress={() => props.navigation.navigate('CourseDetail')}
                                     text={MAP_SUBJECT[key]} />
-                                <ScrollView horizontal showsHorizontalScrollIndicator={false}>
-                                    {data.map(item => {
-                                        return <VideoContinue
-                                            navigate={navigation.navigate}
-                                            setVisible={() => { }}
-                                            videos={item}
-                                            style={{ marginRight: 20, width: width * 4 / 5 }}
-                                        />
-                                    })}
-                                </ScrollView>
-                            </View>
+
+                                <FlatList horizontal showsHorizontalScrollIndicator={false}
+                                    data={data}
+                                    renderItem={({ item, index }) => {
+                                        return (
+                                            <Animatable.View animation="fadeIn" delay={index * 1500}>
+                                                <VideoContinue
+                                                    navigate={navigation.navigate}
+                                                    setVisible={() => { }}
+                                                    videos={item}
+                                                    style={{ marginRight: 20, width: width * 4 / 5 }}
+                                                />
+                                            </Animatable.View>
+                                        )
+                                    }}
+                                    keyExtractor={({ item, index }) => String(index)}
+                                />
+                            </Animatable.View>
 
                         )
                     })}

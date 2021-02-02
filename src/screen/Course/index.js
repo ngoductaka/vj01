@@ -305,7 +305,6 @@ const stylesHeader = StyleSheet.create({
 
 
 const VideoContinue = ({ navigate, setVisible, videos = {}, style = {}, widthImg = width * 3 / 4 }) => {
-    // console.log('videos', videos);
 
     const teacher = get(videos, 'owner', {});
     // console.log('----', get(videos, 'get_ldp.thumbnail', ''))

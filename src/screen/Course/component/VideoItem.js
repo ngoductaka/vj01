@@ -3,14 +3,15 @@ import React, { useState, useCallback, useEffect, useRef } from 'react';
 import {
     View, Text, StyleSheet, TouchableOpacity,
     Dimensions, Image,
-    ImageBackground
+    ImageBackground, Animated
 } from 'react-native';
 import { Icon } from 'native-base';
 import { get } from 'lodash';
 import { Thumbnail } from 'react-native-thumbnail-video';
 import Share from 'react-native-share';
+import StarRating from 'react-native-star-rating';
 
-import { helpers } from '../../../utils/helpers';
+import { helpers, convertMoney } from '../../../utils/helpers';
 import { COLOR, fontSize, blackColor } from '../../../handle/Constant';
 import { fontMaker, fontStyles } from '../../../utils/fonts';
 // import { FeedbackModal } from './ModalReport';
@@ -36,7 +37,8 @@ export const LargeVideo = (props) => {
         duration, //get(item, 'partable.length', 0))
         name, // get(item, 'partable.name', '')
         view, //get(item, 'partable.view_count', '')
-        teacher = {}
+        teacher = {},
+        price = ''
     } = item;
     const watchLater = () => {
         item.articleId = item.lectureId;
@@ -52,7 +54,6 @@ export const LargeVideo = (props) => {
     }
 
     const [isOpen, setOpenModal] = useState(false);
-
     return (
         <TouchableOpacity
             onPress={_handlePress}
@@ -83,10 +84,32 @@ export const LargeVideo = (props) => {
                     </Text>
                     <Teacher {...teacher} />
                     <View style={stylesVideo.wapperText}>
-                        <Icon style={stylesVideo.icon} name={"eye"} type='Feather' />
+                        <StarRating
+                            // disabled={true}
+                            maxStars={5}
+                            rating={4.3}
+                            fullStarColor={COLOR.MAIN}
+                            starSize={fontSize.h2}
+                            disabled
+                        />
+                        {/* <Icon style={stylesVideo.icon} name={"eye"} type='Feather' /> */}
                         <Text style={stylesVideo.subText} numberOfLines={3}>
-                            {view} lượt xem
+                            {4} ({12})
                         </Text>
+                    </View>
+                    <View style={{ flexDirection: 'row', alignItems: 'flex-end' }}>
+                        <Text style={{
+                            color: COLOR.MAIN,
+                            fontWeight: 'bold',
+                            fontSize: fontSize.h2,
+                        }}>{convertMoney(price)} </Text>
+                        {/* <Text style={{
+                            color: '#999',
+                            fontWeight: 'bold',
+                            fontSize: fontSize.h3,
+                            textDecorationLine: 'line-through',
+                            marginLeft: 6
+                        }}>{convertMoney(price)} </Text> */}
                     </View>
                 </View>
                 <TouchableOpacity
@@ -132,23 +155,62 @@ const imgSubject = {
 const plaidImg = (key) => imgSubject[key] ? imgSubject[key] : defaultImg
 
 const ImgVideoLage = ({ imgLecture, lectureId, isLecture, videoUrl, _handlePress, widthImg = width * 3 / 4 }) => {
+    const opacity = new Animated.Value(0);
+    const opacityPlade = new Animated.Value(1);
+   
+    const _handleLoadEnd = (e) => {
+        Animated.timing(opacity, {
+            toValue: 1,
+            duration: 1000,useNativeDriver: true 
+        }).start();
+
+        Animated.timing(opacityPlade, {
+            toValue: 0,
+            duration: 1000,
+            useNativeDriver: true 
+        }).start();
+    }
+    const _handleLoadErr = () => {
+        setTimeout(() => {
+            Animated.timing(opacityPlade, {
+                toValue: 1,
+                duration: 1000,useNativeDriver: true 
+            }).start();
+        }, 1200)
+
+    }
+
     return (
         <View
             style={{
                 width: widthImg,
                 height: (widthImg) / 16 * 9,
             }}>
-            <ImageBackground
-                style={{ justifyContent: 'center', alignItems: 'center', flex: 1 }}
+            <Animated.Image
+                onError={_handleLoadErr}
+                onLoadEnd={_handleLoadEnd}
+                style={{
+                    justifyContent: 'center', alignItems: 'center',
+                    flex: 1,opacity
+                }}
                 source={{ uri: imgLecture ? imgLecture : plaidImg(3) }}
-            >
-                <View style={{ alignItems: 'center', }} >
+            />
+
+            <Animated.Image
+                style={{
+                    justifyContent: 'center', alignItems: 'center',
+                    position: 'absolute', left: 0, right: 0, bottom: 0, top: 0,
+                    flex: 1, backgroundColor: 'blue', opacity: opacityPlade
+                }}
+                source={{ uri: defaultImg }}
+            />
+            {/* <View style={{ alignItems: 'center', }} >
                     {lectureId ?
                         <Icon type="AntDesign" name={'playcircleo'} style={{ fontSize: 50, color: '#fff' }} /> :
                         null
                     }
                 </View>
-            </ImageBackground>
+            </Animated.Image> */}
         </View>
     )
 };
@@ -191,7 +253,8 @@ const stylesVideo = StyleSheet.create({
     },
     subText: {
         fontSize: fontSize.h5,
-        color: '#777'
+        color: '#777',
+        marginLeft: 5
     },
     shadow: {
         marginRight: 20,
@@ -207,7 +270,7 @@ const stylesVideo = StyleSheet.create({
 
 
 
-const Teacher = ({img = defaultImg, name=''}) => {
+const Teacher = ({ img = defaultImg, name = '' }) => {
     return (
         <View style={teacherStyles.container}>
             <View style={teacherStyles.imgView}>
