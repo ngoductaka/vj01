@@ -536,8 +536,8 @@ const RenderAnwser = ({ item, index, handleComment, _gotoProfile = () => { }, se
                         <View style={{ flexDirection: 'row' }}>
                             <Text style={{ fontSize: 16, marginLeft: 5 }}>{getDiffTime(timestamp)}</Text>
                             <TouchableOpacity style={{ flexDirection: 'row', alignItems: 'center' }} onPress={_handleLike}>
-                                <Icon name="heart" style={{ fontSize: 14, color: like ? 'red' : '#ddd', marginLeft: 15, }} type='AntDesign' />
-                                <Text style={{ fontSize: 16, marginLeft: 5, color: like ? COLOR.MAIN : '#222' }}>Cảm ơn</Text>
+                                <Icon name="heart" style={{ fontSize: 14, color: like ? '#FD7A6C' : '#ddd', marginLeft: 15, }} type='AntDesign' />
+                                <Text style={{ fontSize: 16, marginLeft: 5, color: like ? '#FD7A6C' : '#222' }}>Cảm ơn</Text>
                             </TouchableOpacity>
 
                             <TouchableOpacity onPress={() => handleComment('comment', { id, name, index })}>
