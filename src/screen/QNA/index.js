@@ -644,7 +644,7 @@ const RenderQestion = ({ item, index, hanldleClick, _handleNavigate = () => { },
                         <Text style={{ color: "#333", fontWeight: 'bold' }}>5.0</Text> */}
 
                     </View>
-                    <TouchableOpacity
+                    {/* <TouchableOpacity
                         onPress={_handleLike}
                         style={{ justifyContent: 'center', alignItems: 'center', flexDirection: 'row', marginRight: 10 }}
                     >
@@ -654,7 +654,7 @@ const RenderQestion = ({ item, index, hanldleClick, _handleNavigate = () => { },
                                 color: "#FC786D"
                             }} />
                         <Text style={{ color: "#333", fontWeight: 'bold' }}>{likeCount + (like ? 1 : 0)}</Text>
-                    </TouchableOpacity>
+                    </TouchableOpacity> */}
                 </View>
             </View>
             <ImageView

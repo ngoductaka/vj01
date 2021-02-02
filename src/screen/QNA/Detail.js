@@ -453,18 +453,18 @@ const RenderQuestion = ({ questionId, item, index, handleClickAnswer = () => { }
                 {/* <ListUser /> */}
                 <View style={{ flexDirection: 'row', justifyContent: 'space-between', flex: 1, alignItems: 'center' }}>
                     <View style={{ flexDirection: 'row' }}>
-                        <TouchableOpacity
+                        {/* <TouchableOpacity
                             onPress={_handleLike}
                             style={{ flexDirection: 'row', alignItems: 'center' }}
                         >
                             <Icon name="heart" type="EvilIcons" style={{ fontSize: 38, color: like ? COLOR.MAIN : '#111' }} />
                             <Text style={{ fontSize: 18, color: like ? COLOR.MAIN : '#111' }}>Like</Text>
-                        </TouchableOpacity>
+                        </TouchableOpacity> */}
 
                         <TouchableOpacity
                             onPress={() => handleClickAnswer()}
-                            style={{ flexDirection: 'row', marginLeft: 20, alignItems: 'center' }}>
-                            <Icon name="comment" type="EvilIcons" style={{ fontSize: 38 }} />
+                            style={{ flexDirection: 'row', marginLeft: 0, alignItems: 'center' }}>
+                            <Icon name="comment" type="EvilIcons" style={{ fontSize: 28 }} />
                             <Text style={{ fontSize: 18 }}>Trả lời</Text>
                         </TouchableOpacity>
                     </View>
@@ -535,9 +535,9 @@ const RenderAnwser = ({ item, index, handleComment, _gotoProfile = () => { }, se
                     <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
                         <View style={{ flexDirection: 'row' }}>
                             <Text style={{ fontSize: 16, marginLeft: 5 }}>{getDiffTime(timestamp)}</Text>
-                            <TouchableOpacity onPress={_handleLike}>
-                                {/* <Icon name="heart" style={{ fontSize: 15, color: 'red' }} type='AntDesign' /> */}
-                                <Text style={{ fontSize: 16, marginLeft: 15, color: like ? COLOR.MAIN : '#222' }}>{+likeCount + (like ? 1 : 0)} Thích</Text>
+                            <TouchableOpacity style={{ flexDirection: 'row', alignItems: 'center' }} onPress={_handleLike}>
+                                <Icon name="heart" style={{ fontSize: 14, color: like ? 'red' : '#ddd', marginLeft: 15, }} type='AntDesign' />
+                                <Text style={{ fontSize: 16, marginLeft: 5, color: like ? COLOR.MAIN : '#222' }}>Cảm ơn</Text>
                             </TouchableOpacity>
 
                             <TouchableOpacity onPress={() => handleComment('comment', { id, name, index })}>
