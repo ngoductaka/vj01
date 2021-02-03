@@ -80,16 +80,17 @@ const CoursePlayer = (props) => {
 
     useEffect(() => {
         if (navigation.getParam('videoData', {})) {
+            console.log('===================', navigation.getParam('videoData', {}))
+            setTimeout(() => {
+                const videoData = navigation.getParam('videoData', {});
+                setDataLesson(videoData)
+                setListDoc(navigation.getParam('listPdf', {}))
+                setListCourse(navigation.getParam('listCourse', {}));
+                setPathPlay(navigation.getParam('pathPlay', {}));
 
-            // listPdf,
-            // course
-            setDataLesson(navigation.getParam('videoData', {}))
-            setListDoc(navigation.getParam('listPdf', {}))
-            setListCourse(navigation.getParam('listCourse', {}));
-            setPathPlay(navigation.getParam('pathPlay', {}));
-
-            setVideoSrc(navigation.getParam('videoData.raw_url', ''))
-            setErrVideo(false)
+                setVideoSrc(get(videoData, 'raw_url', ''))
+                setErrVideo(false)
+            }, 100)
 
         } else {
 
@@ -190,9 +191,10 @@ const CoursePlayer = (props) => {
 
     const _navigateToCourse = (params) => {
         console.log('params', params)
+        setVideoSrc(null)
         navigation.setParams(params)
     }
-    // console.log('0----------', get(videoLesson, 'raw_url', ''))
+    console.log('0----------', videoSrc)
 
     const _loadVideoFail = () => {
         Toast.showWithGravity("Video không khả dụng, vui lòng thử lại sau", Toast.SHORT, Toast.CENTER);
@@ -215,25 +217,26 @@ const CoursePlayer = (props) => {
                         isLoading={false} err={errVideo}
                     >
                         <View style={{ flex: 1 }}>
-                            <Video
-                                source={{ uri: get(videoLesson, 'raw_url', '') }}
-                                ref={mediaPlayer}
-                                onError={_loadVideoFail}
-                                onEnd={_onEnd}
-                                paused={paused}
-                                onReadyForDisplay={_onReadyForDisplay}
-                                onProgress={throttled.current}
-                                preventsDisplaySleepDuringVideoPlayback={true}
-                                progressUpdateInterval={1}
-                                controls={true}
-                                poster={convertImgLink(get(videoLesson, 'thumbnail', 'https://baconmockup.com/300/200/'))}
-                                posterResizeMode='cover'
-                                resizeMode='contain'
-                                fullscreen={helpers.isIOS}
-                                style={{ flex: 1 }}
-                                fullscreenOrientation='landscape'
-                                onPlaybackRateChange={({ playbackRate }) => setPlay(playbackRate)}
-                            />
+                            {videoSrc ?
+                                <Video
+                                    source={{ uri: videoSrc }}
+                                    // ref={mediaPlayer}
+                                    onError={_loadVideoFail}
+                                    // onEnd={_onEnd}
+                                    // paused={paused}
+                                    // onReadyForDisplay={_onReadyForDisplay}
+                                    // onProgress={throttled.current}
+                                    preventsDisplaySleepDuringVideoPlayback={true}
+                                    progressUpdateInterval={1}
+                                    controls={true}
+                                    poster={convertImgLink(get(videoLesson, 'thumbnail', 'https://baconmockup.com/300/200/'))}
+                                    posterResizeMode='cover'
+                                    resizeMode='contain'
+                                    fullscreen={helpers.isIOS}
+                                    style={{ flex: 1 }}
+                                    fullscreenOrientation='landscape'
+                                // onPlaybackRateChange={({ playbackRate }) => setPlay(playbackRate)}
+                                /> : null}
                             {(helpers.isAndroid && full) &&
                                 <TouchableOpacity onPress={handleBackFullScreen} style={{ padding: 10, position: 'absolute', top: 10, left: 10 }} >
                                     <Icon type='MaterialIcons' name='arrow-back' style={{ fontSize: 26, color: COLOR.white(1) }} />

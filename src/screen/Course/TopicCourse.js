@@ -80,7 +80,7 @@ const Course = (props) => {
                     {/* current class */}
                     {Object.keys(dataTopic).map((key, indexTop) => {
                         return (
-                            <Animatable.View animation="fadeIn" delay={indexTop * 1500} key={key} style={{ backgroundColor: '#fff', marginBottom: 10, padding: 10 }}>
+                            <Animatable.View animation="fadeIn" delay={indexTop * 1000} key={key} style={{ backgroundColor: '#fff', marginBottom: 10, padding: 10 }}>
                                 <SeeAllTitle
                                     onPress={() => props.navigation.navigate('CourseDetail')}
                                     text={MAP_SUBJECT[key]} />
@@ -89,7 +89,7 @@ const Course = (props) => {
                                     data={data}
                                     renderItem={({ item, index }) => {
                                         return (
-                                            <Animatable.View animation="fadeIn" delay={index * 1500}>
+                                            <Animatable.View animation="fadeIn" delay={index * 500}>
                                                 <VideoContinue
                                                     navigate={navigation.navigate}
                                                     setVisible={() => { }}

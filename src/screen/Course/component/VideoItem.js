@@ -155,28 +155,31 @@ const imgSubject = {
 const plaidImg = (key) => imgSubject[key] ? imgSubject[key] : defaultImg
 
 const ImgVideoLage = ({ imgLecture, lectureId, isLecture, videoUrl, _handlePress, widthImg = width * 3 / 4 }) => {
-    const opacity = new Animated.Value(0);
-    const opacityPlade = new Animated.Value(1);
-   
+    const [opacity] = useState(new Animated.Value(0))
+    const [opacityPlade] = useState(new Animated.Value(1))
+    // const opacity = new Animated.Value(0);
+    // const opacityPlade = new Animated.Value(1);
+    // console.log('===================end load img')
+
     const _handleLoadEnd = (e) => {
         Animated.timing(opacity, {
             toValue: 1,
-            duration: 1000,useNativeDriver: true 
+            duration: 1000, useNativeDriver: true
         }).start();
 
         Animated.timing(opacityPlade, {
             toValue: 0,
             duration: 1000,
-            useNativeDriver: true 
+            useNativeDriver: true
         }).start();
     }
     const _handleLoadErr = () => {
-        setTimeout(() => {
-            Animated.timing(opacityPlade, {
-                toValue: 1,
-                duration: 1000,useNativeDriver: true 
-            }).start();
-        }, 1200)
+        // setTimeout(() => {
+        //     Animated.timing(opacityPlade, {
+        //         toValue: 1,
+        //         duration: 1000,useNativeDriver: true 
+        //     }).start();
+        // }, 1200)
 
     }
 
@@ -191,7 +194,7 @@ const ImgVideoLage = ({ imgLecture, lectureId, isLecture, videoUrl, _handlePress
                 onLoadEnd={_handleLoadEnd}
                 style={{
                     justifyContent: 'center', alignItems: 'center',
-                    flex: 1,opacity
+                    flex: 1, opacity
                 }}
                 source={{ uri: imgLecture ? imgLecture : plaidImg(3) }}
             />
@@ -200,7 +203,7 @@ const ImgVideoLage = ({ imgLecture, lectureId, isLecture, videoUrl, _handlePress
                 style={{
                     justifyContent: 'center', alignItems: 'center',
                     position: 'absolute', left: 0, right: 0, bottom: 0, top: 0,
-                    flex: 1, backgroundColor: 'blue', opacity: opacityPlade
+                    flex: 1, backgroundColor: '#dedede', opacity: opacityPlade
                 }}
                 source={{ uri: defaultImg }}
             />

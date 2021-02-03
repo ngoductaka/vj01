@@ -37,7 +37,6 @@ const Course = (props) => {
     const [currentClass, setClass] = useState(userInfo && userInfo.class ? userInfo.class : '');
     const [classModal, setShowClassModal] = useState(false);
 
-    // console.log('gradeCourse', gradeCourse)
 
     useEffect(() => {
         if (userInfo.class) {
@@ -50,6 +49,7 @@ const Course = (props) => {
         setLoadingGradle(true)
         getCouse({ classlevel: grade })
             .then(({ data }) => {
+                // console.log('datadatadata444', data)
                 setGradeCourse(data)
             })
             .catch(err => {
