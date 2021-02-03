@@ -95,7 +95,7 @@ const LessonOverview = (props) => {
     }, []);
 
     useEffect(() => {
-        if ((learningTimes + 3) % frequency === 0) {
+        if ((learningTimes + 3) % frequency === 0 || learningTimes % frequency == (frequency / 2 + 1)) {
             console.log('---1-1-2-1-2');
             advert = firebase.admob().interstitial(unitIntertitialId);
             request = new AdRequest();

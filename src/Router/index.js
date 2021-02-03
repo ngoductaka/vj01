@@ -60,6 +60,7 @@ import GameCenter from '../screen/GameCenter';
 import WhoIsMillionaire from '../screen/GameCenter/WhoIsMillionarie';
 import Sudoku from '../screen/GameCenter/Sudoku/index';
 import Tetris from '../screen/GameCenter/Tetris/index';
+import NewTetris from '../screen/GameCenter/NewTetris/containers/NewTetris';
 import SnakeApp from '../screen/GameCenter/Snake/Main';
 import SnakeGameCenter from '../screen/GameCenter/Snake/index';
 import WordCatcher from '../screen/GameCenter/WordCatcher';
