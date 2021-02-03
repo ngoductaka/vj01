@@ -33,6 +33,8 @@ import { setLearningTimes } from '../../redux/action/user_info';
 const AdRequest = firebase.admob.AdRequest;
 let advert;
 let request;
+let otherAdvert;
+let otherRequest;
 
 const defaultImg = 'https://i2.wp.com/img.aapks.com/imgs/9/6/0/960716b7e33558f5a71d32357e2101c2.png?w=705';
 // 'https://scontent.fhan2-1.fna.fbcdn.net/v/t1.0-9/65680640_856519258062118_5654789508537778176_o.jpg?_nc_cat=1&_nc_sid=e3f864&_nc_ohc=__-GXI_kjNkAX-zWSDY&_nc_ht=scontent.fhan2-1.fna&oh=18e1f4707c50e93e15036553304166a7&oe=5F39381D'
@@ -78,6 +80,7 @@ const LessonOverview = (props) => {
 
     // interstial ad
     const learningTimes = useSelector(state => state.timeMachine.learning_times);
+    const articleLearningTimes = useSelector(state => state.timeMachine.article_learning_times);
     useEffect(() => {
         if (showFullAds) {
             if (screenAds && screenAds[TAG] == "1") {
@@ -95,14 +98,25 @@ const LessonOverview = (props) => {
     }, []);
 
     useEffect(() => {
-        if ((learningTimes + 3) % frequency === 0 || learningTimes % frequency == (frequency / 2 + 1)) {
+        if (learningTimes % frequency == 0) {
             console.log('---1-1-2-1-2');
+            otherAdvert = firebase.admob().interstitial(unitIntertitialId);
+            otherRequest = new AdRequest();
+            otherRequest.addKeyword('facebook').addKeyword('google').addKeyword('instagram').addKeyword('zalo').addKeyword('google').addKeyword('pubg').addKeyword('asphalt').addKeyword('covid-19');
+            otherAdvert.loadAd(otherRequest.build());
+            console.log('----a', otherAdvert);
+        }
+    }, [learningTimes]);
+
+    useEffect(() => {
+        if (articleLearningTimes % frequency == 0) {
+            console.log('---1-22222222-2-1-2');
             advert = firebase.admob().interstitial(unitIntertitialId);
             request = new AdRequest();
             request.addKeyword('facebook').addKeyword('google').addKeyword('instagram').addKeyword('zalo').addKeyword('google').addKeyword('pubg').addKeyword('asphalt').addKeyword('covid-19');
             advert.loadAd(request.build());
         }
-    }, [learningTimes]);
+    }, [articleLearningTimes]);
 
     useEffect(() => {
         if (_dataLesson && _dataLesson.data) {
@@ -369,8 +383,8 @@ const LessonOverview = (props) => {
                                     if (item.type == 'bookType3') return <ArticleItem data={item.data} advertParam={advert} handleNavigate={handleNavigate} SeeMore={SeeMore} title="Lý thuyết" />
                                     if (item.type == 'bookType4') return <ArticleItem data={item.data} advertParam={advert} handleNavigate={handleNavigate} SeeMore={SeeMore} title="Tác giả-tác phẩm" />
 
-                                    if (item.type == 'video') return <VideoItem setVisible={setVisible} advertParam={advert} data={item.data} handleNavigate={handleNavigate} />
-                                    if (item.type == 'exam') return <ExcerciseItem data={item.data} advertParam={advert} handleNavigate={handleNavigate} book={get(_dataLesson, 'data.book')} lessonId={lessonId} SeeMore={SeeMore} />
+                                    if (item.type == 'video') return <VideoItem setVisible={setVisible} advertParam={otherAdvert} data={item.data} handleNavigate={handleNavigate} />
+                                    if (item.type == 'exam') return <ExcerciseItem data={item.data} advertParam={otherAdvert} handleNavigate={handleNavigate} book={get(_dataLesson, 'data.book')} lessonId={lessonId} SeeMore={SeeMore} />
                                     return null;
                                 }))
                             }
