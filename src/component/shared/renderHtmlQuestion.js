@@ -226,7 +226,7 @@ const RenderImg = ({ uri, height, widthImg, indexItem, setShowImg = () => { }, i
       Image.getSize(uri, onSuccess);
     }, [uri]);
     // console.log(`${endpoints.BASE_HOI_DAP}${uri}`, '=======')
-    console.log(convertEndPoint, '111=======0000', size);
+    // console.log(convertEndPoint, '111=======0000', size);
 
     return (
       <TouchableOpacity onPress={() => {
