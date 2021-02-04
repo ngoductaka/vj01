@@ -38,7 +38,7 @@ import services from '../../handle/services';
 import { endpoints } from '../../constant/endpoints';
 import { search_services } from './service';
 import { RenderListImg } from '../../component/Image/renderListImg';
-import { ViewWithBanner, placementId } from '../../utils/facebookAds';
+import { ViewWithBanner, fbFull } from '../../utils/facebookAds';
 
 
 const { width, height } = Dimensions.get('window');
@@ -55,13 +55,7 @@ const QnA = (props) => {
     const refList = useRef(null);
 
     useEffect(() => {
-
-        InterstitialAdManager.showAd(placementId)
-        .then((didClick) => {
-            console.log('didClickdidClickdidClickdidClickdidClick', didClick)
-      
-        })
-        .catch((error) => {});
+        fbFull();
     }, [])
 
     const handleComment = (type = 'answer', data) => {
