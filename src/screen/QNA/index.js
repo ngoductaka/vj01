@@ -628,7 +628,7 @@ const RenderQestion = ({ item, index, hanldleClick, _handleNavigate = () => { },
                         }}
                         style={{ justifyContent: 'center', alignItems: 'center', flexDirection: 'row', marginRight: 20 }} >
                         {/* <Icon name="comment" type="EvilIcons" style={{ fontSize: 35, marginHorizontal: 4, }} /> */}
-                        <Text style={{ color: '#74B2D6', fontWeight: 'bold' }}> {commentCount ? `${commentCount} câu trả lời`: "Chưa có câu trả lời" }</Text>
+                        <Text style={{ color: '#74B2D6', fontWeight: 'bold' }}> {commentCount ? `${commentCount} câu trả lời` : "Chưa có câu trả lời"}</Text>
                     </TouchableOpacity>
                     {/* <ListUser /> */}
                 </View>

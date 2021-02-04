@@ -32,6 +32,7 @@ const cssRules = cssRulesFromSpecs(defaultTableStylesSpecs);
 import Sound from '../Sound';
 import { fontMaker, fontStyles } from '../../utils/fonts';
 import BannerAd from './BannerAd';
+import { ViewWithBanner } from '../../utils/facebookAds';
 
 const config = {
   WebViewComponent: WebView,
@@ -417,6 +418,10 @@ export const RenderRow = ({ indexItem = '', row, indexRow, setShowImg = () => { 
                 <Sound url={content} />
               </View>
             } else if (type == 'ads') {
+              // console.log('========================indexRow', indexRow, indexItem)
+              if (indexRow < 7) {
+                return <ViewWithBanner />
+              }
               return <BannerAd type={index} />
             }
             else return null;

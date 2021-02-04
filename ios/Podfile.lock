@@ -13,6 +13,8 @@ PODS:
     - Fabric (~> 1.10.2)
   - DoubleConversion (1.1.6)
   - Fabric (1.10.2)
+  - FBAudienceNetwork (5.10.1):
+    - FBSDKCoreKit/Basics (>= 5.6.0)
   - FBLazyVector (0.63.4)
   - FBReactNativeSpec (0.63.4):
     - Folly (= 2020.01.13.00)
@@ -478,6 +480,9 @@ PODS:
     - React-Core (= 0.63.4)
     - React-cxxreact (= 0.63.4)
     - React-jsi (= 0.63.4)
+  - ReactNativeAdsFacebook (6.3.1):
+    - FBAudienceNetwork
+    - React
   - ReactNativeART (1.2.0):
     - React
   - ReactNativeExceptionHandler (2.10.9):
@@ -619,6 +624,7 @@ DEPENDENCIES:
   - React-RCTText (from `../node_modules/react-native/Libraries/Text`)
   - React-RCTVibration (from `../node_modules/react-native/Libraries/Vibration`)
   - ReactCommon/turbomodule/core (from `../node_modules/react-native/ReactCommon`)
+  - ReactNativeAdsFacebook (from `../node_modules/react-native-fbads`)
   - "ReactNativeART (from `../node_modules/@react-native-community/art`)"
   - ReactNativeExceptionHandler (from `../node_modules/react-native-exception-handler`)
   - "RNAppleAuthentication (from `../node_modules/@invertase/react-native-apple-authentication`)"
@@ -649,6 +655,7 @@ SPEC REPOS:
     - CocoaLibEvent
     - Crashlytics
     - Fabric
+    - FBAudienceNetwork
     - FBSDKCoreKit
     - FBSDKLoginKit
     - FBSDKShareKit
@@ -773,6 +780,8 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native/Libraries/Vibration"
   ReactCommon:
     :path: "../node_modules/react-native/ReactCommon"
+  ReactNativeAdsFacebook:
+    :path: "../node_modules/react-native-fbads"
   ReactNativeART:
     :path: "../node_modules/@react-native-community/art"
   ReactNativeExceptionHandler:
@@ -825,6 +834,7 @@ SPEC CHECKSUMS:
   Crashlytics: 9220f5bc89e7a618df411b4f639389dbfb0e03d2
   DoubleConversion: cde416483dac037923206447da6e1454df403714
   Fabric: ea977e3cd9c20425516d3dafd3bf8c941c51223f
+  FBAudienceNetwork: 6cdcc40aa475e8045ab14398e181a3dc90a5014e
   FBLazyVector: 3bb422f41b18121b71783a905c10e58606f7dc3e
   FBReactNativeSpec: f2c97f2529dd79c083355182cc158c9f98f4bd6e
   FBSDKCoreKit: e7dcac0aabcfb09d0166998edd95fe3b05a0ce5d
@@ -897,6 +907,7 @@ SPEC CHECKSUMS:
   React-RCTText: 5c51df3f08cb9dedc6e790161195d12bac06101c
   React-RCTVibration: ae4f914cfe8de7d4de95ae1ea6cc8f6315d73d9d
   ReactCommon: 73d79c7039f473b76db6ff7c6b159c478acbbb3b
+  ReactNativeAdsFacebook: f26673210344d50687d4c7b1b4242c3b6b48c33f
   ReactNativeART: 78edc68dd4a1e675338cd0cd113319cf3a65f2ab
   ReactNativeExceptionHandler: f1638ffd507ef1b1794af25884fa0eb30dd5c551
   RNAppleAuthentication: 46cbc67739bae83ca229497f9b0038f3f5431443

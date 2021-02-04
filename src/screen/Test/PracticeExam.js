@@ -45,6 +45,7 @@ const useGlobal = globalHook(React, initialState, actions);
 /**-------------interstitial ad----------------- */
 import firebase from 'react-native-firebase';
 import { setLearningTimes } from '../../redux/action/user_info';
+import { fbFull } from '../../utils/facebookAds';
 const AdRequest = firebase.admob.AdRequest;
 let advert;
 let request;
@@ -91,25 +92,28 @@ const PracticeExam = (props) => {
     useEffect(() => {
         if (screenAds && screenAds[TAG] == "1") {
             if (learningTimes > 0 && learningTimes % (3 * frequency) === 0) {
-                setAdsLoading(true);
-                advert = firebase.admob().interstitial(unitIntertitialId);
-                request = new AdRequest();
-                request.addKeyword('facebook').addKeyword('google').addKeyword('instagram').addKeyword('zalo').addKeyword('google').addKeyword('pubg').addKeyword('asphalt').addKeyword('covid-19');
+                fbFull()
+                    .catch(err => {
+                        setAdsLoading(true);
+                        advert = firebase.admob().interstitial(unitIntertitialId);
+                        request = new AdRequest();
+                        request.addKeyword('facebook').addKeyword('google').addKeyword('instagram').addKeyword('zalo').addKeyword('google').addKeyword('pubg').addKeyword('asphalt').addKeyword('covid-19');
 
-                advert.loadAd(request.build());
+                        advert.loadAd(request.build());
 
-                advert.on('onAdLoaded', () => {
-                    // console.log('----------Advert ready to show.--------');
-                    // if (navigation.isFocused() && advert.isLoaded()) {
-                    if (advert.isLoaded()) {
-                        advert.show();
-                    } else {
-                        // console.log('---------interstitial fail---------', navigation.isFocused());
-                    }
-                });
-                advert.on('onAdClosed', () => {
-                    setAdsLoading(false);
-                });
+                        advert.on('onAdLoaded', () => {
+                            // console.log('----------Advert ready to show.--------');
+                            // if (navigation.isFocused() && advert.isLoaded()) {
+                            if (advert.isLoaded()) {
+                                advert.show();
+                            } else {
+                                // console.log('---------interstitial fail---------', navigation.isFocused());
+                            }
+                        });
+                        advert.on('onAdClosed', () => {
+                            setAdsLoading(false);
+                        });
+                    })
             }
         }
     }, [learningTimes]);

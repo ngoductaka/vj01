@@ -37,6 +37,7 @@ const { width, height } = Dimensions.get('window');
 /**-------------interstitial ad----------------- */
 import firebase from 'react-native-firebase';
 import { setLearningTimes } from '../../redux/action/user_info';
+import { fbFull } from '../../utils/facebookAds';
 const AdRequest = firebase.admob.AdRequest;
 let advert;
 let request;
@@ -51,14 +52,17 @@ const ViewAnwser = ({ navigation }) => {
     const screenAds = useSelector(state => get(state, 'subjects.screens', null));
     // const [adsLoading, setAdsLoading] = useState(false);
     const advertParam = navigation.getParam('advert', null);
-    console.log('-a-sa-s--a-sdasd', advertParam);
+    // console.log('-a-sa-s--a-sdasd', advertParam);
     const dispatch = useDispatch();
 
     useEffect(() => {
         if (screenAds && screenAds[TAG] == "1") {
-            if (advertParam) {
-                advertParam.show();
-            }
+            fbFull()
+                .catch(err => {
+                    if (advertParam) {
+                        advertParam.show();
+                    }
+                })
         }
         setTimeout(() => {
             setDelay(true)
