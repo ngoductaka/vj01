@@ -54,9 +54,9 @@ const QnA = (props) => {
     const inputEl = useRef(null);
     const refList = useRef(null);
 
-    useEffect(() => {
-        fbFull();
-    }, [])
+    // useEffect(() => {
+    //     fbFull();
+    // }, [])
 
     const handleComment = (type = 'answer', data) => {
         setType({ type, data });
@@ -186,7 +186,7 @@ const QnA = (props) => {
                 />
 
                 {/* <View style={{ height: 200 }}> */}
-                    <ViewWithBanner />
+                    {/* <ViewWithBanner /> */}
                 {/* </View> */}
                 {/* list */}
                 <View style={{ flex: 1, marginBottom: 65 }}>
