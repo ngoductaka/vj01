@@ -30,7 +30,7 @@ const TAG = 'lesson';
 
 /**-------------interstitial ad----------------- */
 import firebase from 'react-native-firebase';
-import { setLearningTimes } from '../../redux/action/user_info';
+import { setArticleLearningTimes } from '../../redux/action/user_info';
 const AdRequest = firebase.admob.AdRequest;
 let advert;
 let request;
@@ -134,7 +134,7 @@ const Lesson = (props) => {
 		);
 
 		return () => {
-			dispatch(setLearningTimes());
+			dispatch(setArticleLearningTimes());
 			BackHandler.removeEventListener(
 				'hardwareBackPress',
 				_handleBack
@@ -146,10 +146,6 @@ const Lesson = (props) => {
 		props.navigation.goBack();
 		return true;
 	}
-
-	useEffect(() => {
-
-	}, []);
 
 	useEffect(() => {
 		if (dataLesson && dataLesson.data.parsed_content) {
@@ -167,29 +163,6 @@ const Lesson = (props) => {
 				return null;
 			}
 		}
-	}, [dataLesson]);
-	// const [saved, setSaved] = useState(false);
-	const [savedOff, setSavedOff] = useState(false);
-	useEffect(() => {
-		// setTimeout(() => {
-		// 	getItem(KEY.saved_article)
-		// 		.then(val => {
-		// 			if (val && val.find(i => i.articleId == articleId)) {
-		// 				setSaved(true);
-		// 			} else {
-		// 				setSaved(false)
-		// 			}
-		// 		})
-		// 	getItem(KEY.saved_offline_article)
-		// 		.then(val => {
-		// 			if (val && val.find(i => i.articleId == articleId)) {
-		// 				setSavedOff(true);
-		// 			} else {
-		// 				setSavedOff(false)
-		// 			}
-		// 		})
-
-		// }, 3000)
 	}, [dataLesson]);
 
 	const handleBookmark = async () => {

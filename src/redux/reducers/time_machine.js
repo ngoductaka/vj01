@@ -1,9 +1,10 @@
-import { STARTING_APP_TIME, RESET_TIME, RATING_STATUS, LOG_OUT_SUCCESS, SET_LEARNING_TIMES, RESET_LEARNING_TIMES } from '../constants';
+import { STARTING_APP_TIME, RESET_TIME, RATING_STATUS, LOG_OUT_SUCCESS, SET_LEARNING_TIMES, RESET_LEARNING_TIMES, SET_ARTICLE_LEARNING_TIMES } from '../constants';
 
 const INITIAL_STATE = {
     time: 0,
     rated: 0,
-    learning_times: 0
+    learning_times: 0,
+    article_learning_times: 0
 };
 
 export default (state = INITIAL_STATE, action) => {
@@ -17,6 +18,11 @@ export default (state = INITIAL_STATE, action) => {
             return {
                 ...state,
                 learning_times: state.learning_times + 1
+            };
+        case SET_ARTICLE_LEARNING_TIMES:
+            return {
+                ...state,
+                article_learning_times: state.article_learning_times + 1
             };
         case RESET_LEARNING_TIMES:
             return {

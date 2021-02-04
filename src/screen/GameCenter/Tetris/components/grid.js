@@ -347,14 +347,22 @@ class Grid extends Component {
             }
         }
 
-        rows_to_clear.map((r) => {
+        rows_to_clear.forEach((r) => {
             this.clearRow(r);
             num_rows_cleared++;
             row_was_cleared = true;
         });
 
         if (row_was_cleared) {
-            this.setState({ score: this.state.score + 100 * num_rows_cleared });
+            if (num_rows_cleared == 1) {
+                this.setState({ score: this.state.score + 1 });
+            } else if (num_rows_cleared == 2) {
+                this.setState({ score: this.state.score + 4 });
+            } else if (num_rows_cleared == 3) {
+                this.setState({ score: this.state.score + 8 });
+            } else if (num_rows_cleared == 4) {
+                this.setState({ score: this.state.score + 15 });
+            }
         }
     }
 
