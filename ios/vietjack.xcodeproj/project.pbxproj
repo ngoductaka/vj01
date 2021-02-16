@@ -435,7 +435,6 @@
 						TestTargetID = 13B07F861A680F5B00A75B9A;
 					};
 					13B07F861A680F5B00A75B9A = {
-						DevelopmentTeam = 289VSKW3KF;
 						LastSwiftMigration = 1220;
 						ProvisioningStyle = Automatic;
 					};
@@ -639,6 +638,7 @@
 			inputPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-VietJack/Pods-VietJack-artifacts.sh",
 				"${PODS_ROOT}/GoogleUserMessagingPlatform/Frameworks/Release/UserMessagingPlatform.xcframework",
+				"${PODS_ROOT}/OpenSSL-Universal/Frameworks/OpenSSL.xcframework",
 			);
 			name = "[CP] Prepare Artifacts";
 			outputPaths = (
@@ -679,6 +679,7 @@
 			inputPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-VietJack-VietJackTests/Pods-VietJack-VietJackTests-artifacts.sh",
 				"${PODS_ROOT}/GoogleUserMessagingPlatform/Frameworks/Release/UserMessagingPlatform.xcframework",
+				"${PODS_ROOT}/OpenSSL-Universal/Frameworks/OpenSSL.xcframework",
 			);
 			name = "[CP] Prepare Artifacts";
 			outputPaths = (
@@ -1009,7 +1010,7 @@
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 112;
-				DEVELOPMENT_TEAM = "";
+				DEVELOPMENT_TEAM = 289VSKW3KF;
 				INFOPLIST_FILE = VietJack/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				MARKETING_VERSION = 2.2.0;

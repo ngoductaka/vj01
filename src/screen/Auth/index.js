@@ -18,6 +18,13 @@ import { common_services } from '../../redux/services';
 import { helpers } from '../../utils/helpers';
 import { fontMaker, fontStyles } from '../../utils/fonts';
 import { get } from 'lodash';
+import KochavaTracker from 'react-native-kochava-tracker';
+ 
+// Configure
+var configMapObject = {}
+configMapObject[KochavaTracker.PARAM_ANDROID_APP_GUID_STRING_KEY] = "kovietjack-android-svl61k";
+configMapObject[KochavaTracker.PARAM_IOS_APP_GUID_STRING_KEY] = "kovietjack-na4k6x7u";
+KochavaTracker.configure(configMapObject);
 
 const Auth = (props) => {
 
