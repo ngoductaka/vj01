@@ -638,7 +638,6 @@
 			inputPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-VietJack/Pods-VietJack-artifacts.sh",
 				"${PODS_ROOT}/GoogleUserMessagingPlatform/Frameworks/Release/UserMessagingPlatform.xcframework",
-				"${PODS_ROOT}/OpenSSL-Universal/Frameworks/OpenSSL.xcframework",
 			);
 			name = "[CP] Prepare Artifacts";
 			outputPaths = (
@@ -679,7 +678,6 @@
 			inputPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-VietJack-VietJackTests/Pods-VietJack-VietJackTests-artifacts.sh",
 				"${PODS_ROOT}/GoogleUserMessagingPlatform/Frameworks/Release/UserMessagingPlatform.xcframework",
-				"${PODS_ROOT}/OpenSSL-Universal/Frameworks/OpenSSL.xcframework",
 			);
 			name = "[CP] Prepare Artifacts";
 			outputPaths = (

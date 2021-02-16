@@ -16,6 +16,7 @@ target 'VietJack' do
   pod 'Firebase/Analytics'
   pod 'Permission-Camera', :path => "#{permissions_path}/Camera"
   pod 'Permission-PhotoLibrary', :path => "#{permissions_path}/PhotoLibrary"
+  pod 'OpenSSL-Universal', '~>1.0.2.20'
 
   target 'VietJackTests' do
     inherit! :complete
