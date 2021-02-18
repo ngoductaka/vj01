@@ -43,6 +43,8 @@ const Course = (props) => {
             return cal;
         }, {});
 
+        console.log('dataConvert', 'dataConvert', dataConvert)
+
         setDataTopic(dataConvert);
 
     }, [data])
@@ -86,7 +88,7 @@ const Course = (props) => {
                                     text={MAP_SUBJECT[key]} />
 
                                 <FlatList horizontal showsHorizontalScrollIndicator={false}
-                                    data={data}
+                                    data={dataTopic[key]}
                                     renderItem={({ item, index }) => {
                                         return (
                                             <Animatable.View animation="fadeIn" delay={index * 500}>

@@ -11,11 +11,11 @@ import {
 import Video from 'react-native-video';
 import { get, throttle, isEmpty } from 'lodash';
 import { Icon, Tab, Tabs } from 'native-base';
-import LottieView from 'lottie-react-native';
-import StepIndicator from 'react-native-step-indicator';
+// import LottieView from 'lottie-react-native';
+// import StepIndicator from 'react-native-step-indicator';
 import { withNavigationFocus } from 'react-navigation';
 // import YoutubePlayer from "react-native-yt-player";
-import YoutubePlayer from 'react-native-youtube-iframe';
+// import YoutubePlayer from 'react-native-youtube-iframe';
 import KeepAwake from 'react-native-keep-awake';
 import Orientation from 'react-native-orientation-locker';
 import { Snackbar, TextInput } from 'react-native-paper';
@@ -30,9 +30,9 @@ import { Toolbar } from './component/Toolbar';
 import { FeedbackModal } from './component/FeedbackModal';
 import { COLOR } from '../../handle/Constant';
 
-import { RenderArticlRelated } from '../Lesson/component/ArticleList';
-import { RenderVideosRelated } from '../Lesson/component/VideosList'
-import { RenderExamRelated } from '../Lesson/component/ExamList';
+// import { RenderArticlRelated } from '../Lesson/component/ArticleList';
+// import { RenderVideosRelated } from '../Lesson/component/VideosList'
+// import { RenderExamRelated } from '../Lesson/component/ExamList';
 import { useDispatch } from 'react-redux';
 import { setLearningTimes } from '../../redux/action/user_info';
 import { convertImgLink } from './utis';
@@ -76,23 +76,26 @@ const CoursePlayer = (props) => {
     const [listCourse, setListCourse] = useState([]);
     const [pathPlay, setPathPlay] = useState([]);
     const [videoSrc, setVideoSrc] = useState('');
+    const [page, setPage] = useState(0);
 
 
     useEffect(() => {
-        if (navigation.getParam('videoData', {})) {
-            console.log('===================', navigation.getParam('videoData', {}))
+        setTimeout(() => {
+
+            const videoData = navigation.getParam('videoData', {});
+            setDataLesson(videoData)
+            setListDoc(navigation.getParam('listPdf', {}))
+            setListCourse(navigation.getParam('listCourse', {}));
+            setPathPlay(navigation.getParam('pathPlay', {}));
+
+            setVideoSrc(get(videoData, 'raw_url', ''))
+            setErrVideo(false)
+        }, 100)
+
+        if (!navigation.getParam('videoData.id', '')) {
             setTimeout(() => {
-                const videoData = navigation.getParam('videoData', {});
-                setDataLesson(videoData)
-                setListDoc(navigation.getParam('listPdf', {}))
-                setListCourse(navigation.getParam('listCourse', {}));
-                setPathPlay(navigation.getParam('pathPlay', {}));
-
-                setVideoSrc(get(videoData, 'raw_url', ''))
-                setErrVideo(false)
-            }, 100)
-
-        } else {
+                setPage(1);
+            });
 
         }
     }, [navigation]);
@@ -102,10 +105,10 @@ const CoursePlayer = (props) => {
     const [full, setFull] = useState(false);
     const [visible, setVisible] = useState(false);
     const [paused, setPaused] = useState(false);
-    const [expandVideo, setExpandVideo] = useState(false);
+    // const [expandVideo, setExpandVideo] = useState(false);
 
-    const timeOut = useRef();
-    const mediaPlayer = useRef();
+    // const timeOut = useRef();
+    // const mediaPlayer = useRef();
 
     const [isPlay, setPlay] = useState(true);
     const [videoData, isLoading, err] = useRequest(`/videos/show/${lectureId}`, [lectureId]);
@@ -263,7 +266,14 @@ const CoursePlayer = (props) => {
 
                         <View style={{ flex: 1 }}>
 
-                            <Tabs tabContainerStyle={{ elevation: 0, borderTopWidth: 0.5, borderTopColor: 'white', }} tabBarUnderlineStyle={{ height: 2, backgroundColor: Colors.pri, }} tabBarActiveTextColor={Colors.pri} tabBarBackgroundColor={Colors.white} >
+                            <Tabs
+                                tabContainerStyle={{ elevation: 0, borderTopWidth: 0.5, borderTopColor: 'white', }}
+                                tabBarUnderlineStyle={{ height: 2, backgroundColor: Colors.pri, }}
+                                tabBarActiveTextColor={Colors.pri}
+                                tabBarBackgroundColor={Colors.white}
+                                page={page}
+                                onChangeTab={setPage}
+                            >
                                 <Tab textStyle={styles.textStyle} activeTextStyle={styles.activeTextStyle} activeTabStyle={styles.activeTabStyle} tabStyle={styles.tabStyle} heading="Nội dung khoá học">
 
                                     <TableContent

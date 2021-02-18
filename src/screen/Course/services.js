@@ -18,7 +18,10 @@ const getCouse = (params) => {
 const getDetailCourse = courseId => {
     return api.get(`courses/${courseId}/detail`, endpoints.BASE_URL_COURSE);
 }
+
+const getMyCourses = () => api.get(`courses/users/my-course`, endpoints.BASE_URL_COURSE);
+
 export {
-    getCouse,
+    getCouse, getMyCourses,
     getDetailCourse,
 }

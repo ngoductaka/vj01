@@ -66,8 +66,12 @@ const RenderListLesson = ({ chapter, index, l1, l2, _navigateToCourse, listCours
         //     setActive(true)
         // }
         setTimeout(() => {
-            if (index == l1 && refFlatlist && refFlatlist.current && refFlatlist.current.scrollToIndex) {
-                refFlatlist.current.scrollToIndex({ animated: true, index: l2 });
+            try {
+                if (index == l1 && refFlatlist && refFlatlist.current && refFlatlist.current.scrollToIndex) {
+                    refFlatlist.current.scrollToIndex({ animated: true, index: l2 });
+                }
+            } catch (err) {
+                console.log('eerr scroll', err)
             }
         }, 1000)
     }, [l1, l2])
@@ -102,9 +106,9 @@ const RenderListLesson = ({ chapter, index, l1, l2, _navigateToCourse, listCours
                                 <Text style={{ fontSize: 16, marginHorizontal: 10 }}>{indexVideo + 1}.</Text>
                                 <View style={{ flex: 1 }}>
                                     <Text style={{ fontSize: 20, textTransform: 'capitalize' }} numberOfLines={2}>{course.name}</Text>
-                                    <Text style={{ marginTop: 4, color: '#222', fontSize: 12 }}>
+                                    {videoData.duration ? <Text style={{ marginTop: 4, color: '#222', fontSize: 12 }}>
                                         Video - {helpers.convertTime(videoData.duration)} {listPdf.length ? `(${listPdf.length} tài liệu)` : ''}
-                                    </Text>
+                                    </Text> : <Text>Tài liệu</Text>}
                                 </View>
                                 {course.preview === 'active' ? <View style={{ borderWidth: 1, borderColor: '#6992A8', paddingHorizontal: 5, paddingVertical: 2, borderRadius: 3 }}>
                                     <Text style={{ color: '#6992A8' }}>preview</Text>

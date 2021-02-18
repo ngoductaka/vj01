@@ -17,7 +17,7 @@ import HeaderBar from '../../component/Header/Normal';
 import { User } from '../../component/User';
 import { LargeVideo } from './component/VideoItem';
 
-import { getCouse } from './services';
+import { getCouse, getMyCourses } from './services';
 import { convertImgLink } from './utis'
 
 const { width } = Dimensions.get('window');
@@ -30,11 +30,12 @@ const Course = (props) => {
     const [visible, setVisible] = useState(false);
     const [gradeCourse, setGradeCourse] = useState([]);
     const [groupCourse, setGroupCourse] = useState([]);
+    const [myCourse, setMyCourse] = useState([]);
     const [loadGrade, setLoadingGradle] = useState(false);
 
     const userInfo = useSelector(state => state.userInfo);
-    // console.log('userInfo123', userInfo)
     const [currentClass, setClass] = useState(userInfo && userInfo.class ? userInfo.class : '');
+    console.log('c=======urrentClass', currentClass)
     const [classModal, setShowClassModal] = useState(false);
 
 
@@ -42,9 +43,22 @@ const Course = (props) => {
         if (userInfo.class) {
             _setCurrentClass(userInfo.class);
             _getCourseViaGrade(userInfo.class);
-            _getCourseViaGroup()
+            _getCourseViaGroup(userInfo.class);
+            _getMyCourse();
         }
     }, [userInfo.class]);
+    const _getMyCourse = async () => {
+        try {
+            const data = await getMyCourses();
+            // console.log('data mycouse', data);
+            if (get(data, 'data[0]')) {
+                setMyCourse(data.data)
+            }
+        } catch (err) {
+            console.log(err)
+        }
+
+    }
     const _getCourseViaGrade = (grade) => {
         setLoadingGradle(true)
         getCouse({ classlevel: grade })
@@ -59,13 +73,12 @@ const Course = (props) => {
                 setLoadingGradle(false)
 
             })
-
     }
 
 
-    const _getCourseViaGroup = () => {
+    const _getCourseViaGroup = (grade) => {
         setLoadingGradle(true)
-        getCouse({ group: 'luyen_thi_thpt_qg' })
+        getCouse({ group: getGroupByClass(grade).query })
             .then(({ data }) => {
                 setGroupCourse(data)
             })
@@ -97,6 +110,22 @@ const Course = (props) => {
             <SafeAreaView style={{ flex: 1 }}>
                 <HeaderBar navigation={props.navigation} />
                 <ScrollView>
+                    {get(myCourse, '[0]') ? <View style={{ backgroundColor: '#fff', marginBottom: 10, padding: 10 }}>
+                        <SeeAllTitle
+                            onPress={() => props.navigation.navigate('TopicCourse', { topic: `Khoá học của tôi`, data: myCourse })}
+                            text={`Khoá học của tôi`} />
+                        <ScrollView horizontal showsHorizontalScrollIndicator={false}>
+                            {myCourse.slice(0, 5).map(videoItem => {
+                                return <VideoContinue
+                                    navigate={navigation.navigate}
+                                    setVisible={() => { }}
+                                    videos={videoItem}
+                                    style={{ marginRight: 20, width: width * 4 / 5 }}
+                                />
+                            })}
+                        </ScrollView>
+                    </View> : null}
+
                     <View style={{ backgroundColor: '#fff', marginBottom: 10, padding: 10 }}>
                         <SeeAllTitle
                             onPress={() => props.navigation.navigate('TopicCourse', { topic: `Khoá học lớp ${currentClass}`, data: gradeCourse })}
@@ -116,8 +145,8 @@ const Course = (props) => {
 
                     <View style={{ backgroundColor: '#fff', marginBottom: 10, padding: 10 }}>
                         <SeeAllTitle
-                            onPress={() => props.navigation.navigate('TopicCourse', { topic: `Khoá học lớp ${currentClass}`, data: gradeCourse })}
-                            text={'Luyện thi THPT quốc gia'} />
+                            onPress={() => props.navigation.navigate('TopicCourse', { topic: getGroupByClass(currentClass).text, data: gradeCourse })}
+                            text={getGroupByClass(currentClass).text} />
                         <ScrollView horizontal showsHorizontalScrollIndicator={false}>
                             {groupCourse.slice(0, 5).map(videoItem => {
                                 return <VideoContinue
@@ -204,7 +233,7 @@ const styles = StyleSheet.create({
         marginLeft: 5,
         // color: COLOR.MAIN,
         fontWeight: 'bold',
-        textTransform: "capitalize",
+        // textTransform: "capitalize",
         // marginVertical: 15
     }
 });
@@ -329,4 +358,37 @@ const VideoContinue = ({ navigate, setVisible, videos = {}, style = {}, widthImg
     return (
         <LargeVideo {...propsVideo} style={style} />
     )
+}
+
+const getGroupByClass = (grade) => {
+    if(grade == 11 || grade == 10) {
+        return {
+            query: "nen_tang",
+            text: "Khối 10, 11",
+        }
+    }
+    if(grade == 12) {
+        return {
+            query: "luyen_thi_thpt_qg",
+            text: "Luyện thi THPT QG",
+        }
+    }
+    if(grade > 5) {
+        return {
+            query: "tong_on",
+            text: "Khối THCS",
+        }
+    } else {
+        return {
+            query: "luyen_de",
+            text: "Khối tiểu học",
+        }
+
+    }
+    
+    // "luyen_thi_thpt_qg" => "Luyện thi THPT QG"
+    //     "nen_tang" => "Khối 10, 11"
+    //     "tong_on" => "Khối THCS"
+    //     "luyen_de" => "Khối tiểu học"
+
 }
