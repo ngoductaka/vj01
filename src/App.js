@@ -5,7 +5,7 @@ import { Provider as PaperProvider } from 'react-native-paper';
 import Icon from 'react-native-vector-icons/MaterialIcons'
 import 'react-native-gesture-handler';
 
-import createRootNavigator from './Router';
+import CreateRootNavigator from './Router';
 import store from './redux/store';
 import RNExitApp from 'react-native-exit-app';
 import { Alert } from "react-native";
@@ -25,11 +25,11 @@ const App = () => {
 	return (
 		<Provider store={store}>
 			<PaperProvider>
-				<AppContainer
+				<CreateRootNavigator
 					ref={navigatorRef => {
 						NavigationService.setTopLevelNavigator(navigatorRef)
 					}}
-					uriPrefix={'vietjackapp://test'}
+					uriPrefix={'vietjack://'}
 					onNavigationStateChange={(prevState, currentState, action) => {
 						const currentRouteName = getActiveRouteName(currentState);
 						const previousRouteName = getActiveRouteName(prevState);
@@ -81,7 +81,7 @@ setNativeExceptionHandler(errorString => {
 	// do the things
 });
 
-const AppContainer = createRootNavigator();
+// const AppContainer = createRootNavigator();
 
 // gets the current screen from navigation state
 function getActiveRouteName(navigationState) {

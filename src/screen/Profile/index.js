@@ -175,7 +175,7 @@ const Profile = (props) => {
                     <ProfileItem navigation={navigation} type='Entypo' icon='mail' color='#FA9B43' size={24} title='Phản hồi' route='FeedBack' />
                     <ProfileItem navigation={navigation} type='SimpleLineIcons' icon='share' size={22} color='#1D8BF8' title='Chia sẻ ứng dụng' handlePress={_handleShare} />
                     <ProfileItem navigation={navigation} type='AntDesign' icon='poweroff' size={23} color='#ED5855' title='Đăng xuất' handlePress={() => setShowExitModal(true)} />
-                    <Text style={{ alignSelf: 'flex-end', marginTop: 20, fontSize: 15, ...fontMaker({ weight: 'Regular' }), color: blackColor(.6) }}>Phiên bản 2.1.9</Text>
+                    <Text style={{ alignSelf: 'flex-end', marginTop: 20, fontSize: 15, ...fontMaker({ weight: 'Regular' }), color: blackColor(.6) }}>Phiên bản 2.2.0</Text>
                 </ScrollView>
             </View>
             <ModalInfoBox show={show} onCancel={() => setShow(false)} text="Không có internet !" cancelText="Trở lại" isInfo={true} />

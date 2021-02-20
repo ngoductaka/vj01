@@ -26,6 +26,7 @@ import { search_services } from './service';
 import { images } from '../../utils/images';
 import { endpoints } from '../../constant/endpoints';
 import { RenderListImg } from '../../component/Image/renderListImg';
+import { useDeepLink } from '../../utils/useDeeplink';
 
 
 const userImg = "https://www.xaprb.com/media/2018/08/kitten.jpg";
@@ -36,6 +37,7 @@ const QnA = (props) => {
     const flatlistRef = useRef(null);
     const userInfo = useSelector(state => state.userInfo);
     const current_class = useSelector(state => state.userInfo.class);
+    useDeepLink(props.navigation)
 
     const [filter, setFilter] = useState({ cls: current_class, popular: true });
     const [showFilter, setShowFilter] = useState(false);
@@ -628,7 +630,7 @@ const RenderQestion = ({ item, index, hanldleClick, _handleNavigate = () => { },
                         }}
                         style={{ justifyContent: 'center', alignItems: 'center', flexDirection: 'row', marginRight: 20 }} >
                         {/* <Icon name="comment" type="EvilIcons" style={{ fontSize: 35, marginHorizontal: 4, }} /> */}
-                        <Text style={{ color: '#74B2D6', fontWeight: 'bold' }}> {commentCount ? `${commentCount} câu trả lời`: "Chưa có câu trả lời" }</Text>
+                        <Text style={{ color: '#74B2D6', fontWeight: 'bold' }}> {commentCount ? `${commentCount} câu trả lời` : "Chưa có câu trả lời"}</Text>
                     </TouchableOpacity>
                     {/* <ListUser /> */}
                 </View>

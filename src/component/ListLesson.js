@@ -24,6 +24,7 @@ const { height, width } = Dimensions.get('window');
 /**-------------interstitial ad----------------- */
 import firebase from 'react-native-firebase';
 import { useSelector } from 'react-redux';
+import { setArticleLearningTimes } from '../redux/action/user_info';
 const AdRequest = firebase.admob.AdRequest;
 let advert;
 let request;
@@ -76,9 +77,6 @@ const ListLesson = (props) => {
 		setTimeout(() => {
 			setShowContent(true);
 		}, 100);
-		// return () => {
-		// 	dispatch(setLearningTimes());
-		// }
 	}, []);
 
 	useEffect(() => {

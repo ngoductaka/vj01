@@ -20,6 +20,9 @@ import { check, PERMISSIONS, RESULTS, openSettings, request } from 'react-native
 
 import ImageZoom from 'react-native-image-pan-zoom';
 import { SvgXml } from 'react-native-svg';
+import {
+    InterstitialAdManager
+} from 'react-native-fbads';
 
 import api from '../../handle/api';
 import { getDiffTime, helpers } from '../../utils/helpers'
@@ -35,6 +38,7 @@ import services from '../../handle/services';
 import { endpoints } from '../../constant/endpoints';
 import { search_services } from './service';
 import { RenderListImg } from '../../component/Image/renderListImg';
+import { ViewWithBanner, fbFull } from '../../utils/facebookAds';
 
 
 const { width, height } = Dimensions.get('window');
@@ -49,6 +53,10 @@ const QnA = (props) => {
     const [commentType, setType] = useState({ type: 'answer' });
     const inputEl = useRef(null);
     const refList = useRef(null);
+
+    // useEffect(() => {
+    //     fbFull();
+    // }, [])
 
     const handleComment = (type = 'answer', data) => {
         setType({ type, data });
@@ -176,6 +184,10 @@ const QnA = (props) => {
                     isFollow={isFollow}
                     subtitle={`• ${get(questionData, 'path.subject.subject_name', '')} • lớp ${get(questionData, 'path.class', '')}`}
                 />
+
+                {/* <View style={{ height: 200 }}> */}
+                    {/* <ViewWithBanner /> */}
+                {/* </View> */}
                 {/* list */}
                 <View style={{ flex: 1, marginBottom: 65 }}>
                     <KeyboardAwareFlatList
@@ -537,7 +549,7 @@ const RenderAnwser = ({ item, index, handleComment, _gotoProfile = () => { }, se
                             <Text style={{ fontSize: 16, marginLeft: 5 }}>{getDiffTime(timestamp)}</Text>
                             <TouchableOpacity style={{ flexDirection: 'row', alignItems: 'center' }} onPress={_handleLike}>
                                 <Icon name="heart" style={{ fontSize: 14, color: like ? '#FD7A6C' : '#ddd', marginLeft: 15, }} type='AntDesign' />
-                                <Text style={{ fontSize: 16, marginLeft: 5, color: like ? '#FD7A6C' : '#222' }}>Cảm ơn</Text>
+                                <Text style={{ fontSize: 16, marginLeft: 5, color: like ? '#FD7A6C' : '#222' }}>Cảm ơn ({+likeCount + (like ? 1 : 0)})</Text>
                             </TouchableOpacity>
 
                             <TouchableOpacity onPress={() => handleComment('comment', { id, name, index })}>

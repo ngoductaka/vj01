@@ -29,6 +29,7 @@ const { width, height } = Dimensions.get('window');
 
 /**-------------interstitial ad----------------- */
 import firebase from 'react-native-firebase';
+import { fbFull } from '../../utils/facebookAds';
 const AdRequest = firebase.admob.AdRequest;
 let advert;
 let request;
@@ -55,10 +56,14 @@ const TestMenu = (props) => {
     const learningTimes = useSelector(state => state.timeMachine.learning_times);
     const frequency = useSelector(state => get(state, 'subjects.frequency', 6));
     useEffect(() => {
+
         if (screenAds && screenAds[TAG] == "1") {
-            if (advertParam) {
-                advertParam.show();
-            }
+            fbFull()
+            .catch(err => {
+                if (advertParam) {
+                    advertParam.show();
+                }
+            })
         }
     }, []);
     useEffect(() => {
