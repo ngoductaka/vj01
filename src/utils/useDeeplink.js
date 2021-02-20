@@ -7,10 +7,16 @@ export const useDeepLink = (navigation) => {
         console.log('===deep link====')
         Linking
             .getInitialURL()
-            .then(url => handleOpenURL({ url }))
+            .then(url => {
+                console.log('url getInitialURL', url)
+                handleOpenURL({ url })
+            })
             .catch(console.error);
 
-        Linking.addEventListener('url', handleOpenURL);
+        Linking.addEventListener('url', val => {
+            console.log('val addEventListener', val)
+            handleOpenURL(val)
+        });
 
         // if (helpers.isAndroid) {
         //     Linking.getInitialURL().then(url => {
@@ -26,16 +32,18 @@ export const useDeepLink = (navigation) => {
     }, []);
 
     const handleOpenURL = (event) => { // D
-        console.log('class.url', event.url)
         navigate(event.url);
     }
     const navigate = (url) => { // E
-        console.log('=======0303030330', url)
         try {
             const route = url.replace(/.*?:\/\//g, '');
-            const [_, screen, id] = route.split('/');
+            const [_, screen, id, id1] = route.split('/');
             if (screen == 'lesson') {
-                navigation.navigate('Lesson', { articleId: id })
+                if (id == 'question') {
+                    navigation.navigate("QuestionDetail", { questionId: id1, });
+                } else {
+                    navigation.navigate('Lesson', { articleId: id })
+                }
             } else if (screen == 'test') {
                 navigation.navigate('OverviewTest', {
                     idExam: id,

@@ -170,7 +170,7 @@ const CustomBottomBar = (props) => {
 const MainContent = createBottomTabNavigator({
 	ClassScreen: {
 		screen: ClassScreen, // TableContent ////
-		path: ':/id'
+		path: ':id'
 	},
 	// SearchStack: {
 	// 	screen: SearchView
@@ -183,6 +183,7 @@ const MainContent = createBottomTabNavigator({
 	},
 	QnA: {
 		screen: QnA,
+		path: 'question/:id'
 	},
 	AccountStack: {
 		screen: Profile,
@@ -268,7 +269,7 @@ const MainContent = createBottomTabNavigator({
 const InAppStack = createStackNavigator({
 	MainContent: {
 		screen: MainContent,
-		path: 'lesson/',
+		path: 'lesson',
 	},
 	Subject: Subject,
 	Book: Book,
