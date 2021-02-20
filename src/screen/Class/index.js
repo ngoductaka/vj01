@@ -40,6 +40,7 @@ import { _createNotificationListeners } from '../../utils/notificationHandler';
 import { localNotificationService } from '../../utils/notificationServices';
 import { GameItem } from '../GameCenter';
 import { UtilitiesItem } from '../Utilities';
+import { useDeepLink } from '../../utils/useDeeplink';
 
 const { width } = Dimensions.get('window');
 
@@ -339,6 +340,7 @@ const Class = memo((props) => {
 
 	const [dataContinue] = useRequest('/lessons/continue/learn', [1]);
 	// const [dataRecommend] = useRequest('/lessons/recommend/learn', [1]);
+	useDeepLink(props.navigation);
 
 	return (
 		<View style={{ flex: 1 }}>

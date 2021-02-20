@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { createAppContainer, createSwitchNavigator } from 'react-navigation';
 import { createStackNavigator, TransitionPresets } from 'react-navigation-stack';
 import { createBottomTabNavigator, BottomTabBar } from 'react-navigation-tabs';
-import { View, Text, Dimensions, Image, Animated, TouchableOpacity } from 'react-native';
+import { View, Text, Dimensions, Image, Animated, TouchableOpacity, Linking } from 'react-native';
 
 import Store from '../redux/store';
 import Intro from '../screen/Intro';
@@ -104,7 +104,7 @@ const TestStack = createStackNavigator({
 const CustomBottomBar = (props) => {
 
 	const { index } = props.navigation.state;
-	console.log('indexindexindex==', index)
+	// console.log('indexindexindex==', index)
 
 	useEffect(() => {
 		animate(width - (NUMBER_OF_TABS - index) * width / NUMBER_OF_TABS, null);
@@ -169,7 +169,8 @@ const CustomBottomBar = (props) => {
 
 const MainContent = createBottomTabNavigator({
 	ClassScreen: {
-		screen: ClassScreen // TableContent ////
+		screen: ClassScreen, // TableContent ////
+		path: ':/id'
 	},
 	// SearchStack: {
 	// 	screen: SearchView
@@ -267,6 +268,7 @@ const MainContent = createBottomTabNavigator({
 const InAppStack = createStackNavigator({
 	MainContent: {
 		screen: MainContent,
+		path: 'lesson/',
 	},
 	Subject: Subject,
 	Book: Book,
@@ -274,7 +276,8 @@ const InAppStack = createStackNavigator({
 	// 	screen: Course
 	// },
 	HomeTest: {
-		screen: HomeTest
+		screen: HomeTest,
+		path: 'test/:name'
 	},
 	ListExams: {
 		screen: ListExams
@@ -454,31 +457,31 @@ const InAppStack = createStackNavigator({
 	// },
 	headerMode: 'none',
 });
-
+// const prefix = Linking.createURL('/');
 /* create app container */
-export const createRootNavigator = (screen = 'Auth') => {
-	return createAppContainer(
-		createSwitchNavigator(
-			{
-				Auth: {
-					screen: Auth
-				},
-				Intro: {
-					screen: Intro
-				},
-				Login: {
-					screen: Login
-				},
-				// Classify: {
-				// 	screen: Classify
-				// },
-				InAppStack: {
-					screen: InAppStack,
-				},
-			}, {
-			initialRouteName: screen,
-		}
-		));
-};
+export const CreateRootNavigator = createAppContainer(
+	createSwitchNavigator(
+		{
+			Auth: {
+				screen: Auth
+			},
+			Intro: {
+				screen: Intro
+			},
+			Login: {
+				screen: Login
+			},
+			// Classify: {
+			// 	screen: Classify
+			// },
+			InAppStack: {
+				screen: InAppStack,
+				path: 'inapp',
+			},
+		}, {
+		// initialRouteName: screen,
+	}
+	));
 
-export default createRootNavigator;
+
+export default CreateRootNavigator;

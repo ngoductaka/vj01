@@ -25,15 +25,6 @@ const Auth = (props) => {
     const [critical, setCritical] = useState(false);
 
     useEffect(() => {
-
-        if (helpers.isAndroid) {
-            Linking.getInitialURL().then(url => {
-                navigate(url);
-            });
-        } else {
-            Linking.addEventListener('url', handleOpenURL);
-        }
-
         Orientation.lockToPortrait();
         SplashScreen.hide();
         try {
@@ -51,26 +42,7 @@ const Auth = (props) => {
         handleUserID();
         _checkAppVersion();
 
-        return () => {
-            Linking.removeEventListener('url', handleOpenURL);
-        }
     }, []);
-
-    const handleOpenURL = (event) => { // D
-        // console.log('asakjhskajhsas', event);
-        navigate(event.url);
-    }
-    const navigate = (url) => { // E
-        const { navigate } = props.navigation;
-        const route = url.replace(/.*?:\/\//g, '');
-        const id = route.match(/\/([^\/]+)\/?$/)[1];
-        const routeName = route.split('/')[0];
-        // console.log('askajhskjahshjkas', routeName);
-        if (routeName === 'test') {
-            navigate('TestStack');
-        };
-    }
-
 
     const _navigateTo = (screen) => {
         setTimeout(() => {
