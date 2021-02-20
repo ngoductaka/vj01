@@ -1,7 +1,7 @@
 import React, { memo, useState, useEffect, useCallback, useRef } from 'react';
 import {
 	View, FlatList, Text, StyleSheet, Platform,
-	TouchableOpacity, Dimensions,
+	TouchableOpacity, Dimensions, Linking
 } from 'react-native';
 import { connect } from 'react-redux';
 import { Icon } from 'native-base';
@@ -35,6 +35,7 @@ const { width, height } = Dimensions.get('window');
 /**-------------interstitial ad----------------- */
 import firebase from 'react-native-firebase';
 import { setLearningTimes } from '../../redux/action/user_info';
+import { useDeepLink } from '../../utils/useDeeplink';
 const AdRequest = firebase.admob.AdRequest;
 let advert;
 let request;
@@ -66,6 +67,8 @@ const Test = (props) => {
 			setCurrSubject({ id, title })
 		}
 	}, [classData])
+	// handle deeplink
+	useDeepLink(props.navigation);
 
 	// interstial ad
 	useEffect(() => {
