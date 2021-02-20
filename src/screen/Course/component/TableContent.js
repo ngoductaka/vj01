@@ -9,9 +9,10 @@ import { Icon } from 'native-base';
 import Collapsible from 'react-native-collapsible';
 import { get } from 'lodash';
 import { helpers } from '../../../utils/helpers';
+import { fontMaker, fontStyles } from '../../../utils/fonts';
 
 
-const TableContent = ({ _navigateToCourse, listCourse = [], playPath = [] }) => {
+const TableContent = ({ _navigateToCourse, listCourse = [], playPath = [], navigation }) => {
     const [l1 = null, l2 = null] = playPath;
     const [active, setActive] = useState(0);
 
@@ -34,7 +35,7 @@ const TableContent = ({ _navigateToCourse, listCourse = [], playPath = [] }) => 
                                 }}
                                 onPress={() => setActive(index === active ? -1 : index)}>
                                 <View style={{ flex: 1 }}>
-                                    <Text numberOfLines={2} style={{ fontSize: 22, textTransform: 'capitalize' }}>{chapter.name}</Text>
+                                    <Text numberOfLines={2} style={{ fontSize: 18, textTransform: 'capitalize', ...fontMaker({ weight: fontStyles.Regular }) }}>{chapter.name}</Text>
                                 </View>
                                 <Icon type="AntDesign" name={index === active ? "minus" : "plus"} />
                             </TouchableOpacity>
@@ -42,7 +43,7 @@ const TableContent = ({ _navigateToCourse, listCourse = [], playPath = [] }) => 
                                 <RenderListLesson
                                     chapter={chapter} index={index}
                                     l1={l1} l2={l2} _navigateToCourse={_navigateToCourse}
-                                    listCourse={listCourse}
+                                    listCourse={listCourse} navigation={navigation}
                                 />
                             </Collapsible>
                         </View>
@@ -57,8 +58,84 @@ const TableContent = ({ _navigateToCourse, listCourse = [], playPath = [] }) => 
 
 export default TableContent;
 
+// 
 
-const RenderListLesson = ({ chapter, index, l1, l2, _navigateToCourse, listCourse }) => {
+export const TableContentExpand = ({ _navigateToCourse, listCourse = [], playPath = [] }) => {
+    const [data, setData] = useState([]);
+    useEffect(() => {
+        let dataConvert = [];
+        listCourse.map(course => {
+            dataConvert.push({
+                name: course.name,
+                type: 'c1'
+            });
+            course.get_child_curriculum.map((curriculumn, index) => {
+                dataConvert.push({ ...curriculumn, index })
+            })
+        });
+
+        console.log(listCourse, 'dataConvertdataConvertdataConvert', dataConvert)
+
+        setData(dataConvert)
+
+    }, [listCourse])
+    if (!data[0]) return null;
+
+    return (
+        <FlatList
+            data={data}
+            keyExtractor={({ item, index }) => String(index)}
+            renderItem={({ item, index }) => {
+                if (item.type == 'c1') {
+                    return (
+                        <View>
+                            <Text numberOfLines={2} style={{ fontSize: 18, textTransform: 'capitalize', ...fontMaker({ weight: fontStyles.SemiBold }) }}>{item.name}</Text>
+                        </View>
+                    )
+                } else {
+                    return (
+                        <View>
+                            <View>
+
+                                <Text numberOfLines={2} style={{
+                                    fontSize: 16, marginLeft: 15, paddingVertical: 6,
+                                    ...fontMaker({ weight: fontStyles.Regular })
+                                }}>{item.index + 1}.  {item.name}</Text>
+                            </View>
+                            {
+                                item.get_media.map(media => {
+                                    if (media.type == "video/mp4") return null
+                                    return (
+                                        <Text numberOfLines={2} style={{
+                                            fontSize: 15, marginLeft: 20, paddingVertical: 6,
+                                            ...fontMaker({ weight: fontStyles.Regular })
+                                        }}>{media.name}</Text>
+                                    )
+                                })
+                            }
+                        </View>
+                    )
+                }
+                //  else {
+
+                //     return (
+                //         <View>
+                //             <Text numberOfLines={2} style={{
+                //                 fontSize: 16, paddingVertical: 6,
+                //                 marginLeft: 20, ...fontMaker({ weight: fontStyles.Regular })
+                //             }}>{item.name}</Text>
+                //         </View>
+                //     )
+
+                // }
+            }}
+        />
+
+    )
+}
+
+
+const RenderListLesson = ({ chapter, index, l1, l2, _navigateToCourse, listCourse, navigation }) => {
     const refFlatlist = useRef(null);
     const [active, setActive] = useState(false);
     useEffect(() => {
@@ -92,28 +169,57 @@ const RenderListLesson = ({ chapter, index, l1, l2, _navigateToCourse, listCours
                     if (course.status !== 'active') return null;
                     return (
                         <View style={{ backgroundColor: (indexVideo == l2 && index == l1) ? 'rgba(252, 165, 3, 0.3)' : '#fff', borderRadius: 4, paddingRight: 3 }}>
-                            <TouchableOpacity
-                                onPress={() => {
-                                    _navigateToCourse({
-                                        videoData,
-                                        listPdf,
-                                        listCourse,
-                                        pathPlay: [index, indexVideo]
-                                    })
-                                }}
-                                style={{ paddingTop: 5, flexDirection: 'row', alignItems: 'center', paddingBottom: 10 }}
-                            >
-                                <Text style={{ fontSize: 16, marginHorizontal: 10 }}>{indexVideo + 1}.</Text>
-                                <View style={{ flex: 1 }}>
-                                    <Text style={{ fontSize: 20, textTransform: 'capitalize' }} numberOfLines={2}>{course.name}</Text>
-                                    {videoData.duration ? <Text style={{ marginTop: 4, color: '#222', fontSize: 12 }}>
-                                        Video - {helpers.convertTime(videoData.duration)} {listPdf.length ? `(${listPdf.length} tài liệu)` : ''}
-                                    </Text> : <Text>Tài liệu</Text>}
+                            <View style={{ paddingTop: 5, paddingBottom: 10 }} >
+                                <View style={{ flexDirection: 'row', }}>
+                                    <Text style={{ fontSize: 15, marginHorizontal: 10 }}>{indexVideo + 1}.</Text>
+                                    <View style={{ flex: 1 }}>
+                                        <TouchableOpacity
+                                            onPress={() => {
+                                                if (videoData.duration) {
+                                                    videoData.name = course.name
+                                                    _navigateToCourse({
+                                                        videoData,
+                                                        listPdf,
+                                                        listCourse,
+                                                        pathPlay: [index, indexVideo],
+                                                    })
+                                                } else {
+                                                    if (get(listPdf, `[0].raw_url`))
+                                                        navigation.navigate('PdfView', { uri: listPdf[0].raw_url })
+                                                }
+                                            }}>
+                                            <Text style={{ fontSize: 15, textTransform: 'capitalize', ...fontMaker({ weight: fontStyles.Regular }) }} numberOfLines={2}>{course.name}</Text>
+                                            <Text style={{ marginTop: 4, color: '#222', fontSize: 12, }}>
+                                                {videoData.duration ? `Video - ${helpers.convertTime(videoData.duration)}` : 'Tài liệu'}
+                                            </Text>
+                                        </TouchableOpacity>
+                                        {
+                                            listPdf.map(pdf => {
+                                                return (
+                                                    <TouchableOpacity
+                                                        onPress={() => {
+                                                            navigation.navigate('PdfView', { uri: pdf.raw_url })
+                                                        }}
+                                                        style={{ flexDirection: 'row', marginTop: 15 }}>
+                                                        <Icon style={{ fontSize: 17, marginRight: 6 }} name="file-pdf-o" type="FontAwesome" />
+                                                        <Text style={{ fontSize: 18, textTransform: 'capitalize', ...fontMaker({ weight: fontStyles.Regular }) }} numberOfLines={2}>{pdf.name}</Text>
+                                                    </TouchableOpacity>
+                                                )
+                                            })
+                                        }
+                                    </View>
+                                    {course.preview === 'active' ? <View style={{
+                                        borderWidth: 1, borderColor: '#6992A8', alignSelf: 'center',
+                                        paddingHorizontal: 5, paddingVertical: 2, borderRadius: 3
+                                    }}>
+                                        <Text style={{ color: '#6992A8' }}>preview</Text>
+                                    </View> : null}
                                 </View>
-                                {course.preview === 'active' ? <View style={{ borderWidth: 1, borderColor: '#6992A8', paddingHorizontal: 5, paddingVertical: 2, borderRadius: 3 }}>
-                                    <Text style={{ color: '#6992A8' }}>preview</Text>
-                                </View> : null}
-                            </TouchableOpacity>
+
+
+
+
+                            </View>
                         </View>
                     )
 

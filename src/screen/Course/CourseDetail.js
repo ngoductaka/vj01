@@ -31,9 +31,7 @@ const CourseDetail = (props) => {
         if (props.navigation.state.params.id) {
             getDetailCourse(props.navigation.state.params.id)
                 .then(({ data }) => {
-                    console.log('data=-===', data)
                     setListCourse(data.get_curriculum)
-
                 })
                 .catch(() => {
 
@@ -73,7 +71,9 @@ const CourseDetail = (props) => {
                         />
                         <View style={{ backgroundColor: '#fff', paddingHorizontal: 10, marginVertical: 20, paddingVertical: 15, borderRadius: 10 }}>
                             <Text style={{ fontSize: 27 }}>Nội dung khoá học: </Text>
-                            <TableContent _navigateToCourse={_navigateToCourse} listCourse={listCourse} />
+                            <TableContent navigation={navigation}
+                                _navigateToCourse={_navigateToCourse}
+                                listCourse={listCourse} />
                         </View>
                     </View>
                 </Loading>

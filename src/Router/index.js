@@ -452,7 +452,12 @@ const InAppStack = createStackNavigator({
 	TimeTable: TimeTable,
 	ScroreAnalyse: ScroreAnalyse,
 	Calculator: Calculator,
-	VideoLesson: VideoLesson,
+	VideoLesson: {
+		screen: VideoLesson,
+		navigationOptions: {
+			...TransitionPresets.ModalSlideFromBottomIOS,
+		}
+	},
 	PdfView: PdfView,
 	// ConsultingForm:ConsultingForm,
 }, {

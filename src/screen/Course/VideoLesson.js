@@ -36,7 +36,7 @@ import { COLOR } from '../../handle/Constant';
 import { useDispatch } from 'react-redux';
 import { setLearningTimes } from '../../redux/action/user_info';
 import { convertImgLink } from './utis';
-import TableContent from './component/TableContent';
+import TableContentExpand from './component/TableContent';
 
 const { width, height } = Dimensions.get('window');
 
@@ -104,13 +104,8 @@ const CoursePlayer = (props) => {
     const lectureId = navigation.getParam('lectureId', '');
     const [full, setFull] = useState(false);
     const [visible, setVisible] = useState(false);
-    const [paused, setPaused] = useState(false);
-    // const [expandVideo, setExpandVideo] = useState(false);
-
-    // const timeOut = useRef();
-    // const mediaPlayer = useRef();
-
-    const [isPlay, setPlay] = useState(true);
+    // const [paused, setPaused] = useState(false);
+    // const [isPlay, setPlay] = useState(true);
     const [videoData, isLoading, err] = useRequest(`/videos/show/${lectureId}`, [lectureId]);
 
     const [currentPlay, setCurrentPlay] = useState(-1);
@@ -177,8 +172,8 @@ const CoursePlayer = (props) => {
     }
 
     useEffect(() => {
-        setPlay(navigation.isFocused());
-        setPaused(!navigation.isFocused());
+        // setPlay(navigation.isFocused());
+        // setPaused(!navigation.isFocused());
     }, [navigation.isFocused()]);
 
     const handleBackFullScreen = () => {
@@ -193,11 +188,11 @@ const CoursePlayer = (props) => {
     }, []);
 
     const _navigateToCourse = (params) => {
-        console.log('params', params)
+        // console.log('params', params)
         setVideoSrc(null)
         navigation.setParams(params)
     }
-    console.log('0----------', videoSrc)
+    // console.log('0----------', videoSrc)
 
     const _loadVideoFail = () => {
         Toast.showWithGravity("Video không khả dụng, vui lòng thử lại sau", Toast.SHORT, Toast.CENTER);
@@ -210,15 +205,13 @@ const CoursePlayer = (props) => {
                 hidden={helpers.isAndroid && full}
                 barStyle='dark-content'
             />
-            {!(full && helpers.isAndroid) && <BackVideoHeader
+            {/* {!(full && helpers.isAndroid) && <BackVideoHeader
                 rightAction={() => setShowFeedback(true)}
                 title={get(videoLesson, 'name', '')}
-            />}
+            />} */}
             <SafeAreaView style={styles.container}>
-                <View style={{ width: '100%', height: (helpers.isAndroid && full) ? '100%' : width * 9 / 16 }}>
-                    <Loading
-                        isLoading={false} err={errVideo}
-                    >
+                <View style={{ position: 'relative', width: '100%', height: (helpers.isAndroid && full) ? '100%' : width * 9 / 16 }}>
+                    <Loading isLoading={false} err={errVideo} >
                         <View style={{ flex: 1 }}>
                             {videoSrc ?
                                 <Video
@@ -258,58 +251,28 @@ const CoursePlayer = (props) => {
                             }
                         </View>
                     </Loading>
+                    {!(full && helpers.isAndroid) &&
+                    <TouchableOpacity onPress={() => navigation.goBack()} style={{ position: 'absolute', left: width/2-10 }}>
+                        <Icon type="AntDesign" name='down' style={{ fontSize: 25, color: 'white' }} />
+                    </TouchableOpacity>}
                 </View>
 
                 {!(full && helpers.isAndroid) &&
                     <View style={{ flex: 1 }}>
-                        <Toolbar showLater={visible} setShowLater={setVisible} videoData={videoData} />
-
+                        {/* <Toolbar showLater={visible} setShowLater={setVisible} videoData={videoData} /> */}
                         <View style={{ flex: 1 }}>
-
-                            <Tabs
-                                tabContainerStyle={{ elevation: 0, borderTopWidth: 0.5, borderTopColor: 'white', }}
-                                tabBarUnderlineStyle={{ height: 2, backgroundColor: Colors.pri, }}
-                                tabBarActiveTextColor={Colors.pri}
-                                tabBarBackgroundColor={Colors.white}
-                                page={page}
-                                onChangeTab={setPage}
-                            >
-                                <Tab textStyle={styles.textStyle} activeTextStyle={styles.activeTextStyle} activeTabStyle={styles.activeTabStyle} tabStyle={styles.tabStyle} heading="Nội dung khoá học">
-
-                                    <TableContent
-                                        _navigateToCourse={_navigateToCourse}
-                                        listCourse={listCourse}
-                                        playPath={pathPlay}
-                                    />
-                                    {/* </ScrollView> */}
-                                </Tab>
-                                <Tab textStyle={styles.textStyle} activeTextStyle={styles.activeTextStyle} activeTabStyle={styles.activeTabStyle} tabStyle={styles.tabStyle} heading="Tài liệu">
-
-                                    {listDoc[0] ? <View style={{ marginTop: 10 }}>
-                                        {listDoc.map((doc, index) => {
-                                            return (
-                                                <TouchableOpacity
-                                                    key={index + ''}
-                                                    onPress={() => {
-                                                        navigation.navigate('PdfView', { uri: doc.raw_url })
-                                                    }}
-                                                    style={{
-                                                        flexDirection: 'row', marginBottom: 15,
-                                                        marginHorizontal: 10, paddingVertical: 10,
-                                                    }}
-                                                >
-                                                    <Icon name="pdffile1" type="AntDesign" style={{ fontSize: 19, marginRight: 5, color: COLOR.MAIN }} />
-                                                    <View style={{ flex: 1 }}>
-                                                        <Text numberOfLines={2} >{(index + 1) + ". " + doc.name}</Text>
-                                                    </View>
-
-                                                </TouchableOpacity>
-                                            )
-                                        })}
-                                    </View> : null}
-                                </Tab>
-                            </Tabs>
-
+                            <View style={{backgroundColor: '#fff'}}>
+                                <Text style={{
+                                    fontSize: 21, padding: 10,
+                                    ...fontMaker({ weight: fontStyles.SemiBold })
+                                }}>{get(videoLesson, 'name', '')}</Text>
+                            </View>
+                            <TableContentExpand
+                                _navigateToCourse={_navigateToCourse}
+                                navigation={navigation}
+                                listCourse={listCourse}
+                                playPath={pathPlay}
+                            />
                         </View>
                     </View>
                 }
@@ -327,6 +290,8 @@ const CoursePlayer = (props) => {
                     }}>
                     Đã thêm vào "Bookmarks"
                 </Snackbar>
+
+              
             </SafeAreaView>
             <FeedbackModal
                 show={showFeedback}
@@ -342,7 +307,8 @@ const CoursePlayer = (props) => {
 
 const styles = StyleSheet.create({
     container: {
-        flex: 1
+        flex: 1,
+        position: 'relative',
     },
     tag: {
         paddingHorizontal: 12,
