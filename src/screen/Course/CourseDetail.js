@@ -1,12 +1,14 @@
 import React, { memo, useState, useEffect, useRef, useCallback } from 'react';
 import {
     View,
-    FlatList,
+    FlatList, ActivityIndicator,
     Dimensions,
     SafeAreaView, ScrollView, Text, StyleSheet, Linking, Platform, ImageBackground, TouchableOpacity, Image
 } from 'react-native';
 import { Icon } from 'native-base';
 import { get } from 'lodash';
+import * as Animatable from 'react-native-animatable';
+
 
 import { Loading } from '../../handle/api';
 
@@ -15,74 +17,120 @@ import { COLOR, fontSize } from '../../handle/Constant';
 import { ListLesson as RenderCourseRelated } from './component/ListLesson';
 import { convertMoney, helpers } from '../../utils/helpers';
 
-import TableContent from './component/TableContent';
+import TableContent, { FreeCourse } from './component/TableContent';
 import CourseHeader from './component/CourseHeader';
 import { BtnFullWidth, TitleCourse } from './component/BtnFullWidth';
 import ConsultingForm from '../../component/ConsultingForm';
 import { getDetailCourse } from './services';
+import { fontMaker, fontStyles } from '../../utils/fonts';
 
 const CourseDetail = (props) => {
     const { navigation } = props;
+    const videoItem = navigation.getParam('videoItem', null);
+    const showConsoult = navigation.getParam('showConsoult', true);
+
     const [dataCourse, setDataCouse] = useState({});
     const [listCourse, setListCourse] = useState([]);
+    const [loading, setLoading] = useState(false)
 
     useEffect(() => {
-        setDataCouse(props.navigation.state.params);
-        if (props.navigation.state.params.id) {
-            getDetailCourse(props.navigation.state.params.id)
+        setLoading(true)
+        setDataCouse(videoItem);
+        if (videoItem.id) {
+            getDetailCourse(videoItem.id)
                 .then(({ data }) => {
-                    setListCourse(data.get_curriculum)
+                    setListCourse([{
+                        "name": "Danh sách bài học miễn phí",
+                        "get_child_curriculum": data.get_free_curriculum,
+                    }, ...data.get_curriculum]);
+                    // setFreeCourse(data.get_free_curriculum);
                 })
                 .catch(() => {
 
                 })
+                .finally(() => {
+                    setLoading(false)
+                })
         }
-    }, [props.navigation.state.params])
-
-    const [isOpen, setOpen] = useState(false);
+    }, [videoItem])
 
     const _navigateToCourse = useCallback((params) => {
         navigation.navigate('VideoLesson', params)
     })
+    const [showHeader, setShowHeader] = useState(false)
+    const handleScroll = (e) => {
+        if (get(e, 'nativeEvent.contentOffset.y') && e.nativeEvent.contentOffset.y > 100) {
+            setShowHeader(true)
+        } else {
+            setShowHeader(false)
+        }
+    }
     // return <View />
     return (
         <SafeAreaView style={styles.container}>
-            <ScrollView>
-                <CourseHeader navigation={navigation} imgCourse={dataCourse.imgLecture} />
-                {/* content  */}
-                <Loading>
-                    <View style={{ flex: 1 }}>
-                        <TitleCourse
-                            title={dataCourse.name}
-                            subTitle={get(dataCourse, 'description', '')}
-                            prePrice={2000000}
-                            price={dataCourse.price}
-                            vote={4.5}
-                            content={{
-                                teacher: get(dataCourse, 'owner.first_name'),
-                                grade: get(dataCourse, 'classlevel', ''),
-                                level: get(dataCourse, 'level', ''),
-                                // time: get(dataCourse, 'level', ''),
-                                // courseCount: get(dataCourse, 'level', ''),
-                                // doc: get(dataCourse, 'level', ''),
-                                update: get(dataCourse, 'updated_at', ''),
-                            }}
+            <View style={styles.container}>
+                <ScrollView scrollEventThrottle={24} onScroll={handleScroll}>
+                    <CourseHeader navigation={navigation} imgCourse={dataCourse.imgLecture} />
+                    {/* content  */}
+                    <Loading>
+                        <View style={{ flex: 1 }}>
+                            <TitleCourse
+                                title={dataCourse.name}
+                                subTitle={get(dataCourse, 'description', '')}
+                                prePrice={2000000}
+                                price={dataCourse.price}
+                                vote={4.5}
+                                content={{
+                                    teacher: get(dataCourse, 'owner.first_name'),
+                                    grade: get(dataCourse, 'classlevel', ''),
+                                    level: get(dataCourse, 'level', ''),
+                                    // time: get(dataCourse, 'level', ''),
+                                    // courseCount: get(dataCourse, 'level', ''),
+                                    // doc: get(dataCourse, 'level', ''),
+                                    update: get(dataCourse, 'updated_at', ''),
+                                }}
+                            />
+                            <View style={{ backgroundColor: '#fff', paddingHorizontal: 10, marginVertical: 20, paddingVertical: 15, borderRadius: 10 }}>
+                                <Text style={{ fontSize: 27 }}>Nội dung khoá học: </Text>
+                                {loading ? <ActivityIndicator size="large" style={{marginTop: 10}} /> :
+                                    <TableContent navigation={navigation}
+                                        _navigateToCourse={_navigateToCourse}
+                                        listCourse={listCourse} />}
+                            </View>
+                        </View>
+                    </Loading>
+                </ScrollView>
+                {showConsoult ? <BtnFullWidth
+                    onPress={() => navigation.navigate('ConsultingForm')}
+                    text={"Nhận tư vấn khoá học"}
+                    styles={{ marginHorizontal: 15, marginVertical: 0, }}
+                /> : null}
+                {showHeader ? <Animatable.View
+                    style={{ position: 'absolute', top: 0, left: 0, right: 0 }}
+                    animation={showHeader ? 'fadeIn' : 'fadeOut'}
+                >
+                    <View style={{ flexDirection: 'row', paddingVertical: 7, backgroundColor: '#fff', alignItems: 'center' }} >
+                        <TouchableOpacity
+                            style={{ paddingHorizontal: 15 }}
+                            onPress={() => { navigation.goBack() }}
+                        >
+                            <Icon type='AntDesign' name='arrowleft' style={{ fontSize: 26, color: 'rgba(0, 0, 0, 0.7)' }} />
+                        </TouchableOpacity>
 
-                        />
-                        <View style={{ backgroundColor: '#fff', paddingHorizontal: 10, marginVertical: 20, paddingVertical: 15, borderRadius: 10 }}>
-                            <Text style={{ fontSize: 27 }}>Nội dung khoá học: </Text>
-                            <TableContent navigation={navigation}
-                                _navigateToCourse={_navigateToCourse}
-                                listCourse={listCourse} />
+                        <View style={{ flex: 1, marginRight: 10 }}>
+                            <Text
+                                numberOfLines={1} style={{
+                                    paddingVertical: 5,
+                                    // textAlign: 'center',
+                                    fontSize: 18,
+                                    marginTop: 4,
+                                    ...fontMaker({ weight: fontStyles.Regular })
+                                }}>{dataCourse.name}</Text>
                         </View>
                     </View>
-                </Loading>
-            </ScrollView>
-            <BtnFullWidth
-                onPress={() => navigation.navigate('ConsultingForm')}
-                text={"Nhận tư vấn khoá học"}
-                styles={{ marginHorizontal: 15, marginVertical: 0, }}
-            />
+                </Animatable.View> : null}
+            </View>
+
         </SafeAreaView>
     )
 };
@@ -92,6 +140,7 @@ const CourseDetail = (props) => {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
+        position: 'relative',
         // backgroundColor: "#fff"//"#f7d87e"
     },
     header: {

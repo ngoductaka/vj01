@@ -446,7 +446,7 @@ const InAppStack = createStackNavigator({
 	ConsultingForm: {
 		screen: ConsultingForm,
 		navigationOptions: {
-			...TransitionPresets.ModalPresentationIOS,
+			...TransitionPresets.ModalSlideFromBottomIOS,
 		}
 	},
 	TimeTable: TimeTable,

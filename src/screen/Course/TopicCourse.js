@@ -32,6 +32,7 @@ const Course = (props) => {
     // 
     const topic = navigation.getParam('topic', topic)
     const data = navigation.getParam('data', []);
+    const showConsoult = navigation.getParam('showConsoult', true);
 
     useEffect(() => {
         // console.log('datadatadatadata', data);
@@ -66,10 +67,6 @@ const Course = (props) => {
         if (userInfo.class) _setCurrentClass(userInfo.class)
     }, [userInfo.class]);
 
-    const _handlePressLesson = (item) => {
-        navigation.navigate('CourseDetail', {});
-    }
-
     return (
         <View style={styles.container}>
             {/* <NormalHeader onPressSearch={() => props.navigation.navigate('SearchView', { searchText: '' })} onRightAccount={() => setRightAction(!rightAction)} /> */}
@@ -84,7 +81,7 @@ const Course = (props) => {
                         return (
                             <Animatable.View animation="fadeIn" delay={indexTop * 1000} key={key} style={{ backgroundColor: '#fff', marginBottom: 10, padding: 10 }}>
                                 <SeeAllTitle
-                                    onPress={() => props.navigation.navigate('CourseDetail')}
+                                    onPress={() => { }}
                                     text={MAP_SUBJECT[key]} />
 
                                 <FlatList horizontal showsHorizontalScrollIndicator={false}
@@ -93,6 +90,7 @@ const Course = (props) => {
                                         return (
                                             <Animatable.View animation="fadeIn" delay={index * 500}>
                                                 <VideoContinue
+                                                    showConsoult={showConsoult}
                                                     navigate={navigation.navigate}
                                                     setVisible={() => { }}
                                                     videos={item}
@@ -253,7 +251,7 @@ const stylesHeader = StyleSheet.create({
     },
 })
 
-const VideoContinue = ({ navigate, setVisible, videos = {}, style = {}, widthImg = width * 3 / 4 }) => {
+const VideoContinue = ({ navigate, setVisible, videos = {}, style = {}, widthImg = width * 3 / 4, showConsoult = true }) => {
     // console.log('videos', videos);
 
     const teacher = get(videos, 'owner', {});
@@ -273,7 +271,7 @@ const VideoContinue = ({ navigate, setVisible, videos = {}, style = {}, widthImg
         widthImg,
         item: videoItem,
         _handlePress: () => {
-            navigate('CourseDetail', videoItem)
+            navigate('CourseDetail', { videoItem, showConsoult })
         },
     };
     return (

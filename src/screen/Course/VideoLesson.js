@@ -252,27 +252,40 @@ const CoursePlayer = (props) => {
                         </View>
                     </Loading>
                     {!(full && helpers.isAndroid) &&
-                    <TouchableOpacity onPress={() => navigation.goBack()} style={{ position: 'absolute', left: width/2-10 }}>
-                        <Icon type="AntDesign" name='down' style={{ fontSize: 25, color: 'white' }} />
-                    </TouchableOpacity>}
+                        <TouchableOpacity onPress={() => navigation.goBack()} style={{ position: 'absolute', left: width / 2 - 10 }}>
+                            <Icon type="AntDesign" name='down' style={{ fontSize: 25, color: 'white' }} />
+                        </TouchableOpacity>}
                 </View>
 
                 {!(full && helpers.isAndroid) &&
                     <View style={{ flex: 1 }}>
                         {/* <Toolbar showLater={visible} setShowLater={setVisible} videoData={videoData} /> */}
                         <View style={{ flex: 1 }}>
-                            <View style={{backgroundColor: '#fff'}}>
+                            {/* <View style={{backgroundColor: '#fff'}}>
                                 <Text style={{
                                     fontSize: 21, padding: 10,
                                     ...fontMaker({ weight: fontStyles.SemiBold })
                                 }}>{get(videoLesson, 'name', '')}</Text>
-                            </View>
-                            <TableContentExpand
-                                _navigateToCourse={_navigateToCourse}
-                                navigation={navigation}
-                                listCourse={listCourse}
-                                playPath={pathPlay}
-                            />
+                            </View> */}
+                            <Tabs tabContainerStyle={{ elevation: 0, borderTopWidth: 0.5, borderTopColor: 'white', }}
+                                tabBarUnderlineStyle={{ height: 2, backgroundColor: Colors.pri, }}
+                                tabBarActiveTextColor={Colors.pri} tabBarBackgroundColor={Colors.white} >
+                                <Tab textStyle={styles.textStyle}
+                                    activeTextStyle={styles.activeTextStyle}
+                                    activeTabStyle={styles.activeTabStyle}
+                                    tabStyle={styles.tabStyle}
+                                    heading="Bài giảng">
+                                    <TableContentExpand
+                                        _navigateToCourse={_navigateToCourse}
+                                        navigation={navigation}
+                                        listCourse={listCourse}
+                                        playPath={pathPlay}
+                                    />
+                                </Tab>
+                                <Tab textStyle={styles.textStyle} activeTextStyle={styles.activeTextStyle} activeTabStyle={styles.activeTabStyle} tabStyle={styles.tabStyle} heading="Thảo luận">
+                                </Tab>
+                            </Tabs>
+
                         </View>
                     </View>
                 }
@@ -291,7 +304,7 @@ const CoursePlayer = (props) => {
                     Đã thêm vào "Bookmarks"
                 </Snackbar>
 
-              
+
             </SafeAreaView>
             <FeedbackModal
                 show={showFeedback}
@@ -366,7 +379,7 @@ const styles = StyleSheet.create({
     },
     activeTextStyle: {
         fontSize: 14,
-        paddingVertical: 3,
+        // paddingVertical: 3,
         color: Colors.pri
     },
     section: { fontSize: 18, marginVertical: 7, marginTop: 10 },

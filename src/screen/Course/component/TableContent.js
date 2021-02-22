@@ -134,6 +134,12 @@ export const TableContentExpand = ({ _navigateToCourse, listCourse = [], playPat
     )
 }
 
+// export const FreeCourse = ({data}) => {
+//     return (
+//         <V
+//     )
+// }
+
 
 const RenderListLesson = ({ chapter, index, l1, l2, _navigateToCourse, listCourse, navigation }) => {
     const refFlatlist = useRef(null);

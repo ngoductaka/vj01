@@ -145,17 +145,18 @@ const TitleCourse = ({
                             content: content.update
                         },
                     ].map(item => {
-                        return (
-                            <View style={{ flexDirection: 'row', marginBottom: 8 }}>
-                                <View style={{ flex: 1, flexDirection: 'row' }}>
-                                    <Icon style={{ fontSize: 16, marginRight: 5 }} name={item.icon.name} type={item.icon.type} />
-                                    <Text>{item.title}:</Text>
+                        if (item.content)
+                            return (
+                                <View style={{ flexDirection: 'row', marginBottom: 8 }}>
+                                    <View style={{ flex: 1, flexDirection: 'row' }}>
+                                        <Icon style={{ fontSize: 16, marginRight: 5 }} name={item.icon.name} type={item.icon.type} />
+                                        <Text>{item.title}:</Text>
+                                    </View>
+                                    <View style={{ flex: 2 }}>
+                                        <Text>{item.content}</Text>
+                                    </View>
                                 </View>
-                                <View style={{ flex: 2 }}>
-                                    <Text>{item.content}</Text>
-                                </View>
-                            </View>
-                        )
+                            )
                     })
                 }
                 {subTitle ?

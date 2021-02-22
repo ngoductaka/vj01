@@ -35,7 +35,7 @@ const Course = (props) => {
 
     const userInfo = useSelector(state => state.userInfo);
     const [currentClass, setClass] = useState(userInfo && userInfo.class ? userInfo.class : '');
-    console.log('c=======urrentClass', currentClass)
+    // console.log('c=======urrentClass', currentClass)
     const [classModal, setShowClassModal] = useState(false);
 
 
@@ -90,11 +90,6 @@ const Course = (props) => {
 
     }
 
-
-
-    const _handlePressLesson = (item) => {
-        navigation.navigate('CourseDetail', {});
-    }
     const _onClose = () => {
         setShowClassModal(false);
     }
@@ -112,15 +107,17 @@ const Course = (props) => {
                 <ScrollView>
                     {get(myCourse, '[0]') ? <View style={{ backgroundColor: '#fff', marginBottom: 10, padding: 10 }}>
                         <SeeAllTitle
-                            onPress={() => props.navigation.navigate('TopicCourse', { topic: `Khoá học của tôi`, data: myCourse })}
+                            onPress={() => props.navigation.navigate('TopicCourse', { topic: `Khoá học của tôi`, data: myCourse, showConsoult:false })}
                             text={`Khoá học của tôi`} />
                         <ScrollView horizontal showsHorizontalScrollIndicator={false}>
                             {myCourse.slice(0, 5).map(videoItem => {
-                                return <VideoContinue
+                                return <VideoItem
                                     navigate={navigation.navigate}
                                     setVisible={() => { }}
                                     videos={videoItem}
                                     style={{ marginRight: 20, width: width * 4 / 5 }}
+                                    showConsoult={false}
+
                                 />
                             })}
                         </ScrollView>
@@ -132,7 +129,7 @@ const Course = (props) => {
                             text={`Khoá học lớp ${currentClass}`} />
                         <ScrollView horizontal showsHorizontalScrollIndicator={false}>
                             {gradeCourse.slice(0, 5).map(videoItem => {
-                                return <VideoContinue
+                                return <VideoItem
                                     navigate={navigation.navigate}
                                     setVisible={() => { }}
                                     videos={videoItem}
@@ -149,7 +146,7 @@ const Course = (props) => {
                             text={getGroupByClass(currentClass).text} />
                         <ScrollView horizontal showsHorizontalScrollIndicator={false}>
                             {groupCourse.slice(0, 5).map(videoItem => {
-                                return <VideoContinue
+                                return <VideoItem
                                     navigate={navigation.navigate}
                                     setVisible={() => { }}
                                     videos={videoItem}
@@ -170,7 +167,7 @@ const Course = (props) => {
                                     text={currentClass ? item : ''} />
                                 <ScrollView horizontal showsHorizontalScrollIndicator={false}>
                                     {gradeCourse.slice(0, 5).map(videoItem => {
-                                        return <VideoContinue
+                                        return <VideoItem
                                             navigate={navigation.navigate}
                                             setVisible={() => { }}
                                             videos={{}}
@@ -333,7 +330,7 @@ const stylesHeader = StyleSheet.create({
 
 
 
-const VideoContinue = ({ navigate, setVisible, videos = {}, style = {}, widthImg = width * 3 / 4 }) => {
+const VideoItem = ({ navigate, setVisible, videos = {}, style = {}, widthImg = width * 3 / 4, showConsoult = true }) => {
 
     const teacher = get(videos, 'owner', {});
     // console.log('----', get(videos, 'get_ldp.thumbnail', ''))
@@ -352,7 +349,7 @@ const VideoContinue = ({ navigate, setVisible, videos = {}, style = {}, widthImg
         widthImg,
         item: videoItem,
         _handlePress: () => {
-            navigate('CourseDetail', videoItem)
+            navigate('CourseDetail', { videoItem, showConsoult })
         },
     };
     return (
@@ -361,19 +358,19 @@ const VideoContinue = ({ navigate, setVisible, videos = {}, style = {}, widthImg
 }
 
 const getGroupByClass = (grade) => {
-    if(grade == 11 || grade == 10) {
+    if (grade == 11 || grade == 10) {
         return {
             query: "nen_tang",
             text: "Khối 10, 11",
         }
     }
-    if(grade == 12) {
+    if (grade == 12) {
         return {
             query: "luyen_thi_thpt_qg",
             text: "Luyện thi THPT QG",
         }
     }
-    if(grade > 5) {
+    if (grade > 5) {
         return {
             query: "tong_on",
             text: "Khối THCS",
@@ -385,7 +382,7 @@ const getGroupByClass = (grade) => {
         }
 
     }
-    
+
     // "luyen_thi_thpt_qg" => "Luyện thi THPT QG"
     //     "nen_tang" => "Khối 10, 11"
     //     "tong_on" => "Khối THCS"
