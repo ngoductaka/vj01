@@ -7,6 +7,7 @@ import {
     SafeAreaView, ScrollView, Text, StyleSheet, Linking, Platform, ImageBackground, TouchableOpacity, Image
 } from 'react-native';
 import { Icon } from 'native-base';
+import { get } from 'lodash';
 import LinearGradient from 'react-native-linear-gradient';
 import * as Animatable from 'react-native-animatable';
 import StarRating from 'react-native-star-rating';
@@ -59,6 +60,16 @@ const TitleCourse = ({
     content = {},
 
 }) => {
+    let rate = 4;
+    if (vote[0]) {
+        try {
+            console.log(vote.reduce((cal, cur) => cal + cur.rating_number, 0))
+            rate = +(vote.reduce((cal, cur) => cal + cur.rating_number, 0) / vote.length).toFixed(1)
+        } catch (err) {
+            console.log(err)
+
+        }
+    }
     const [showMore, setShowMore] = useState(false);
     return (
         <View style={stylesTitle.titleCourse}>
@@ -68,15 +79,22 @@ const TitleCourse = ({
                 </View>
                 <View style={stylesTitle.priceView}>
                     <Text style={stylesTitle.price}>{convertMoney(price)} </Text>
-                    <View style={{ alignItems: 'flex-start', marginBottom: 10 }}>
+                    <View style={{ alignItems: 'center', flexDirection:'row', marginBottom: 10 }}>
                         <StarRating
                             // disabled={true}
                             maxStars={5}
-                            rating={vote}
+                            rating={rate}
                             fullStarColor={COLOR.MAIN}
                             starSize={fontSize.h2}
                             disabled
                         />
+                        <Text style={{
+                            fontSize: 12,
+                            color: '#777',
+                            marginLeft: 5
+                        }}>
+                            {rate} ({get(vote, 'length')})
+                        </Text>
                     </View>
                     {bought ? <Text>{bought} học viên</Text> : null}
                 </View>

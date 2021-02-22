@@ -38,8 +38,17 @@ export const LargeVideo = (props) => {
         name, // get(item, 'partable.name', '')
         view, //get(item, 'partable.view_count', '')
         teacher = {},
-        price = ''
+        price = '',
+        get_rating = []
     } = item;
+    let rate = 4;
+    if (get_rating[0]) {
+        try {
+            rate = +(get_rating.reduce((cal, cur) => cal + cur.rating_number, 0) / get_rating.length).toFixed(1)
+        } catch (err) {
+            console.log(err)
+        }
+    }
     const watchLater = () => {
         item.articleId = item.lectureId;
         item.isLecture = isLecture;
@@ -85,16 +94,15 @@ export const LargeVideo = (props) => {
                     <Teacher {...teacher} />
                     <View style={stylesVideo.wapperText}>
                         <StarRating
-                            // disabled={true}
                             maxStars={5}
-                            rating={4.3}
+                            rating={rate}
                             fullStarColor={COLOR.MAIN}
                             starSize={fontSize.h2}
                             disabled
                         />
                         {/* <Icon style={stylesVideo.icon} name={"eye"} type='Feather' /> */}
                         <Text style={stylesVideo.subText} numberOfLines={3}>
-                            {4} ({12})
+                            {rate} ({get(get_rating, 'length')})
                         </Text>
                     </View>
                     <View style={{ flexDirection: 'row', alignItems: 'flex-end' }}>

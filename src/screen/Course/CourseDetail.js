@@ -79,7 +79,7 @@ const CourseDetail = (props) => {
                                 subTitle={get(dataCourse, 'description', '')}
                                 prePrice={2000000}
                                 price={dataCourse.price}
-                                vote={4.5}
+                                vote={dataCourse.get_rating}
                                 content={{
                                     teacher: get(dataCourse, 'owner.first_name'),
                                     grade: get(dataCourse, 'classlevel', ''),
