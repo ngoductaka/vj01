@@ -26,6 +26,7 @@ const iosAdds = {
 const androidAdds = {
     bieu_ngu: '688221958666283_700255614129584',
     tu_nhien: '688221958666283_700255357462943',
+    rectangle: '688221958666283_889808461840964',
     full: '688221958666283_700255297462949',
 }
 
@@ -35,8 +36,8 @@ export const placementIdFull = Platform.select({
 }); // ios Chèn giữa full
 
 export const placementIdBanner = Platform.select({
-    ios: iosAdds.bn_tu_nhien,//'688221958666283_700259390795873',
-    android: androidAdds.tu_nhien,
+    ios: iosAdds.tu_nhien,//'688221958666283_700259390795873',
+    android: androidAdds.rectangle,
 }); // ios Biểu ngữ
 
 export const fbFull = () => {
