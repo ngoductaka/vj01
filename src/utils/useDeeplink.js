@@ -4,17 +4,16 @@ import { helpers } from './helpers';
 
 export const useDeepLink = (navigation) => {
     useEffect(() => {
-        console.log('===deep link====')
-        Linking
-            .getInitialURL()
+        // console.log('===deep link====')
+        Linking.getInitialURL()
             .then(url => {
-                console.log('url getInitialURL', url)
+                // console.log('url getInitialURL', url)
                 handleOpenURL({ url })
             })
             .catch(console.error);
 
         Linking.addEventListener('url', val => {
-            console.log('val addEventListener', val)
+            // console.log('val addEventListener', val)
             handleOpenURL(val)
         });
 
@@ -28,7 +27,6 @@ export const useDeepLink = (navigation) => {
         return () => {
             Linking.removeEventListener('url', handleOpenURL);
         }
-
     }, []);
 
     const handleOpenURL = (event) => { // D
@@ -36,6 +34,7 @@ export const useDeepLink = (navigation) => {
     }
     const navigate = (url) => { // E
         try {
+            if (!url) return 1;
             const route = url.replace(/.*?:\/\//g, '');
             const [_, screen, id, id1] = route.split('/');
             if (screen == 'lesson') {
