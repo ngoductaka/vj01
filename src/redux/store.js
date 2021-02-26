@@ -1,5 +1,5 @@
 import { createStore, applyMiddleware } from 'redux';
-import { createLogger } from 'redux-logger';
+// import { createLogger } from 'redux-logger';
 import reducers from './reducers';
 
 //Redux saga
@@ -10,7 +10,7 @@ const sagaMiddleware = createSagaMiddleware();
 
 const middleware = __DEV__
     ? applyMiddleware(
-        createLogger(), 
+        // createLogger(), 
         sagaMiddleware)
     : applyMiddleware(sagaMiddleware);
 

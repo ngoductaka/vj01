@@ -40,6 +40,7 @@ import { _createNotificationListeners } from '../../utils/notificationHandler';
 import { localNotificationService } from '../../utils/notificationServices';
 import { GameItem } from '../GameCenter';
 import { UtilitiesItem } from '../Utilities';
+import { useDeepLink } from '../../utils/useDeeplink';
 
 const { width } = Dimensions.get('window');
 
@@ -339,6 +340,7 @@ const Class = memo((props) => {
 
 	const [dataContinue] = useRequest('/lessons/continue/learn', [1]);
 	// const [dataRecommend] = useRequest('/lessons/recommend/learn', [1]);
+	useDeepLink(props.navigation);
 
 	return (
 		<View style={{ flex: 1 }}>
@@ -386,24 +388,27 @@ const Class = memo((props) => {
 							}}
 							keyExtractor={(item, index) => index + 'game_item'}
 						/>
-
-						<View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', marginBottom: 10, marginTop: 30 }}>
-							<Text style={{ fontSize: 18, ...fontMaker({ weight: fontStyles.SemiBold }) }}>Kho trò chơi</Text>
-							<TouchableOpacity onPress={() => navigation.navigate('GameCenter')} style={{}}>
-								<Text style={{ fontSize: 14, ...fontMaker({ weight: fontStyles.Regular }), textDecorationColor: COLOR.MAIN, color: COLOR.MAIN }}>Xem tất cả</Text>
-							</TouchableOpacity>
-						</View>
-						<FlatList
-							style={{}}
-							data={GAME_CENTERS.slice(0, 3)}
-							numColumns={3}
-							renderItem={({ item, index }) => {
-								return (
-									<GameItem src={item.src} name={item.name} slogan={item.slogan} navigation={navigation} route={item.route} />
-								);
-							}}
-							keyExtractor={(item, index) => index + 'game_item'}
-						/>
+						{helpers.isIOS ? null :
+							<>
+								<View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', marginBottom: 10, marginTop: 30 }}>
+									<Text style={{ fontSize: 18, ...fontMaker({ weight: fontStyles.SemiBold }) }}>Kho trò chơi</Text>
+									<TouchableOpacity onPress={() => navigation.navigate('GameCenter')} style={{}}>
+										<Text style={{ fontSize: 14, ...fontMaker({ weight: fontStyles.Regular }), textDecorationColor: COLOR.MAIN, color: COLOR.MAIN }}>Xem tất cả</Text>
+									</TouchableOpacity>
+								</View>
+								<FlatList
+									style={{}}
+									data={GAME_CENTERS.slice(0, 3)}
+									numColumns={3}
+									renderItem={({ item, index }) => {
+										return (
+											<GameItem src={item.src} name={item.name} slogan={item.slogan} navigation={navigation} route={item.route} />
+										);
+									}}
+									keyExtractor={(item, index) => index + 'game_item'}
+								/>
+							</>
+						}
 
 						{/* hot exam */}
 						<HotExam classId={props.userInfo.class} loading={hostLoading} hotSubIdx={hotSubIdx} setHotSubIdx={setHotSubIdx} hotExamData={get(hostLesson, 'exams', [])} navigation={navigation} />

@@ -83,7 +83,7 @@ async function fetchLogout() {
 
 async function onLoginFbPress() {
     return await new Promise(function (resolve, reject) {
-        LoginManager.logInWithPermissions(['public_profile']).then(
+        LoginManager.logInWithPermissions(['public_profile', 'email']).then(
             (result) => {
                 if (!result.isCancelled) {
                     AccessToken.getCurrentAccessToken().then(
