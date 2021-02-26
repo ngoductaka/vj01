@@ -22,8 +22,8 @@ import KochavaTracker from 'react-native-kochava-tracker';
  
 // Configure
 var configMapObject = {}
-configMapObject[KochavaTracker.PARAM_ANDROID_APP_GUID_STRING_KEY] = "kovietjack-android-svl61k";
-configMapObject[KochavaTracker.PARAM_IOS_APP_GUID_STRING_KEY] = "kovietjack-na4k6x7u";
+configMapObject[KochavaTracker.PARAM_ANDROID_APP_GUID_STRING_KEY] = "kovietjack-qy08u";
+configMapObject[KochavaTracker.PARAM_IOS_APP_GUID_STRING_KEY] = "kovietjackios-3wqjwujza";
 KochavaTracker.configure(configMapObject);
 
 const Auth = (props) => {
