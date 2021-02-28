@@ -469,18 +469,18 @@ export const CreateRootNavigator = createAppContainer(
 			Intro: {
 				screen: Intro
 			},
+			InAppStack: {
+				screen: InAppStack,
+				path: 'inapp',
+			},
 			Login: {
 				screen: Login
 			},
 			// Classify: {
 			// 	screen: Classify
 			// },
-			InAppStack: {
-				screen: InAppStack,
-				path: 'inapp',
-			},
 		}, {
-		// initialRouteName: screen,
+		initialRouteName: 'Auth',
 	}
 	));
 
