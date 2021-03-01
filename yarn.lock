@@ -6817,6 +6817,11 @@ react-native-keyboard-aware-scroll-view@^0.9.1:
     prop-types "^15.6.2"
     react-native-iphone-x-helper "^1.0.3"
 
+react-native-kochava-tracker@^1.4.0:
+  version "1.4.1"
+  resolved "https://registry.yarnpkg.com/react-native-kochava-tracker/-/react-native-kochava-tracker-1.4.1.tgz#dfe55f1de6704f248c980bdb10ed2c40574da7a3"
+  integrity sha512-DTHg+xFElz8HfhG18RiL/mbH+TF+YX4W9lJd091rCfMy5vk8+qKKmgednoyQxgb07C67hPMWzFS5p5Kw2PHB6A==
+
 react-native-linear-gradient@^2.5.6:
   version "2.5.6"
   resolved "https://registry.yarnpkg.com/react-native-linear-gradient/-/react-native-linear-gradient-2.5.6.tgz#96215cbc5ec7a01247a20890888aa75b834d44a0"

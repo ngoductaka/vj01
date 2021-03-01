@@ -40,7 +40,8 @@ request.interceptors.request.use(
 		// console.log('---------token--', token, '----------------');
 		if (token) config.headers['Authorization'] = `Bearer ${token}`;
 		if (imei) config.headers['imei'] = imei;
-		if (!token) NavigationService.navigate('Login');
+		// ?????
+		// if (!token) NavigationService.navigate('Login');
 		return config;
 	},
 	error => {
