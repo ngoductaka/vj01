@@ -36,7 +36,7 @@ export const placementIdFull = Platform.select({
 }); // ios Chèn giữa full
 
 export const placementIdBanner = Platform.select({
-    ios: iosAdds.tu_nhien,//'688221958666283_700259390795873',
+    ios: iosAdds.rectange,//'688221958666283_700259390795873',
     android: androidAdds.rectangle,
 }); // ios Biểu ngữ
 
