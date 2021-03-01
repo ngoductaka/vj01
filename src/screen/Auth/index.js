@@ -114,8 +114,13 @@ const Auth = (props) => {
                     });
                 AsyncStorage.getItem(KEY.saved_user)
                     .then(user => {
-                        if (JSON.parse(user)) {
-                            props.setSavedUser(JSON.parse(user));
+                        const userData = JSON.parse(user);
+                        if (userData) {
+                            console.log('use232ruseruseruser', userData.grade_id)
+                            if (userData.grade_id) {
+                                props.setUserInfo({ class: userData.grade_id });
+                            }
+                            props.setSavedUser(userData);
                             _navigateTo('InAppStack');
                         } else {
                             _navigateTo('Login');
