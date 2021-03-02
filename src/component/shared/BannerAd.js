@@ -28,7 +28,7 @@ const BannerAd = ({ height = 300, type = 1, isShow = true }) => {
         //     }
         // }
         if (isShow) {
-            setTimeout(() => { setShowAd(true) }, (type + 1) % 20 * 500);
+            setTimeout(() => { setShowAd(true) }, (type + 1) % 25 * 500);
         }
     }, [isShow]);
 
