@@ -48,8 +48,8 @@ const Profile = (props) => {
     const [isShowClassModal, setShowClassModal] = useState(false);
 
     useEffect(() => {
-        console.log('isFocuseddndd', isFocused)
-        if (!isFocused && isShowClassModal) {
+        // console.log('currentClass', currentClass)
+        if (!isFocused) {
             setShowClassModal(false)
         }
 

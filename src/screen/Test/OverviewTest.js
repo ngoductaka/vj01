@@ -35,6 +35,9 @@ const TAG = 'overview_test';
 const OverviewTest = (props) => {
 
     const dispatch = useDispatch();
+    const learnTime = useSelector(state => {
+        return get(state, 'timeMachine.learning_times', 0);
+    })
 
     const title = props.navigation.getParam('title', '');
     const idExam = props.navigation.getParam('idExam', '');
@@ -45,7 +48,6 @@ const OverviewTest = (props) => {
     const showFullAds = props.navigation.getParam('showFullAds', true);
     const screenAds = useSelector(state => get(state, 'subjects.screens', null));
     const advertParam = props.navigation.getParam('advert', null);
-    console.log('-----', advertParam);
     // const [adsLoading, setAdsLoading] = useState(false);
 
     const [visible, setVisible] = useState(false);
@@ -57,15 +59,33 @@ const OverviewTest = (props) => {
         props.navigation.navigate(screen, params)
     }
 
+
+    useEffect(() => {
+        if (learnTime % 2) {
+            advert = firebase.admob().interstitial(unitIntertitialId);
+            request = new AdRequest();
+            request.addKeyword('facebook').addKeyword('google').addKeyword('instagram').addKeyword('zalo').addKeyword('google').addKeyword('pubg').addKeyword('asphalt').addKeyword('covid-19');
+            advert.loadAd(request.build());
+        }
+    }, [learnTime]);
+
     useEffect(() => {
         if (showFullAds) {
-            if (screenAds && screenAds[TAG] == "1") {
+            if (screenAds && screenAds[TAG] == "1" && learnTime % 2) {
+                // console.log('--a-sd-asd-asd', advertParam);
                 fbFull()
-                .catch(err => {
-                    if (advertParam) {
-                        advertParam.show();
-                    }
-                })
+                    .catch(err => {
+                        try {
+                            console.log('load ggg')
+                            if (advertParam) {
+                                advertParam.show();
+                                // advert.show();
+                            }
+                        } catch (err) {
+                            advert.show();
+                            console.log(err, 'err load gg')
+                        }
+                    })
                 // setAdsLoading(true);
                 // advert = firebase.admob().interstitial(unitIntertitialId);
                 // request = new AdRequest();

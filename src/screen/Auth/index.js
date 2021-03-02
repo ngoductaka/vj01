@@ -18,6 +18,13 @@ import { common_services } from '../../redux/services';
 import { helpers } from '../../utils/helpers';
 import { fontMaker, fontStyles } from '../../utils/fonts';
 import { get } from 'lodash';
+import KochavaTracker from 'react-native-kochava-tracker';
+
+// Configure
+var configMapObject = {}
+configMapObject[KochavaTracker.PARAM_ANDROID_APP_GUID_STRING_KEY] = "kovietjack-qy08u";
+configMapObject[KochavaTracker.PARAM_IOS_APP_GUID_STRING_KEY] = "kovietjackios-3wqjwujza";
+KochavaTracker.configure(configMapObject);
 
 const Auth = (props) => {
 
@@ -107,8 +114,13 @@ const Auth = (props) => {
                     });
                 AsyncStorage.getItem(KEY.saved_user)
                     .then(user => {
-                        if (JSON.parse(user)) {
-                            props.setSavedUser(JSON.parse(user));
+                        const userData = JSON.parse(user);
+                        if (userData) {
+                            console.log('use232ruseruseruser', userData.grade_id)
+                            if (userData.grade_id) {
+                                props.setUserInfo({ class: userData.grade_id });
+                            }
+                            props.setSavedUser(userData);
                             _navigateTo('InAppStack');
                         } else {
                             _navigateTo('Login');
@@ -121,7 +133,7 @@ const Auth = (props) => {
 
             }
         } catch (error) {
-            console.log(error);
+            console.log(error, 'error_first');
             _navigateTo('Intro');
         }
     }

@@ -214,6 +214,10 @@ const QnA = (props) => {
                 "subject": currSub && currSub.id || '99',
                 // subject: 1,
                 "content": questionContent
+                    .replace(/&/g, "&amp;")
+                    .replace(/>/g, "&gt;")
+                    .replace(/</g, "&lt;")
+                    .replace(/"/g, "&quot;")
             };
             // console.log('photosphotos', photos)
             if (photos[0]) {

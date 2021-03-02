@@ -26,11 +26,11 @@ export const ExitModal = ({ show, onCancel = () => { }, onConfirm = () => { } })
                 </View>
             </View>
             <View style={{ flexDirection: 'row', alignItems: 'center', width: '100%', borderTopColor: blackColor(0.1), borderTopWidth: 1 }}>
-                <TouchableOpacity onPress={onCancel} style={{ flex: 1, justifyContent: 'center', alignItems: 'center', paddingVertical: 12, borderRightColor: blackColor(0.1), borderRightWidth: 1 }}>
-                    <Text style={{ color: blackColor(0.6), fontSize: 16, ...fontMaker({ weight: fontStyles.Regular }) }}>Đăng xuất</Text>
-                </TouchableOpacity>
                 <TouchableOpacity onPress={onConfirm} style={{ flex: 1, justifyContent: 'center', alignItems: 'center', paddingVertical: 14 }}>
                     <Text style={{ ...fontMaker({ weight: fontStyles.SemiBold }), color: '#ff7620', fontSize: 16 }}>Học tiếp</Text>
+                </TouchableOpacity>
+                <TouchableOpacity onPress={onCancel} style={{ flex: 1, justifyContent: 'center', alignItems: 'center', paddingVertical: 12, borderRightColor: blackColor(0.1), borderRightWidth: 1 }}>
+                    <Text style={{ color: blackColor(0.6), fontSize: 16, ...fontMaker({ weight: fontStyles.Regular }) }}>Đăng xuất</Text>
                 </TouchableOpacity>
             </View>
 

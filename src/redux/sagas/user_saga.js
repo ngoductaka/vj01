@@ -93,6 +93,7 @@ function* loginWithApple(action) {
 
 function* loginWithFacebook() {
     try {
+        console.log('====login facebook')
         const data = yield user_services.onLoginFbPress();
         const result = yield api.post(endpoints.SOCIAL_LOGIN, {
             "token": data.token,
@@ -123,7 +124,7 @@ function* loginWithFacebook() {
         }
 
     } catch (error) {
-        // console.log('111111', error);
+        console.log('LOGIN_WITH_FACEBOOKfail', error);
         yield put({
             type: LOGIN_WITH_FACEBOOK_FAIL,
         });
