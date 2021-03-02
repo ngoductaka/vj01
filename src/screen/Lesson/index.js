@@ -49,7 +49,7 @@ const Lesson = (props) => {
 
 	const showFullAds = navigation.getParam('showFullAds', true);
 	const advertParam = navigation.getParam('advert', null);
-	console.log('--a-sd-asd-asd', advertParam);
+	// console.log('--a-sd-asd-asdlesson ads', advertParam);
 
 	const scrollY = new Animated.Value(0)
 	const diffClamp = Animated.diffClamp(scrollY, 0, 100)

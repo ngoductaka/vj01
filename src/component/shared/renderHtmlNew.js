@@ -302,7 +302,7 @@ export const RenderDataJson = ({ indexItem = '', content, isShort = false }) => 
   )
 }
 // 
-export const RenderRow = ({ indexItem = '', row, indexRow, setShowImg = () => { } }) => {
+export const RenderRow = ({ indexItem = '', row, indexRow=0, setShowImg = () => { } }) => {
   try {
     return (
       <View key={`${indexItem}_row_${indexRow}`} style={styles.viewRow}>
@@ -419,10 +419,10 @@ export const RenderRow = ({ indexItem = '', row, indexRow, setShowImg = () => { 
               </View>
             } else if (type == 'ads') {
               // console.log('========================indexRow', indexRow, indexItem)
-              if (indexRow > 22) {
+              if (indexRow > 20) {
                 return <ViewWithBanner />
               }
-              return <BannerAd type={index} />
+              return <BannerAd type={indexRow} />
             }
             else return null;
           })
