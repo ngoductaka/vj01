@@ -3,7 +3,7 @@ import { Dimensions, View, Text } from 'react-native';
 import firebase from 'react-native-firebase';
 import { useSelector } from 'react-redux';
 
-import { unitId } from "../../handle/Constant";
+import { unitId, unitId1, unitId2 } from "../../handle/Constant";
 import { fontMaker, fontStyles } from "../../utils/fonts";
 
 const Banner = firebase.admob.Banner;
@@ -37,7 +37,7 @@ const BannerAd = ({ height = 300, type = 1, isShow = true }) => {
             <Text style={{ alignSelf: 'center', marginVertical: 5, ...fontMaker({ weight: fontStyles.Regular }) }}>Quảng cáo</Text>
             {showAd ?
                 <Banner
-                    unitId={unitId}
+                    unitId={type < 10 ? unitId : (type < 20 ? unitId2 : unitId1)}
                     size={`${widthAd}x${height}`}
                     request={request.build()}
                     onAdLoaded={() => {

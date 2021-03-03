@@ -48,6 +48,18 @@ const unitId =
 		? 'ca-app-pub-4508913343091330/2061090976'
 		: 'ca-app-pub-4508913343091330/9522802115';
 
+const unitId1 =
+	Platform.OS === 'ios'
+		? 'ca-app-pub-4508913343091330/6551843551'
+		: 'ca-app-pub-4508913343091330/5222735427';
+
+
+const unitId2 =
+	Platform.OS === 'ios'
+		? 'ca-app-pub-4508913343091330/6422785384'
+		: 'ca-app-pub-4508913343091330/9831724961';
+
+
 /**
  * ADMOB INTERTITAIL KEY
  */
@@ -254,6 +266,8 @@ export {
 	FIRST_TIME,
 	array_move,
 	unitId,
+	unitId1,
+	unitId2,
 	unitIntertitialId,
 	HOT_SUBJECT_CLASS
 }

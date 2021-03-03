@@ -897,9 +897,9 @@ SPEC CHECKSUMS:
   react-native-kochava-tracker: 2dd379e782904bc15ceea1d17a881f7dbc8ffd81
   react-native-netinfo: 30fb89fa913c342be82a887b56e96be6d71201dd
   react-native-orientation-locker: 47aaa55d59bfc1613804dc22f159e6bb1cca5f30
-  react-native-safe-area-context: 8260e5157617df4b72865f44006797f895b2ada7
-  react-native-simple-toast: b986e6c1befdc211af3df1bae293278a44e32990
-  react-native-slider: b34d943dc60deb96d952ba6b6b249aa8091e86da
+  react-native-safe-area-context: e200d4433aba6b7e60b52da5f37af11f7a0b0392
+  react-native-simple-toast: bf002828cf816775a6809f7a9ec3907509bce11f
+  react-native-slider: e51492f1264d882a8815b71c5870f8978e52887d
   react-native-splash-screen: 200d11d188e2e78cea3ad319964f6142b6384865
   react-native-sqlite-storage: 418ef4afc5e6df6ce3574c4617e5f0b65cffde55
   react-native-video: eee541262ada11bc7ffe8ec5508e6a877937c462
