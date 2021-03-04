@@ -66,9 +66,10 @@ const Auth = (props) => {
                     const currentVersion = await getVersion();
                     const base_version_ios = get(appInfo.version, 'base_version_ios', currentVersion);
                     const base_version_android = get(appInfo.version, 'base_version_android', currentVersion);
+                    const regex = /\./ig;
                     if (helpers.isIOS) {
-                        const iosVer = parseInt(base_version_ios.replaceAll('.', ''));
-                        if (parseInt(currentVersion.replaceAll('.', '')) < iosVer) {
+                        const iosVer = parseInt(base_version_ios.replace(regex, ''));
+                        if (parseInt(currentVersion.replace(regex, '')) < iosVer) {
                             setCritical(appInfo.version.critical == 1);
                             showUpdate(true);
                             return;
@@ -76,8 +77,8 @@ const Auth = (props) => {
                             _fetchFirstTime();
                         }
                     } else {
-                        const androidVer = parseInt(base_version_android.replaceAll('.', ''));
-                        if (parseInt(currentVersion.replaceAll('.', '')) < androidVer) {
+                        const androidVer = parseInt(base_version_android.replace(regex, ''));
+                        if (parseInt(currentVersion.replace(regex, '')) < androidVer) {
                             setCritical(appInfo.version.critical == 1);
                             showUpdate(true);
                             return;

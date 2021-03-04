@@ -37,7 +37,7 @@ const styleBtnFullWidth = StyleSheet.create({
         backgroundColor: '#dedede',
         paddingVertical: Platform.OS === 'ios' ? 10 : 8,
         marginVertical: 10,
-        borderRadius: 10,
+        // borderRadius: 10,
     },
     text: {
         textAlign: 'center',

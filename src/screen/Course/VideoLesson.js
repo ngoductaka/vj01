@@ -106,7 +106,7 @@ const CoursePlayer = (props) => {
     const [visible, setVisible] = useState(false);
     // const [paused, setPaused] = useState(false);
     // const [isPlay, setPlay] = useState(true);
-    const [videoData, isLoading, err] = useRequest(`/videos/show/${lectureId}`, [lectureId]);
+    // const [videoData, isLoading, err] = useRequest(`/videos/show/${lectureId}`, [lectureId]);
 
     const [currentPlay, setCurrentPlay] = useState(-1);
     const [showFeedback, setShowFeedback] = useState(false);
@@ -234,13 +234,18 @@ const CoursePlayer = (props) => {
                                 // onPlaybackRateChange={({ playbackRate }) => setPlay(playbackRate)}
                                 /> : null}
                             {(helpers.isAndroid && full) &&
-                                <TouchableOpacity onPress={handleBackFullScreen} style={{ padding: 10, position: 'absolute', top: 10, left: 10 }} >
-                                    <Icon type='MaterialIcons' name='arrow-back' style={{ fontSize: 26, color: COLOR.white(1) }} />
+                                <TouchableOpacity onPress={handleBackFullScreen} style={{
+                                    padding: 10, position: 'absolute', top: 10, left: 10,
+                                    backgroundColor: 'rgba(245,245,245,0.7)', height: 40, width: 40, borderRadius: 40,
+                                    justifyContent: 'center', alignItems: 'center'
+                                }} >
+                                    <Icon type='AntDesign' name='shrink' style={{ fontSize: 20, color: COLOR.black(1) }} />
                                 </TouchableOpacity>
                             }
                             {(helpers.isAndroid && !full) &&
                                 <TouchableOpacity
-                                    style={{ position: 'absolute', top: 10, right: 10 }}
+                                    style={{ position: 'absolute', top: 10, right: 10,
+                                 }}
                                     onPress={() => {
                                         Orientation.lockToLandscape();
                                         setFull(true);
@@ -252,7 +257,10 @@ const CoursePlayer = (props) => {
                         </View>
                     </Loading>
                     {!(full && helpers.isAndroid) &&
-                        <TouchableOpacity onPress={() => navigation.goBack()} style={{ position: 'absolute', left: width / 2 - 10 }}>
+                        <TouchableOpacity onPress={() => navigation.goBack()} style={{
+                            position: 'absolute',
+                            left: width / 2 - 10,
+                        }}>
                             <Icon type="AntDesign" name='down' style={{ fontSize: 25, color: 'white' }} />
                         </TouchableOpacity>}
                 </View>
@@ -261,13 +269,22 @@ const CoursePlayer = (props) => {
                     <View style={{ flex: 1 }}>
                         {/* <Toolbar showLater={visible} setShowLater={setVisible} videoData={videoData} /> */}
                         <View style={{ flex: 1 }}>
-                            {/* <View style={{backgroundColor: '#fff'}}>
+                            <View style={{ backgroundColor: '#fff' }}>
                                 <Text style={{
-                                    fontSize: 21, padding: 10,
-                                    ...fontMaker({ weight: fontStyles.SemiBold })
-                                }}>{get(videoLesson, 'name', '')}</Text>
-                            </View> */}
-                            <Tabs tabContainerStyle={{ elevation: 0, borderTopWidth: 0.5, borderTopColor: 'white', }}
+                                    fontSize: 20, padding: 10,
+                                    ...fontMaker({ weight: fontStyles.Regular })
+                                }}>Bài giảng</Text>
+                            </View>
+
+                            <TableContentExpand
+                                _navigateToCourse={_navigateToCourse}
+                                navigation={navigation}
+                                listCourse={listCourse}
+                                showConsoult={navigation.getParam('showConsoult', true)}
+                                playPath={pathPlay}
+                            />
+
+                            {/* <Tabs tabContainerStyle={{ elevation: 0, borderTopWidth: 0.5, borderTopColor: 'white', }}
                                 tabBarUnderlineStyle={{ height: 2, backgroundColor: Colors.pri, }}
                                 tabBarActiveTextColor={Colors.pri} tabBarBackgroundColor={Colors.white} >
                                 <Tab textStyle={styles.textStyle}
@@ -275,16 +292,18 @@ const CoursePlayer = (props) => {
                                     activeTabStyle={styles.activeTabStyle}
                                     tabStyle={styles.tabStyle}
                                     heading="Bài giảng">
+
                                     <TableContentExpand
                                         _navigateToCourse={_navigateToCourse}
                                         navigation={navigation}
                                         listCourse={listCourse}
+                                        showConsoult={navigation.getParam('showConsoult', true)}
                                         playPath={pathPlay}
                                     />
                                 </Tab>
                                 <Tab textStyle={styles.textStyle} activeTextStyle={styles.activeTextStyle} activeTabStyle={styles.activeTabStyle} tabStyle={styles.tabStyle} heading="Thảo luận">
                                 </Tab>
-                            </Tabs>
+                            </Tabs> */}
 
                         </View>
                     </View>

@@ -39,10 +39,15 @@ const CourseDetail = (props) => {
         if (videoItem.id) {
             getDetailCourse(videoItem.id)
                 .then(({ data }) => {
-                    setListCourse([{
-                        "name": "Danh sách bài học miễn phí",
-                        "get_child_curriculum": data.get_free_curriculum,
-                    }, ...data.get_curriculum]);
+                    if (showConsoult) {
+                        setListCourse([{
+                            "name": "Danh sách bài học miễn phí",
+                            "get_child_curriculum": data.get_free_curriculum,
+                        }, ...data.get_curriculum]);
+
+                    } else {
+                        setListCourse(data.get_curriculum);
+                    }
                     // setFreeCourse(data.get_free_curriculum);
                 })
                 .catch(() => {
@@ -92,10 +97,13 @@ const CourseDetail = (props) => {
                             />
                             <View style={{ backgroundColor: '#fff', paddingHorizontal: 10, marginVertical: 20, paddingVertical: 15, borderRadius: 10 }}>
                                 <Text style={{ fontSize: 27 }}>Nội dung khoá học: </Text>
-                                {loading ? <ActivityIndicator size="large" style={{marginTop: 10}} /> :
-                                    <TableContent navigation={navigation}
+                                {loading ? <ActivityIndicator color="#000" size="large" style={{ marginTop: 10 }} /> :
+                                    <TableContent
+                                        navigation={navigation}
                                         _navigateToCourse={_navigateToCourse}
-                                        listCourse={listCourse} />}
+                                        listCourse={listCourse}
+                                        showConsoult={showConsoult}
+                                    />}
                             </View>
                         </View>
                     </Loading>
@@ -103,7 +111,9 @@ const CourseDetail = (props) => {
                 {showConsoult ? <BtnFullWidth
                     onPress={() => navigation.navigate('ConsultingForm')}
                     text={"Nhận tư vấn khoá học"}
-                    styles={{ marginHorizontal: 15, marginVertical: 0, }}
+                    styles={{ 
+                        // marginBottom: 15,
+                         marginVertical: 0, }}
                 /> : null}
                 {showHeader ? <Animatable.View
                     style={{ position: 'absolute', top: 0, left: 0, right: 0 }}

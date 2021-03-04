@@ -12,7 +12,7 @@ import { helpers } from '../../../utils/helpers';
 import { fontMaker, fontStyles } from '../../../utils/fonts';
 
 
-const TableContent = ({ _navigateToCourse, listCourse = [], playPath = [], navigation }) => {
+const TableContent = ({ _navigateToCourse, listCourse = [], playPath = [], navigation, showConsoult = true }) => {
     const [l1 = null, l2 = null] = playPath;
     const [active, setActive] = useState(0);
 
@@ -41,6 +41,7 @@ const TableContent = ({ _navigateToCourse, listCourse = [], playPath = [], navig
                             </TouchableOpacity>
                             <Collapsible collapsed={!(index === active)}>
                                 <RenderListLesson
+                                    showConsoult={showConsoult}
                                     chapter={chapter} index={index}
                                     l1={l1} l2={l2} _navigateToCourse={_navigateToCourse}
                                     listCourse={listCourse} navigation={navigation}
@@ -141,7 +142,7 @@ export const TableContentExpand = ({ _navigateToCourse, listCourse = [], playPat
 // }
 
 
-const RenderListLesson = ({ chapter, index, l1, l2, _navigateToCourse, listCourse, navigation }) => {
+const RenderListLesson = ({ chapter, index, l1, l2, _navigateToCourse, listCourse, navigation, showConsoult = true }) => {
     const refFlatlist = useRef(null);
     const [active, setActive] = useState(false);
     useEffect(() => {
@@ -184,6 +185,7 @@ const RenderListLesson = ({ chapter, index, l1, l2, _navigateToCourse, listCours
                                                 if (videoData.duration) {
                                                     videoData.name = course.name
                                                     _navigateToCourse({
+                                                        showConsoult,
                                                         videoData,
                                                         listPdf,
                                                         listCourse,
@@ -214,7 +216,7 @@ const RenderListLesson = ({ chapter, index, l1, l2, _navigateToCourse, listCours
                                             })
                                         }
                                     </View>
-                                    {course.preview === 'active' ? <View style={{
+                                    {course.preview === 'active' && showConsoult ? <View style={{
                                         borderWidth: 1, borderColor: '#6992A8', alignSelf: 'center',
                                         paddingHorizontal: 5, paddingVertical: 2, borderRadius: 3
                                     }}>

@@ -2,7 +2,7 @@
 
 import React, { memo, useState, useEffect, useRef, useCallback } from 'react';
 import {
-    View, BackHandler, SafeAreaView, Text, StyleSheet, TouchableOpacity, Alert, Dimensions
+    View, BackHandler, SafeAreaView, Text, StyleSheet, TouchableOpacity, Alert, Dimensions, ActivityIndicator
 } from 'react-native';
 import { Icon, Card } from 'native-base';
 import LinearGradient from 'react-native-linear-gradient';
@@ -22,7 +22,7 @@ import { user_services } from '../../redux/services';
 const { width, height } = Dimensions.get('screen')
 
 const ConsultingForm = (props) => {
-
+    const [loading, setLoading] = useState(false);
     const [name, nameInput] = useHookTextInput({});
     const [phone, phoneInput] = useHookTextInput({ placeholder: '096xxxxxxx', label: 'Số điện thoại (*)' });
 
@@ -54,17 +54,16 @@ const ConsultingForm = (props) => {
                 );
                 return;
             }
+            setLoading(true)
             const result = await user_services.getConsulting({
                 name, phone, class: grade + ''
             });
+            setLoading(false)
 
-            if (result.status) {
-                SimpleToast.show('Đã có lỗi khi đăng ký nhận tư vấn, mời bạn thử lại sau!');
-            } else {
-                SimpleToast.show('Đã đăng ký thành công. Chúng tôi sẽ liên hệ với bạn trong thời gian sớm nhất!');
-            }
+            SimpleToast.showWithGravity('Đã đăng ký thành công. Chúng tôi sẽ liên hệ với bạn trong thời gian sớm nhất!', SimpleToast.LONG, SimpleToast.CENTER);
         } catch (err) {
-            SimpleToast.show('Đã có lỗi khi đăng ký nhận tư vấn, mời bạn thử lại sau!');
+            setLoading(false)
+            SimpleToast.showWithGravity('Đã có lỗi khi đăng ký nhận tư vấn, mời bạn thử lại sau!', SimpleToast.LONG, SimpleToast.CENTER);
             console.log('--------', err)
         }
 
@@ -82,7 +81,7 @@ const ConsultingForm = (props) => {
                 </View>
 
                 <ScrollView style={{ flex: 1 }}>
-                    <View style={{}}>
+                    <View style={{ flex: 1, paddingBottom: 300 }}>
                         <Text style={{ ...fontMaker({ weight: fontStyles.Regular }), fontSize: 16, textAlign: 'center', color: '#999CA2', marginTop: 10 }}>Dựa vào kết quả bài kiểm tra, đội ngũ gia sư của chúng tôi sẽ gọi điện tư vấn phương pháp học hiệu quả nhất dành cho bạn!</Text>
                         <View style={{ marginTop: 10 }}>
                             <View style={{ flexDirection: 'row', alignItems: 'center' }}>
@@ -117,7 +116,8 @@ const ConsultingForm = (props) => {
                                 fontSize: 14,
                                 ...fontMaker({ weight: fontStyles.Regular }),
                                 textAlign: 'left',
-                                color: '#000'
+                                color: '#000',
+                                // paddingBottom: 300
                             }}
                             dropDownStyle={{ backgroundColor: '#fafafa' }}
                             onChangeItem={item => setGrade(item.value)}
@@ -128,12 +128,20 @@ const ConsultingForm = (props) => {
 
                 </ScrollView>
 
-                <TouchableOpacity onPress={handleRegister} style={{ alignSelf: 'center', marginTop: 10, marginBottom: 30 }}>
+                <TouchableOpacity onPress={() => {
+                    if (!loading) {
+                        handleRegister()
+                    }
+                }} style={{ alignSelf: 'center', marginTop: 10, marginBottom: 10 }}>
                     <LinearGradient
                         start={{ x: 0, y: 0 }}
                         end={{ x: 1, y: 0 }}
-                        style={{ paddingHorizontal: 36, paddingVertical: 10, borderRadius: 24, minWidth: 150, justifyContent: 'center', alignItems: 'center' }} colors={['#febf6f', COLOR.MAIN]}>
+                        style={{
+                            paddingHorizontal: 36, paddingVertical: 10, borderRadius: 24, minWidth: 150,
+                            justifyContent: 'center', alignItems: 'center', flexDirection: 'row'
+                        }} colors={['#febf6f', COLOR.MAIN]}>
                         <Text style={{ ...fontMaker({ weight: fontStyles.Regular }), color: 'white', fontSize: fontSize.h3 }}>Đăng ký</Text>
+                        {loading ? <ActivityIndicator style={{ marginLeft: 15 }} color="#fff" size='large' /> : null}
                     </LinearGradient>
                 </TouchableOpacity>
 

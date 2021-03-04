@@ -88,7 +88,7 @@ const ConsultingForm = ({ isOpen = false, onClose = () => { } }) => {
 
                 <Text style={{ marginTop: 10, paddingTop: 15, paddingBottom: 10, ...fontMaker({ weight: fontStyles.SemiBold }), fontSize: 18, textAlign: 'center', marginTop: 5 }}>Đăng ký nhận tư vấn và học thử miễn phí</Text>
                 <ScrollView>
-                    <View style={{}}>
+                    <View style={{paddingBottom: 300}}>
                         <Text style={{ ...fontMaker({ weight: fontStyles.Regular }), fontSize: 16, textAlign: 'center', color: '#999CA2', marginTop: 10 }}>Dựa vào kết quả bài kiểm tra, đội ngũ gia sư của chúng tôi sẽ gọi điện tư vấn phương pháp học hiệu quả nhất dành cho bạn!</Text>
                         <View style={{ marginTop: 10 }}>
                             <View style={{ flexDirection: 'row', alignItems: 'center' }}>
