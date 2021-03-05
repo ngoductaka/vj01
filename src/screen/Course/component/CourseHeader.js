@@ -27,11 +27,8 @@ const CourseHeader = ({ navigation, imgCourse = fakeImg }) => {
                 onPress={() => { navigation.goBack() }}
                 style={{
                     flexDirection: 'row', alignItems: 'center',
-                    marginLeft: 15, position: 'absolute',
-                    // top: 50,
-                    // backgroundColor: '#dfdfdf',
+                    position: 'absolute',
                     padding: 8,
-                    // borderRadius: 30
 
                 }}
             >

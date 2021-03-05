@@ -10,6 +10,7 @@ import { KeyboardAwareFlatList } from 'react-native-keyboard-aware-scroll-view';
 import Toast from 'react-native-simple-toast';
 import OptionsMenu from "react-native-option-menu";
 import ImageView from "react-native-image-viewing";
+import StarRating from 'react-native-star-rating';
 import {
     Placeholder,
     PlaceholderMedia,
@@ -36,9 +37,11 @@ import KeyboardStickyView from '../../component/shared/StickeyKeyboad';
 import RenderData, { RenderDataJson } from '../../component/shared/renderHtmlQuestion';
 import services from '../../handle/services';
 import { endpoints } from '../../constant/endpoints';
-import { search_services } from './service';
+import { search_services, makeRate } from './service';
 import { RenderListImg } from '../../component/Image/renderListImg';
 import { ViewWithBanner, fbFull } from '../../utils/facebookAds';
+import { ModalWrapp } from '../Course/component/ModalVote';
+import { BtnGradient } from '../../component/shared/Btn';
 
 
 const { width, height } = Dimensions.get('window');
@@ -186,7 +189,7 @@ const QnA = (props) => {
                 />
 
                 {/* <View style={{ height: 200 }}> */}
-                    {/* <ViewWithBanner /> */}
+                {/* <ViewWithBanner /> */}
                 {/* </View> */}
                 {/* list */}
                 <View style={{ flex: 1, marginBottom: 65 }}>
@@ -506,9 +509,18 @@ const RenderAnwser = ({ item, index, handleComment, _gotoProfile = () => { }, se
         timestamp = '2020-05-11T19:39:36.000000Z',
         comment = [],
         parse_content = '',
-        image = []
+        image = [],
+        pointAvg = 5,
+        rateCount = 0
     } = item;
+    // console.log('item====', item)
+
+    const [vote, setVote] = useState(5);
+    const [showVote, setShowVote] = useState(false);
+    const [rate, setRate] = useState(pointAvg);
     const [like, setLike] = useState(false);
+
+
     const _handleLike = useCallback(() => {
         search_services.handleLikeAnwser(id, { "rate": like ? -1 : 1 })
             .then(() => {
@@ -518,11 +530,32 @@ const RenderAnwser = ({ item, index, handleComment, _gotoProfile = () => { }, se
                 console.log('err', err)
             })
     }, [like]);
+
+    const _handleVote = () => {
+        // answer/rate/{answerId}
+        makeRate(id, { point: vote })
+            .then((data) => {
+                const { point_floor = 5 } = data || {};
+                setRate(point_floor);
+                setTimeout(() => {
+                    Toast.showWithGravity("Cảm ơn vì đã đánh giá", Toast.LONG, Toast.CENTER)
+                }, 1000)
+            })
+            .catch(err => {
+                setTimeout(() => {
+                    Toast.showWithGravity("Gửi đánh giá thất bại vui lòng thử lại sau", Toast.LONG, Toast.CENTER)
+                }, 1000)
+            })
+            .finally(() => {
+                setShowVote(false);
+            })
+    }
+
     return (
         <View
             style={[styles.itemQ, {}]}
         >
-            <View style={{ flexDirection: 'row', paddingRight: 10 }}>
+            <View style={{ flexDirection: 'row', paddingRight: 10, marginTop: 15 }}>
                 <User style={{ marginRight: 5 }}
                     _gotoProfile={() => _gotoProfile(useID)}
                     uri={avatar}
@@ -541,21 +574,44 @@ const RenderAnwser = ({ item, index, handleComment, _gotoProfile = () => { }, se
                             <TouchableOpacity onPress={() => { console.log('wewe'), setListShowImg(image) }}>
                                 <RenderListImg listImg={image} setVisible={setListShowImg} />
                             </TouchableOpacity>
+
                             {/* <Text style={{}}>{JSON.stringify(parse_content)}</Text> */}
                         </View>
+                        <TouchableOpacity
+                            onPress={() => { setShowVote(true) }}
+                            style={{
+                                // width: 130,
+                                position: 'absolute', right: 0,
+                                top: -10, padding: 5, paddingHorizontal: 10, borderRadius: 10,
+                                backgroundColor: '#dedede', flexDirection: 'row',
+                            }}>
+                            <StarRating
+                                disabled={true}
+                                maxStars={5}
+                                rating={rate}
+                                fullStarColor={COLOR.MAIN}
+                                starSize={fontSize.h2}
+                            />
+                            <Text style={{ marginLeft: 8, color: '#333' }}>{rate} ({rateCount})</Text>
+                        </TouchableOpacity>
                     </View>
                     <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
                         <View style={{ flexDirection: 'row' }}>
-                            <Text style={{ fontSize: 16, marginLeft: 5 }}>{getDiffTime(timestamp)}</Text>
-                            <TouchableOpacity style={{ flexDirection: 'row', alignItems: 'center' }} onPress={_handleLike}>
-                                <Icon name="heart" style={{ fontSize: 14, color: like ? '#FD7A6C' : '#ddd', marginLeft: 15, }} type='AntDesign' />
-                                <Text style={{ fontSize: 16, marginLeft: 5, color: like ? '#FD7A6C' : '#222' }}>Cảm ơn ({+likeCount + (like ? 1 : 0)})</Text>
-                            </TouchableOpacity>
+                            <View style={{ flexDirection: 'row', flex: 1 }}>
+                                <Text style={{ fontSize: 16, marginLeft: 5 }}>{getDiffTime(timestamp)}</Text>
+
+                                <TouchableOpacity style={{ flexDirection: 'row', alignItems: 'center', marginLeft: 15 }} onPress={_handleLike}>
+                                    <Icon name="heart" style={{ fontSize: 14, color: like ? '#FD7A6C' : '#ddd' }} type='AntDesign' />
+                                    <Text style={{ fontSize: 16, marginLeft: 5, color: like ? '#FD7A6C' : '#222' }}>Cảm ơn ({+likeCount + (like ? 1 : 0)})</Text>
+                                </TouchableOpacity>
+
+                            </View>
 
                             <TouchableOpacity onPress={() => handleComment('comment', { id, name, index })}>
                                 {/* <Icon name="heart" style={{ fontSize: 15, color: 'red' }} type='AntDesign' /> */}
                                 <Text style={{ fontSize: 16, marginLeft: 15 }}>Trả lời</Text>
                             </TouchableOpacity>
+
                         </View>
                     </View>
                     <View>
@@ -571,6 +627,39 @@ const RenderAnwser = ({ item, index, handleComment, _gotoProfile = () => { }, se
 
                 </View>
             </View>
+            <ModalWrapp show={showVote} onClose={() => { setShowVote(false) }} title="Vote câu trả lời:">
+                <View style={{ width: width - 50, paddingTop: 30, }}>
+                    <StarRating
+                        maxStars={5}
+                        rating={vote}
+                        fullStarColor={COLOR.MAIN}
+                        starSize={50}
+                        selectedStar={(val) => {
+                            setVote(val)
+                        }}
+                    />
+                    <View style={{ alignItems: 'center' }}>
+                        <BtnGradient onPress={_handleVote} text='Gửi' textStyle={{ fontWeight: 'bold' }} style={{ marginTop: 20 }} />
+                        {/* <TouchableOpacity style={{
+                            padding: 15, marginTop: 20,
+                            elevation: 8,
+                            backgroundColor: COLOR.MAIN,
+                            borderRadius: 10,
+                            paddingVertical: 10,
+                            paddingHorizontal: 25
+                        }}>
+                            <Text style={{
+                                fontSize: 20,
+                                color: "#fff",
+                                fontWeight: "bold",
+                                alignSelf: "center",
+                                textTransform: "uppercase"
+                            }}>Gửi</Text>
+                        </TouchableOpacity> */}
+                    </View>
+                </View>
+
+            </ModalWrapp>
         </View>
     )
 }

@@ -86,7 +86,7 @@ const TitleCourse = ({
                             rating={rate}
                             fullStarColor={COLOR.MAIN}
                             starSize={fontSize.h2}
-                            disabled
+                            // disabled
                         />
                         <Text style={{
                             fontSize: 12,

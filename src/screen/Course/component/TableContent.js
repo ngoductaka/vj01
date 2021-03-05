@@ -208,9 +208,13 @@ const RenderListLesson = ({ chapter, index, l1, l2, _navigateToCourse, listCours
                                                         onPress={() => {
                                                             navigation.navigate('PdfView', { uri: pdf.raw_url })
                                                         }}
-                                                        style={{ flexDirection: 'row', marginTop: 15 }}>
-                                                        <Icon style={{ fontSize: 17, marginRight: 6 }} name="file-pdf-o" type="FontAwesome" />
-                                                        <Text style={{ fontSize: 18, textTransform: 'capitalize', ...fontMaker({ weight: fontStyles.Regular }) }} numberOfLines={2}>{pdf.name}</Text>
+                                                        style={{ flexDirection: 'row', marginTop: 15, marginLeft: -25, alignItems: 'center' }}
+                                                    >
+                                                        <Icon style={{ fontSize: 15, marginRight: 12 }} name="file-pdf-o" type="FontAwesome" />
+                                                        <View>
+                                                            <Text style={{ fontSize: 15, textTransform: 'capitalize', ...fontMaker({ weight: fontStyles.Regular }) }} numberOfLines={2}>{pdf.name}</Text>
+                                                            <Text style={{ marginTop: 4, color: '#222', fontSize: 12, }}> Tài liệu</Text>
+                                                        </View>
                                                     </TouchableOpacity>
                                                 )
                                             })

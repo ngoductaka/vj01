@@ -17,6 +17,7 @@ import { fontSize, blackColor, COLOR } from '../../handle/Constant';
 import { helpers } from '../../utils/helpers';
 import SimpleToast from 'react-native-simple-toast';
 import { user_services } from '../../redux/services';
+import { submitConsultation } from './services';
 // import DropDownPicker from 'react-native-dropdown-picker';
 
 const { width, height } = Dimensions.get('screen')
@@ -55,15 +56,29 @@ const ConsultingForm = (props) => {
                 return;
             }
             setLoading(true)
-            const result = await user_services.getConsulting({
+            submitConsultation({
+                name, phone, class_level: grade
+            })
+                .then(() => {
+                    SimpleToast.showWithGravity('Đã đăng ký thành công. Chúng tôi sẽ liên hệ với bạn trong thời gian sớm nhất!', SimpleToast.LONG, SimpleToast.CENTER);
+                })
+                .catch(() => {
+                    SimpleToast.showWithGravity('Đã đăng ký thành công. Chúng tôi sẽ liên hệ với bạn trong thời gian sớm nhất!', SimpleToast.LONG, SimpleToast.CENTER);
+                })
+                .finally(() => {
+                    setLoading(false)
+                })
+            user_services.getConsulting({
                 name, phone, class: grade + ''
-            });
-            setLoading(false)
+            }).then(() => {
 
-            SimpleToast.showWithGravity('Đã đăng ký thành công. Chúng tôi sẽ liên hệ với bạn trong thời gian sớm nhất!', SimpleToast.LONG, SimpleToast.CENTER);
+            }).catch(err => {
+                SimpleToast.showWithGravity('Đã có lỗi khi đăng ký nhận tư vấn, mời bạn thử lại sau!', SimpleToast.LONG, SimpleToast.CENTER);
+            })
+
+            // SimpleToast.showWithGravity('Đã đăng ký thành công. Chúng tôi sẽ liên hệ với bạn trong thời gian sớm nhất!', SimpleToast.LONG, SimpleToast.CENTER);
         } catch (err) {
             setLoading(false)
-            SimpleToast.showWithGravity('Đã có lỗi khi đăng ký nhận tư vấn, mời bạn thử lại sau!', SimpleToast.LONG, SimpleToast.CENTER);
             console.log('--------', err)
         }
 
