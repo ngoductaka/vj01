@@ -37,7 +37,7 @@ request.interceptors.request.use(
 		const { userInfo = {} } = Store.getState() || {};
 		const { imei = "" } = userInfo;
 		const token = await getItem(Constants.ACCESS_TOKEN);
-		console.log('---------token--', token, '----------------');
+		// console.log('---------token--', token, '----------------');
 		if (token) config.headers['Authorization'] = `Bearer ${token}`;
 		if (imei) config.headers['imei'] = imei;
 		// ?????

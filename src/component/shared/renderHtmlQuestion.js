@@ -240,7 +240,7 @@ const RenderImg = ({ uri, height, widthImg, indexItem, setShowImg, isAnwser }) =
 
     return (
       <TouchableOpacity onPress={() => {
-        if (size.width && size.width > width - 30) {
+        if (size.width && size.width > width - 30 && setShowImg) {
           Toast.showWithGravity("Click 2 lần để phóng to", Toast.SHORT, Toast.CENTER);
           setShowImg({ uri, size })
         }
@@ -307,7 +307,7 @@ const RenderData = ({ indexItem = '', content }) => {
   )
 }
 
-export const RenderDataJson = ({ indexItem = '', content, isAnwser, setShowImg = () => { } }) => {
+export const RenderDataJson = ({ indexItem = '', content, isAnwser, setShowImg}) => {
   // console.log('contentcontentcontentcontentcontentcontent', content, typeof content)
   if (isEmpty(content) || !Array.isArray(content)) return null;
   return (
@@ -319,7 +319,7 @@ export const RenderDataJson = ({ indexItem = '', content, isAnwser, setShowImg =
   )
 }
 // 
-export const RenderRow = ({ indexItem = '', row, indexRow, setShowImg = () => { }, isAnwser }) => {
+export const RenderRow = ({ indexItem = '', row, indexRow, setShowImg, isAnwser }) => {
   try {
     return (
       <View key={`${indexItem}_row_${indexRow}`} style={styles.viewRow}>
@@ -366,7 +366,7 @@ export const RenderRow = ({ indexItem = '', row, indexRow, setShowImg = () => { 
                 <TouchableOpacity
                   // key={indexRow + indexItem + index + 'ios_svg'}
                   onPress={() => {
-                    if (widthConvert > width - 150) {
+                    if (widthConvert > width - 150 && setShowImg) {
                       Toast.showWithGravity("Click 2 lần để phóng to", Toast.SHORT, Toast.CENTER);
                       setShowImg({
                         type: 'svg',
