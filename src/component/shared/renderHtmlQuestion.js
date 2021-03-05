@@ -33,6 +33,7 @@ import Sound from '../Sound';
 import { fontMaker, fontStyles } from '../../utils/fonts';
 import BannerAd from './BannerAd';
 import { endpoints } from '../../constant/endpoints';
+import { handleImgSrc, handleImgTest } from '../../utils/images';
 
 const config = {
   WebViewComponent: WebView,
@@ -188,18 +189,27 @@ const ImageSVG = props => {
   }
 };
 
-const RenderImg = ({ uri, height, widthImg, indexItem, setShowImg = () => { }, isAnwser }) => {
-  try {
-    const convertEndPoint = `${endpoints.BASE_HOI_DAP}${uri}`
 
-    // const uri = url.toLocaleLowerCase();
+const handleImgLink = (link) => {
+  try {
+    if (!link) return "https://avancar.gov.br/avancar-web/images/slideshow/not-found.png"
+    return link.includes('http') ? link : `${endpoints.BASE_HOI_DAP}${uri}`;
+  } catch (err) {
+    return link;
+  }
+}
+
+const RenderImg = ({ uri, height, widthImg, indexItem, setShowImg, isAnwser }) => {
+  try {
+
+    const convertEndPoint = handleImgLink(uri);
     if (height && widthImg) {
       return (
         <TouchableOpacity onPress={() => {
-          // if (widthImg > width - 30) {
+          if (widthImg > width - 30 && setShowImg) {
           Toast.showWithGravity("Click 2 lần để phóng to", Toast.SHORT, Toast.CENTER);
           setShowImg({ uri: convertEndPoint, size: { height, width: widthImg } })
-          // }
+          }
         }} key={indexItem + 'img'} style={{ height, width: widthImg > width ? width - 5 : widthImg }}>
           <Image
             resizeMode="contain"
