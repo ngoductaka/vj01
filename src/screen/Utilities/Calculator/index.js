@@ -4,62 +4,65 @@ import {
   TouchableWithoutFeedback, Keyboard,
   SafeAreaView, TextInput
 } from "react-native";
+import {
+  atan2, chain, derivative, e, evaluate, log, pi, pow, round, sqrt
+} from 'mathjs'
 
 import Row from "./components/Row";
 import Button from "./components/Button";
 import calculator, { initialState } from "./util/calculator";
 import { TouchableOpacity } from "react-native-gesture-handler";
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: "#202020",
-    justifyContent: "flex-end"
-  },
-  value: {
-    color: "#fff",
-    fontSize: 40,
-    textAlign: "right",
-    marginRight: 20,
-    marginBottom: 10
-  }
-});
 
 const App = () => {
-  const [stringCal, setString] = useState('');
+  const [stringCal, setString] = useState(' ');
+  const [result, setResult] = useState(' ');
 
-  const handleTap = (type, value) => {
-
+  const handleTap = (value) => {
+    setString(stringCal + value)
   };
+  const handleCalculate = () => {
+    try {
+      const res = evaluate(stringCal)
+      setResult(res)
+
+    } catch (err) {
+      console.log('eeeee', err)
+    }
+  }
 
 
   return (
     <View style={styles.container}>
       <SafeAreaView style={{ flex: 1 }}>
         <View style={{ flex: 1, backgroundColor: '#A6BCA1', paddingVertical: 20, borderRadius: 10 }}>
-          <TouchableOpacity
-            onPress={() => {
-              console.log('-----')
-              Keyboard.dismiss();
+          <TextInput
+            // showSoftInputOnFocus={false}
+            // blurOnSubmit={false}
+            style={{
+              flex: 1,
+              paddingHorizontal: 10,
+              paddingVertical: 40,
+              backgroundColor: '#A6BCA1',
+              fontSize: 30,
+              // minHeight:200,
+              // width: 300,
             }}
-          >
+            multiline={true}
+            numberOfLines={1}
+            value={stringCal}
+            // onChangeText={() => { }}
+            keyboardType={'numeric'}
+            editable={false}
+          // focusable={false}
+          // selection={{ start: 3, end: 3 }}
 
-            <TextInput
-              showSoftInputOnFocus={false}
-              blurOnSubmit={false}
-              style={{
-                flex: 1,
-                paddingHorizontal: 10,
-                paddingVertical: 40,
-                backgroundColor: '#A6BCA1',
-              }}
-              multiline={true}
-              onChangeText={() => { }}
-            />
-          </TouchableOpacity>
+          // onFocus={() => Keyboard.dismiss()}
+
+          />
         </View>
         <Text style={styles.value}>
-          {/* {parseFloat(state.currentValue).toLocaleString()} */}
+          {result}
         </Text>
 
         <Row>
@@ -125,40 +128,40 @@ const App = () => {
         </Row>
 
         <Row>
-          <Button text="7" onPress={() => handleTap("number", 7)} />
-          <Button text="8" onPress={() => handleTap("number", 8)} />
-          <Button text="9" onPress={() => handleTap("number", 9)} />
-          <Button text="DEL" theme="accent" onPress={() => handleTap("operator", "*")} />
-          <Button text="AC" theme="accent" onPress={() => handleTap("operator", "*")} />
+          <Button text="7" onPress={() => handleTap(7)} />
+          <Button text="8" onPress={() => handleTap(8)} />
+          <Button text="9" onPress={() => handleTap(9)} />
+          <Button text="DEL" theme="accent" onPress={() => handleTap("*")} />
+          <Button text="AC" theme="accent" onPress={() => handleTap("*")} />
         </Row>
         <Row>
-          <Button text="4" onPress={() => handleTap("number", 4)} />
-          <Button text="5" onPress={() => handleTap("number", 5)} />
-          <Button text="6" onPress={() => handleTap("number", 6)} />
-          <Button text="X" onPress={() => handleTap("operator", "*")} />
-          <Button text="/" onPress={() => handleTap("operator", "*")} />
+          <Button text="4" onPress={() => handleTap(4)} />
+          <Button text="5" onPress={() => handleTap(5)} />
+          <Button text="6" onPress={() => handleTap(6)} />
+          <Button text="X" onPress={() => handleTap("*")} />
+          <Button text="/" onPress={() => handleTap("/")} />
         </Row>
 
         <Row>
-          <Button text="1" onPress={() => handleTap("number", 1)} />
-          <Button text="2" onPress={() => handleTap("number", 2)} />
-          <Button text="3" onPress={() => handleTap("number", 3)} />
-          <Button text="+" onPress={() => handleTap("operator", "*")} />
-          <Button text="-" onPress={() => handleTap("operator", "*")} />
+          <Button text="1" onPress={() => handleTap(1)} />
+          <Button text="2" onPress={() => handleTap(2)} />
+          <Button text="3" onPress={() => handleTap(3)} />
+          <Button text="+" onPress={() => handleTap("+")} />
+          <Button text="-" onPress={() => handleTap("-")} />
 
         </Row>
 
         <Row>
           <Button
             text="0"
-            onPress={() => handleTap("number", 0)}
+            onPress={() => handleTap(0)}
           />
-          <Button text="." onPress={() => handleTap("number", ".")} />
-          <Button text="EXP" onPress={() => handleTap("number", ".")} />
-          <Button text="ANS" onPress={() => handleTap("number", ".")} />
+          <Button text="." onPress={() => handleTap(".")} />
+          <Button text="EXP" onPress={() => handleTap(".")} />
+          <Button text="ANS" onPress={() => handleTap(".")} />
           <Button
             text="="
-            onPress={() => handleTap("equal")}
+            onPress={() => handleCalculate()}
           />
         </Row>
       </SafeAreaView>
@@ -167,5 +170,20 @@ const App = () => {
 
 }
 
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: "#202020",
+    justifyContent: "flex-end"
+  },
+  value: {
+    color: "#fff",
+    fontSize: 40,
+    textAlign: "right",
+    marginRight: 20,
+    marginBottom: 10
+  }
+});
 
 export default App;
