@@ -130,7 +130,7 @@ const QnA = (props) => {
     const _handleScroll = (nativeEvent) => {
         if (nativeEvent && nativeEvent.contentOffset) {
             const { y } = nativeEvent.contentOffset || {};
-            if (y > 150) {
+            if (y > 250) {
                 setShowHeader(true)
             } else {
                 setShowHeader(false)
@@ -203,7 +203,7 @@ const QnA = (props) => {
                         }
                     />
                     <View style={{ position: 'absolute', height: 1, left: 0, right: 0 }}>
-                        {showHeader && <FilterHeader filter={filter} setFilter={setFilter} show={showHeader} />}
+                        {showHeader && <FilterHeader loading={page.loading} filter={filter} setFilter={setFilter} show={showHeader} />}
                     </View>
                 </View>
                 {
@@ -460,17 +460,17 @@ const RenderHead = ({ filter, setFilter, setShowFilter, navigation, loading, ava
     )
 }
 
-const FilterHeader = ({ show, filter = {}, setFilter }) => {
+const FilterHeader = ({ show, filter = {}, setFilter, loading = false }) => {
     return (
         <Animatable.View
             animation={show ? 'fadeIn' : 'fadeOut'}
         >
-            <PopularFilter filter={filter} setFilter={setFilter} />
+            <PopularFilter filter={filter} setFilter={setFilter} loading={loading} />
         </Animatable.View>
     )
 };
 
-const PopularFilter = ({ filter, setFilter }) => {
+const PopularFilter = ({ filter, setFilter, loading = false }) => {
     return (
         <View
             style={{
@@ -490,6 +490,9 @@ const PopularFilter = ({ filter, setFilter }) => {
                 }}>
                 <Text style={{ fontWeight: '600', fontSize: 14, color: filter.popular ? COLOR.MAIN : '#333' }}>Phổ biến</Text>
             </TouchableOpacity>
+            {
+                loading ? <ActivityIndicator color={COLOR.MAIN} /> : null
+            }
             <TouchableOpacity
                 onPress={() => setFilter({ ...filter, popular: false })}
                 style={{

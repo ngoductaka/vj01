@@ -33,12 +33,12 @@ export const removeDiacritics = (sen) => {
 
 export const convertMoney = (number) => {
     try {
-        return (number).toFixed(0).replace(/\d(?=(\d{3})+$)/g, '$&.');
+        return (number).toFixed(0).replace(/\d(?=(\d{3})+$)/g, '$&.')  + ' đ';
         //    return Number((number).toFixed(1)).toLocaleString()
         // return new Intl.NumberFormat('de-DE', { style: 'currency', currency: 'VND' }).format(number);
     } catch (err) {
         console.log('err convert num', err)
-        return number
+        return number + ' đ'
     }
 }
 

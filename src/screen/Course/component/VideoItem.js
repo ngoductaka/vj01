@@ -120,7 +120,8 @@ export const LargeVideo = (props) => {
                         }}>{convertMoney(price)} </Text> */}
                     </View>
                 </View>
-                <TouchableOpacity
+                {/* handle click three dot */}
+                {/* <TouchableOpacity
                     style={{ paddingLeft: 15 }}
                     onPress={() => { _hanldeDel ? _hanldeDel() : setOpenModal(true) }}
                 >
@@ -129,7 +130,7 @@ export const LargeVideo = (props) => {
                         name={_hanldeDel ? 'circle-with-cross' : "dots-three-vertical"}
                         style={[{ fontSize: 20, color: 'rgba(0,0,0,0.6)' }, _hanldeDel ? { paddingLeft: 15, color: COLOR.WRONG } : {}]}
                     />
-                </TouchableOpacity>
+                </TouchableOpacity> */}
 
             </View>
             {/* {

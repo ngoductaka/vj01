@@ -221,7 +221,7 @@ const RenderListLesson = ({ chapter, index, l1, l2, _navigateToCourse, listCours
                                         }
                                     </View>
                                     {course.preview === 'active' && showConsoult ? <View style={{
-                                        borderWidth: 1, borderColor: '#6992A8', alignSelf: 'center',
+                                        borderWidth: 1, borderColor: '#6992A8', alignSelf: 'flex-start',
                                         paddingHorizontal: 5, paddingVertical: 2, borderRadius: 3
                                     }}>
                                         <Text style={{ color: '#6992A8' }}>preview</Text>

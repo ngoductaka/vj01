@@ -307,13 +307,15 @@ const RenderData = ({ indexItem = '', content }) => {
   )
 }
 
-export const RenderDataJson = ({ indexItem = '', content, isAnwser, setShowImg }) => {
+export const RenderDataJson = ({ indexItem = '', content, isAnwser, setShowImg, isShort = false }) => {
   // console.log('contentcontentcontentcontentcontentcontent', content, typeof content)
   if (isEmpty(content) || !Array.isArray(content)) return null;
   return (
     <View style={styles.container}>
       {
-        content.map((row, indexRow) => RenderRow({ indexItem, row, indexRow, isAnwser, setShowImg }))
+        isShort ?
+          content.slice(0, 1).map((row, indexRow) => RenderRow({ indexItem, row, indexRow, isAnwser, setShowImg })) :
+          content.map((row, indexRow) => RenderRow({ indexItem, row, indexRow, isAnwser, setShowImg }))
       }
     </View >
   )
