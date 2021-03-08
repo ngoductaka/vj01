@@ -27,7 +27,7 @@ const handleLike = (id, data) => {
 
 const handleLikeAnwser = (id, data) => {
     return api.post(`vote/answer/${id}`, data)
-    
+
 }
 
 
@@ -35,11 +35,17 @@ const handleFollow = (questionID) => {
     return api.post(`question/follow/${questionID}`)
 }
 
+const makeRate = (answerId, body) => api.post(`answer/rate/${answerId}`, body)
+
 const handleReport = () => {
-    
+
 }
 
 export const search_services = {
     handleSearch, handleLike, handleLikeAnwser,
     handleFollow, handleReport
+}
+
+export {
+    makeRate,
 }

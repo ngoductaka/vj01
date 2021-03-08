@@ -66,7 +66,7 @@ const LessonOverview = (props) => {
 
     const showFullAds = navigation.getParam('showFullAds', true);
     const advertParam = navigation.getParam('advert', null);
-    console.log('adverrrrr', advertParam);
+    // console.log('adverrrrr', advertParam);
 
     const [_dataLesson, loading, err] = useRequest(endPoint, [lessonId + lesson_id]);
     const [dataLesson, setDataLesson] = useState([]);
@@ -99,12 +99,12 @@ const LessonOverview = (props) => {
 
     useEffect(() => {
         if (learningTimes % frequency == 0) {
-            console.log('---1-1-2-1-2');
+            // console.log('---1-1-2-1-2');
             otherAdvert = firebase.admob().interstitial(unitIntertitialId);
             otherRequest = new AdRequest();
             otherRequest.addKeyword('facebook').addKeyword('google').addKeyword('instagram').addKeyword('zalo').addKeyword('google').addKeyword('pubg').addKeyword('asphalt').addKeyword('covid-19');
             otherAdvert.loadAd(otherRequest.build());
-            console.log('----a', otherAdvert);
+            // console.log('----a', otherAdvert);
         }
     }, [learningTimes]);
 

@@ -33,6 +33,8 @@ import CourseDetail from '../screen/Course/CourseDetail';
 import ConsultingForm from '../screen/Course/ConsultingForm';
 import TopicCourse from '../screen/Course/TopicCourse';
 import CoursePlayer from '../screen/Course/CoursePlayer';
+import PdfView from '../screen/Course/PdfView';
+import VideoLesson from '../screen/Course/VideoLesson';
 import { fontMaker } from '../utils/fonts';
 import { helpers } from '../utils/helpers';
 import OverviewTest from '../screen/Test/OverviewTest';
@@ -71,7 +73,7 @@ import ScroreAnalyse from '../screen/Utilities/ScroreAnalyse';
 import Calculator from '../screen/Utilities/Calculator';
 import SudokuInstruction from '../screen/GameCenter/Sudoku/containers/Instruction';
 
-const NUMBER_OF_TABS = 4;
+const NUMBER_OF_TABS = 5;
 
 const TestStack = createStackNavigator({
 	HomeTest: HomeTest,
@@ -146,19 +148,19 @@ const CustomBottomBar = (props) => {
 						props.navigation.popToTop();
 						animate(0, route.key);
 						break;
-					// case 'CourseScreen':
-					// 	animate(width - (NUMBER_OF_TABS - 1) * width / NUMBER_OF_TABS, route.key);
-					// 	props.navigation.popToTop();
-					// 	break;
-					case 'TestStack':
+					case 'CourseScreen':
 						animate(width - (NUMBER_OF_TABS - 1) * width / NUMBER_OF_TABS, route.key);
 						props.navigation.popToTop();
 						break;
-					case 'QnA':
+					case 'TestStack':
 						animate(width - (NUMBER_OF_TABS - 2) * width / NUMBER_OF_TABS, route.key);
+						props.navigation.popToTop();
+						break;
+					case 'QnA':
+						animate(width - (NUMBER_OF_TABS - 3) * width / NUMBER_OF_TABS, route.key);
 						break;
 					case 'AccountStack':
-						animate(width - (NUMBER_OF_TABS - 3) * width / NUMBER_OF_TABS, route.key);
+						animate(width - (NUMBER_OF_TABS - 4) * width / NUMBER_OF_TABS, route.key);
 						props.navigation.popToTop();
 						break;
 				}
@@ -175,9 +177,9 @@ const MainContent = createBottomTabNavigator({
 	// SearchStack: {
 	// 	screen: SearchView
 	// },
-	// CourseScreen: {
-	// 	screen: Course,
-	// },
+	CourseScreen: {
+		screen: Course,
+	},
 	TestStack: {
 		screen: TestStack,
 	},
@@ -444,12 +446,19 @@ const InAppStack = createStackNavigator({
 	ConsultingForm: {
 		screen: ConsultingForm,
 		navigationOptions: {
-			...TransitionPresets.ModalPresentationIOS,
+			...TransitionPresets.ModalSlideFromBottomIOS,
 		}
 	},
 	TimeTable: TimeTable,
 	ScroreAnalyse: ScroreAnalyse,
 	Calculator: Calculator,
+	VideoLesson: {
+		screen: VideoLesson,
+		navigationOptions: {
+			...TransitionPresets.ModalSlideFromBottomIOS,
+		}
+	},
+	PdfView: PdfView,
 	// ConsultingForm:ConsultingForm,
 }, {
 	// defaultNavigationOptions: {

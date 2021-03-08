@@ -137,8 +137,8 @@ android {
             incremental true
         }
         multiDexEnabled true
-        versionCode 114
-        versionName "2.2.1"
+        versionCode 116
+        versionName "2.2.4"
     }
     signingConfigs {
         release {

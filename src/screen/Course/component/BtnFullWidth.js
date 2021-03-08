@@ -7,6 +7,7 @@ import {
     SafeAreaView, ScrollView, Text, StyleSheet, Linking, Platform, ImageBackground, TouchableOpacity, Image
 } from 'react-native';
 import { Icon } from 'native-base';
+import { get } from 'lodash';
 import LinearGradient from 'react-native-linear-gradient';
 import * as Animatable from 'react-native-animatable';
 import StarRating from 'react-native-star-rating';
@@ -34,9 +35,9 @@ const styleBtnFullWidth = StyleSheet.create({
         justifyContent: 'center',
         alignItems: 'center',
         backgroundColor: '#dedede',
-        paddingVertical: Platform.OS === 'ios' ? 12 : 8,
+        paddingVertical: Platform.OS === 'ios' ? 10 : 8,
         marginVertical: 10,
-        borderRadius: 10,
+        // borderRadius: 10,
     },
     text: {
         textAlign: 'center',
@@ -49,15 +50,26 @@ const styleBtnFullWidth = StyleSheet.create({
 // 
 
 
-
-
 const TitleCourse = ({
     title = '',
     subTitle = '',
     prePrice = 0,
     price = 0,
     vote = 4.5,
+    bought = 0,
+    content = {},
+
 }) => {
+    let rate = 4;
+    if (vote[0]) {
+        try {
+            console.log(vote.reduce((cal, cur) => cal + cur.rating_number, 0))
+            rate = +(vote.reduce((cal, cur) => cal + cur.rating_number, 0) / vote.length).toFixed(1)
+        } catch (err) {
+            console.log(err)
+
+        }
+    }
     const [showMore, setShowMore] = useState(false);
     return (
         <View style={stylesTitle.titleCourse}>
@@ -67,17 +79,24 @@ const TitleCourse = ({
                 </View>
                 <View style={stylesTitle.priceView}>
                     <Text style={stylesTitle.price}>{convertMoney(price)} </Text>
-                    <View style={{ alignItems: 'flex-start', marginBottom: 10 }}>
+                    <View style={{ alignItems: 'center', flexDirection:'row', marginBottom: 10 }}>
                         <StarRating
-                            disabled={true}
+                            // disabled={true}
                             maxStars={5}
-                            rating={vote}
+                            rating={rate}
                             fullStarColor={COLOR.MAIN}
                             starSize={fontSize.h2}
-                            disabled
+                            // disabled
                         />
+                        <Text style={{
+                            fontSize: 12,
+                            color: '#777',
+                            marginLeft: 5
+                        }}>
+                            {rate} ({get(vote, 'length')})
+                        </Text>
                     </View>
-                    <Text>{123400} học viên</Text>
+                    {bought ? <Text>{bought} học viên</Text> : null}
                 </View>
                 {
                     [
@@ -87,7 +106,7 @@ const TitleCourse = ({
                                 type: "FontAwesome5"
                             },
                             title: 'Giáo viên',
-                            content: '---'
+                            content: content.teacher
                         },
                         {
 
@@ -96,7 +115,7 @@ const TitleCourse = ({
                                 type: "Feather"
                             },
                             title: 'Trình độ',
-                            content: '-------'
+                            content: content.grade,
                         },
                         {
 
@@ -105,7 +124,7 @@ const TitleCourse = ({
                                 type: "Entypo"
                             },
                             title: 'Cấp độ',
-                            content: '-------'
+                            content: content.level
                         },
                         {
 
@@ -114,7 +133,7 @@ const TitleCourse = ({
                                 type: "FontAwesome"
                             },
                             title: 'Thời lượng',
-                            content: '-------'
+                            content: content.time
                         },
                         {
 
@@ -123,7 +142,7 @@ const TitleCourse = ({
                                 type: "Entypo"
                             },
                             title: 'Bài giảng',
-                            content: '-------'
+                            content: content.courseCount
                         },
                         {
 
@@ -132,7 +151,7 @@ const TitleCourse = ({
                                 type: "MaterialCommunityIcons"
                             },
                             title: 'Học liệu',
-                            content: '-------'
+                            content: content.doc
                         },
                         {
 
@@ -141,31 +160,34 @@ const TitleCourse = ({
                                 type: "MaterialCommunityIcons"
                             },
                             title: 'Cập nhật',
-                            content: '-------'
+                            content: content.update
                         },
                     ].map(item => {
-                        return (
-                            <View style={{ flexDirection: 'row', marginBottom: 8 }}>
-                                <View style={{ flex: 1, flexDirection: 'row' }}>
-                                    <Icon style={{ fontSize: 16, marginRight: 5 }} name={item.icon.name} type={item.icon.type} />
-                                    <Text>{item.title}:</Text>
+                        if (item.content)
+                            return (
+                                <View style={{ flexDirection: 'row', marginBottom: 8 }}>
+                                    <View style={{ flex: 1, flexDirection: 'row' }}>
+                                        <Icon style={{ fontSize: 16, marginRight: 5 }} name={item.icon.name} type={item.icon.type} />
+                                        <Text>{item.title}:</Text>
+                                    </View>
+                                    <View style={{ flex: 2 }}>
+                                        <Text>{item.content}</Text>
+                                    </View>
                                 </View>
-                                <View style={{ flex: 2 }}>
-                                    <Text>{item.content}</Text>
-                                </View>
-                            </View>
-                        )
+                            )
                     })
                 }
-                <View>
-                    <Text style={stylesTitle.subTitle} numberOfLines={showMore ? 15 : 3}>{subTitle} </Text>
-                    <TouchableOpacity onPress={() => setShowMore(!showMore)} style={{ alignItems: 'flex-end' }}>
-                        <Text>{showMore ? "Thu gọn" : "Xem thêm"}</Text>
-                    </TouchableOpacity>
-                </View>
-                <View style={stylesTitle.bottomTile}>
+                {subTitle ?
+                    <View>
+                        <Text style={stylesTitle.subTitle} numberOfLines={showMore ? 15 : 3}>{subTitle} </Text>
+                        <TouchableOpacity onPress={() => setShowMore(!showMore)} style={{ alignItems: 'flex-end' }}>
+                            <Text>{showMore ? "Thu gọn" : "Xem thêm"}</Text>
+                        </TouchableOpacity>
+                    </View>
+                    : null}
+                {/* <View style={stylesTitle.bottomTile}>
 
-                </View>
+                </View> */}
             </View>
             {/* <ImgCourse style={{ height: helpers.isTablet ? 350 : 200 }} /> */}
         </View>
