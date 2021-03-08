@@ -20,10 +20,10 @@ const PdfView = props => {
             <Pdf
                 source={{ uri: convertPdfLink(uri), cache: false }}
                 onLoadComplete={(numberOfPages, filePath) => {
-                    console.log(`number of pages: ${numberOfPages}`);
+                    // console.log(`number of pages: ${numberOfPages}`);
                 }}
                 onPageChanged={(page, numberOfPages) => {
-                    console.log(`current page: ${page}`);
+                    // console.log(`current page: ${page}`);
                 }}
                 onError={(error) => {
                     console.log(error);

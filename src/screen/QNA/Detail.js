@@ -21,9 +21,6 @@ import { check, PERMISSIONS, RESULTS, openSettings, request } from 'react-native
 
 import ImageZoom from 'react-native-image-pan-zoom';
 import { SvgXml } from 'react-native-svg';
-import {
-    InterstitialAdManager
-} from 'react-native-fbads';
 
 import api from '../../handle/api';
 import { getDiffTime, helpers } from '../../utils/helpers'
@@ -34,12 +31,12 @@ import imagePicker from '../../utils/imagePicker';
 // 
 import KeyboardStickyView from '../../component/shared/StickeyKeyboad';
 // import RenderData, { RenderDataJson } from '../../component/shared/renderHtmlNew';
-import RenderData, { RenderDataJson } from '../../component/shared/renderHtmlQuestion';
+import RenderData, { RenderDataJson, handleImgLink, handleAvatarLink } from '../../component/shared/renderHtmlQuestion';
 import services from '../../handle/services';
 import { endpoints } from '../../constant/endpoints';
 import { search_services, makeRate } from './service';
 import { RenderListImg } from '../../component/Image/renderListImg';
-import { ViewWithBanner, fbFull } from '../../utils/facebookAds';
+// import { ViewWithBanner, fbFull } from '../../utils/facebookAds';
 import { ModalWrapp } from '../Course/component/ModalVote';
 import { BtnGradient } from '../../component/shared/Btn';
 
@@ -72,6 +69,7 @@ const QnA = (props) => {
     const [isFollow, setFollow] = useState(false);
     // show img in content
     const [showImg, setShowImg] = useState(false);
+    console.log('=====, ",(', handleImgLink(get(showImg, 'uri', '')))
     // show img upload
     const [listImgShow, setListShowImg] = useState(false);
     const [refreshing, setRefesh] = useState(false);
@@ -287,7 +285,7 @@ const QnA = (props) => {
                                     resizeMode="contain"
                                     style={{ flex: 1, height: undefined, width: undefined, backgroundColor: '#fff' }}
                                     source={{
-                                        uri: get(showImg, 'uri', ''),
+                                        uri: handleImgLink(get(showImg, 'uri', '')),
                                     }}
                                 />
                         }
@@ -423,7 +421,7 @@ const userStyle = StyleSheet.create({
 const User = ({ isCheck = false, style = {}, uri, _gotoProfile = () => { } }) => {
     return (
         <TouchableOpacity onPress={_gotoProfile} style={[userStyle.imgLargeWapper, style]} >
-            <Image style={[userStyle.img, {}]} source={{ uri: handleImgLink(uri) }} />
+            <Image style={[userStyle.img, {}]} source={{ uri: handleAvatarLink(uri) }} />
             {isCheck ? <View style={{ backgroundColor: '#fff', position: 'absolute', right: -3, bottom: -3, borderRadius: 10 }}>
                 <Icon style={{ color: 'green', fontSize: 15, fontWeight: 'bolid' }} name="check-circle" type="FontAwesome" />
             </View> : null}
@@ -734,7 +732,7 @@ const Header = ({
                     marginBottom: 10, marginLeft: 8
                 }}>
                     <TouchableOpacity onPress={gotoProfile} style={styles.largeImgWapper} >
-                        <Image style={userStyle.imgLargeWapper} source={{ uri: handleImgLink(avatar) }} />
+                        <Image style={userStyle.imgLargeWapper} source={{ uri: handleAvatarLink(avatar) }} />
                         <View style={{ backgroundColor: '#fff', position: 'absolute', right: -3, bottom: -3, borderRadius: 10 }}>
                             {isCheck ? <Icon style={{ color: 'green', fontSize: 15, fontWeight: 'bolid' }} name="check-circle" type="FontAwesome" /> : null}
                         </View>
@@ -1047,13 +1045,4 @@ const FormComment = ({
         </View>
 
     )
-}
-
-const handleImgLink = (link) => {
-    try {
-        if (!link) return "https://www.xaprb.com/media/2018/08/kitten.jpg"
-        return link.includes('http') ? link : endpoints.BASE_HOI_DAP + link;
-    } catch (err) {
-        return link;
-    }
 }

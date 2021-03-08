@@ -37,29 +37,10 @@ import { useDispatch } from 'react-redux';
 import { setLearningTimes } from '../../redux/action/user_info';
 import { convertImgLink } from './utis';
 import TableContentExpand from './component/TableContent';
+import { ModalWrapp } from './component/ModalVote';
+import { BtnGradient } from '../../component/shared/Btn';
 
 const { width, height } = Dimensions.get('window');
-
-const stepIndicatorStyles = {
-    stepIndicatorSize: 10,
-    currentStepIndicatorSize: 30,
-    separatorStrokeWidth: 3,
-    currentStepStrokeWidth: 3,
-    stepStrokeCurrentColor: '#fe7013',
-    separatorFinishedColor: '#fe7013',
-    separatorUnFinishedColor: '#aaaaaa',
-    stepIndicatorFinishedColor: '#fe7013',
-    stepIndicatorUnFinishedColor: '#aaaaaa',
-    stepIndicatorCurrentColor: '#ffffff',
-    stepIndicatorLabelFontSize: 15,
-    currentStepIndicatorLabelFontSize: 15,
-    stepIndicatorLabelCurrentColor: '#000000',
-    stepIndicatorLabelFinishedColor: '#ffffff',
-    stepIndicatorLabelUnFinishedColor: 'rgba(255,255,255,.5)',
-    labelColor: '#666666',
-    labelSize: 15,
-    currentStepLabelColor: '#fe7013',
-};
 
 const Colors = {
     white: '#ffffff',
@@ -109,7 +90,6 @@ const CoursePlayer = (props) => {
     // const [videoData, isLoading, err] = useRequest(`/videos/show/${lectureId}`, [lectureId]);
 
     const [currentPlay, setCurrentPlay] = useState(-1);
-    const [showFeedback, setShowFeedback] = useState(false);
     const [convertTimeStamp, setTimeConvert] = useState({});
     const [errVideo, setErrVideo] = useState(false);
     // throttle set new index
@@ -199,6 +179,14 @@ const CoursePlayer = (props) => {
         setErrVideo(true)
     }
 
+    const [showConsult, setShowConsult] = useState(false);
+
+    useEffect(() => {
+        if (videoSrc && navigation.getParam('showConsoult', true)) {
+            setShowConsult(true)
+        }
+    }, [navigation.getParam('showConsoult', true), videoSrc])
+
     return (
         <View style={{ flex: 1 }}>
             <StatusBar
@@ -218,7 +206,7 @@ const CoursePlayer = (props) => {
                                     source={{ uri: videoSrc }}
                                     // ref={mediaPlayer}
                                     onError={_loadVideoFail}
-                                    // onEnd={_onEnd}
+                                    onEnd={_onEnd}
                                     // paused={paused}
                                     // onReadyForDisplay={_onReadyForDisplay}
                                     // onProgress={throttled.current}
@@ -244,8 +232,9 @@ const CoursePlayer = (props) => {
                             }
                             {(helpers.isAndroid && !full) &&
                                 <TouchableOpacity
-                                    style={{ position: 'absolute', top: 10, right: 10,
-                                 }}
+                                    style={{
+                                        position: 'absolute', top: 10, right: 10,
+                                    }}
                                     onPress={() => {
                                         Orientation.lockToLandscape();
                                         setFull(true);
@@ -282,6 +271,7 @@ const CoursePlayer = (props) => {
                                 listCourse={listCourse}
                                 showConsoult={navigation.getParam('showConsoult', true)}
                                 playPath={pathPlay}
+                                setShowConsultModal={setShowConsult}
                             />
 
                             {/* <Tabs tabContainerStyle={{ elevation: 0, borderTopWidth: 0.5, borderTopColor: 'white', }}
@@ -325,14 +315,24 @@ const CoursePlayer = (props) => {
 
 
             </SafeAreaView>
-            <FeedbackModal
-                show={showFeedback}
-                onClose={() => setShowFeedback(false)}
-                data={{
-                    id: lectureId,
-                    type: 'video'
-                }}
-            />
+            <ModalWrapp
+                show={showConsult}
+                onClose={() => { setShowConsult(false) }}
+                title="Bài học yêu cầu trả phí">
+                <View>
+                    <Text>Bạn cần đăng ký khóa học để xem đầy đủ các bài học</Text>
+                    <BtnGradient
+                        text="Nhận tư vấn khoá học"
+                        style={{
+                            marginTop: 20
+                        }}
+                        label
+                        onPress={() => {
+
+                        }}
+                    />
+                </View>
+            </ModalWrapp>
         </View>
     )
 };

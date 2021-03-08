@@ -14,6 +14,12 @@ target 'VietJack' do
   pod 'Firebase/AdMob', '~> 6.13.0'
   pod 'Firebase/Messaging', '~> 6.13.0'
   pod 'Firebase/Analytics'
+
+  # pod 'FBSDKCoreKit', '~> 8.0.0'
+  # pod 'FBSDKLoginKit', '~> 8.0.0'
+  # pod 'FBSDKShareKit', '~> 8.0.0'
+  # pod 'FBSDKGamingServiceKit', '~> 8.0.0'
+
   pod 'Permission-Camera', :path => "#{permissions_path}/Camera"
   pod 'Permission-PhotoLibrary', :path => "#{permissions_path}/PhotoLibrary"
   pod 'OpenSSL-Universal', '~>1.0.2.20'

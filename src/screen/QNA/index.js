@@ -20,7 +20,7 @@ import { GradientText } from '../../component/shared/GradientText';
 import { FilterModal, mapTypeQestion } from './com/FilterModal';
 import api from '../../handle/api';
 // import { RenderDataJson } from '../../component/shared/renderHtmlNew';
-import RenderData, { RenderDataJson } from '../../component/shared/renderHtmlQuestion';
+import RenderData, { RenderDataJson, handleAvatarLink } from '../../component/shared/renderHtmlQuestion';
 
 import { search_services } from './service';
 import { images } from '../../utils/images';
@@ -581,7 +581,7 @@ const RenderQestion = ({ item, index, hanldleClick, _handleNavigate = () => { },
             }}>
                 <View style={{ flex: 1, flexDirection: 'row', alignItems: 'center', paddingHorizontal: 10 }}>
                     <TouchableOpacity onPress={() => _handleNavigate(get(item, 'user.id', ''))} style={styles.largeImgWapper} >
-                        <Image style={userStyle.img} source={{ uri: handleImgLink(avatar) || userImg }} />
+                        <Image style={userStyle.img} source={{ uri: handleAvatarLink(avatar) }} />
                         {(role_id == 1 || role_id == 2) ? <View style={{ backgroundColor: '#fff', position: 'absolute', right: -3, bottom: -3, borderRadius: 10 }}>
                             <Icon style={{ color: 'green', fontSize: 15, fontWeight: 'bolid' }} name="check-circle" type="FontAwesome" />
                         </View> : null}
@@ -672,12 +672,3 @@ const RenderQestion = ({ item, index, hanldleClick, _handleNavigate = () => { },
     )
 }
 
-
-const handleImgLink = (link) => {
-    try {
-        if (!link) return "https://www.xaprb.com/media/2018/08/kitten.jpg"
-        return link.includes('http') ? link : endpoints.BASE_HOI_DAP + link;
-    } catch (err) {
-        return link;
-    }
-}

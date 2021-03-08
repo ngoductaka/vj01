@@ -190,14 +190,23 @@ const ImageSVG = props => {
 };
 
 
-const handleImgLink = (link) => {
+export const handleImgLink = (link) => {
   try {
     if (!link) return "https://avancar.gov.br/avancar-web/images/slideshow/not-found.png"
-    return link.includes('http') ? link : `${endpoints.BASE_HOI_DAP}${uri}`;
+    return link.includes('http') ? link : `${endpoints.BASE_HOI_DAP}${link}`;
   } catch (err) {
     return link;
   }
-}
+};
+
+export const handleAvatarLink = (link) => {
+  try {
+      if (!link) return "https://www.xaprb.com/media/2018/08/kitten.jpg"
+      return link.includes('http') ? link : endpoints.BASE_HOI_DAP + link;
+  } catch (err) {
+      return link;
+  }
+};
 
 const RenderImg = ({ uri, height, widthImg, indexItem, setShowImg, isAnwser }) => {
   try {

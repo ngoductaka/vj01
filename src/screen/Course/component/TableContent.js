@@ -12,7 +12,8 @@ import { helpers } from '../../../utils/helpers';
 import { fontMaker, fontStyles } from '../../../utils/fonts';
 
 
-const TableContent = ({ _navigateToCourse, listCourse = [], playPath = [], navigation, showConsoult = true }) => {
+const TableContent = ({ _navigateToCourse, listCourse = [], 
+    playPath = [], navigation, showConsoult = true, setShowConsultModal }) => {
     const [l1 = null, l2 = null] = playPath;
     const [active, setActive] = useState(0);
 
@@ -41,7 +42,7 @@ const TableContent = ({ _navigateToCourse, listCourse = [], playPath = [], navig
                             </TouchableOpacity>
                             <Collapsible collapsed={!(index === active)}>
                                 <RenderListLesson
-                                    showConsoult={showConsoult}
+                                    showConsoult={showConsoult} setShowConsultModal={setShowConsultModal}
                                     chapter={chapter} index={index}
                                     l1={l1} l2={l2} _navigateToCourse={_navigateToCourse}
                                     listCourse={listCourse} navigation={navigation}
@@ -142,9 +143,10 @@ export const TableContentExpand = ({ _navigateToCourse, listCourse = [], playPat
 // }
 
 
-const RenderListLesson = ({ chapter, index, l1, l2, _navigateToCourse, listCourse, navigation, showConsoult = true }) => {
+const RenderListLesson = ({ chapter, index, l1, l2, _navigateToCourse, 
+    listCourse, navigation, showConsoult = true, setShowConsultModal }) => {
     const refFlatlist = useRef(null);
-    const [active, setActive] = useState(false);
+    // const [active, setActive] = useState(false);
     useEffect(() => {
         // if() {
         //     setActive(true)
@@ -192,8 +194,14 @@ const RenderListLesson = ({ chapter, index, l1, l2, _navigateToCourse, listCours
                                                         pathPlay: [index, indexVideo],
                                                     })
                                                 } else {
-                                                    if (get(listPdf, `[0].raw_url`))
-                                                        navigation.navigate('PdfView', { uri: listPdf[0].raw_url })
+                                                    if (get(listPdf, `[0].raw_url`)) {
+                                                        console.log(setShowConsultModal && showConsoult, setShowConsultModal , showConsoult)
+                                                        if(setShowConsultModal && showConsoult) {
+                                                            setShowConsultModal(true);
+                                                        } else {
+                                                            // navigation.navigate('PdfView', { uri: listPdf[0].raw_url })
+                                                        }
+                                                    }
                                                 }
                                             }}>
                                             <Text style={{ fontSize: 15, textTransform: 'capitalize', ...fontMaker({ weight: fontStyles.Regular }) }} numberOfLines={2}>{course.name}</Text>
@@ -206,7 +214,16 @@ const RenderListLesson = ({ chapter, index, l1, l2, _navigateToCourse, listCours
                                                 return (
                                                     <TouchableOpacity
                                                         onPress={() => {
+
+                                                    if (pdf.raw_url) {
+                                                        console.log(setShowConsultModal && showConsoult, setShowConsultModal , showConsoult)
+                                                        if(setShowConsultModal && showConsoult) {
+                                                            setShowConsultModal(true);
+                                                        } else {
+                                                            // navigation.navigate('PdfView', { uri: listPdf[0].raw_url })
                                                             navigation.navigate('PdfView', { uri: pdf.raw_url })
+                                                        }
+                                                    }
                                                         }}
                                                         style={{ flexDirection: 'row', marginTop: 15, marginLeft: -25, alignItems: 'center' }}
                                                     >
