@@ -206,9 +206,9 @@ const RenderImg = ({ uri, height, widthImg, indexItem, setShowImg, isAnwser }) =
     if (height && widthImg) {
       return (
         <TouchableOpacity onPress={() => {
-          if (widthImg > width - 30 && setShowImg) {
-          Toast.showWithGravity("Click 2 lần để phóng to", Toast.SHORT, Toast.CENTER);
-          setShowImg({ uri: convertEndPoint, size: { height, width: widthImg } })
+          if (widthImg > width - 150 && setShowImg) {
+            Toast.showWithGravity("Click 2 lần để phóng to", Toast.SHORT, Toast.CENTER);
+            setShowImg({ uri: convertEndPoint, size: { height, width: widthImg } })
           }
         }} key={indexItem + 'img'} style={{ height, width: widthImg > width ? width - 5 : widthImg }}>
           <Image
@@ -240,7 +240,7 @@ const RenderImg = ({ uri, height, widthImg, indexItem, setShowImg, isAnwser }) =
 
     return (
       <TouchableOpacity onPress={() => {
-        if (size.width && size.width > width - 30 && setShowImg) {
+        if (size.width && size.width > width - 150 && setShowImg) {
           Toast.showWithGravity("Click 2 lần để phóng to", Toast.SHORT, Toast.CENTER);
           setShowImg({ uri, size })
         }
@@ -307,7 +307,7 @@ const RenderData = ({ indexItem = '', content }) => {
   )
 }
 
-export const RenderDataJson = ({ indexItem = '', content, isAnwser, setShowImg}) => {
+export const RenderDataJson = ({ indexItem = '', content, isAnwser, setShowImg }) => {
   // console.log('contentcontentcontentcontentcontentcontent', content, typeof content)
   if (isEmpty(content) || !Array.isArray(content)) return null;
   return (
@@ -366,7 +366,7 @@ export const RenderRow = ({ indexItem = '', row, indexRow, setShowImg, isAnwser 
                 <TouchableOpacity
                   // key={indexRow + indexItem + index + 'ios_svg'}
                   onPress={() => {
-                    if (widthConvert > width - 150 && setShowImg) {
+                    if (widthConvert > width - 200 && setShowImg) {
                       Toast.showWithGravity("Click 2 lần để phóng to", Toast.SHORT, Toast.CENTER);
                       setShowImg({
                         type: 'svg',
