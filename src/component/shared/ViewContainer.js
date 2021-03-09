@@ -66,7 +66,6 @@ const ViewContainer = (props) => {
                                     width: '100%',
                                     // paddingVertical: helpers.isIOS ? 8 : 3,
                                     paddingHorizontal: 20, paddingTop: helpers.isIOS ? helpers.statusBarHeight : 0,
-                                    // backgroundColor: 'red'
                                 }}>
                                     {showLeft ?
                                         <TouchableOpacity
@@ -103,17 +102,13 @@ const ViewContainer = (props) => {
                                     width: '100%',
                                     paddingHorizontal: 20,
                                     paddingTop: helpers.isIOS ? helpers.statusBarHeight : 0,
-                                    backgroundColor: 'red'
                                 }}>
                                     {
                                         showHeader === true ?
-                                            <Animatable.View animation='fadeIn' style={{ flex: 1, paddingHorizontal: 15, justifyContent: 'center', alignItems: 'center', }}>
-                                                <Text numberOfLines={1} style={{ ...fontMaker({ weight: fontStyles.SemiBold }), fontSize: fontSize.h3 }}>{title}</Text>
+                                            <Animatable.View animation='fadeIn' style={{ flex: 1, paddingHorizontal: 15, justifyContent: 'center', alignItems: 'center', marginVertical: 10 }}>
+                                                <Text numberOfLines={1} style={{ ...fontMaker({ weight: fontStyles.SemiBold }), fontSize: 20 }}>{title}</Text>
                                             </Animatable.View>
-                                            :
-                                            <Animatable.View animation='fadeOut' duration={200} style={{ flex: 1, paddingHorizontal: 15, justifyContent: 'center', alignItems: 'center', height: 40 + helpers.statusBarHeight, }}>
-                                                <Text numberOfLines={1} style={{ ...fontMaker({ weight: fontStyles.SemiBold }), fontSize: fontSize.h3 }}></Text>
-                                            </Animatable.View>
+                                            : null
                                     }
                                 </View>
                                 :
