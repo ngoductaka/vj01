@@ -98,8 +98,8 @@ const CourseDetail = (props) => {
                                     update: get(dataCourse, 'updated_at', ''),
                                 }}
                             />
-                            <View style={{ backgroundColor: '#fff', paddingHorizontal: 10, marginVertical: 20, paddingVertical: 15, borderRadius: 10 }}>
-                                <Text style={{ fontSize: 27 }}>Nội dung khoá học: </Text>
+                            <View style={{ backgroundColor: '#fff', marginVertical: 20, paddingVertical: 15, borderRadius: 10 }}>
+                                <Text style={{ fontSize: 27, paddingLeft: 10 }}>Nội dung khoá học: </Text>
                                 {loading ? <ActivityIndicator color="#000" size="large" style={{ marginTop: 10 }} /> :
                                     <TableContent
                                         navigation={navigation}

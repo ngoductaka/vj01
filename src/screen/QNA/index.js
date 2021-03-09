@@ -28,8 +28,6 @@ import { endpoints } from '../../constant/endpoints';
 import { RenderListImg } from '../../component/Image/renderListImg';
 import { useDeepLink } from '../../utils/useDeeplink';
 
-
-const userImg = "https://www.xaprb.com/media/2018/08/kitten.jpg";
 const { height } = Dimensions.get('screen');
 
 const QnA = (props) => {

@@ -59,36 +59,55 @@ const ViewContainer = (props) => {
                     </ScrollView>
                     {!isHome ?
                         (
-                            <View style={{ flexDirection: 'row', alignItems: 'center', position: 'absolute', backgroundColor: showHeader ? 'white' : 'transparent', width: '100%', paddingVertical: helpers.isIOS ? 8 : 3, paddingHorizontal: 20, paddingTop: helpers.isIOS ? helpers.statusBarHeight : 0 }}>
-                                {showLeft ?
-                                    <TouchableOpacity
-                                        onPress={onLeft}
-                                        style={[styles.searchHeader, showHeader ? {} : styles.shadow, { shadowColor: 'rgba(0, 0, 0, 0.08)', marginLeft: -10, marginTop: helpers.isIOS ? 2 : 0 }]}>
-                                        <Icon type='MaterialCommunityIcons' name={'arrow-left'} style={{ fontSize: 26, color: '#836AEE' }} />
-                                    </TouchableOpacity>
-                                    :
-                                    <View style={{ width: 40, height: 40 + helpers.statusBarHeight }} />
-                                }
-                                {
-                                    showHeader === true ?
-                                        <Animatable.View animation='fadeIn' style={{ flex: 1, paddingHorizontal: 15, justifyContent: 'center', alignItems: 'center' }}>
-                                            <Text numberOfLines={1} style={{ ...fontMaker({ weight: fontStyles.SemiBold }), fontSize: fontSize.h3 }}>{title}</Text>
-                                        </Animatable.View>
+                            <>
+                                <View style={{
+                                    flexDirection: 'row', alignItems: 'center',
+                                    position: 'absolute', backgroundColor: showHeader ? 'white' : 'transparent',
+                                    width: '100%',
+                                    // paddingVertical: helpers.isIOS ? 8 : 3,
+                                    paddingHorizontal: 20, paddingTop: helpers.isIOS ? helpers.statusBarHeight : 0,
+                                    // backgroundColor: 'red'
+                                }}>
+                                    {showLeft ?
+                                        <TouchableOpacity
+                                            onPress={onLeft}
+                                            style={[styles.searchHeader, showHeader ? {} : styles.shadow, { shadowColor: 'rgba(0, 0, 0, 0.08)', marginLeft: -10, marginTop: helpers.isIOS ? 2 : 0 }]}>
+                                            <Icon type='MaterialCommunityIcons' name={'arrow-left'} style={{ fontSize: 26, color: '#836AEE' }} />
+                                        </TouchableOpacity>
                                         :
-                                        <Animatable.View animation='fadeOut' duration={200} style={{ flex: 1, paddingHorizontal: 15, justifyContent: 'center', alignItems: 'center' }}>
-                                            <Text numberOfLines={1} style={{ ...fontMaker({ weight: fontStyles.SemiBold }), fontSize: fontSize.h3 }}></Text>
-                                        </Animatable.View>
-                                }
-                                <View style={{ width: 40, height: 40 + helpers.statusBarHeight }} />
-                            </View>
+                                        <View style={{ width: 40, marginTop: 50 }} />
+                                    }
+                                    {
+                                        showHeader ?
+                                            <Animatable.View animation='fadeIn'
+                                                style={{
+                                                    flex: 1, paddingHorizontal: 15, justifyContent: 'center',
+                                                    alignItems: 'center'
+                                                }}>
+                                                <Text numberOfLines={1}
+                                                    style={{
+                                                        ...fontMaker({ weight: fontStyles.SemiBold }), fontSize: 20,
+                                                    }}>{title}</Text>
+                                            </Animatable.View> : null}
+
+                                    <View style={{ width: 40, marginTop: 50 }} />
+                                </View>
+                            </>
                         )
                         :
                         (
                             showHeader ?
-                                <View style={{ flexDirection: 'row', alignItems: 'center', position: 'absolute', backgroundColor: showHeader ? 'white' : 'transparent', width: '100%', paddingVertical: helpers.isIOS ? 8 : 3, paddingHorizontal: 20, paddingTop: helpers.isIOS ? helpers.statusBarHeight : 0 }}>
+                                <View style={{
+                                    flexDirection: 'row', alignItems: 'center', position: 'absolute',
+                                    backgroundColor: showHeader ? 'white' : 'transparent',
+                                    width: '100%',
+                                    paddingHorizontal: 20,
+                                    paddingTop: helpers.isIOS ? helpers.statusBarHeight : 0,
+                                    backgroundColor: 'red'
+                                }}>
                                     {
                                         showHeader === true ?
-                                            <Animatable.View animation='fadeIn' style={{ flex: 1, paddingHorizontal: 15, justifyContent: 'center', alignItems: 'center', height: 40 + helpers.statusBarHeight, }}>
+                                            <Animatable.View animation='fadeIn' style={{ flex: 1, paddingHorizontal: 15, justifyContent: 'center', alignItems: 'center', }}>
                                                 <Text numberOfLines={1} style={{ ...fontMaker({ weight: fontStyles.SemiBold }), fontSize: fontSize.h3 }}>{title}</Text>
                                             </Animatable.View>
                                             :
