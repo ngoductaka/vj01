@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { View, StyleSheet, TouchableOpacity, Image, Text, SafeAreaView, ImageBackground, ScrollView, FlatList, Dimensions } from 'react-native';
+import * as Animatable from 'react-native-animatable';
 // import FastImage from 'react-native-fast-image';
 import { useSelector } from 'react-redux';
 import { Icon, Card } from 'native-base';
@@ -15,7 +16,9 @@ import { ListLesson } from './component/ListLesson';
 import MenuItem from '../../component/menuItem';
 import { HeaderBarWithBack } from '../../component/Header/Normal';
 import { User } from '../../component/User';
-import { LargeVideo } from '../Lesson/component/VideosList';
+import { LargeVideo } from './component/VideoItem';
+import { MAP_SUBJECT } from '../../constant';
+import { convertImgLink } from './utis'
 
 const { width } = Dimensions.get('window');
 
@@ -25,8 +28,27 @@ const Course = (props) => {
 
     const { navigation } = props;
     const [visible, setVisible] = useState(false);
+    const [dataTopic, setDataTopic] = useState(false);
     // 
     const topic = navigation.getParam('topic', topic)
+    const data = navigation.getParam('data', []);
+    const showConsoult = navigation.getParam('showConsoult', true);
+
+    useEffect(() => {
+        // console.log('datadatadatadata', data);
+        const dataConvert = data.reduce((cal, cur) => {
+            const { subject } = cur;
+            if (subject) {
+                cal[subject] = cal[subject] ? [...cal[subject], cur] : [cur];
+            }
+            return cal;
+        }, {});
+
+        console.log('dataConvert', 'dataConvert', dataConvert)
+
+        setDataTopic(dataConvert);
+
+    }, [data])
 
     const userInfo = useSelector(state => state.userInfo);
     // console.log('userInfo123', userInfo)
@@ -45,10 +67,6 @@ const Course = (props) => {
         if (userInfo.class) _setCurrentClass(userInfo.class)
     }, [userInfo.class]);
 
-    const _handlePressLesson = (item) => {
-        navigation.navigate('CourseDetail', {});
-    }
-
     return (
         <View style={styles.container}>
             {/* <NormalHeader onPressSearch={() => props.navigation.navigate('SearchView', { searchText: '' })} onRightAccount={() => setRightAction(!rightAction)} /> */}
@@ -59,23 +77,31 @@ const Course = (props) => {
                 />
                 <ScrollView style={{ marginTop: 8, backgroundColor: '#ddd' }}>
                     {/* current class */}
-                    {["Toán", "Văn", "Hoá", 'Lý', "Sinh"].map(i => {
+                    {Object.keys(dataTopic).map((key, indexTop) => {
                         return (
-                            <View key={i} style={{ backgroundColor: '#fff', marginBottom: 10, padding: 10 }}>
+                            <Animatable.View animation="fadeIn" delay={indexTop * 1000} key={key} style={{ backgroundColor: '#fff', marginBottom: 10, padding: 10 }}>
                                 <SeeAllTitle
-                                    onPress={() => props.navigation.navigate('CourseDetail')}
-                                    text={i} />
-                                <ScrollView horizontal showsHorizontalScrollIndicator={false}>
-                                    {[1, 2, 3].map(item => {
-                                        return <VideoContinue
-                                            navigate={navigation.navigate}
-                                            setVisible={() => { }}
-                                            videos={{}}
-                                            style={{ marginRight: 20, width: width * 4 / 5 }}
-                                        />
-                                    })}
-                                </ScrollView>
-                            </View>
+                                    onPress={() => { }}
+                                    text={MAP_SUBJECT[key]} />
+
+                                <FlatList horizontal showsHorizontalScrollIndicator={false}
+                                    data={dataTopic[key]}
+                                    renderItem={({ item, index }) => {
+                                        return (
+                                            <Animatable.View animation="fadeIn" delay={index * 500}>
+                                                <VideoContinue
+                                                    showConsoult={showConsoult}
+                                                    navigate={navigation.navigate}
+                                                    setVisible={() => { }}
+                                                    videos={item}
+                                                    style={{ marginRight: 20, width: width * 4 / 5 }}
+                                                />
+                                            </Animatable.View>
+                                        )
+                                    }}
+                                    keyExtractor={({ item, index }) => String(index)}
+                                />
+                            </Animatable.View>
 
                         )
                     })}
@@ -225,23 +251,27 @@ const stylesHeader = StyleSheet.create({
     },
 })
 
+const VideoContinue = ({ navigate, setVisible, videos = {}, style = {}, widthImg = width * 3 / 4, showConsoult = true }) => {
+    // console.log('videos', videos);
 
+    const teacher = get(videos, 'owner', {});
+    // console.log('----', get(videos, 'get_ldp.thumbnail', ''))
+    const videoItem = {
+        imgLecture: convertImgLink(get(videos, 'get_ldp.thumbnail', '')),
+        teacher: {
+            ...teacher,
+            name: teacher.first_name,
+            img: convertImgLink(teacher.avatar)
+        },
+        ...videos,
+    }
 
-const VideoContinue = ({ navigate, setVisible, videos = {}, style = {}, widthImg = width * 3 / 4 }) => {
     const propsVideo = {
-        isLecture: !!videos.preview_img,
         setVisible,
         widthImg,
-        item: {
-            imgLecture: get(videos, 'preview_img', ''),
-            lectureId: get(videos, 'id', ''),
-            videoUrl: get(videos, 'url', 'https://www.youtube.com/watch?v=COfrDO4lV-k'),
-            duration: get(videos, 'length', 0),
-            title: get(videos, 'title', ' test title'),
-            viewCount: get(videos, 'view_count', '1k')
-        },
+        item: videoItem,
         _handlePress: () => {
-            navigate('CourseDetail', { lectureId: get(videos, 'id', ''), view_count: get(videos, 'view_count', '') })
+            navigate('CourseDetail', { videoItem, showConsoult })
         },
     };
     return (

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { View, StyleSheet, TouchableOpacity, Image, Text, SafeAreaView, ImageBackground, ScrollView, FlatList, Dimensions } from 'react-native';
 // import FastImage from 'react-native-fast-image';
 import { useSelector } from 'react-redux';
@@ -15,7 +15,10 @@ import { ListLesson } from './component/ListLesson';
 import MenuItem from '../../component/menuItem';
 import HeaderBar from '../../component/Header/Normal';
 import { User } from '../../component/User';
-import { LargeVideo } from '../Lesson/component/VideosList';
+import { LargeVideo } from './component/VideoItem';
+
+import { getCouse, getMyCourses } from './services';
+import { convertImgLink } from './utis'
 
 const { width } = Dimensions.get('window');
 
@@ -25,11 +28,67 @@ const Course = (props) => {
 
     const { navigation } = props;
     const [visible, setVisible] = useState(false);
+    const [gradeCourse, setGradeCourse] = useState([]);
+    const [groupCourse, setGroupCourse] = useState([]);
+    const [myCourse, setMyCourse] = useState([]);
+    const [loadGrade, setLoadingGradle] = useState(false);
 
     const userInfo = useSelector(state => state.userInfo);
-    // console.log('userInfo123', userInfo)
     const [currentClass, setClass] = useState(userInfo && userInfo.class ? userInfo.class : '');
+    // console.log('c=======urrentClass', currentClass)
     const [classModal, setShowClassModal] = useState(false);
+
+
+    useEffect(() => {
+        if (userInfo.class) {
+            _setCurrentClass(userInfo.class);
+            _getCourseViaGrade(userInfo.class);
+            _getCourseViaGroup(userInfo.class);
+            _getMyCourse();
+        }
+    }, [userInfo.class]);
+    const _getMyCourse = async () => {
+        try {
+            const data = await getMyCourses();
+            // console.log('data mycouse', data);
+            if (get(data, 'data[0]')) {
+                setMyCourse(data.data)
+            }
+        } catch (err) {
+            console.log(err)
+        }
+
+    }
+    const _getCourseViaGrade = (grade) => {
+        setLoadingGradle(true)
+        getCouse({ classlevel: grade })
+            .then(({ data }) => {
+                // console.log('datadatadata444', data)
+                setGradeCourse(data)
+            })
+            .catch(err => {
+
+            })
+            .finally(() => {
+                setLoadingGradle(false)
+
+            })
+    }
+
+
+    const _getCourseViaGroup = (grade) => {
+        setLoadingGradle(true)
+        getCouse({ group: getGroupByClass(grade).query })
+            .then(({ data }) => {
+                setGroupCourse(data)
+            })
+            .catch(err => {
+            })
+            .finally(() => {
+                setLoadingGradle(false)
+            })
+
+    }
 
     const _onClose = () => {
         setShowClassModal(false);
@@ -39,20 +98,64 @@ const Course = (props) => {
         setClass(cls);
         setShowClassModal(false);
     }
-    useEffect(() => {
-        if (userInfo.class) _setCurrentClass(userInfo.class)
-    }, [userInfo.class]);
-
-    const _handlePressLesson = (item) => {
-        navigation.navigate('CourseDetail', {});
-    }
 
     return (
         <View style={styles.container}>
             {/* <NormalHeader onPressSearch={() => props.navigation.navigate('SearchView', { searchText: '' })} onRightAccount={() => setRightAction(!rightAction)} /> */}
             <SafeAreaView style={{ flex: 1 }}>
                 <HeaderBar navigation={props.navigation} />
-                <FlatList
+                <ScrollView>
+                    {get(myCourse, '[0]') ? <View style={{ backgroundColor: '#fff', marginBottom: 10, padding: 10 }}>
+                        <SeeAllTitle
+                            onPress={() => props.navigation.navigate('TopicCourse', { topic: `Khoá học của tôi`, data: myCourse, showConsoult: false })}
+                            text={`Khoá học của tôi`} />
+                        <ScrollView horizontal showsHorizontalScrollIndicator={false}>
+                            {myCourse.slice(0, 5).map(videoItem => {
+                                return <VideoItem
+                                    navigate={navigation.navigate}
+                                    setVisible={() => { }}
+                                    videos={videoItem}
+                                    style={{ marginRight: 20, width: width * 4 / 5 }}
+                                    showConsoult={false}
+                                />
+                            })}
+                        </ScrollView>
+                    </View> : null}
+
+                    <View style={{ backgroundColor: '#fff', marginBottom: 10, padding: 10 }}>
+                        <SeeAllTitle
+                            onPress={() => props.navigation.navigate('TopicCourse', { topic: `Khoá học lớp ${currentClass}`, data: gradeCourse })}
+                            text={`Khoá học lớp ${currentClass}`} />
+                        <ScrollView horizontal showsHorizontalScrollIndicator={false}>
+                            {gradeCourse.slice(0, 5).map(videoItem => {
+                                return <VideoItem
+                                    navigate={navigation.navigate}
+                                    setVisible={() => { }}
+                                    videos={videoItem}
+                                    style={{ marginRight: 20, width: width * 4 / 5 }}
+                                />
+                            })}
+                        </ScrollView>
+                    </View>
+
+
+                    <View style={{ backgroundColor: '#fff', marginBottom: 10, padding: 10 }}>
+                        <SeeAllTitle
+                            onPress={() => props.navigation.navigate('TopicCourse', { topic: getGroupByClass(currentClass).text, data: gradeCourse })}
+                            text={getGroupByClass(currentClass).text} />
+                        <ScrollView horizontal showsHorizontalScrollIndicator={false}>
+                            {groupCourse.slice(0, 5).map(videoItem => {
+                                return <VideoItem
+                                    navigate={navigation.navigate}
+                                    setVisible={() => { }}
+                                    videos={videoItem}
+                                    style={{ marginRight: 20, width: width * 4 / 5 }}
+                                />
+                            })}
+                        </ScrollView>
+                    </View>
+
+                    {/* <FlatList
                     style={{ marginTop: 8, backgroundColor: '#ddd' }}
                     data={[`Khoá học lớp ${currentClass}`, 'Luyện thi THPT', 'KHoá học của bạn']}
                     renderItem={({ item, index }) => {
@@ -62,8 +165,8 @@ const Course = (props) => {
                                     onPress={() => props.navigation.navigate('TopicCourse', { topic: item })}
                                     text={currentClass ? item : ''} />
                                 <ScrollView horizontal showsHorizontalScrollIndicator={false}>
-                                    {[1, 2, 3].map(videoItem => {
-                                        return <VideoContinue
+                                    {gradeCourse.slice(0, 5).map(videoItem => {
+                                        return <VideoItem
                                             navigate={navigation.navigate}
                                             setVisible={() => { }}
                                             videos={{}}
@@ -76,7 +179,9 @@ const Course = (props) => {
                         )
                     }}
                     keyExtractor={({ item, index }) => `${index}`}
-                />
+                /> */}
+
+                </ScrollView>
                 <ClassChoosenModal
                     isShowMore="true"
                     show={classModal}
@@ -124,7 +229,7 @@ const styles = StyleSheet.create({
         marginLeft: 5,
         // color: COLOR.MAIN,
         fontWeight: 'bold',
-        textTransform: "capitalize",
+        // textTransform: "capitalize",
         // marginVertical: 15
     }
 });
@@ -224,24 +329,73 @@ const stylesHeader = StyleSheet.create({
 
 
 
-const VideoContinue = ({ navigate, setVisible, videos = {}, style = {}, widthImg = width * 3 / 4 }) => {
+const VideoItem = ({ navigate, setVisible, videos = {}, style = {}, widthImg = width * 3 / 4, showConsoult = true }) => {
+
+    const teacher = get(videos, 'owner', {});
+    // console.log('----', get(videos, 'get_ldp.thumbnail', ''))
+    const videoItem = {
+        imgLecture: convertImgLink(get(videos, 'get_ldp.thumbnail', '')),
+        teacher: {
+            ...teacher,
+            name: teacher.first_name,
+            img: convertImgLink(teacher.avatar)
+        },
+        ...videos,
+    }
+
     const propsVideo = {
-        isLecture: !!videos.preview_img,
         setVisible,
         widthImg,
-        item: {
-            imgLecture: get(videos, 'preview_img', ''),
-            lectureId: get(videos, 'id', ''),
-            videoUrl: get(videos, 'url', 'https://www.youtube.com/watch?v=COfrDO4lV-k'),
-            duration: get(videos, 'length', 0),
-            title: get(videos, 'title', ' test title'),
-            viewCount: get(videos, 'view_count', '1k')
-        },
+        item: videoItem,
         _handlePress: () => {
-            navigate('CourseDetail', { lectureId: get(videos, 'id', ''), view_count: get(videos, 'view_count', '') })
+            // navigate('CourseDetail', { videoItem, showConsoult })
+            console.log(videoItem, 'videoItem', get(videoItem, 'get_curriculum[0].get_child_curriculum[0].get_media[0]', {}))
+            if (!showConsoult) {
+                navigate('VideoLesson', {
+                    showConsoult,
+                    pathPlay: [0, 0],
+                    videoData: get(videoItem, 'get_curriculum[0].get_child_curriculum[0].get_media[0]', {}),
+                    listCourse: videoItem.get_curriculum,
+                })
+            } else {
+                navigate('CourseDetail', { videoItem, showConsoult })
+            }
         },
     };
     return (
         <LargeVideo {...propsVideo} style={style} />
     )
+}
+
+const getGroupByClass = (grade) => {
+    if (grade == 11 || grade == 10) {
+        return {
+            query: "nen_tang",
+            text: "Khối 10, 11",
+        }
+    }
+    if (grade == 12) {
+        return {
+            query: "luyen_thi_thpt_qg",
+            text: "Luyện thi THPT QG",
+        }
+    }
+    if (grade > 5) {
+        return {
+            query: "tong_on",
+            text: "Khối THCS",
+        }
+    } else {
+        return {
+            query: "luyen_de",
+            text: "Khối tiểu học",
+        }
+
+    }
+
+    // "luyen_thi_thpt_qg" => "Luyện thi THPT QG"
+    //     "nen_tang" => "Khối 10, 11"
+    //     "tong_on" => "Khối THCS"
+    //     "luyen_de" => "Khối tiểu học"
+
 }

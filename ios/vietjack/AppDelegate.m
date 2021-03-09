@@ -12,6 +12,9 @@
 #import "RNFirebaseNotifications.h"
 #import "RNFirebaseMessaging.h"
 
+#import <AppTrackingTransparency/AppTrackingTransparency.h>
+#import <AdSupport/AdSupport.h>
+
 #import "Orientation.h"
 // 
 #import <React/RCTLinkingManager.h>
@@ -94,6 +97,13 @@ static void InitializeFlipper(UIApplication *application) {
 
 - (UIInterfaceOrientationMask)application:(UIApplication *)application supportedInterfaceOrientationsForWindow:(UIWindow *)window {
   return [Orientation getOrientation];
+}
+
+- (void)requestIDFA {
+  [ATTrackingManager requestTrackingAuthorizationWithCompletionHandler:^(ATTrackingManagerAuthorizationStatus status) {
+    // Tracking authorization completed. Start loading ads here.
+    // [self loadAd];
+  }];
 }
 
 @end

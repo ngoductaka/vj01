@@ -435,6 +435,7 @@
 						TestTargetID = 13B07F861A680F5B00A75B9A;
 					};
 					13B07F861A680F5B00A75B9A = {
+						DevelopmentTeam = 289VSKW3KF;
 						LastSwiftMigration = 1220;
 						ProvisioningStyle = Automatic;
 					};
@@ -976,13 +977,13 @@
 				CODE_SIGN_ENTITLEMENTS = VietJack/VietJack.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 117;
-				DEVELOPMENT_TEAM = "";
+				CURRENT_PROJECT_VERSION = 118;
+				DEVELOPMENT_TEAM = 289VSKW3KF;
 				ENABLE_BITCODE = NO;
 				INFOPLIST_FILE = VietJack/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				MARKETING_VERSION = 2.2.3;
+				MARKETING_VERSION = 2.2.4;
 				OTHER_LDFLAGS = (
 					"$(inherited)",
 					"-ObjC",
@@ -1008,12 +1009,12 @@
 				CODE_SIGN_ENTITLEMENTS = VietJack/VietJack.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 117;
-				DEVELOPMENT_TEAM = "";
+				CURRENT_PROJECT_VERSION = 118;
+				DEVELOPMENT_TEAM = 289VSKW3KF;
 				INFOPLIST_FILE = VietJack/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				MARKETING_VERSION = 2.2.3;
+				MARKETING_VERSION = 2.2.4;
 				OTHER_LDFLAGS = (
 					"$(inherited)",
 					"-ObjC",

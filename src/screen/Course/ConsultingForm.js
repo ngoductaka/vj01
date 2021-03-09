@@ -2,7 +2,7 @@
 
 import React, { memo, useState, useEffect, useRef, useCallback } from 'react';
 import {
-    View, BackHandler, SafeAreaView, Text, StyleSheet, TouchableOpacity, Alert, Dimensions
+    View, BackHandler, SafeAreaView, Text, StyleSheet, TouchableOpacity, Alert, Dimensions, ActivityIndicator
 } from 'react-native';
 import { Icon, Card } from 'native-base';
 import LinearGradient from 'react-native-linear-gradient';
@@ -17,12 +17,13 @@ import { fontSize, blackColor, COLOR } from '../../handle/Constant';
 import { helpers } from '../../utils/helpers';
 import SimpleToast from 'react-native-simple-toast';
 import { user_services } from '../../redux/services';
+import { submitConsultation } from './services';
 // import DropDownPicker from 'react-native-dropdown-picker';
 
 const { width, height } = Dimensions.get('screen')
 
 const ConsultingForm = (props) => {
-
+    const [loading, setLoading] = useState(false);
     const [name, nameInput] = useHookTextInput({});
     const [phone, phoneInput] = useHookTextInput({ placeholder: '096xxxxxxx', label: 'Số điện thoại (*)' });
 
@@ -54,17 +55,30 @@ const ConsultingForm = (props) => {
                 );
                 return;
             }
-            const result = await user_services.getConsulting({
+            setLoading(true)
+            submitConsultation({
+                name, phone, class_level: grade
+            })
+                .then(() => {
+                    SimpleToast.showWithGravity('Đã đăng ký thành công. Chúng tôi sẽ liên hệ với bạn trong thời gian sớm nhất!', SimpleToast.LONG, SimpleToast.CENTER);
+                })
+                .catch(() => {
+                    SimpleToast.showWithGravity('Đã đăng ký thành công. Chúng tôi sẽ liên hệ với bạn trong thời gian sớm nhất!', SimpleToast.LONG, SimpleToast.CENTER);
+                })
+                .finally(() => {
+                    setLoading(false)
+                })
+            user_services.getConsulting({
                 name, phone, class: grade + ''
-            });
+            }).then(() => {
 
-            if (result.status) {
-                SimpleToast.show('Đã có lỗi khi đăng ký nhận tư vấn, mời bạn thử lại sau!');
-            } else {
-                SimpleToast.show('Đã đăng ký thành công. Chúng tôi sẽ liên hệ với bạn trong thời gian sớm nhất!');
-            }
+            }).catch(err => {
+                SimpleToast.showWithGravity('Đã có lỗi khi đăng ký nhận tư vấn, mời bạn thử lại sau!', SimpleToast.LONG, SimpleToast.CENTER);
+            })
+
+            // SimpleToast.showWithGravity('Đã đăng ký thành công. Chúng tôi sẽ liên hệ với bạn trong thời gian sớm nhất!', SimpleToast.LONG, SimpleToast.CENTER);
         } catch (err) {
-            SimpleToast.show('Đã có lỗi khi đăng ký nhận tư vấn, mời bạn thử lại sau!');
+            setLoading(false)
             console.log('--------', err)
         }
 
@@ -82,7 +96,7 @@ const ConsultingForm = (props) => {
                 </View>
 
                 <ScrollView style={{ flex: 1 }}>
-                    <View style={{}}>
+                    <View style={{ flex: 1, paddingBottom: 300 }}>
                         <Text style={{ ...fontMaker({ weight: fontStyles.Regular }), fontSize: 16, textAlign: 'center', color: '#999CA2', marginTop: 10 }}>Dựa vào kết quả bài kiểm tra, đội ngũ gia sư của chúng tôi sẽ gọi điện tư vấn phương pháp học hiệu quả nhất dành cho bạn!</Text>
                         <View style={{ marginTop: 10 }}>
                             <View style={{ flexDirection: 'row', alignItems: 'center' }}>
@@ -117,7 +131,8 @@ const ConsultingForm = (props) => {
                                 fontSize: 14,
                                 ...fontMaker({ weight: fontStyles.Regular }),
                                 textAlign: 'left',
-                                color: '#000'
+                                color: '#000',
+                                // paddingBottom: 300
                             }}
                             dropDownStyle={{ backgroundColor: '#fafafa' }}
                             onChangeItem={item => setGrade(item.value)}
@@ -128,12 +143,20 @@ const ConsultingForm = (props) => {
 
                 </ScrollView>
 
-                <TouchableOpacity onPress={handleRegister} style={{ alignSelf: 'center', marginTop: 10, marginBottom: 30 }}>
+                <TouchableOpacity onPress={() => {
+                    if (!loading) {
+                        handleRegister()
+                    }
+                }} style={{ alignSelf: 'center', marginTop: 10, marginBottom: 10 }}>
                     <LinearGradient
                         start={{ x: 0, y: 0 }}
                         end={{ x: 1, y: 0 }}
-                        style={{ paddingHorizontal: 36, paddingVertical: 10, borderRadius: 24, minWidth: 150, justifyContent: 'center', alignItems: 'center' }} colors={['#febf6f', COLOR.MAIN]}>
+                        style={{
+                            paddingHorizontal: 36, paddingVertical: 10, borderRadius: 24, minWidth: 150,
+                            justifyContent: 'center', alignItems: 'center', flexDirection: 'row'
+                        }} colors={['#febf6f', COLOR.MAIN]}>
                         <Text style={{ ...fontMaker({ weight: fontStyles.Regular }), color: 'white', fontSize: fontSize.h3 }}>Đăng ký</Text>
+                        {loading ? <ActivityIndicator style={{ marginLeft: 15 }} color="#fff" size='large' /> : null}
                     </LinearGradient>
                 </TouchableOpacity>
 

@@ -15,6 +15,19 @@ export const makeOptionShare = (msg = Platform.OS === 'ios' ? urlIos : url) => {
 	};
 }
 
+export const MAP_SUBJECT = {
+	"1": "Toán",
+	"2": "Văn",
+	"3": "Vật lý",
+	"4": "Hóa học",
+	"5": "tiếng anh",
+	"6": "Lịch sử",
+	"7": "Địa lý",
+	"8": "Sinh học",
+	"9": "Âm nhạc",
+	"10": "Giáo dục công dân",
+	"11": "Tiếng Việt",
+}
 
 export const mapBooktype = [
 	'Sách giáo khoa',

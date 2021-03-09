@@ -27,15 +27,12 @@ const CourseHeader = ({ navigation, imgCourse = fakeImg }) => {
                 onPress={() => { navigation.goBack() }}
                 style={{
                     flexDirection: 'row', alignItems: 'center',
-                    marginLeft: 15, position: 'absolute',
-                    // top: 50,
-                    // backgroundColor: '#dfdfdf',
+                    position: 'absolute',
                     padding: 8,
-                    // borderRadius: 30
 
                 }}
             >
-                <View style={{ width: 30, height: 30, justifyContent: 'center', alignItems: 'center', borderRadius: 20, }}>
+                <View style={{ width: 40, height: 40, justifyContent: 'center', alignItems: 'center', borderRadius: 40, backgroundColor:  'rgba(244, 244, 244, 0.7)' }}>
                     <Icon type='AntDesign' name='arrowleft' style={{ fontSize: 26, color: 'rgba(0, 0, 0, 0.7)' }} />
                 </View>
             </TouchableOpacity>

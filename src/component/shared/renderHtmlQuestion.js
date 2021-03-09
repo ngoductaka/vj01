@@ -33,6 +33,7 @@ import Sound from '../Sound';
 import { fontMaker, fontStyles } from '../../utils/fonts';
 import BannerAd from './BannerAd';
 import { endpoints } from '../../constant/endpoints';
+import { handleImgSrc, handleImgTest } from '../../utils/images';
 
 const config = {
   WebViewComponent: WebView,
@@ -188,18 +189,36 @@ const ImageSVG = props => {
   }
 };
 
-const RenderImg = ({ uri, height, widthImg, indexItem, setShowImg = () => { }, isAnwser }) => {
-  try {
-    const convertEndPoint = `${endpoints.BASE_HOI_DAP}${uri}`
 
-    // const uri = url.toLocaleLowerCase();
+export const handleImgLink = (link) => {
+  try {
+    if (!link) return "https://avancar.gov.br/avancar-web/images/slideshow/not-found.png"
+    return link.includes('http') ? link : `${endpoints.BASE_HOI_DAP}${link}`;
+  } catch (err) {
+    return link;
+  }
+};
+
+export const handleAvatarLink = (link) => {
+  try {
+      if (!link) return "https://www.xaprb.com/media/2018/08/kitten.jpg"
+      return link.includes('http') ? link : endpoints.BASE_HOI_DAP + link;
+  } catch (err) {
+      return link;
+  }
+};
+
+const RenderImg = ({ uri, height, widthImg, indexItem, setShowImg, isAnwser }) => {
+  try {
+
+    const convertEndPoint = handleImgLink(uri);
     if (height && widthImg) {
       return (
         <TouchableOpacity onPress={() => {
-          // if (widthImg > width - 30) {
-          Toast.showWithGravity("Click 2 lần để phóng to", Toast.SHORT, Toast.CENTER);
-          setShowImg({ uri: convertEndPoint, size: { height, width: widthImg } })
-          // }
+          if (widthImg > width - 150 && setShowImg) {
+            Toast.showWithGravity("Click 2 lần để phóng to", Toast.SHORT, Toast.CENTER);
+            setShowImg({ uri: convertEndPoint, size: { height, width: widthImg } })
+          }
         }} key={indexItem + 'img'} style={{ height, width: widthImg > width ? width - 5 : widthImg }}>
           <Image
             resizeMode="contain"
@@ -230,7 +249,7 @@ const RenderImg = ({ uri, height, widthImg, indexItem, setShowImg = () => { }, i
 
     return (
       <TouchableOpacity onPress={() => {
-        if (size.width && size.width > width - 30) {
+        if (size.width && size.width > width - 150 && setShowImg) {
           Toast.showWithGravity("Click 2 lần để phóng to", Toast.SHORT, Toast.CENTER);
           setShowImg({ uri, size })
         }
@@ -297,19 +316,21 @@ const RenderData = ({ indexItem = '', content }) => {
   )
 }
 
-export const RenderDataJson = ({ indexItem = '', content, isAnwser, setShowImg = () => { } }) => {
+export const RenderDataJson = ({ indexItem = '', content, isAnwser, setShowImg, isShort = false }) => {
   // console.log('contentcontentcontentcontentcontentcontent', content, typeof content)
   if (isEmpty(content) || !Array.isArray(content)) return null;
   return (
     <View style={styles.container}>
       {
-        content.map((row, indexRow) => RenderRow({ indexItem, row, indexRow, isAnwser, setShowImg }))
+        isShort ?
+          content.slice(0, 1).map((row, indexRow) => RenderRow({ indexItem, row, indexRow, isAnwser, setShowImg })) :
+          content.map((row, indexRow) => RenderRow({ indexItem, row, indexRow, isAnwser, setShowImg }))
       }
     </View >
   )
 }
 // 
-export const RenderRow = ({ indexItem = '', row, indexRow, setShowImg = () => { }, isAnwser }) => {
+export const RenderRow = ({ indexItem = '', row, indexRow, setShowImg, isAnwser }) => {
   try {
     return (
       <View key={`${indexItem}_row_${indexRow}`} style={styles.viewRow}>
@@ -356,7 +377,7 @@ export const RenderRow = ({ indexItem = '', row, indexRow, setShowImg = () => { 
                 <TouchableOpacity
                   // key={indexRow + indexItem + index + 'ios_svg'}
                   onPress={() => {
-                    if (widthConvert > width - 150) {
+                    if (widthConvert > width - 200 && setShowImg) {
                       Toast.showWithGravity("Click 2 lần để phóng to", Toast.SHORT, Toast.CENTER);
                       setShowImg({
                         type: 'svg',

@@ -72,7 +72,7 @@ Toast.propTypes = {
 
 Toast.defaultProps =
 {
-    backgroundColor: '#666666',
+    backgroundColor: '#333',
     textColor: '#fff'
 }
 
