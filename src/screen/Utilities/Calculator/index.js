@@ -11,7 +11,6 @@ import {
 import Row from "./components/Row";
 import Button from "./components/Button";
 import calculator, { initialState } from "./util/calculator";
-import { TouchableOpacity } from "react-native-gesture-handler";
 
 
 const App = () => {
@@ -21,13 +20,49 @@ const App = () => {
   const handleTap = (value) => {
     setString(stringCal + value)
   };
-  const handleCalculate = () => {
+  const _hanldeCalString = (str) => {
     try {
-      const res = evaluate(stringCal)
-      setResult(res)
+      const regexLn = /ln/ig;
+      const regexEnd = /|/ig;
+      let strConvert = str.replace(regexLn, 'log').replace(regexEnd, '');
+      // console.log(str, 'strConvert', strConvert);
+
+      return evaluate(strConvert);
+    } catch (err) {
+
+    }
+  }
+  const handleCalculate = async () => {
+    try {
+      // console.log('stringCal', stringCal.replace('ln', 'log'))
+      const res = _hanldeCalString(stringCal);
+      // console.log('resresresres', res)
+      if(res) {
+        setResult(res)
+      } else {
+        setResult("Phép tính lỗi")
+      }
 
     } catch (err) {
-      console.log('eeeee', err)
+      try {
+        console.log('err', err)
+        if (err.message.includes('Parenthesis ) expected')) {
+          const stringConvert = stringCal + ")";
+          setString(stringConvert);
+          const res = _hanldeCalString(stringConvert);
+          setResult(res)
+        }
+      } catch (errors) {
+        console.log('errors', errors)
+      }
+    }
+  }
+  const handleClean = (isAll) => {
+    if (isAll) {
+      setString('');
+      setResult('')
+    } else {
+      setString(stringCal.substring(0, stringCal.length - 1))
     }
   }
 
@@ -53,9 +88,12 @@ const App = () => {
             value={stringCal}
             // onChangeText={() => { }}
             keyboardType={'numeric'}
-            editable={false}
+            onFocus={() => {
+              Keyboard.dismiss();
+            }}
+            // editable={false}
           // focusable={false}
-          // selection={{ start: 3, end: 3 }}
+          selection={{ start: 0, end: 0 }}
 
           // onFocus={() => Keyboard.dismiss()}
 
@@ -66,16 +104,16 @@ const App = () => {
         </Text>
 
         <Row>
-          <Button theme="secondary" size="mini" text="ln" onPress={() => handleTap("number", 'cos')} />
-          <Button theme="secondary" size="mini" text="(" onPress={() => handleTap("operator", "*")} />
-          <Button theme="secondary" size="mini" text=")" onPress={() => handleTap("operator", "*")} />
+          <Button theme="secondary" size="mini" text="ln" onPress={() => handleTap("ln(3")} />
+          <Button theme="secondary" size="mini" text="(" onPress={() => handleTap("(")} />
+          <Button theme="secondary" size="mini" text=")" onPress={() => handleTap(")")} />
           <Button theme="secondary" size="mini" text="ln" onPress={() => handleTap("operator", "*")} />
         </Row>
         <Row>
-          <Button theme="secondary" size="mini" text="sin" onPress={() => handleTap("number", 'sin')} />
-          <Button theme="secondary" size="mini" text="cos" onPress={() => handleTap("number", 'cos')} />
-          <Button theme="secondary" size="mini" text="tan" onPress={() => handleTap("number", 'tan')} />
-          <Button theme="secondary" size="mini" text="log" onPress={() => handleTap("operator", "*")} />
+          <Button theme="secondary" size="mini" text="sin" onPress={() => handleTap("sin(")} />
+          <Button theme="secondary" size="mini" text="cos" onPress={() => handleTap("cos(")} />
+          <Button theme="secondary" size="mini" text="tan" onPress={() => handleTap("tan(")} />
+          <Button theme="secondary" size="mini" text="log" onPress={() => handleTap("log(, 10)")} />
           {/* <Button theme="secondary" size="mini" text="ln"  onPress={() => handleTap("operator", "*")} /> */}
         </Row>
         <Row>
@@ -131,8 +169,8 @@ const App = () => {
           <Button text="7" onPress={() => handleTap(7)} />
           <Button text="8" onPress={() => handleTap(8)} />
           <Button text="9" onPress={() => handleTap(9)} />
-          <Button text="DEL" theme="accent" onPress={() => handleTap("*")} />
-          <Button text="AC" theme="accent" onPress={() => handleTap("*")} />
+          <Button text="DEL" theme="accent" onPress={() => handleClean()} />
+          <Button text="AC" theme="accent" onPress={() => handleClean('all')} />
         </Row>
         <Row>
           <Button text="4" onPress={() => handleTap(4)} />
