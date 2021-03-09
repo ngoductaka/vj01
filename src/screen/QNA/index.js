@@ -609,7 +609,7 @@ const RenderQestion = ({ item, index, hanldleClick, _handleNavigate = () => { },
                 }}
                 style={{ paddingHorizontal: 8 }}>
                 <RenderDataJson isShort indexItem={index} content={parse_content} />
-                {(parse_content && get(parse_content, 'length', 0) > 5) ? < Text style={{ textAlign: 'left', marginTop: 8, color: COLOR.MAIN }}>... Xem thêm</Text> : null}
+                {(parse_content && get(parse_content, 'length', 0) > 1) ? < Text style={{ textAlign: 'left', marginTop: 8, color: COLOR.MAIN }}>... Xem thêm</Text> : null}
             </TouchableOpacity>
             <RenderListImg setVisible={setVisible} listImg={image} />
             {/* footer */}

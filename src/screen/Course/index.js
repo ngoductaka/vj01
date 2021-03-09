@@ -107,7 +107,7 @@ const Course = (props) => {
                 <ScrollView>
                     {get(myCourse, '[0]') ? <View style={{ backgroundColor: '#fff', marginBottom: 10, padding: 10 }}>
                         <SeeAllTitle
-                            onPress={() => props.navigation.navigate('TopicCourse', { topic: `Khoá học của tôi`, data: myCourse, showConsoult:false })}
+                            onPress={() => props.navigation.navigate('TopicCourse', { topic: `Khoá học của tôi`, data: myCourse, showConsoult: false })}
                             text={`Khoá học của tôi`} />
                         <ScrollView horizontal showsHorizontalScrollIndicator={false}>
                             {myCourse.slice(0, 5).map(videoItem => {
@@ -117,7 +117,6 @@ const Course = (props) => {
                                     videos={videoItem}
                                     style={{ marginRight: 20, width: width * 4 / 5 }}
                                     showConsoult={false}
-
                                 />
                             })}
                         </ScrollView>
@@ -349,7 +348,18 @@ const VideoItem = ({ navigate, setVisible, videos = {}, style = {}, widthImg = w
         widthImg,
         item: videoItem,
         _handlePress: () => {
-            navigate('CourseDetail', { videoItem, showConsoult })
+            // navigate('CourseDetail', { videoItem, showConsoult })
+            console.log(videoItem, 'videoItem', get(videoItem, 'get_curriculum[0].get_child_curriculum[0].get_media[0]', {}))
+            if (!showConsoult) {
+                navigate('VideoLesson', {
+                    showConsoult,
+                    pathPlay: [0, 0],
+                    videoData: get(videoItem, 'get_curriculum[0].get_child_curriculum[0].get_media[0]', {}),
+                    listCourse: videoItem.get_curriculum,
+                })
+            } else {
+                navigate('CourseDetail', { videoItem, showConsoult })
+            }
         },
     };
     return (

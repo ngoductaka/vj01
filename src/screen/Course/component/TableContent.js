@@ -10,10 +10,12 @@ import Collapsible from 'react-native-collapsible';
 import { get } from 'lodash';
 import { helpers } from '../../../utils/helpers';
 import { fontMaker, fontStyles } from '../../../utils/fonts';
+import { COLOR } from '../../../handle/Constant';
 
-
-const TableContent = ({ _navigateToCourse, listCourse = [], 
-    playPath = [], navigation, showConsoult = true, setShowConsultModal }) => {
+const TableContent = ({
+    _navigateToCourse, listCourse = [], title = '',
+    playPath = [], navigation, showConsoult = true, setShowConsultModal
+}) => {
     const [l1 = null, l2 = null] = playPath;
     const [active, setActive] = useState(0);
 
@@ -24,15 +26,20 @@ const TableContent = ({ _navigateToCourse, listCourse = [],
     }, [l1]);
 
     return (
-        <ScrollView style={{}}>
+        <ScrollView style={{ backgroundColor: '#fff' }}>
+
+            {title ? <View style={{ paddingHorizontal: 10, borderBottomColor: '#ddd', borderBottomWidth: 1, paddingBottom: 7 }}>
+                <Text style={{ fontSize: 18, textTransform: 'capitalize', ...fontMaker({ weight: fontStyles.Regular }) }}>{title}</Text>
+            </View>: null}
             {
                 listCourse.map((chapter = {}, index) => {
                     return (
                         <View>
                             <TouchableOpacity
                                 style={{
-                                    flexDirection: 'row', justifyContent: 'space-between',
-                                    marginTop: 10, paddingVertical: 8, paddingHorizontal: 7, borderRadius: 10
+                                    flexDirection: 'row', justifyContent: 'space-between', backgroundColor: index === active ? 'rgba(252, 165, 3, 0.3)' : '#fff',
+                                    marginTop: 10, paddingVertical: 8, paddingHorizontal: 7,
+                                    // borderRadius: 10
                                 }}
                                 onPress={() => setActive(index === active ? -1 : index)}>
                                 <View style={{ flex: 1 }}>
@@ -143,7 +150,7 @@ export const TableContentExpand = ({ _navigateToCourse, listCourse = [], playPat
 // }
 
 
-const RenderListLesson = ({ chapter, index, l1, l2, _navigateToCourse, 
+const RenderListLesson = ({ chapter, index, l1, l2, _navigateToCourse,
     listCourse, navigation, showConsoult = true, setShowConsultModal }) => {
     const refFlatlist = useRef(null);
     // const [active, setActive] = useState(false);
@@ -177,15 +184,19 @@ const RenderListLesson = ({ chapter, index, l1, l2, _navigateToCourse,
 
                     if (course.status !== 'active') return null;
                     return (
-                        <View style={{ backgroundColor: (indexVideo == l2 && index == l1) ? 'rgba(252, 165, 3, 0.3)' : '#fff', borderRadius: 4, paddingRight: 3 }}>
+                        <View style={{ borderRadius: 4, paddingRight: 3 }}>
                             <View style={{ paddingTop: 5, paddingBottom: 10 }} >
                                 <View style={{ flexDirection: 'row', }}>
-                                    <Text style={{ fontSize: 15, marginHorizontal: 10 }}>{indexVideo + 1}.</Text>
+                                    <Text style={{
+                                        fontSize: 15, marginHorizontal: 10,
+                                        color: (indexVideo == l2 && index == l1) ? '#1A9CFC' : '#000',
+                                    }}>{indexVideo + 1}.</Text>
                                     <View style={{ flex: 1 }}>
                                         <TouchableOpacity
                                             onPress={() => {
                                                 if (videoData.duration) {
                                                     videoData.name = course.name
+                                                    videoData.preview = get(course, 'preview')
                                                     _navigateToCourse({
                                                         showConsoult,
                                                         videoData,
@@ -195,8 +206,8 @@ const RenderListLesson = ({ chapter, index, l1, l2, _navigateToCourse,
                                                     })
                                                 } else {
                                                     if (get(listPdf, `[0].raw_url`)) {
-                                                        console.log(setShowConsultModal && showConsoult, setShowConsultModal , showConsoult)
-                                                        if(setShowConsultModal && showConsoult) {
+                                                        console.log(setShowConsultModal && showConsoult, setShowConsultModal, showConsoult)
+                                                        if (setShowConsultModal && showConsoult) {
                                                             setShowConsultModal(true);
                                                         } else {
                                                             // navigation.navigate('PdfView', { uri: listPdf[0].raw_url })
@@ -204,8 +215,24 @@ const RenderListLesson = ({ chapter, index, l1, l2, _navigateToCourse,
                                                     }
                                                 }
                                             }}>
-                                            <Text style={{ fontSize: 15, textTransform: 'capitalize', ...fontMaker({ weight: fontStyles.Regular }) }} numberOfLines={2}>{course.name}</Text>
-                                            <Text style={{ marginTop: 4, color: '#222', fontSize: 12, }}>
+                                            <View style={{ flexDirection: 'row' }}>
+                                                {
+                                                    get(course, 'get_process.status') == 3 ?
+                                                        <Icon name="checkcircleo" type="AntDesign" style={{ fontSize: 15, marginRight: 5, color: 'green' }} />
+                                                        : null
+                                                }
+                                                <View>
+                                                    <Text
+                                                        numberOfLines={1}
+                                                        style={{
+                                                            fontSize: 15, textTransform: 'capitalize',
+                                                            color: (indexVideo == l2 && index == l1) ? '#1A9CFC' : '#000',
+                                                            ...fontMaker({ weight: fontStyles.Regular })
+                                                        }}
+                                                    >{course.name}</Text>
+                                                </View>
+                                            </View>
+                                            <Text style={{ marginTop: 4, color: '#555', fontSize: 11 }}>
                                                 {videoData.duration ? `Video - ${helpers.convertTime(videoData.duration)}` : 'Tài liệu'}
                                             </Text>
                                         </TouchableOpacity>
@@ -215,34 +242,31 @@ const RenderListLesson = ({ chapter, index, l1, l2, _navigateToCourse,
                                                     <TouchableOpacity
                                                         onPress={() => {
 
-                                                    if (pdf.raw_url) {
-                                                        console.log(setShowConsultModal && showConsoult, setShowConsultModal , showConsoult)
-                                                        if(setShowConsultModal && showConsoult) {
-                                                            setShowConsultModal(true);
-                                                        } else {
-                                                            // navigation.navigate('PdfView', { uri: listPdf[0].raw_url })
-                                                            navigation.navigate('PdfView', { uri: pdf.raw_url })
-                                                        }
-                                                    }
+                                                            if (pdf.raw_url) {
+                                                                console.log(setShowConsultModal && showConsoult, setShowConsultModal, showConsoult)
+                                                                if (setShowConsultModal && showConsoult) {
+                                                                    setShowConsultModal(true);
+                                                                } else {
+                                                                    // navigation.navigate('PdfView', { uri: listPdf[0].raw_url })
+                                                                    navigation.navigate('PdfView', { uri: pdf.raw_url })
+                                                                }
+                                                            }
                                                         }}
                                                         style={{ flexDirection: 'row', marginTop: 15, marginLeft: -25, alignItems: 'center' }}
                                                     >
-                                                        <Icon style={{ fontSize: 15, marginRight: 12 }} name="file-pdf-o" type="FontAwesome" />
+                                                        <Icon style={{ fontSize: 15, marginRight: 12, marginTop: 5, alignSelf: 'flex-start', color: COLOR.MAIN }} name="file-pdf-o" type="FontAwesome" />
                                                         <View>
                                                             <Text style={{ fontSize: 15, textTransform: 'capitalize', ...fontMaker({ weight: fontStyles.Regular }) }} numberOfLines={2}>{pdf.name}</Text>
-                                                            <Text style={{ marginTop: 4, color: '#222', fontSize: 12, }}> Tài liệu</Text>
+                                                            <Text style={{ marginTop: 4, color: '#555', fontSize: 12, }}> Tài liệu</Text>
                                                         </View>
                                                     </TouchableOpacity>
                                                 )
                                             })
                                         }
                                     </View>
-                                    {course.preview === 'active' && showConsoult ? <View style={{
-                                        borderWidth: 1, borderColor: '#6992A8', alignSelf: 'flex-start',
-                                        paddingHorizontal: 5, paddingVertical: 2, borderRadius: 3
-                                    }}>
-                                        <Text style={{ color: '#6992A8' }}>preview</Text>
-                                    </View> : null}
+                                    {course.preview === 'active' && showConsoult ?
+                                        <Icon style={{ color: '#6992A8', fontSize: 20 }} name="playcircleo" type="AntDesign" />
+                                        : null}
                                 </View>
 
 

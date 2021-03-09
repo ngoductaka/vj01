@@ -23,6 +23,8 @@ import { BtnFullWidth, TitleCourse } from './component/BtnFullWidth';
 import ConsultingForm from '../../component/ConsultingForm';
 import { getDetailCourse } from './services';
 import { fontMaker, fontStyles } from '../../utils/fonts';
+import { ModalWrapp } from './component/ModalVote';
+import { BtnGradient } from '../../component/shared/Btn';
 
 const CourseDetail = (props) => {
     const { navigation } = props;
@@ -32,6 +34,7 @@ const CourseDetail = (props) => {
     const [dataCourse, setDataCouse] = useState({});
     const [listCourse, setListCourse] = useState([]);
     const [loading, setLoading] = useState(false)
+    const [showConsult, setShowConsultModal] = useState(false)
 
     useEffect(() => {
         setLoading(true)
@@ -103,6 +106,7 @@ const CourseDetail = (props) => {
                                         _navigateToCourse={_navigateToCourse}
                                         listCourse={listCourse}
                                         showConsoult={showConsoult}
+                                        setShowConsultModal={setShowConsultModal} // overview || detail
                                     />}
                             </View>
                         </View>
@@ -111,9 +115,10 @@ const CourseDetail = (props) => {
                 {showConsoult ? <BtnFullWidth
                     onPress={() => navigation.navigate('ConsultingForm')}
                     text={"Nhận tư vấn khoá học"}
-                    styles={{ 
+                    styles={{
                         // marginBottom: 15,
-                         marginVertical: 0, }}
+                        marginVertical: 0,
+                    }}
                 /> : null}
                 {showHeader ? <Animatable.View
                     style={{ position: 'absolute', top: 0, left: 0, right: 0 }}
@@ -140,6 +145,29 @@ const CourseDetail = (props) => {
                     </View>
                 </Animatable.View> : null}
             </View>
+            <ModalWrapp
+                show={showConsult}
+                onClose={() => { setShowConsultModal(false) }}
+                title="Bài học yêu cầu trả phí"
+            >
+                <View>
+                    <Image
+                        style={{ height: 120, marginTop: -10 }}
+                        resizeMode="contain"
+                        source={{ uri: 'https://images.squarespace-cdn.com/content/v1/5dd67d2aaec74929770fe3cd/1575459940872-BGBP9I1OU6WAS0BNBHUT/ke17ZwdGBToddI8pDm48kEkuqA5CPVEXx22XwNGYfRpZw-zPPgdn4jUwVcJE1ZvWQUxwkmyExglNqGp0IvTJZamWLI2zvYWH8K3-s_4yszcp2ryTI0HqTOaaUohrI8PI7RjJ1Sk4e_t43oExbaejIJIKzwsQ27kPBxX_EDqtFg0KMshLAGzx4R3EDFOm1kBS/VideoIcon.jpg' }}
+                    />
+                    <Text style={{ fontSize: 22, textAlign: 'center', marginTop: 30 }}>Bạn cần đăng ký khóa học để xem đầy đủ các bài học</Text>
+                    <BtnGradient
+                        text="Nhận tư vấn khoá học"
+                        style={{ marginTop: 30 }}
+                        textStyle={{ fontSize: 25, fontWeight: 'bold' }}
+                        onPress={() => {
+                            setShowConsultModal(false);
+                            navigation.navigate('ConsultingForm')
+                        }}
+                    />
+                </View>
+            </ModalWrapp>
 
         </SafeAreaView>
     )

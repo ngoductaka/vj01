@@ -6,7 +6,8 @@ import {
     ScrollView,
     Text, BackHandler,
     SafeAreaView,
-    PixelRatio, TouchableOpacity, StatusBar
+    PixelRatio, Image,
+    TouchableOpacity, StatusBar
 } from 'react-native';
 import Video from 'react-native-video';
 import { get, throttle, isEmpty } from 'lodash';
@@ -23,11 +24,11 @@ import Toast from 'react-native-simple-toast';
 
 import { Loading, useRequest } from '../../handle/api';
 
-import BackVideoHeader from './component/BackVideoHeader';
+// import BackVideoHeader from './component/BackVideoHeader';
 import { helpers } from '../../utils/helpers';
 import { fontMaker, fontStyles } from '../../utils/fonts';
-import { Toolbar } from './component/Toolbar';
-import { FeedbackModal } from './component/FeedbackModal';
+// import { Toolbar } from './component/Toolbar';
+// import { FeedbackModal } from './component/FeedbackModal';
 import { COLOR } from '../../handle/Constant';
 
 // import { RenderArticlRelated } from '../Lesson/component/ArticleList';
@@ -53,78 +54,45 @@ const CoursePlayer = (props) => {
     const dispatch = useDispatch();
 
     const [videoLesson, setDataLesson] = useState({});
-    const [listDoc, setListDoc] = useState([]);
     const [listCourse, setListCourse] = useState([]);
     const [pathPlay, setPathPlay] = useState([]);
     const [videoSrc, setVideoSrc] = useState('');
-    const [page, setPage] = useState(0);
 
+    const [errVideo, setErrVideo] = useState(false);
+    const [full, setFull] = useState(false);
+    const [visible, setVisible] = useState(false);
+
+    const [showConsult, setShowConsult] = useState(false);
+    const [paused, setPause] = useState(false);
 
     useEffect(() => {
         setTimeout(() => {
+            const videoData = navigation.getParam('videoData', null);
+            console.log('videoData=', videoData);
+            if (videoData) {
+                setDataLesson(videoData)
+                setListCourse(navigation.getParam('listCourse', {}));
+                setPathPlay(navigation.getParam('pathPlay', {}));
 
-            const videoData = navigation.getParam('videoData', {});
-            setDataLesson(videoData)
-            setListDoc(navigation.getParam('listPdf', {}))
-            setListCourse(navigation.getParam('listCourse', {}));
-            setPathPlay(navigation.getParam('pathPlay', {}));
+                setVideoSrc(get(videoData, 'raw_url', ''))
+                setErrVideo(false)
+            } else {
 
-            setVideoSrc(get(videoData, 'raw_url', ''))
-            setErrVideo(false)
+            }
         }, 100)
-
-        if (!navigation.getParam('videoData.id', '')) {
-            setTimeout(() => {
-                setPage(1);
-            });
-
-        }
     }, [navigation]);
 
-
-    const lectureId = navigation.getParam('lectureId', '');
-    const [full, setFull] = useState(false);
-    const [visible, setVisible] = useState(false);
-    // const [paused, setPaused] = useState(false);
-    // const [isPlay, setPlay] = useState(true);
-    // const [videoData, isLoading, err] = useRequest(`/videos/show/${lectureId}`, [lectureId]);
-
-    const [currentPlay, setCurrentPlay] = useState(-1);
-    const [convertTimeStamp, setTimeConvert] = useState({});
-    const [errVideo, setErrVideo] = useState(false);
-    // throttle set new index
-    const throttled = useRef(throttle((newValue) => _onProgress(newValue), 1000));
-
     useEffect(() => {
+        if (navigation.getParam('showConsoult', true) &&
+            get(videoLesson, 'raw_url', '') &&
+            get(videoLesson, 'preview', '') !== "active") {
+            setShowConsult(true)
+        }
         changeKeepAwake(true);
         return () => {
             changeKeepAwake(false)
         }
     }, [videoLesson]);
-
-    useEffect(() => {
-        throttled.current = throttle((newValue) => _onProgress(newValue), 1000)
-    }, [convertTimeStamp])
-
-    const _onProgress = (data) => {
-        const timeCurrent = Math.floor(data.currentTime);
-        // console.log('_onProgress', timeCurrent)
-        const listTime = Object.keys(convertTimeStamp);
-        const timeMinInRank = listTime.find((key, index) => timeCurrent + 1 > key && timeCurrent + 1 <= listTime[index + 1])
-        const indexTime = convertTimeStamp[timeMinInRank];
-
-        if (indexTime !== currentPlay) {
-            setCurrentPlay(indexTime)
-        }
-    }
-
-    const _onEnd = () => {
-        setCurrentPlay(-1);
-    }
-
-    const _onReadyForDisplay = () => {
-        setCurrentPlay(0);
-    }
 
     useEffect(() => {
         BackHandler.addEventListener(
@@ -133,6 +101,8 @@ const CoursePlayer = (props) => {
         );
 
         return () => {
+            setPause(true)
+            dispatch(setLearningTimes());
             Orientation.lockToPortrait();
             BackHandler.removeEventListener(
                 'hardwareBackPress',
@@ -140,6 +110,12 @@ const CoursePlayer = (props) => {
             );
         }
     }, []);
+
+    useEffect(() => {
+        if (!props.isFocused) {
+            setPause(true);
+        }
+    }, [props.isFocused])
 
     const handleBackButtonPressAndroid = () => {
         if (full) {
@@ -151,21 +127,10 @@ const CoursePlayer = (props) => {
         }
     }
 
-    useEffect(() => {
-        // setPlay(navigation.isFocused());
-        // setPaused(!navigation.isFocused());
-    }, [navigation.isFocused()]);
-
     const handleBackFullScreen = () => {
         setFull(false);
         Orientation.lockToPortrait();
     }
-
-    useEffect(() => {
-        return () => {
-            dispatch(setLearningTimes());
-        }
-    }, []);
 
     const _navigateToCourse = (params) => {
         // console.log('params', params)
@@ -174,18 +139,11 @@ const CoursePlayer = (props) => {
     }
     // console.log('0----------', videoSrc)
 
-    const _loadVideoFail = () => {
+    const _loadVideoFail = useCallback(() => {
         Toast.showWithGravity("Video không khả dụng, vui lòng thử lại sau", Toast.SHORT, Toast.CENTER);
         setErrVideo(true)
-    }
+    }, [])
 
-    const [showConsult, setShowConsult] = useState(false);
-
-    useEffect(() => {
-        if (videoSrc && navigation.getParam('showConsoult', true)) {
-            setShowConsult(true)
-        }
-    }, [navigation.getParam('showConsoult', true), videoSrc])
 
     return (
         <View style={{ flex: 1 }}>
@@ -206,8 +164,8 @@ const CoursePlayer = (props) => {
                                     source={{ uri: videoSrc }}
                                     // ref={mediaPlayer}
                                     onError={_loadVideoFail}
-                                    onEnd={_onEnd}
-                                    // paused={paused}
+                                    // onEnd={_onEnd}
+                                    paused={paused}
                                     // onReadyForDisplay={_onReadyForDisplay}
                                     // onProgress={throttled.current}
                                     preventsDisplaySleepDuringVideoPlayback={true}
@@ -266,6 +224,7 @@ const CoursePlayer = (props) => {
                             </View>
 
                             <TableContentExpand
+                                title={videoLesson.name}
                                 _navigateToCourse={_navigateToCourse}
                                 navigation={navigation}
                                 listCourse={listCourse}
@@ -318,17 +277,23 @@ const CoursePlayer = (props) => {
             <ModalWrapp
                 show={showConsult}
                 onClose={() => { setShowConsult(false) }}
-                title="Bài học yêu cầu trả phí">
+                title={null}
+            >
                 <View>
-                    <Text>Bạn cần đăng ký khóa học để xem đầy đủ các bài học</Text>
+                    <Image
+                        style={{ height: 120, marginTop: -10 }}
+                        resizeMode="contain"
+                        source={{ uri: 'https://images.squarespace-cdn.com/content/v1/5dd67d2aaec74929770fe3cd/1575459940872-BGBP9I1OU6WAS0BNBHUT/ke17ZwdGBToddI8pDm48kEkuqA5CPVEXx22XwNGYfRpZw-zPPgdn4jUwVcJE1ZvWQUxwkmyExglNqGp0IvTJZamWLI2zvYWH8K3-s_4yszcp2ryTI0HqTOaaUohrI8PI7RjJ1Sk4e_t43oExbaejIJIKzwsQ27kPBxX_EDqtFg0KMshLAGzx4R3EDFOm1kBS/VideoIcon.jpg' }}
+                    />
+                    <Text style={{ fontSize: 22, textAlign: 'center', marginTop: 30 }}>Bạn cần đăng ký khóa học để xem đầy đủ các bài học</Text>
                     <BtnGradient
                         text="Nhận tư vấn khoá học"
-                        style={{
-                            marginTop: 20
-                        }}
-                        label
+                        style={{ marginTop: 30 }}
+                        textStyle={{ fontSize: 25, fontWeight: 'bold' }}
                         onPress={() => {
-
+                            // setPause(true)
+                            setShowConsult(false);
+                            navigation.navigate('ConsultingForm')
                         }}
                     />
                 </View>
