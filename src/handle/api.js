@@ -244,7 +244,7 @@ const useRequest = (url, context = [], delay = 0, method = 'get', header, payloa
 				})
 				.catch(err => {
 					if (!netInfo.isConnected) { // no internet
-						Toast.showWithGravity("Mất kết nối internet", Toast.SHORT, Toast.TOP);
+						// Toast.showWithGravity("Mất kết nối internet", Toast.SHORT, Toast.TOP);
 						netNoInternet(true);
 						// console.log('<no internet>')
 						const listPreRecall = Store.getState().userInfo.reCall || {};
