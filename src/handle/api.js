@@ -77,6 +77,7 @@ request.interceptors.response.use((response) => {
 			return request.post(endpoints.SOCIAL_LOGIN,
 				{
 					token: socialToken,
+					token_social: socialToken,
 					type: loginType
 				}).then(res => {
 					// console.log('----new--token--acc----', res);

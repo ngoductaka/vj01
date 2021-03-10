@@ -42,8 +42,9 @@ function* loginWithApple(action) {
 
             const name = get(appleAuthRequestResponse, 'fullName.givenName', '') + get(appleAuthRequestResponse, 'fullName.familyName', '');
 
-            console.log('asbdkjabdkjasd', name);
+            // console.log('asbdkjabdkjasd', name);
             const payload = {
+                token_social: get(appleAuthRequestResponse, 'identityToken', ''),
                 token: get(appleAuthRequestResponse, 'identityToken', ''),
                 type: 2,
                 provider_id: get(appleAuthRequestResponse, 'nonce', ''),
@@ -96,6 +97,7 @@ function* loginWithFacebook() {
         console.log('====login facebook')
         const data = yield user_services.onLoginFbPress();
         const result = yield api.post(endpoints.SOCIAL_LOGIN, {
+            "token_social": data.token,
             "token": data.token,
             "type": 0,
         });
@@ -136,8 +138,9 @@ function* loginWithGoogle() {
     try {
         yield GoogleSignin.hasPlayServices();
         const userInfo = yield GoogleSignin.signIn();
-        console.log('-----userInfouserInfouserInfo23----', userInfo.user);
+        // console.log('-----userInfouserInfouserInfo23----', userInfo.user);
         const result = yield api.post(endpoints.SOCIAL_LOGIN, {
+            "token_social": userInfo.idToken,
             "token": userInfo.idToken,
             "type": 1,
         });

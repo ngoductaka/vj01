@@ -16,7 +16,7 @@ import { withNavigationFocus } from 'react-navigation';
 import { useSelector, useDispatch } from 'react-redux';
 
 import { setUserInfo } from '../../redux/action/user_info';
-import { Loading, useRequest } from '../../handle/apiTest';
+import { Loading, useRequest } from '../../handle/api';
 import { useRequest as useRequest_ } from '../../handle/api';
 
 import RenderLesson from './component/RenderLesson';
