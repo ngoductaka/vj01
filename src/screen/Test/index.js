@@ -82,12 +82,23 @@ const Test = (props) => {
 	}, []);
 
 	useEffect(() => {
-		if (props.isFocused && userInfo.class) {
-			setTimeout(() => {
-				setShowSubjectModal(true);
-			}, 600);
+		if (props.isFocused) {
+			if (userInfo.class) {
+				setTimeout(() => {
+					setShowSubjectModal(true);
+				}, 600);
+			}
 		}
 	}, [userInfo.class]);
+	
+	useEffect(() => {
+		if(!props.isFocused) {
+			setTimeout(() => {
+				setShowSubjectModal(false);
+			}, 600);
+		}
+	}, [props.isFocused]);
+
 	useEffect(() => {
 		if (currSubjectNameParams !== null && !subjectTest) {
 			setShowSubjectModal(true);
