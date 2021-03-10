@@ -196,7 +196,11 @@ const RenderListLesson = ({ chapter, index, l1, l2, _navigateToCourse,
                                             onPress={() => {
                                                 if (videoData.duration) {
                                                     videoData.name = course.name
-                                                    videoData.preview = get(course, 'preview')
+                                                    videoData.preview = get(course, 'preview');
+                                                    console.log("course.course_id", course.id, course.course_id)
+
+                                                    videoData.courseId = course.course_id,
+                                                    videoData.curriculumnId = course.id,
                                                     _navigateToCourse({
                                                         showConsoult,
                                                         videoData,
