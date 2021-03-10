@@ -1,9 +1,10 @@
-import React, { useState } from "react";
+import React, { useState, useEffect, useRef } from 'react';
 import {
   StyleSheet, Text, View, StatusBar,
   TouchableWithoutFeedback, Keyboard,
-  SafeAreaView, TextInput
+  SafeAreaView, TextInput, TouchableOpacity
 } from "react-native";
+import { Icon } from 'native-base';
 import {
   atan2, chain, derivative, e, evaluate, log, pi, pow, round, sqrt
 } from 'mathjs'
@@ -13,17 +14,50 @@ import Button from "./components/Button";
 import calculator, { initialState } from "./util/calculator";
 
 
-const App = () => {
-  const [stringCal, setString] = useState(' ');
-  const [result, setResult] = useState(' ');
+const regexEnd = /\|/ig;
 
+const App = (props) => {
+  const [stringCal, setString] = useState('');
+  const [result, setResult] = useState('');
+  const [pointIndex, setPointIndex] = useState(0);
+  const [run, setRun] = useState(false);
+
+  useInterval(() => {
+    // ========
+    // console.log(stringCal, 'strConvert', pointIndex)
+ 
+    if (stringCal.includes("|") || run) {
+      let strConvert = stringCal.replace(regexEnd, '');
+      setString(strConvert)
+    } else {
+      let strArr = stringCal.split('');
+      strArr.splice(pointIndex, 0, "|");
+      
+      setString(strArr.join(''))
+    }
+  }, run ? 499 : 500);
+// input string
   const handleTap = (value) => {
-    setString(stringCal + value)
+    console.log( pointIndex||0, String(value).length, (pointIndex||0) + String(value).length)
+    setPointIndex((pointIndex||0) + String(value).length);
+
+    let strArr = stringCal.split('');
+    strArr.splice(pointIndex, 0, value);
+    
+    setString(strArr.join(''))
+    // setString(stringCal + value);
+
+    setRun(true);
+    setTimeout(() => {
+      setRun(false);
+    }, 510);
   };
+
+
+
   const _hanldeCalString = (str) => {
     try {
       const regexLn = /ln/ig;
-      const regexEnd = /|/ig;
       let strConvert = str.replace(regexLn, 'log').replace(regexEnd, '');
       // console.log(str, 'strConvert', strConvert);
 
@@ -37,7 +71,7 @@ const App = () => {
       // console.log('stringCal', stringCal.replace('ln', 'log'))
       const res = _hanldeCalString(stringCal);
       // console.log('resresresres', res)
-      if(res) {
+      if (res) {
         setResult(res)
       } else {
         setResult("Phép tính lỗi")
@@ -60,9 +94,11 @@ const App = () => {
   const handleClean = (isAll) => {
     if (isAll) {
       setString('');
-      setResult('')
+      setResult('');
+      setPointIndex(0);
     } else {
-      setString(stringCal.substring(0, stringCal.length - 1))
+      setString(stringCal.substring(0, stringCal.length - 1));
+      setPointIndex(pointIndex-1);
     }
   }
 
@@ -70,9 +106,19 @@ const App = () => {
   return (
     <View style={styles.container}>
       <SafeAreaView style={{ flex: 1 }}>
+        {/* <Icon /> */}
+        <TouchableOpacity onPress={() => props.navigation.goBack()} style={{
+          // position: 'absolute',
+          // left: width / 2 - 10,
+          justifyContent: 'center',
+          alignItems: 'center'
+        }}>
+          <Icon type="AntDesign" name='down' style={{ fontSize: 25, color: 'white' }} />
+        </TouchableOpacity>
         <View style={{ flex: 1, backgroundColor: '#A6BCA1', paddingVertical: 20, borderRadius: 10 }}>
           <TextInput
             // showSoftInputOnFocus={false}
+            // autoFocus={true}
             // blurOnSubmit={false}
             style={{
               flex: 1,
@@ -85,15 +131,15 @@ const App = () => {
             }}
             multiline={true}
             numberOfLines={1}
-            value={stringCal}
+            value={run ? stringCal.replace(regexEnd, '') : stringCal}
             // onChangeText={() => { }}
-            keyboardType={'numeric'}
-            onFocus={() => {
-              Keyboard.dismiss();
-            }}
-            // editable={false}
-          // focusable={false}
-          selection={{ start: 0, end: 0 }}
+            // keyboardType={'numeric'}
+            // onFocus={() => {
+            //   Keyboard.dismiss();
+            // }}
+            editable={false}
+            // focusable={false}
+            selection={{ start: 0, end: 0 }}
 
           // onFocus={() => Keyboard.dismiss()}
 
@@ -102,7 +148,12 @@ const App = () => {
         <Text style={styles.value}>
           {result}
         </Text>
-
+        <Row>
+          <Button theme="secondary" size="mini" text="<-" onPress={() => {setPointIndex(pointIndex-1)}} />
+          <Button theme="secondary" size="mini" text="->" onPress={() => {setPointIndex(pointIndex+1)}} />
+          <Button theme="secondary" size="mini" text="" onPress={() => handleTap(")")} />
+          <Button theme="secondary" size="mini" text="" onPress={() => handleTap("operator", "*")} />
+        </Row>
         <Row>
           <Button theme="secondary" size="mini" text="ln" onPress={() => handleTap("ln(3")} />
           <Button theme="secondary" size="mini" text="(" onPress={() => handleTap("(")} />
@@ -225,3 +276,24 @@ const styles = StyleSheet.create({
 });
 
 export default App;
+
+
+function useInterval(callback, delay) {
+  const savedCallback = useRef();
+
+  // Remember the latest callback.
+  useEffect(() => {
+    savedCallback.current = callback;
+  }, [callback]);
+
+  // Set up the interval.
+  useEffect(() => {
+    function tick() {
+      savedCallback.current();
+    }
+    if (delay !== null) {
+      let id = setInterval(tick, delay);
+      return () => clearInterval(id);
+    }
+  }, [delay]);
+}
