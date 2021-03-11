@@ -1,5 +1,5 @@
 import { takeLatest, put } from 'redux-saga/effects';
-import { GoogleSignin } from '@react-native-community/google-signin';
+import { GoogleSignin } from '@react-native-google-signin/google-signin';
 import AsyncStorage from '@react-native-community/async-storage';
 import appleAuth, {
     AppleAuthError,

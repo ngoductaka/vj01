@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { SafeAreaView, StyleSheet, View, Text, Image, TouchableOpacity, Dimensions, Keyboard, ScrollView, Platform, Linking, ImageBackground } from 'react-native';
 import { Icon } from 'native-base';
 import { LoginManager } from 'react-native-fbsdk';
-import { GoogleSignin } from '@react-native-community/google-signin';
+import { GoogleSignin } from '@react-native-google-signin/google-signin';
 import { connect } from 'react-redux';
 import { useNetInfo } from "@react-native-community/netinfo";
 import appleAuth, {
