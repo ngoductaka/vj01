@@ -138,7 +138,7 @@ function* loginWithGoogle() {
     try {
         yield GoogleSignin.hasPlayServices();
         const userInfo = yield GoogleSignin.signIn();
-        // console.log('-----userInfouserInfouserInfo23----', userInfo.user);
+        // console.log('-----userInfouserInfouserInfo23----', userInfo.idToken);
         const result = yield api.post(endpoints.SOCIAL_LOGIN, {
             "token_social": userInfo.idToken,
             "token": userInfo.idToken,
