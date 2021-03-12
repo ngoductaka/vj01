@@ -94,13 +94,13 @@ export const GAME_CENTERS = [
 ];
 export const LIST_UTILITIES = [
 	{
-		src: { uri: 'https://cdn2.iconfinder.com/data/icons/e-learning-17/96/timetable_classes_school_schedule-512.png' },
+		src: images.timetable,
 		name: 'Thời khoá biểu',
 		slogan: 'Lên lịch học tập',
 		route: 'TimeTable'
 	},
 	{
-		src: { uri: 'https://cdn4.iconfinder.com/data/icons/education-3-22/66/102-512.png' },
+		src: images.transcript,
 		name: 'Kết quả học tập',
 		slogan: 'Thống kê kết quả học tập',
 		route: 'ScroreAnalyse'
