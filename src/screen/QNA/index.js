@@ -37,7 +37,7 @@ const QnA = (props) => {
     const current_class = useSelector(state => state.userInfo.class);
     useDeepLink(props.navigation)
 
-    const [filter, setFilter] = useState({ cls: current_class, popular: true });
+    const [filter, setFilter] = useState({ cls: current_class, popular: false });
     const [showFilter, setShowFilter] = useState(false);
 
     const hanldleClick = useCallback((params) => {

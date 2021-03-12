@@ -136,6 +136,7 @@ android {
             javaMaxHeapSize "4g"
             incremental true
         }
+        minSdkVersion 21
         multiDexEnabled true
         versionCode 118
         versionName "2.2.5"

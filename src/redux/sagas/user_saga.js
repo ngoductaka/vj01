@@ -16,6 +16,7 @@ import NavigationService from '../../Router/NavigationService';
 import { Constants, FIRST_TIME } from '../../handle/Constant';
 import { helpers } from '../../utils/helpers';
 import { get } from 'lodash';
+import Toast from 'react-native-simple-toast';
 
 function* loginWithApple(action) {
     const updateCredentialStateForUser = action.data;
@@ -94,8 +95,8 @@ function* loginWithApple(action) {
 
 function* loginWithFacebook() {
     try {
-        console.log('====login facebook')
         const data = yield user_services.onLoginFbPress();
+        console.log('====login facebook',data)
         const result = yield api.post(endpoints.SOCIAL_LOGIN, {
             "token_social": data.token,
             "token": data.token,
@@ -127,6 +128,12 @@ function* loginWithFacebook() {
 
     } catch (error) {
         console.log('LOGIN_WITH_FACEBOOKfail', error);
+        if(error.message) {
+            console.log('LOGIN_WITH_FACEBOOKfail', error.message);
+            Toast.showWithGravity(error.message, Toast.LONG, Toast.TOP)
+        } else {
+            Toast.showWithGravity("Login facebook thất bại vui lòng thử lại sau", Toast.LONG, Toast.TOP)
+        }
         yield put({
             type: LOGIN_WITH_FACEBOOK_FAIL,
         });
@@ -168,6 +175,12 @@ function* loginWithGoogle() {
 
     } catch (error) {
         // console.log('error gg login', error)
+        console.log('gg login fail', error);
+        if(error.message) {
+            Toast.showWithGravity(error.message, Toast.LONG, Toast.TOP)
+        } else {
+            Toast.showWithGravity("Login google thất bại vui lòng thử lại sau", Toast.LONG, Toast.TOP)
+        }
         yield put({
             type: LOGIN_WITH_GOOGLE_FAIL,
             payload: error.code

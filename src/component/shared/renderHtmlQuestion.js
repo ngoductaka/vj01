@@ -212,7 +212,6 @@ const RenderImg = ({ uri, height, widthImg, indexItem, setShowImg, isAnwser }) =
   try {
 
     const convertEndPoint = handleImgLink(uri);
-    console.log(convertEndPoint, 'dnddd9dd9===', uri)
     if (height && widthImg) {
       return (
         <TouchableOpacity onPress={() => {
