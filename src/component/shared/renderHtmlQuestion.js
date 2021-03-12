@@ -212,6 +212,7 @@ const RenderImg = ({ uri, height, widthImg, indexItem, setShowImg, isAnwser }) =
   try {
 
     const convertEndPoint = handleImgLink(uri);
+    console.log(convertEndPoint, 'dnddd9dd9===', uri)
     if (height && widthImg) {
       return (
         <TouchableOpacity onPress={() => {
@@ -225,10 +226,7 @@ const RenderImg = ({ uri, height, widthImg, indexItem, setShowImg, isAnwser }) =
             style={{ flex: 1, height: undefined, width: undefined }}
             source={{
               uri: convertEndPoint
-              // 'https://hoidap.vietjack.com/storage/upload/images/1589295123-imagejpg.jpg',
-              // priority: FastImage.priority.normal,
             }}
-          // resizeMode={FastImage.resizeMode.contain}
           />
         </TouchableOpacity>
       )
@@ -258,7 +256,7 @@ const RenderImg = ({ uri, height, widthImg, indexItem, setShowImg, isAnwser }) =
           resizeMode="contain"
           style={{ flex: 1, height: undefined, width: undefined }}
           source={{
-            uri: 'https://hoidap.vietjack.com/storage/upload/images/1589295123-imagejpg.jpg',
+            uri: convertEndPoint,
             // priority: FastImage.priority.normal,
           }}
         // resizeMode={FastImage.resizeMode.contain}
