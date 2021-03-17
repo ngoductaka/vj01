@@ -193,6 +193,14 @@ const handleData = async (val_ = '') => {
             NavigationService.navigate('QuestionDetail', {
                 questionId: val_.question,
             })
+        } else if (val_.type == 'home') {
+            return 1;
+        } else if (val_.type == 'course') {
+            NavigationService.navigate('CourseScreen')
+        } else if (val_.type == 'qna') {
+            NavigationService.navigate('QnA')
+        } else if (val_.type == 'test') {
+            NavigationService.navigate('TestStack')
         }
         // console.log('la sao ta 2222222', notiData);
         if (notiData && notiData.id) {
