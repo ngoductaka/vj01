@@ -40,6 +40,7 @@ import { convertImgLink } from './utis';
 import TableContentExpand from './component/TableContent';
 import { ModalWrapp } from './component/ModalVote';
 import { BtnGradient } from '../../component/shared/Btn';
+import { updateDoneVideo, updateLastVideo } from './services';
 
 const { width, height } = Dimensions.get('window');
 
@@ -68,15 +69,23 @@ const CoursePlayer = (props) => {
     useEffect(() => {
         setTimeout(() => {
             const videoData = navigation.getParam('videoData', null);
-            console.log('videoData=', videoData);
+
             if (videoData) {
                 setDataLesson(videoData)
                 setListCourse(navigation.getParam('listCourse', {}));
                 setPathPlay(navigation.getParam('pathPlay', {}));
 
                 setVideoSrc(get(videoData, 'raw_url', ''))
-                setErrVideo(false)
-            } else {
+                setErrVideo(false);
+                if (videoData.courseId && videoData.curriculumnId) {
+                    updateLastVideo({
+                        'course_id': videoData.courseId,
+                        'curriculum_id': videoData.curriculumnId,
+                    })
+                        .catch(err => {
+                            console.log("<err last video>", err)
+                        })
+                }
 
             }
         }, 100)
@@ -144,6 +153,18 @@ const CoursePlayer = (props) => {
         setErrVideo(true)
     }, [])
 
+    const _onEnd = useCallback(() => {
+        if (videoLesson && videoLesson.courseId && videoLesson.curriculumnId) {
+            updateDoneVideo({
+                'courseId': videoLesson.courseId,
+                'curriculumId': videoLesson.curriculumnId,
+            })
+                .catch(err => {
+                    console.log("<err done video>", err)
+                })
+        }
+    }, [videoLesson])
+
 
     return (
         <View style={{ flex: 1 }}>
@@ -164,7 +185,7 @@ const CoursePlayer = (props) => {
                                     source={{ uri: videoSrc }}
                                     // ref={mediaPlayer}
                                     onError={_loadVideoFail}
-                                    // onEnd={_onEnd}
+                                    onEnd={_onEnd}
                                     paused={paused}
                                     // onReadyForDisplay={_onReadyForDisplay}
                                     // onProgress={throttled.current}

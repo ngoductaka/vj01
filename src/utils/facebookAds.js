@@ -40,6 +40,12 @@ export const placementIdBanner = Platform.select({
     android: androidAdds.rectangle,
 }); // ios Biểu ngữ
 
+
+export const placementIdBanner2 = Platform.select({
+    ios: "688221958666283_700259317462547",//'688221958666283_700259390795873',
+    android: '688221958666283_700255430796269',
+}); // ios Biểu ngữ
+
 export const fbFull = () => {
     return new Promise((res, rej) => {
         // return null;
@@ -56,14 +62,14 @@ export const fbFull = () => {
 }
 
 
-export function ViewWithBanner(props) {
+export function ViewWithBanner({ index = 0 } = {}) {
     const [fb, setFb] = useState(true);
     if (fb) {
         return (
             <View style={{ width: widthAd }}>
                 {/* <Text>Quảng cáo facebook</Text> */}
                 <BannerView
-                    placementId={placementIdBanner}
+                    placementId={index > 10 ? placementIdBanner : placementIdBanner2}
                     type="rectangle"//large" //"standard"
                     onPress={() => console.log('click')}
                     onLoad={() => {

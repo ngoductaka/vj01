@@ -418,9 +418,8 @@ export const RenderRow = ({ indexItem = '', row, indexRow=0, setShowImg = () => 
                 <Sound url={content} />
               </View>
             } else if (type == 'ads') {
-              // console.log('========================indexRow', indexRow, indexItem)
-              if (indexRow > 20) {
-                return <ViewWithBanner />
+              if (indexRow > 20 || indexRow < 10) {
+                return <ViewWithBanner index={indexRow} />
               }
               return <BannerAd type={indexRow} />
             }

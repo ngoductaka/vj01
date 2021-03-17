@@ -183,7 +183,7 @@ const handleData = async (val_ = '') => {
     console.log('akjshdjkag000sdkasjkdgashjd', val_);
     try {
         // post user click
-        const notiDataRaw = get(val_, 'notification', null);
+        const notiDataRaw = get(val_, 'notification_data', null);
         // console.log('la sao ta', notiDataRaw);
         let notiData = null;
         if (notiDataRaw) {

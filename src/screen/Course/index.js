@@ -5,7 +5,7 @@ import { useSelector } from 'react-redux';
 import { Icon, Card } from 'native-base';
 import { Snackbar } from 'react-native-paper';
 import { get } from 'lodash';
-
+import { withNavigationFocus } from 'react-navigation';
 
 import { images } from '../../utils/images';
 import NormalHeader from '../../component/shared/NormalHeader';
@@ -44,9 +44,13 @@ const Course = (props) => {
             _setCurrentClass(userInfo.class);
             _getCourseViaGrade(userInfo.class);
             _getCourseViaGroup(userInfo.class);
-            _getMyCourse();
         }
     }, [userInfo.class]);
+    useEffect(() => {
+        if (props.isFocused) {
+            _getMyCourse();
+        }
+    }, [props.isFocused])
     const _getMyCourse = async () => {
         try {
             const data = await getMyCourses();
@@ -234,7 +238,7 @@ const styles = StyleSheet.create({
     }
 });
 
-export default Course;
+export default withNavigationFocus(Course);
 // com
 const SeeAllTitle = ({ text, onPress = () => { } }) => {
     return (
@@ -349,12 +353,28 @@ const VideoItem = ({ navigate, setVisible, videos = {}, style = {}, widthImg = w
         item: videoItem,
         _handlePress: () => {
             // navigate('CourseDetail', { videoItem, showConsoult })
-            console.log(videoItem, 'videoItem', get(videoItem, 'get_curriculum[0].get_child_curriculum[0].get_media[0]', {}))
+
             if (!showConsoult) {
+                const pathPlay = [0, 0];
+                videoItem.get_curriculum.find((curr, indexCurr) => {
+                    return curr.get_child_curriculum.find((chil, indexChil) => {
+                        if (chil.id == get(videoItem, 'get_order_detail[0].last_curriculum_id')) {
+                            pathPlay[0] = indexCurr;
+                            pathPlay[1] = indexChil;
+                            return true;
+                        }
+                    })
+                })
+
+                // 
                 navigate('VideoLesson', {
                     showConsoult,
-                    pathPlay: [0, 0],
-                    videoData: get(videoItem, 'get_curriculum[0].get_child_curriculum[0].get_media[0]', {}),
+                    pathPlay,
+                    videoData: {
+                        courseId: get(videoItem, `get_curriculum[${pathPlay[0]}].get_child_curriculum[[${pathPlay[1]}].course_id`, null),
+                        curriculumnId: get(videoItem, `get_curriculum[${pathPlay[0]}].get_child_curriculum[[${pathPlay[1]}].id`, null),
+                        ...get(videoItem, `get_curriculum[${pathPlay[0]}].get_child_curriculum[[${pathPlay[1]}].get_media[0]`, {}),
+                    },
                     listCourse: videoItem.get_curriculum,
                 })
             } else {

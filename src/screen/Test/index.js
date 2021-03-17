@@ -16,7 +16,7 @@ import { withNavigationFocus } from 'react-navigation';
 import { useSelector, useDispatch } from 'react-redux';
 
 import { setUserInfo } from '../../redux/action/user_info';
-import { Loading, useRequest } from '../../handle/apiTest';
+import { Loading, useRequest } from '../../handle/api';
 import { useRequest as useRequest_ } from '../../handle/api';
 
 import RenderLesson from './component/RenderLesson';
@@ -82,12 +82,23 @@ const Test = (props) => {
 	}, []);
 
 	useEffect(() => {
-		if (props.isFocused && userInfo.class) {
-			setTimeout(() => {
-				setShowSubjectModal(true);
-			}, 600);
+		if (props.isFocused) {
+			if (userInfo.class) {
+				setTimeout(() => {
+					setShowSubjectModal(true);
+				}, 600);
+			}
 		}
 	}, [userInfo.class]);
+	
+	useEffect(() => {
+		if(!props.isFocused) {
+			setTimeout(() => {
+				setShowSubjectModal(false);
+			}, 600);
+		}
+	}, [props.isFocused]);
+
 	useEffect(() => {
 		if (currSubjectNameParams !== null && !subjectTest) {
 			setShowSubjectModal(true);

@@ -136,9 +136,10 @@ android {
             javaMaxHeapSize "4g"
             incremental true
         }
+        minSdkVersion 21
         multiDexEnabled true
-        versionCode 116
-        versionName "2.2.4"
+        versionCode 120
+        versionName "2.2.7"
     }
     signingConfigs {
         release {
@@ -209,6 +210,7 @@ dependencies {
     //noinspection GradleDynamicVersion
     implementation "com.facebook.react:react-native:+"  // From node_modules
 
+    implementation "com.facebook.android:facebook-android-sdk:5.11.0"
     implementation "androidx.swiperefreshlayout:swiperefreshlayout:1.0.0"
     implementation "com.google.firebase:firebase-ads:19.0.1"
     implementation "com.google.android.gms:play-services-base:17.2.1"

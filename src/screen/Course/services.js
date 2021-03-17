@@ -20,11 +20,24 @@ const getDetailCourse = courseId => {
 }
 
 const getMyCourses = () => api.get(`courses/users/my-course`, endpoints.BASE_URL_COURSE);
-const submitConsultation = (body) => api.post(`courses/data-sale/ask-free-consultation`,
+const submitConsultation = (body) => api.post(
+    `courses/data-sale/ask-free-consultation`,
+    body,
+    {},
+    endpoints.BASE_URL_COURSE,
+    body);
+
+const updateLastVideo = body => api.post(`courses/update-last-curriculum`,
     body, {},
-    endpoints.BASE_URL_COURSE, body);
+    endpoints.BASE_URL_COURSE);
+
+const updateDoneVideo = ({ courseId, curriculumId }) => api.post(`courses/media/process/${courseId}/${curriculumId}`,
+    {}, {},
+    endpoints.BASE_URL_COURSE);
 
 export {
     getCouse, getMyCourses,
     getDetailCourse, submitConsultation,
+    updateLastVideo,
+    updateDoneVideo,
 }

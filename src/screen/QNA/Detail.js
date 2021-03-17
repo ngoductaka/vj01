@@ -422,9 +422,7 @@ const User = ({ isCheck = false, style = {}, uri, _gotoProfile = () => { } }) =>
     return (
         <TouchableOpacity onPress={_gotoProfile} style={[userStyle.imgLargeWapper, style]} >
             <Image style={[userStyle.img, {}]} source={{ uri: handleAvatarLink(uri) }} />
-            {isCheck ? <View style={{ backgroundColor: '#fff', position: 'absolute', right: -3, bottom: -3, borderRadius: 10 }}>
-                <Icon style={{ color: 'green', fontSize: 15, fontWeight: 'bolid' }} name="check-circle" type="FontAwesome" />
-            </View> : null}
+
         </TouchableOpacity>
     )
 }
@@ -561,7 +559,12 @@ const RenderAnwser = ({ item, index, handleComment, _gotoProfile = () => { }, se
                 />
                 <View style={{ flex: 1 }}>
                     <View style={{ padding: 10, backgroundColor: '#F1F2F6', flex: 1, borderRadius: 10 }}>
-                        <Text style={{ fontWeight: 'bold', marginBottom: 8 }}>{name}</Text>
+                        <View style={{ flexDirection: 'row' }}>
+                            <Text style={{ fontWeight: 'bold', marginBottom: 8 }}>{name}</Text>
+                            {(role_id == 1 || role_id == 2) ?
+                                <Icon style={{ color: COLOR.MAIN, fontSize: 15, marginLeft: 5, fontWeight: 'bolid' }} name="check-circle" type="FontAwesome" />
+                                : null}
+                        </View>
                         <View>
                             <RenderDataJson
                                 indexItem={index}
@@ -638,22 +641,6 @@ const RenderAnwser = ({ item, index, handleComment, _gotoProfile = () => { }, se
                     />
                     <View style={{ alignItems: 'center' }}>
                         <BtnGradient onPress={_handleVote} text='Gửi' textStyle={{ fontWeight: 'bold' }} style={{ marginTop: 20 }} />
-                        {/* <TouchableOpacity style={{
-                            padding: 15, marginTop: 20,
-                            elevation: 8,
-                            backgroundColor: COLOR.MAIN,
-                            borderRadius: 10,
-                            paddingVertical: 10,
-                            paddingHorizontal: 25
-                        }}>
-                            <Text style={{
-                                fontSize: 20,
-                                color: "#fff",
-                                fontWeight: "bold",
-                                alignSelf: "center",
-                                textTransform: "uppercase"
-                            }}>Gửi</Text>
-                        </TouchableOpacity> */}
                     </View>
                 </View>
 

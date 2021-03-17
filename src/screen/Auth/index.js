@@ -3,7 +3,7 @@ import { View, Platform, Image, Linking, LogBox } from 'react-native';
 import AsyncStorage from '@react-native-community/async-storage';
 import { connect } from 'react-redux';
 import SplashScreen from 'react-native-splash-screen';
-import { GoogleSignin } from '@react-native-community/google-signin';
+import { GoogleSignin } from '@react-native-google-signin/google-signin';
 import LottieView from 'lottie-react-native';
 import { getVersion } from 'react-native-device-info';
 import AwesomeAlert from 'react-native-awesome-alerts';

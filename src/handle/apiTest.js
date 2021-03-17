@@ -76,6 +76,7 @@ request.interceptors.response.use((response) => {
 			// console.log('-1-21-2-12-12', socialToken);
 			return request.post(endpoints.SOCIAL_LOGIN,
 				{
+					token_social: socialToken,
 					token: socialToken,
 					type: loginType
 				}).then(res => {

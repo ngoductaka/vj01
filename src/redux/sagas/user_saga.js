@@ -1,5 +1,5 @@
 import { takeLatest, put } from 'redux-saga/effects';
-import { GoogleSignin } from '@react-native-community/google-signin';
+import { GoogleSignin } from '@react-native-google-signin/google-signin';
 import AsyncStorage from '@react-native-community/async-storage';
 import appleAuth, {
     AppleAuthError,
@@ -16,6 +16,7 @@ import NavigationService from '../../Router/NavigationService';
 import { Constants, FIRST_TIME } from '../../handle/Constant';
 import { helpers } from '../../utils/helpers';
 import { get } from 'lodash';
+import Toast from 'react-native-simple-toast';
 
 function* loginWithApple(action) {
     const updateCredentialStateForUser = action.data;
@@ -42,8 +43,9 @@ function* loginWithApple(action) {
 
             const name = get(appleAuthRequestResponse, 'fullName.givenName', '') + get(appleAuthRequestResponse, 'fullName.familyName', '');
 
-            console.log('asbdkjabdkjasd', name);
+            // console.log('asbdkjabdkjasd', name);
             const payload = {
+                token_social: get(appleAuthRequestResponse, 'identityToken', ''),
                 token: get(appleAuthRequestResponse, 'identityToken', ''),
                 type: 2,
                 provider_id: get(appleAuthRequestResponse, 'nonce', ''),
@@ -93,9 +95,10 @@ function* loginWithApple(action) {
 
 function* loginWithFacebook() {
     try {
-        console.log('====login facebook')
         const data = yield user_services.onLoginFbPress();
+        console.log('====login facebook',data)
         const result = yield api.post(endpoints.SOCIAL_LOGIN, {
+            "token_social": data.token,
             "token": data.token,
             "type": 0,
         });
@@ -125,6 +128,12 @@ function* loginWithFacebook() {
 
     } catch (error) {
         console.log('LOGIN_WITH_FACEBOOKfail', error);
+        if(error.message) {
+            console.log('LOGIN_WITH_FACEBOOKfail', error.message);
+            Toast.showWithGravity(error.message, Toast.LONG, Toast.TOP)
+        } else {
+            Toast.showWithGravity("Login facebook thất bại vui lòng thử lại sau", Toast.LONG, Toast.TOP)
+        }
         yield put({
             type: LOGIN_WITH_FACEBOOK_FAIL,
         });
@@ -136,8 +145,9 @@ function* loginWithGoogle() {
     try {
         yield GoogleSignin.hasPlayServices();
         const userInfo = yield GoogleSignin.signIn();
-        console.log('-----userInfouserInfouserInfo23----', userInfo.user);
+        // console.log('-----userInfouserInfouserInfo23----', userInfo.idToken);
         const result = yield api.post(endpoints.SOCIAL_LOGIN, {
+            "token_social": userInfo.idToken,
             "token": userInfo.idToken,
             "type": 1,
         });
@@ -165,6 +175,12 @@ function* loginWithGoogle() {
 
     } catch (error) {
         // console.log('error gg login', error)
+        console.log('gg login fail', error);
+        if(error.message) {
+            Toast.showWithGravity(error.message, Toast.LONG, Toast.TOP)
+        } else {
+            Toast.showWithGravity("Login google thất bại vui lòng thử lại sau", Toast.LONG, Toast.TOP)
+        }
         yield put({
             type: LOGIN_WITH_GOOGLE_FAIL,
             payload: error.code
