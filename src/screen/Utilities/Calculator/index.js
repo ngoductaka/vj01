@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 import {
   StyleSheet, Text, View, StatusBar,
   TouchableWithoutFeedback, Keyboard,
@@ -10,7 +10,7 @@ import {
 } from 'mathjs'
 
 import Row from "./components/Row";
-import Button from "./components/Button";
+import Button, { BtnOption, OPT } from "./components/Button";
 import calculator, { initialState } from "./util/calculator";
 
 
@@ -19,89 +19,92 @@ const regexEnd = /\|/ig;
 const App = (props) => {
   const [stringCal, setString] = useState('');
   const [result, setResult] = useState('');
+  const [history, setHistory] = useState([]);
+
   const [pointIndex, setPointIndex] = useState(0);
   const [run, setRun] = useState(false);
+  // 
+  const [opt, setOpt] = useState(true);
 
+  useEffect(() => {
+    if (result) {
+      const newHis = [result, history[0]];
+      setHistory(newHis)
+    }
+  }, [result])
+
+  // handle poiter
   useInterval(() => {
-    // ========
-    // console.log(stringCal, 'strConvert', pointIndex)
- 
     if (stringCal.includes("|") || run) {
       let strConvert = stringCal.replace(regexEnd, '');
       setString(strConvert)
     } else {
       let strArr = stringCal.split('');
       strArr.splice(pointIndex, 0, "|");
-      
+
       setString(strArr.join(''))
     }
   }, run ? 499 : 500);
-// input string
-  const handleTap = (value) => {
-    console.log( pointIndex||0, String(value).length, (pointIndex||0) + String(value).length)
-    setPointIndex((pointIndex||0) + String(value).length);
+  // input string
+  const handleConcatStringCal = useCallback((value) => {
+    // console.log(pointIndex || 0, String(value).length, (pointIndex || 0) + String(value).length)
+    setPointIndex((pointIndex || 0) + String(value).length);
 
     let strArr = stringCal.split('');
     strArr.splice(pointIndex, 0, value);
-    
+
     setString(strArr.join(''))
-    // setString(stringCal + value);
 
     setRun(true);
     setTimeout(() => {
       setRun(false);
     }, 510);
-  };
+  }, [pointIndex, stringCal]);
 
-
-
-  const _hanldeCalString = (str) => {
-    try {
-      const regexLn = /ln/ig;
-      let strConvert = str.replace(regexLn, 'log').replace(regexEnd, '');
-      // console.log(str, 'strConvert', strConvert);
-
-      return evaluate(strConvert);
-    } catch (err) {
-
-    }
-  }
   const handleCalculate = async () => {
     try {
       // console.log('stringCal', stringCal.replace('ln', 'log'))
       const res = _hanldeCalString(stringCal);
       // console.log('resresresres', res)
       if (res) {
-        setResult(res)
+        setResult(res);
+        handleClean(true, false);
       } else {
         setResult("Phép tính lỗi")
       }
 
     } catch (err) {
       try {
-        console.log('err', err)
-        if (err.message.includes('Parenthesis ) expected')) {
-          const stringConvert = stringCal + ")";
-          setString(stringConvert);
-          const res = _hanldeCalString(stringConvert);
-          setResult(res)
-        }
+        const stringConvert = stringCal + ")";
+        setString(stringConvert);
+        const res = _hanldeCalString(stringConvert);
+        setResult(res);
       } catch (errors) {
+        setString(stringCal.slice(0, stringCal.length - 1));
+        setResult("Phép tính lỗi")
         console.log('errors', errors)
       }
     }
   }
-  const handleClean = (isAll) => {
+  const handleClean = useCallback((isAll, isResetResult = false) => {
     if (isAll) {
       setString('');
-      setResult('');
+      if (isResetResult) {
+        setResult('');
+      }
       setPointIndex(0);
     } else {
-      setString(stringCal.substring(0, stringCal.length - 1));
-      setPointIndex(pointIndex-1);
-    }
-  }
+      const removeEnd = stringCal.replace(regexEnd, '');
+      const newString = removeEnd.slice(0, pointIndex - 1) + removeEnd.slice(pointIndex);
 
+      setString(newString);
+      setPointIndex(pointIndex - 1);
+    }
+  }, [stringCal, pointIndex])
+
+  const handleANS = useCallback(() => {
+    handleConcatStringCal(history[0] || '')
+  }, [history, pointIndex, stringCal]);
 
   return (
     <View style={styles.container}>
@@ -149,105 +152,93 @@ const App = (props) => {
           {result}
         </Text>
         <Row>
-          <Button theme="secondary" size="mini" text="<-" onPress={() => {setPointIndex(pointIndex-1)}} />
-          <Button theme="secondary" size="mini" text="->" onPress={() => {setPointIndex(pointIndex+1)}} />
-          <Button theme="secondary" size="mini" text="" onPress={() => handleTap(")")} />
-          <Button theme="secondary" size="mini" text="" onPress={() => handleTap("operator", "*")} />
+          <Button theme="secondary" size="mini" text="ln" onPress={() => handleConcatStringCal("ln(")} />
+          <Button theme="secondary" size="mini" text="ALT" onPress={() => setOpt(!opt)} />
+          <Button theme="secondary" size="mini" text="SHIFT" onPress={() => handleConcatStringCal(")")} />
+          <Button theme="secondary" size="mini" text="MENU" onPress={() => handleConcatStringCal("*")} />
         </Row>
         <Row>
-          <Button theme="secondary" size="mini" text="ln" onPress={() => handleTap("ln(3")} />
-          <Button theme="secondary" size="mini" text="(" onPress={() => handleTap("(")} />
-          <Button theme="secondary" size="mini" text=")" onPress={() => handleTap(")")} />
-          <Button theme="secondary" size="mini" text="ln" onPress={() => handleTap("operator", "*")} />
+          <Button theme="secondary" size="mini" text="<-" onPress={() => { setPointIndex(pointIndex - 1) }} />
+          <Button theme="secondary" size="mini" text="->" onPress={() => { setPointIndex(pointIndex + 1) }} />
+          <Button theme="secondary" size="mini" text="(" onPress={() => handleConcatStringCal("(")} />
+          <Button theme="secondary" size="mini" text=")" onPress={() => handleConcatStringCal(")")} />
         </Row>
         <Row>
-          <Button theme="secondary" size="mini" text="sin" onPress={() => handleTap("sin(")} />
-          <Button theme="secondary" size="mini" text="cos" onPress={() => handleTap("cos(")} />
-          <Button theme="secondary" size="mini" text="tan" onPress={() => handleTap("tan(")} />
-          <Button theme="secondary" size="mini" text="log" onPress={() => handleTap("log(, 10)")} />
-          {/* <Button theme="secondary" size="mini" text="ln"  onPress={() => handleTap("operator", "*")} /> */}
+          <BtnOption opt="asin" theme="secondary" size="mini" text="sin" onPress={() => handleConcatStringCal("sin(")} />
+          <BtnOption opt="acos" theme="secondary" size="mini" text="cos" onPress={() => handleConcatStringCal("cos(")} />
+          <BtnOption opt="atan" theme="secondary" size="mini" text="tan" onPress={() => handleConcatStringCal("tan(")} />
+          <BtnOption opt="10^" theme="secondary" size="mini" text="log" onPress={() => handleConcatStringCal("log(, 10)")} />
+          {/* <Button theme="secondary" size="mini" text="ln"  onPress={() => handleConcatStringCal("operator", "*")} /> */}
         </Row>
         <Row>
-          <Button
-            text={
-              <View style={{ flexDirection: 'row', alignItems: 'center', flex: 1 }}>
-                <Text>X</Text>
-                <Text style={{ fontSize: 12, alignSelf: 'flex-start', marginTop: -3 }}>2</Text>
-              </View>
-            }
+          <BtnOption
+            text={OPT.pow[opt ? 'opt1' : 'opt2']()}
+            opt={OPT.pow[opt ? 'opt2' : 'opt1']()}
             theme="secondary"
             size="mini"
-            onPress={() => handleTap("clear")}
+            onPress={() => handleConcatStringCal(opt ? "^2" : "")}
           />
 
-          <Button
-            text={
-              <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-                <Text>X</Text>
-                <Text style={{ fontSize: 12, alignSelf: 'flex-start', marginTop: -3 }}>y</Text>
-              </View>
-            }
+          <BtnOption
+            text={OPT.powx[opt ? 'opt1' : 'opt2']()}
+            opt={OPT.powx[opt ? 'opt2' : 'opt1']()}
             theme="secondary"
             size="mini"
-            onPress={() => handleTap("clear")}
+            onPress={() => handleConcatStringCal("^")}
           />
 
-          <Button
-            text={
-              <View style={{ flexDirection: 'row', alignItems: 'center', }}>
-                <Text>2</Text>
-                <Text>√</Text>
-                <Text style={{ fontSize: 12, alignSelf: 'flex-start', marginTop: -6 }}>-</Text>
-              </View>
-            }
+          <BtnOption
+            text={OPT.can[opt ? 'opt1' : 'opt2']()}
+            opt={OPT.can[opt ? 'opt2' : 'opt1']()}
             theme="secondary"
             size="mini"
-            onPress={() => handleTap("clear")}
+            onPress={() => handleConcatStringCal("clear")}
           />
-          <Button
+          <BtnOption
             text={
               <View style={{ flexDirection: 'row', alignItems: 'center', }}>
                 <Text>&#960;</Text>
               </View>
             }
+            opt="n!"
             theme="secondary"
             size="mini"
-            onPress={() => handleTap("clear")}
+            onPress={() => handleConcatStringCal("PI")}
           />
         </Row>
 
         <Row>
-          <Button text="7" onPress={() => handleTap(7)} />
-          <Button text="8" onPress={() => handleTap(8)} />
-          <Button text="9" onPress={() => handleTap(9)} />
+          <Button text="7" onPress={() => handleConcatStringCal(7)} />
+          <Button text="8" onPress={() => handleConcatStringCal(8)} />
+          <Button text="9" onPress={() => handleConcatStringCal(9)} />
           <Button text="DEL" theme="accent" onPress={() => handleClean()} />
-          <Button text="AC" theme="accent" onPress={() => handleClean('all')} />
+          <Button text="AC" theme="accent" onPress={() => handleClean('all', true)} />
         </Row>
         <Row>
-          <Button text="4" onPress={() => handleTap(4)} />
-          <Button text="5" onPress={() => handleTap(5)} />
-          <Button text="6" onPress={() => handleTap(6)} />
-          <Button text="X" onPress={() => handleTap("*")} />
-          <Button text="/" onPress={() => handleTap("/")} />
+          <Button text="4" onPress={() => handleConcatStringCal(4)} />
+          <Button text="5" onPress={() => handleConcatStringCal(5)} />
+          <Button text="6" onPress={() => handleConcatStringCal(6)} />
+          <Button text="X" onPress={() => handleConcatStringCal("*")} />
+          <Button text="/" onPress={() => handleConcatStringCal("/")} />
         </Row>
 
         <Row>
-          <Button text="1" onPress={() => handleTap(1)} />
-          <Button text="2" onPress={() => handleTap(2)} />
-          <Button text="3" onPress={() => handleTap(3)} />
-          <Button text="+" onPress={() => handleTap("+")} />
-          <Button text="-" onPress={() => handleTap("-")} />
+          <Button text="1" onPress={() => handleConcatStringCal(1)} />
+          <Button text="2" onPress={() => handleConcatStringCal(2)} />
+          <Button text="3" onPress={() => handleConcatStringCal(3)} />
+          <Button text="+" onPress={() => handleConcatStringCal("+")} />
+          <Button text="-" onPress={() => handleConcatStringCal("-")} />
 
         </Row>
 
         <Row>
           <Button
             text="0"
-            onPress={() => handleTap(0)}
+            onPress={() => handleConcatStringCal(0)}
           />
-          <Button text="." onPress={() => handleTap(".")} />
-          <Button text="EXP" onPress={() => handleTap(".")} />
-          <Button text="ANS" onPress={() => handleTap(".")} />
+          <Button text="." onPress={() => handleConcatStringCal(".")} />
+          {/* <Button text="EXP" onPress={() => handleConcatStringCal(".")} /> */}
+          <Button text="ANS" onPress={() => handleANS()} />
           <Button
             text="="
             onPress={() => handleCalculate()}
@@ -296,4 +287,17 @@ function useInterval(callback, delay) {
       return () => clearInterval(id);
     }
   }, [delay]);
+}
+
+
+
+const _hanldeCalString = (str) => {
+  try {
+    const regexLn = /ln/ig;
+    let strConvert = str.replace(regexLn, 'log').replace(regexEnd, '');
+    return evaluate(strConvert);
+  } catch (err) {
+    console.log(err, '-----')
+    throw err
+  }
 }
