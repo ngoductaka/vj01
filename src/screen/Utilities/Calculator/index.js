@@ -46,9 +46,9 @@ const App = (props) => {
     }
   }, run ? 499 : 500);
   // input string
-  const handleConcatStringCal = useCallback((value) => {
+  const handleConcatStringCal = useCallback((value, n = 0) => {
     // console.log(pointIndex || 0, String(value).length, (pointIndex || 0) + String(value).length)
-    setPointIndex((pointIndex || 0) + String(value).length);
+    setPointIndex((pointIndex || 0) + String(value).length + n);
 
     let strArr = stringCal.split('');
     strArr.splice(pointIndex, 0, value);
@@ -64,10 +64,10 @@ const App = (props) => {
   const handleCalculate = async () => {
     try {
       // console.log('stringCal', stringCal.replace('ln', 'log'))
-      const res = _hanldeCalString(stringCal);
+      const res = _handleCalString(stringCal);
       // console.log('resresresres', res)
       if (res) {
-        setResult(res);
+        setResult(String(res));
         handleClean(true, false);
       } else {
         setResult("Phép tính lỗi")
@@ -77,10 +77,12 @@ const App = (props) => {
       try {
         const stringConvert = stringCal + ")";
         setString(stringConvert);
-        const res = _hanldeCalString(stringConvert);
-        setResult(res);
+        setPointIndex(pointIndex + 1);
+        const res = _handleCalString(stringConvert);
+        setResult(String(res));
       } catch (errors) {
         setString(stringCal.slice(0, stringCal.length - 1));
+        setPointIndex(pointIndex - 1);
         setResult("Phép tính lỗi")
         console.log('errors', errors)
       }
@@ -153,7 +155,7 @@ const App = (props) => {
         </Text>
         <Row>
           <Button theme="secondary" size="mini" text="ln" onPress={() => handleConcatStringCal("ln(")} />
-          <Button theme="secondary" size="mini" text="ALT" onPress={() => setOpt(!opt)} />
+          <Button theme={!opt ? "accent" : "secondary"} size="mini" text="ALT" onPress={() => setOpt(!opt)} />
           <Button theme="secondary" size="mini" text="SHIFT" onPress={() => handleConcatStringCal(")")} />
           <Button theme="secondary" size="mini" text="MENU" onPress={() => handleConcatStringCal("*")} />
         </Row>
@@ -164,46 +166,42 @@ const App = (props) => {
           <Button theme="secondary" size="mini" text=")" onPress={() => handleConcatStringCal(")")} />
         </Row>
         <Row>
-          <BtnOption opt="asin" theme="secondary" size="mini" text="sin" onPress={() => handleConcatStringCal("sin(")} />
-          <BtnOption opt="acos" theme="secondary" size="mini" text="cos" onPress={() => handleConcatStringCal("cos(")} />
-          <BtnOption opt="atan" theme="secondary" size="mini" text="tan" onPress={() => handleConcatStringCal("tan(")} />
-          <BtnOption opt="10^" theme="secondary" size="mini" text="log" onPress={() => handleConcatStringCal("log(, 10)")} />
+          <BtnOption text={opt ? "sin" : "asin"} opt={opt ? "asin" : "sin"} theme="secondary" size="mini" onPress={() => handleConcatStringCal(!opt ? "asin(": "sin(")} />
+          <BtnOption text={opt ? "cos" : "acos"} opt={opt ? "acos" : "cos"} theme="secondary" size="mini" onPress={() => handleConcatStringCal(!opt ? "acos(": "cos(")} />
+          <BtnOption text={opt ? "tan" : "atan"} opt={opt ? "atan" : "tan"} theme="secondary" size="mini" onPress={() => handleConcatStringCal(!opt ? "atan(": "tan(")} />
+          <BtnOption text={opt ? "log" : "10^"} opt={opt ? "10^" : "log"} theme="secondary" size="mini" onPress={() => handleConcatStringCal(!opt ? "10^": "log(, 10)")} />
           {/* <Button theme="secondary" size="mini" text="ln"  onPress={() => handleConcatStringCal("operator", "*")} /> */}
         </Row>
         <Row>
           <BtnOption
-            text={OPT.pow[opt ? 'opt1' : 'opt2']()}
-            opt={OPT.pow[opt ? 'opt2' : 'opt1']()}
+            text={OPT.pow[opt ? 'opt1' : 'opt2'](opt)}
+            opt={OPT.pow[opt ? 'opt2' : 'opt1'](opt)}
             theme="secondary"
             size="mini"
-            onPress={() => handleConcatStringCal(opt ? "^2" : "")}
+            onPress={() => handleConcatStringCal(opt ? "^2" : "^(-1)")}
           />
 
           <BtnOption
-            text={OPT.powx[opt ? 'opt1' : 'opt2']()}
-            opt={OPT.powx[opt ? 'opt2' : 'opt1']()}
+            text={OPT.powx[opt ? 'opt1' : 'opt2'](opt)}
+            opt={OPT.powx[opt ? 'opt2' : 'opt1'](opt)}
             theme="secondary"
             size="mini"
-            onPress={() => handleConcatStringCal("^")}
+            onPress={() => handleConcatStringCal(opt?"^": "nthRoot(, x)", -4)}
           />
 
           <BtnOption
-            text={OPT.can[opt ? 'opt1' : 'opt2']()}
-            opt={OPT.can[opt ? 'opt2' : 'opt1']()}
+            opt={OPT.can[opt ? 'opt1' : 'opt2'](!opt)}
+            text={OPT.can[opt ? 'opt2' : 'opt1'](!opt)}
             theme="secondary"
             size="mini"
-            onPress={() => handleConcatStringCal("clear")}
+            onPress={() => handleConcatStringCal(opt?"sqrt(": "nthRoot(, 3)", -4)}
           />
           <BtnOption
-            text={
-              <View style={{ flexDirection: 'row', alignItems: 'center', }}>
-                <Text>&#960;</Text>
-              </View>
-            }
-            opt="n!"
+            text={opt ? "n!" : <Text style={{textAlign: 'center', fontWeight: 'bold', color: opt? "#E6B658": "#000"}}>&#960;</Text>}
+            opt={!opt ? "n!" : <Text style={{textAlign: 'center', fontWeight: 'bold', color: opt? "#E6B658": "#000"}}>&#960;</Text>}
             theme="secondary"
             size="mini"
-            onPress={() => handleConcatStringCal("PI")}
+            onPress={() => handleConcatStringCal(!opt ? "PI" : "factorial(")}
           />
         </Row>
 
@@ -291,7 +289,7 @@ function useInterval(callback, delay) {
 
 
 
-const _hanldeCalString = (str) => {
+const _handleCalString = (str) => {
   try {
     const regexLn = /ln/ig;
     let strConvert = str.replace(regexLn, 'log').replace(regexEnd, '');
