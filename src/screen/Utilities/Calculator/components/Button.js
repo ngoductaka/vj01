@@ -7,7 +7,7 @@ const buttonWidth = screen.width / 5;
 const styles = StyleSheet.create({
   text: {
     color: "#fff",
-    fontSize: 25,fontWeight: "bold",
+    fontSize: 23,fontWeight: "bold",
   },
   textSecondary: {
     color: "#060606"
@@ -19,7 +19,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     borderRadius: 5,
-    paddingVertical: 10,
+    paddingVertical: 8,
     margin: 4,
   },
   buttonSecondary: {
@@ -75,7 +75,7 @@ export const BtnOption = ({ onPress, text, size, theme, opt = "" }) => {
   }
   // console.log({opt})
   return (
-    <View style={{ flex: 1, minHeight: 53, marginTop: 1 }}>
+    <View style={{ flex: 1, minHeight: 50 }}>
       <View style={{ transform: [{ scale: 0.9 }] }}>
         {typeof opt == 'string' ? <Text style={{ color: '#E6B658', fontSize: 13, textAlign: 'center', fontWeight: "bold", }}>{opt}</Text> : opt}
       </View>
@@ -116,25 +116,25 @@ export const OPT = {
     ),
     opt2: (otp) => (
       <View style={{ flexDirection: 'row', justifyContent: 'center', }}>
-        <Text style={{ fontWeight: 'bold', color: otp? "#E6B658": "#000" }}>x</Text>
+        <Text style={{ fontWeight: 'bold', color: otp? "#E6B658": "#000", fontSize: 11 }}>x</Text>
         <Text style={{ fontWeight: 'bold', color: otp? "#E6B658": "#000" }}>√</Text>
-        <Text style={{ fontSize: 12, alignSelf: 'flex-start', fontWeight: 'bold', color: otp? "#E6B658": "#000", marginTop: -6 }}>-</Text>
+        <Text style={{marginLeft: -1, fontSize: 12, alignSelf: 'flex-start', fontWeight: 'bold', color: otp? "#E6B658": "#000", marginTop: -5 }}>-</Text>
       </View>
     )
   },
   can: {
     opt1: (otp) => (
       <View style={{ flexDirection: 'row', justifyContent: 'center', }}>
-        <Text style={{ fontWeight: "bold", color: otp? "#000": "#E6B658" }}>3</Text>
+        <Text style={{ fontWeight: "bold", color: otp? "#000": "#E6B658", fontSize: 11 }}>3</Text>
         <Text style={{ fontWeight: "bold", color: otp? "#000": "#E6B658" }}>√</Text>
-        <Text style={{ fontSize: 12, alignSelf: 'flex-start', fontWeight: "bold", color: otp? "#000": "#E6B658", marginTop: -6 }}>-</Text>
+        <Text style={{marginLeft: -1, fontSize: 12, alignSelf: 'flex-start', fontWeight: "bold", color: otp? "#000": "#E6B658", marginTop: -5 }}>-</Text>
       </View>
     ),
     opt2: (otp) => (
       <View style={{ flexDirection: 'row', justifyContent: 'center', }}>
-        <Text style={{ fontWeight: 'bold', color: otp? "#E6B658": "#000" }}>2</Text>
+        <Text style={{ fontWeight: 'bold', color: otp? "#E6B658": "#000", fontSize: 11 }}>2</Text>
         <Text style={{ fontWeight: 'bold', color: otp? "#E6B658": "#000" }}>√</Text>
-        <Text style={{ fontSize: 12, alignSelf: 'flex-start', fontWeight: 'bold', color: otp? "#E6B658": "#000", marginTop: -6 }}>-</Text>
+        <Text style={{marginLeft: -1, fontSize: 12, alignSelf: 'flex-start', fontWeight: 'bold', color: otp? "#E6B658": "#000", marginTop: -5 }}>-</Text>
       </View>
     )
   },

@@ -19,10 +19,12 @@ const regexEnd = /\|/ig;
 const App = (props) => {
   const [stringCal, setString] = useState('');
   const [result, setResult] = useState('');
+  const [historyCal, setHistoryCal] = useState('');
   const [history, setHistory] = useState([]);
 
   const [pointIndex, setPointIndex] = useState(0);
   const [run, setRun] = useState(false);
+  const [mold, setMold] = useState(true);// true is rad false is deg
   // 
   const [opt, setOpt] = useState(true);
 
@@ -63,11 +65,11 @@ const App = (props) => {
 
   const handleCalculate = async () => {
     try {
-      // console.log('stringCal', stringCal.replace('ln', 'log'))
+      // normal
       const res = _handleCalString(stringCal);
-      // console.log('resresresres', res)
       if (res) {
         setResult(String(res));
+        setHistoryCal(stringCal)
         handleClean(true, false);
       } else {
         setResult("Phép tính lỗi")
@@ -75,14 +77,22 @@ const App = (props) => {
 
     } catch (err) {
       try {
+        // try add ')'
         const stringConvert = stringCal + ")";
         setString(stringConvert);
         setPointIndex(pointIndex + 1);
+
+        console.log('=try1')
         const res = _handleCalString(stringConvert);
+        // set result and history
         setResult(String(res));
+        setHistoryCal(stringCal);
       } catch (errors) {
+        console.log('=er1')
+        // reset try add ')'
         setString(stringCal.slice(0, stringCal.length - 1));
         setPointIndex(pointIndex - 1);
+
         setResult("Phép tính lỗi")
         console.log('errors', errors)
       }
@@ -93,6 +103,7 @@ const App = (props) => {
       setString('');
       if (isResetResult) {
         setResult('');
+        setHistoryCal('')
       }
       setPointIndex(0);
     } else {
@@ -108,6 +119,11 @@ const App = (props) => {
     handleConcatStringCal(history[0] || '')
   }, [history, pointIndex, stringCal]);
 
+  const _hanldeChangeMold = useCallback(() => {
+    setMold(!mold);
+    handleClean(true, true)
+  }, [mold])
+
   return (
     <View style={styles.container}>
       <SafeAreaView style={{ flex: 1 }}>
@@ -115,12 +131,19 @@ const App = (props) => {
         <TouchableOpacity onPress={() => props.navigation.goBack()} style={{
           // position: 'absolute',
           // left: width / 2 - 10,
-          justifyContent: 'center',
-          alignItems: 'center'
+          justifyContent: 'space-between',
+          alignItems: 'center',
+          flexDirection: 'row'
         }}>
+          <View style={{ width: 50 }}></View>
           <Icon type="AntDesign" name='down' style={{ fontSize: 25, color: 'white' }} />
+          <View style={{ width: 50 }}>
+
+            <Text style={{ color: '#fff' }}>[{mold ? 'rad' : 'deg'}]</Text>
+          </View>
         </TouchableOpacity>
-        <View style={{ flex: 1, backgroundColor: '#A6BCA1', paddingVertical: 20, borderRadius: 10 }}>
+        <View style={{ flex: 1, backgroundColor: '#A6BCA1', paddingTop: 10, borderRadius: 10 }}>
+
           <TextInput
             // showSoftInputOnFocus={false}
             // autoFocus={true}
@@ -128,9 +151,11 @@ const App = (props) => {
             style={{
               flex: 1,
               paddingHorizontal: 10,
-              paddingVertical: 40,
+              paddingVertical: 20,
               backgroundColor: '#A6BCA1',
               fontSize: 30,
+              color: "#000",
+              textAlignVertical: 'top'
               // minHeight:200,
               // width: 300,
             }}
@@ -145,31 +170,33 @@ const App = (props) => {
             editable={false}
             // focusable={false}
             selection={{ start: 0, end: 0 }}
-
           // onFocus={() => Keyboard.dismiss()}
 
           />
+          <Text style={{ fontSize: 30, }}>{historyCal ? historyCal.replace(regexEnd, '') + '=' : ''}</Text>
         </View>
-        <Text style={styles.value}>
-          {result}
-        </Text>
+        <Text style={styles.value}> {isNaN(result) ? result : (+result).toFixed(3)} </Text>
+        <Text style={[styles.value, { fontSize: 16 }]}> {result} </Text>
         <Row>
           <Button theme="secondary" size="mini" text="ln" onPress={() => handleConcatStringCal("ln(")} />
           <Button theme={!opt ? "accent" : "secondary"} size="mini" text="ALT" onPress={() => setOpt(!opt)} />
-          <Button theme="secondary" size="mini" text="SHIFT" onPress={() => handleConcatStringCal(")")} />
+          <Button theme="secondary" size="mini" text="MOLD" onPress={_hanldeChangeMold} />
           <Button theme="secondary" size="mini" text="MENU" onPress={() => handleConcatStringCal("*")} />
         </Row>
         <Row>
-          <Button theme="secondary" size="mini" text="<-" onPress={() => { setPointIndex(pointIndex - 1) }} />
-          <Button theme="secondary" size="mini" text="->" onPress={() => { setPointIndex(pointIndex + 1) }} />
+          <Button theme="secondary" size="mini" text={<Icon style={{fontSize: 18}} type="AntDesign" name="caretleft" />}onPress={() => { setPointIndex(pointIndex > 0 ? pointIndex - 1 : 0) }} />
+          <Button theme="secondary" size="mini" text={<Icon style={{fontSize: 18}} type="AntDesign" name="caretright" />} onPress={() => {
+            console.log(stringCal.length, pointIndex)
+            setPointIndex(pointIndex + 1 <= stringCal.length ? pointIndex + 1 : stringCal.length)
+          }} />
           <Button theme="secondary" size="mini" text="(" onPress={() => handleConcatStringCal("(")} />
           <Button theme="secondary" size="mini" text=")" onPress={() => handleConcatStringCal(")")} />
         </Row>
         <Row>
-          <BtnOption text={opt ? "sin" : "asin"} opt={opt ? "asin" : "sin"} theme="secondary" size="mini" onPress={() => handleConcatStringCal(!opt ? "asin(": "sin(")} />
-          <BtnOption text={opt ? "cos" : "acos"} opt={opt ? "acos" : "cos"} theme="secondary" size="mini" onPress={() => handleConcatStringCal(!opt ? "acos(": "cos(")} />
-          <BtnOption text={opt ? "tan" : "atan"} opt={opt ? "atan" : "tan"} theme="secondary" size="mini" onPress={() => handleConcatStringCal(!opt ? "atan(": "tan(")} />
-          <BtnOption text={opt ? "log" : "10^"} opt={opt ? "10^" : "log"} theme="secondary" size="mini" onPress={() => handleConcatStringCal(!opt ? "10^": "log(, 10)")} />
+          <BtnOption text={opt ? "sin" : "asin"} opt={opt ? "asin" : "sin"} theme="secondary" size="mini" onPress={() => handleConcatStringCal(!opt ? "asin(" : "sin(")} />
+          <BtnOption text={opt ? "cos" : "acos"} opt={opt ? "acos" : "cos"} theme="secondary" size="mini" onPress={() => handleConcatStringCal(!opt ? "acos(" : "cos(")} />
+          <BtnOption text={opt ? "tan" : "atan"} opt={opt ? "atan" : "tan"} theme="secondary" size="mini" onPress={() => handleConcatStringCal(!opt ? "atan(" : "tan(")} />
+          <BtnOption text={opt ? "log" : "10^"} opt={opt ? "10^" : "log"} theme="secondary" size="mini" onPress={() => handleConcatStringCal(!opt ? "10^" : "log(,10)", !opt ? 0 : -4)} />
           {/* <Button theme="secondary" size="mini" text="ln"  onPress={() => handleConcatStringCal("operator", "*")} /> */}
         </Row>
         <Row>
@@ -186,7 +213,7 @@ const App = (props) => {
             opt={OPT.powx[opt ? 'opt2' : 'opt1'](opt)}
             theme="secondary"
             size="mini"
-            onPress={() => handleConcatStringCal(opt?"^": "nthRoot(, x)", -4)}
+            onPress={() => handleConcatStringCal(opt ? "^" : "nthRoot(,x)", opt ? 0 : -3)}
           />
 
           <BtnOption
@@ -194,14 +221,14 @@ const App = (props) => {
             text={OPT.can[opt ? 'opt2' : 'opt1'](!opt)}
             theme="secondary"
             size="mini"
-            onPress={() => handleConcatStringCal(opt?"sqrt(": "nthRoot(, 3)", -4)}
+            onPress={() => handleConcatStringCal(opt ? "sqrt(" : "nthRoot(,3)", opt ? 0 : -3)}
           />
           <BtnOption
-            text={opt ? "n!" : <Text style={{textAlign: 'center', fontWeight: 'bold', color: opt? "#E6B658": "#000"}}>&#960;</Text>}
-            opt={!opt ? "n!" : <Text style={{textAlign: 'center', fontWeight: 'bold', color: opt? "#E6B658": "#000"}}>&#960;</Text>}
+            opt={opt ? "n!" : <Text style={{ textAlign: 'center', fontWeight: 'bold', color: !opt ? "#E6B658" : "#000" }}>&#960;</Text>}
+            text={!opt ? "n!" : <Text style={{ textAlign: 'center', fontWeight: 'bold', color: !opt ? "#E6B658" : "#000" }}>&#960;</Text>}
             theme="secondary"
             size="mini"
-            onPress={() => handleConcatStringCal(!opt ? "PI" : "factorial(")}
+            onPress={() => handleConcatStringCal(opt ? "PI" : "factorial(")}
           />
         </Row>
 
@@ -257,10 +284,10 @@ const styles = StyleSheet.create({
   },
   value: {
     color: "#fff",
-    fontSize: 40,
+    fontSize: 34,
     textAlign: "right",
     marginRight: 20,
-    marginBottom: 10
+    // marginBottom: 0
   }
 });
 
@@ -286,7 +313,6 @@ function useInterval(callback, delay) {
     }
   }, [delay]);
 }
-
 
 
 const _handleCalString = (str) => {
