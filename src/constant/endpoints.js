@@ -2,9 +2,9 @@ export const endpoints = {
 
     // base url
     // pro
-    // BASE_URL: 'https://apps.vietjack.com:8081/api',
+    BASE_URL: 'https://apps.vietjack.com:8081/api',
     // dev
-    BASE_URL: 'http://45.124.87.227:8081/api',
+    // BASE_URL: 'http://45.124.87.227:8081/api',
     BASE_URL_COURSE: 'https://apps.vietjack.com:8081',
     MEDIA_URL: 'https://media.vietjack.com:6969/',
     // BASE_URL:'https://testapps.vietjack.com:4443/api',

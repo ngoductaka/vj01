@@ -5,14 +5,10 @@ import {
   SafeAreaView, TextInput, TouchableOpacity
 } from "react-native";
 import { Icon } from 'native-base';
-import {
-  atan2, chain, derivative, e, evaluate, log, pi, pow, round, sqrt
-} from 'mathjs'
+import { evaluate } from 'mathjs'
 
 import Row from "./components/Row";
 import Button, { BtnOption, OPT } from "./components/Button";
-import calculator, { initialState } from "./util/calculator";
-
 
 const regexEnd = /\|/ig;
 
@@ -25,7 +21,7 @@ const App = (props) => {
   const [pointIndex, setPointIndex] = useState(0);
   const [run, setRun] = useState(false);
   const [mold, setMold] = useState(true);// true is rad false is deg
-  // 
+
   const [opt, setOpt] = useState(true);
 
   useEffect(() => {
@@ -47,9 +43,9 @@ const App = (props) => {
       setString(strArr.join(''))
     }
   }, run ? 499 : 500);
+
   // input string
   const handleConcatStringCal = useCallback((value, n = 0) => {
-    // console.log(pointIndex || 0, String(value).length, (pointIndex || 0) + String(value).length)
     setPointIndex((pointIndex || 0) + String(value).length + n);
 
     let strArr = stringCal.split('');
@@ -67,13 +63,13 @@ const App = (props) => {
     try {
       // normal
       const res = _handleCalString(stringCal);
-      if (res) {
-        setResult(String(res));
-        setHistoryCal(stringCal)
-        handleClean(true, false);
-      } else {
-        setResult("Phép tính lỗi")
-      }
+      // if (res) {
+      setResult(String(res));
+      setHistoryCal(stringCal)
+      handleClean(true, false);
+      // } else {
+      //   setResult("Phép tính lỗi")
+      // }
 
     } catch (err) {
       try {
@@ -91,7 +87,7 @@ const App = (props) => {
         console.log('=er1')
         // reset try add ')'
         setString(stringCal.slice(0, stringCal.length - 1));
-        setPointIndex(pointIndex - 1);
+        // setPointIndex(pointIndex - 1);
 
         setResult("Phép tính lỗi")
         console.log('errors', errors)
@@ -128,55 +124,26 @@ const App = (props) => {
     <View style={styles.container}>
       <SafeAreaView style={{ flex: 1 }}>
         {/* <Icon /> */}
-        <TouchableOpacity onPress={() => props.navigation.goBack()} style={{
-          // position: 'absolute',
-          // left: width / 2 - 10,
-          justifyContent: 'space-between',
-          alignItems: 'center',
-          flexDirection: 'row'
-        }}>
-          <View style={{ width: 50 }}></View>
-          <Icon type="AntDesign" name='down' style={{ fontSize: 25, color: 'white' }} />
-          <View style={{ width: 50 }}>
-
-            <Text style={{ color: '#fff' }}>[{mold ? 'rad' : 'deg'}]</Text>
+        <TouchableOpacity onPress={() => props.navigation.goBack()} style={styles.headClose}>
+          <View style={styles.sideHead}></View>
+          <Icon type="AntDesign" name='down' style={styles.closeBtn} />
+          <View style={styles.sideHead}>
+            <Text style={styles.whileColor}>[{mold ? 'rad' : 'deg'}]</Text>
           </View>
         </TouchableOpacity>
-        <View style={{ flex: 1, backgroundColor: '#A6BCA1', paddingTop: 10, borderRadius: 10 }}>
-
+        <View style={styles.inputWap}>
           <TextInput
-            // showSoftInputOnFocus={false}
-            // autoFocus={true}
-            // blurOnSubmit={false}
-            style={{
-              flex: 1,
-              paddingHorizontal: 10,
-              paddingVertical: 20,
-              backgroundColor: '#A6BCA1',
-              fontSize: 30,
-              color: "#000",
-              textAlignVertical: 'top'
-              // minHeight:200,
-              // width: 300,
-            }}
+            style={styles.inputStyle}
             multiline={true}
             numberOfLines={1}
             value={run ? stringCal.replace(regexEnd, '') : stringCal}
-            // onChangeText={() => { }}
-            // keyboardType={'numeric'}
-            // onFocus={() => {
-            //   Keyboard.dismiss();
-            // }}
             editable={false}
-            // focusable={false}
             selection={{ start: 0, end: 0 }}
-          // onFocus={() => Keyboard.dismiss()}
-
           />
-          <Text style={{ fontSize: 30, }}>{historyCal ? historyCal.replace(regexEnd, '') + '=' : ''}</Text>
+          <Text style={styles.historyString}>{historyCal ? historyCal.replace(regexEnd, '') + '=' : ''}</Text>
         </View>
         <Text style={styles.value}> {isNaN(result) ? result : (+result).toFixed(3)} </Text>
-        <Text style={[styles.value, { fontSize: 16 }]}> {result} </Text>
+        <Text style={[styles.value, styles.fontH2]}> {result} </Text>
         <Row>
           <Button theme="secondary" size="mini" text="ln" onPress={() => handleConcatStringCal("ln(")} />
           <Button theme={!opt ? "accent" : "secondary"} size="mini" text="ALT" onPress={() => setOpt(!opt)} />
@@ -184,8 +151,8 @@ const App = (props) => {
           <Button theme="secondary" size="mini" text="MENU" onPress={() => handleConcatStringCal("*")} />
         </Row>
         <Row>
-          <Button theme="secondary" size="mini" text={<Icon style={{fontSize: 18}} type="AntDesign" name="caretleft" />}onPress={() => { setPointIndex(pointIndex > 0 ? pointIndex - 1 : 0) }} />
-          <Button theme="secondary" size="mini" text={<Icon style={{fontSize: 18}} type="AntDesign" name="caretright" />} onPress={() => {
+          <Button theme="secondary" size="mini" text={<Icon style={{ fontSize: 18 }} type="AntDesign" name="caretleft" />} onPress={() => { setPointIndex(pointIndex > 0 ? pointIndex - 1 : 0) }} />
+          <Button theme="secondary" size="mini" text={<Icon style={{ fontSize: 18 }} type="AntDesign" name="caretright" />} onPress={() => {
             console.log(stringCal.length, pointIndex)
             setPointIndex(pointIndex + 1 <= stringCal.length ? pointIndex + 1 : stringCal.length)
           }} />
@@ -193,10 +160,23 @@ const App = (props) => {
           <Button theme="secondary" size="mini" text=")" onPress={() => handleConcatStringCal(")")} />
         </Row>
         <Row>
-          <BtnOption text={opt ? "sin" : "asin"} opt={opt ? "asin" : "sin"} theme="secondary" size="mini" onPress={() => handleConcatStringCal(!opt ? "asin(" : "sin(")} />
-          <BtnOption text={opt ? "cos" : "acos"} opt={opt ? "acos" : "cos"} theme="secondary" size="mini" onPress={() => handleConcatStringCal(!opt ? "acos(" : "cos(")} />
-          <BtnOption text={opt ? "tan" : "atan"} opt={opt ? "atan" : "tan"} theme="secondary" size="mini" onPress={() => handleConcatStringCal(!opt ? "atan(" : "tan(")} />
-          <BtnOption text={opt ? "log" : "10^"} opt={opt ? "10^" : "log"} theme="secondary" size="mini" onPress={() => handleConcatStringCal(!opt ? "10^" : "log(,10)", !opt ? 0 : -4)} />
+          <BtnOption text={opt ? "sin" : "asin"} opt={opt ? "asin" : "sin"}
+            theme="secondary" size="mini" onPress={() => handleConcatStringCal(
+              !opt ? "asin(" : (mold ? "sin(" : "sin(deg)"),
+              mold ? 0 : -4
+            )} />
+          <BtnOption text={opt ? "cos" : "acos"} opt={opt ? "acos" : "cos"}
+            theme="secondary" size="mini" onPress={() => handleConcatStringCal(
+              !opt ? "acos(" : (mold ? "cos(" : "cos(deg)"),
+              mold ? 0 : -4
+            )} />
+          <BtnOption text={opt ? "tan" : "atan"} opt={opt ? "atan" : "tan"}
+            theme="secondary" size="mini" onPress={() => handleConcatStringCal(
+              !opt ? "atan(" : (mold ? "tan(" : "tan(deg)"),
+              mold ? 0 : -4
+            )} />
+          <BtnOption text={opt ? "log" : "10^"} opt={opt ? "10^" : "log"}
+            theme="secondary" size="mini" onPress={() => handleConcatStringCal(!opt ? "10^" : "log(,10)", !opt ? 0 : -4)} />
           {/* <Button theme="secondary" size="mini" text="ln"  onPress={() => handleConcatStringCal("operator", "*")} /> */}
         </Row>
         <Row>
@@ -272,7 +252,6 @@ const App = (props) => {
       </SafeAreaView>
     </View>
   );
-
 }
 
 
@@ -288,7 +267,27 @@ const styles = StyleSheet.create({
     textAlign: "right",
     marginRight: 20,
     // marginBottom: 0
-  }
+  },
+  headClose: {
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    flexDirection: 'row'
+  },
+  sideHead: { width: 50 },
+  closeBtn: { fontSize: 25, color: 'white' },
+  whileColor: { color: '#fff' },
+  inputWap: { flex: 1, backgroundColor: '#A6BCA1', paddingTop: 10, borderRadius: 10 },
+  inputStyle: {
+    flex: 1,
+    paddingHorizontal: 10,
+    paddingVertical: 20,
+    backgroundColor: '#A6BCA1',
+    fontSize: 30,
+    color: "#000",
+    textAlignVertical: 'top'
+  },
+  historyString: { fontSize: 30 },
+  fontH2: { fontSize: 16 }
 });
 
 export default App;
