@@ -22,11 +22,7 @@ const defaultHeader = {
 };
 
 const request = axios.create({
-	// for stg
-	// baseURL: 'http://192.168.2.172:80/api',
-	// for product
 	baseURL: endpoints.BASE_URL,
-	// baseURL: 'http://45.124.87.227:8081/api/',
 	timeout: TIMEOUT,
 	headers: defaultHeader,
 });
