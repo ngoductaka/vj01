@@ -135,7 +135,8 @@ const App = (props) => {
           <TextInput
             style={styles.inputStyle}
             multiline={true}
-            numberOfLines={1}
+            scrollEnabled
+            // numberOfLines={1}
             value={run ? stringCal.replace(regexEnd, '') : stringCal}
             editable={false}
             selection={{ start: 0, end: 0 }}
@@ -145,10 +146,10 @@ const App = (props) => {
         <Text style={styles.value}> {isNaN(result) ? result : (+result).toFixed(3)} </Text>
         <Text style={[styles.value, styles.fontH2]}> {result} </Text>
         <Row>
-          <Button theme="secondary" size="mini" text="ln" onPress={() => handleConcatStringCal("ln(")} />
-          <Button theme={!opt ? "accent" : "secondary"} size="mini" text="ALT" onPress={() => setOpt(!opt)} />
-          <Button theme="secondary" size="mini" text="MOLD" onPress={_hanldeChangeMold} />
-          <Button theme="secondary" size="mini" text="MENU" onPress={() => handleConcatStringCal("*")} />
+          <Button theme="secondary" size="mini" text="ln" onPress={useCallback(() => handleConcatStringCal("ln("), [pointIndex, stringCal])} />
+          <Button theme={!opt ? "accent" : "secondary"} size="mini" text="SHIFT" onPress={() => setOpt(!opt)} />
+          <Button theme="secondary" size="mini" text={mold ? "R->D": "D->R"} onPress={_hanldeChangeMold} />
+          <Button theme="secondary" size="mini" text="MENU" onPress={() => handleConcatStringCal("")} />
         </Row>
         <Row>
           <Button theme="secondary" size="mini" text={<Icon style={{ fontSize: 18 }} type="AntDesign" name="caretleft" />} onPress={() => { setPointIndex(pointIndex > 0 ? pointIndex - 1 : 0) }} />
@@ -156,24 +157,24 @@ const App = (props) => {
             console.log(stringCal.length, pointIndex)
             setPointIndex(pointIndex + 1 <= stringCal.length ? pointIndex + 1 : stringCal.length)
           }} />
-          <Button theme="secondary" size="mini" text="(" onPress={() => handleConcatStringCal("(")} />
-          <Button theme="secondary" size="mini" text=")" onPress={() => handleConcatStringCal(")")} />
+          <Button theme="secondary" size="mini" text="(" onPress={useCallback(() => handleConcatStringCal("("), [pointIndex, stringCal])} />
+          <Button theme="secondary" size="mini" text=")" onPress={useCallback(() => handleConcatStringCal(")"), [pointIndex, stringCal])} />
         </Row>
         <Row>
-          <BtnOption text={opt ? "sin" : "asin"} opt={opt ? "asin" : "sin"}
+          <BtnOption text={opt ? "sin" : "arcsin"} opt={opt ? "arcsin" : "sin"}
             theme="secondary" size="mini" onPress={() => handleConcatStringCal(
               !opt ? "asin(" : (mold ? "sin(" : "sin(deg)"),
-              mold ? 0 : -4
+              !opt ? 0 : (mold ? 0 : -4)
             )} />
-          <BtnOption text={opt ? "cos" : "acos"} opt={opt ? "acos" : "cos"}
+          <BtnOption text={opt ? "cos" : "arccos"} opt={opt ? "arccos" : "cos"}
             theme="secondary" size="mini" onPress={() => handleConcatStringCal(
               !opt ? "acos(" : (mold ? "cos(" : "cos(deg)"),
-              mold ? 0 : -4
+              !opt ? 0 : (mold ? 0 : -4)
             )} />
-          <BtnOption text={opt ? "tan" : "atan"} opt={opt ? "atan" : "tan"}
+          <BtnOption text={opt ? "tan" : "arctan"} opt={opt ? "arctan" : "tan"}
             theme="secondary" size="mini" onPress={() => handleConcatStringCal(
               !opt ? "atan(" : (mold ? "tan(" : "tan(deg)"),
-              mold ? 0 : -4
+              !opt ? 0 : (mold ? 0 : -4)
             )} />
           <BtnOption text={opt ? "log" : "10^"} opt={opt ? "10^" : "log"}
             theme="secondary" size="mini" onPress={() => handleConcatStringCal(!opt ? "10^" : "log(,10)", !opt ? 0 : -4)} />
@@ -213,41 +214,35 @@ const App = (props) => {
         </Row>
 
         <Row>
-          <Button text="7" onPress={() => handleConcatStringCal(7)} />
-          <Button text="8" onPress={() => handleConcatStringCal(8)} />
-          <Button text="9" onPress={() => handleConcatStringCal(9)} />
+          <Button text="7" onPress={useCallback(() => handleConcatStringCal(7), [pointIndex, stringCal])} />
+          <Button text="8" onPress={useCallback(() => handleConcatStringCal(8), [pointIndex, stringCal])} />
+          <Button text="9" onPress={useCallback(() => handleConcatStringCal(9), [pointIndex, stringCal])} />
           <Button text="DEL" theme="accent" onPress={() => handleClean()} />
           <Button text="AC" theme="accent" onPress={() => handleClean('all', true)} />
         </Row>
         <Row>
-          <Button text="4" onPress={() => handleConcatStringCal(4)} />
-          <Button text="5" onPress={() => handleConcatStringCal(5)} />
-          <Button text="6" onPress={() => handleConcatStringCal(6)} />
-          <Button text="X" onPress={() => handleConcatStringCal("*")} />
-          <Button text="/" onPress={() => handleConcatStringCal("/")} />
+          <Button text="4" onPress={useCallback(() => handleConcatStringCal(4), [pointIndex, stringCal])} />
+          <Button text="5" onPress={useCallback(() => handleConcatStringCal(5), [pointIndex, stringCal])} />
+          <Button text="6" onPress={useCallback(() => handleConcatStringCal(6), [pointIndex, stringCal])} />
+          <Button text="X" onPress={useCallback(() => handleConcatStringCal("*"), [pointIndex, stringCal])} />
+          <Button text="/" onPress={useCallback(() => handleConcatStringCal("/"), [pointIndex, stringCal])} />
         </Row>
 
         <Row>
-          <Button text="1" onPress={() => handleConcatStringCal(1)} />
-          <Button text="2" onPress={() => handleConcatStringCal(2)} />
-          <Button text="3" onPress={() => handleConcatStringCal(3)} />
-          <Button text="+" onPress={() => handleConcatStringCal("+")} />
-          <Button text="-" onPress={() => handleConcatStringCal("-")} />
+          <Button text="1" onPress={useCallback(() => handleConcatStringCal(1), [pointIndex, stringCal])} />
+          <Button text="2" onPress={useCallback(() => handleConcatStringCal(2), [pointIndex, stringCal])} />
+          <Button text="3" onPress={useCallback(() => handleConcatStringCal(3), [pointIndex, stringCal])} />
+          <Button text="+" onPress={useCallback(() => handleConcatStringCal("+"), [pointIndex, stringCal])} />
+          <Button text="-" onPress={useCallback(() => handleConcatStringCal("-"), [pointIndex, stringCal])} />
 
         </Row>
 
         <Row>
-          <Button
-            text="0"
-            onPress={() => handleConcatStringCal(0)}
-          />
-          <Button text="." onPress={() => handleConcatStringCal(".")} />
-          {/* <Button text="EXP" onPress={() => handleConcatStringCal(".")} /> */}
+          <Button text="0" onPress={useCallback(() => handleConcatStringCal(0), [pointIndex, stringCal])} />
+          <Button text="." onPress={useCallback(() => handleConcatStringCal("."), [pointIndex, stringCal])} />
+          <Button text="e" onPress={useCallback(() => handleConcatStringCal("e"), [pointIndex, stringCal])} />
           <Button text="ANS" onPress={() => handleANS()} />
-          <Button
-            text="="
-            onPress={() => handleCalculate()}
-          />
+          <Button text="=" onPress={() => handleCalculate()} />
         </Row>
       </SafeAreaView>
     </View>

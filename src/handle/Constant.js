@@ -106,7 +106,7 @@ export const LIST_UTILITIES = [
 		route: 'ScroreAnalyse'
 	},
 	{
-		src: { uri: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSHXTrOauz14wsbttF6Z0gSqkA1PiJene6aKQ&usqp=CAU' },
+		src: images.calculator,
 		name: 'Máy tính', slogan: 'Thay thế máy tính', route: 'Calculator'
 	},
 	// { src: images.flappybird, name: 'Flappy Bird', slogan: 'Vui mà học, học mà chơi', route: 'FlappyBird' },
