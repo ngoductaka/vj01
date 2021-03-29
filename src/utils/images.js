@@ -271,6 +271,7 @@ export const images = {
     gameTetris: require('../public/image/tetrisgame.png'),
     timetable: require('../public/image/timetable.png'),
     transcript: require('../public/image/transcript.png'),
+    calculator: require('../public/image/calculator1.png'),
 }
 
 export const mapImg = {

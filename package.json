@@ -5,6 +5,8 @@
   "scripts": {
     "android": "react-native run-android",
     "ios": "react-native run-ios",
+    "apk": "cd android && ./gradlew assembleRelease",
+    "abb": "cd android && ./gradlew bundleRelease",
     "start": "react-native start",
     "test": "jest",
     "lint": "eslint ."
@@ -25,6 +27,7 @@
     "lodash": "^4.17.15",
     "lottie-ios": "^3.1.3",
     "lottie-react-native": "^3.2.1",
+    "mathjs": "^9.2.0",
     "matter-js": "^0.16.1",
     "moment": "^2.24.0",
     "native-base": "^2.13.8",
