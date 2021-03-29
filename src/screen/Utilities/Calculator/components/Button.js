@@ -116,7 +116,7 @@ export const BtnOption = ({ onPress, text, size, theme, opt = "" }) => {
   return (
     <View style={{ flex: 1, minHeight: 50 }}>
       {opt ?
-        <View style={{ transform: [{ scale: 0.9 }], marginVertical: -1 }}>
+        <View style={{ transform: [{ scale: 0.9 }], marginVertical: -2 }}>
           {typeof opt == 'string' ? <Text style={styles.textOpt}>{opt}</Text> : opt}
         </View> : null}
       <LinearGradient
