@@ -58,12 +58,16 @@ const TestMenu = (props) => {
     useEffect(() => {
 
         if (screenAds && screenAds[TAG] == "1") {
-            fbFull()
-            .catch(err => {
-                if (advertParam) {
-                    advertParam.show();
-                }
-            })
+            if (advertParam && advertParam.show) {
+                advertParam.show();
+            } else {
+                fbFull()
+                .catch(err => {
+                    if (advertParam) {
+                        advertParam.show();
+                    }
+                })
+            }
         }
     }, []);
     useEffect(() => {

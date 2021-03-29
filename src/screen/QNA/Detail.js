@@ -54,10 +54,6 @@ const QnA = (props) => {
     const inputEl = useRef(null);
     const refList = useRef(null);
 
-    // useEffect(() => {
-    //     fbFull();
-    // }, [])
-
     const handleComment = (type = 'answer', data) => {
         setType({ type, data });
         if (inputEl && inputEl.current) {

@@ -57,12 +57,12 @@ const ViewAnwser = ({ navigation }) => {
 
     useEffect(() => {
         if (screenAds && screenAds[TAG] == "1") {
-            fbFull()
-                .catch(err => {
-                    if (advertParam) {
-                        advertParam.show();
-                    }
-                })
+
+            if (advertParam) {
+                advertParam.show();
+            } else {
+                fbFull()
+            }
         }
         setTimeout(() => {
             setDelay(true)

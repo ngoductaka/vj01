@@ -73,19 +73,23 @@ const OverviewTest = (props) => {
         if (showFullAds) {
             if (screenAds && screenAds[TAG] == "1" && learnTime % 2) {
                 // console.log('--a-sd-asd-asd', advertParam);
-                fbFull()
-                    .catch(err => {
-                        try {
-                            console.log('load ggg')
-                            if (advertParam) {
-                                advertParam.show();
-                                // advert.show();
+                if (advertParam) {
+                    advertParam.show();
+                } else {
+                    fbFull()
+                        .catch(err => {
+                            try {
+                                console.log('load ggg')
+                                if (advertParam) {
+                                    advertParam.show();
+                                    // advert.show();
+                                }
+                            } catch (err) {
+                                advert.show();
+                                console.log(err, 'err load gg')
                             }
-                        } catch (err) {
-                            advert.show();
-                            console.log(err, 'err load gg')
-                        }
-                    })
+                        })
+                }
                 // setAdsLoading(true);
                 // advert = firebase.admob().interstitial(unitIntertitialId);
                 // request = new AdRequest();
