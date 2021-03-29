@@ -34,7 +34,21 @@ const styles = StyleSheet.create({
   },
   textMini: {
     fontSize: 17,
-  }
+  },
+  btnNomal: {
+    width: '100%',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  gradient: {
+    flex: 1,
+    alignItems: "center",
+    justifyContent: "center",
+    borderRadius: 5,
+    margin: 4,
+  },
+  textOpt: { color: '#E6B658', fontSize: 13, textAlign: 'center', fontWeight: "bold", },
+  btnOption: { marginTop: 1, width: '100%', height: '100%', alignItems: 'center', justifyContent: 'center' }
 });
 
 export default ({ onPress, text, size, theme }) => {
@@ -59,23 +73,11 @@ export default ({ onPress, text, size, theme }) => {
       <LinearGradient
         start={{ x: 0, y: 0 }}
         end={{ x: 0, y: 1 }}
-        style={[
-          {
-            flex: 1,
-            // height: Math.floor(buttonWidth - 10),
-            alignItems: "center",
-            justifyContent: "center",
-            borderRadius: 5,
-            margin: 4,
-          }]}
+        style={styles.gradient}
         colors={['#a6a6a6', "#333"]}>
         <TouchableOpacity onPress={onPress} style={[
           buttonStyles,
-          {
-            width: '100%',
-            justifyContent: 'center',
-            alignItems: 'center',
-          }]}>
+          styles.btnNomal]}>
           <View>
 
             {typeof text == 'string' ? <Text style={textStyles}>{text}</Text> : text}
@@ -85,11 +87,11 @@ export default ({ onPress, text, size, theme }) => {
     )
   }
 
-  return (
-    <TouchableOpacity onPress={onPress} style={buttonStyles}>
-      {typeof text == 'string' ? <Text style={textStyles}>{text}</Text> : text}
-    </TouchableOpacity>
-  );
+  // return (
+  //   <TouchableOpacity onPress={onPress} style={buttonStyles}>
+  //     {typeof text == 'string' ? <Text style={textStyles}>{text}</Text> : text}
+  //   </TouchableOpacity>
+  // );
 };
 
 
@@ -111,46 +113,33 @@ export const BtnOption = ({ onPress, text, size, theme, opt = "" }) => {
   }
   if (1) {
     return (
-
-
       <View style={{ flex: 1, minHeight: 50 }}>
         <View style={{ transform: [{ scale: 0.9 }] }}>
-          {typeof opt == 'string' ? <Text style={{ color: '#E6B658', fontSize: 13, textAlign: 'center', fontWeight: "bold", }}>{opt}</Text> : opt}
+          {typeof opt == 'string' ? <Text style={styles.textOpt}>{opt}</Text> : opt}
         </View>
-
         <LinearGradient
           start={{ x: 0, y: 0 }}
           end={{ x: 0, y: 1 }}
-          style={[
-            {
-              flex: 1,
-              alignItems: "center",
-              justifyContent: "center",
-              borderRadius: 5,
-              margin: 4,
-            }]}
-          colors={['#a6a6a6', "#444"]}>
-
-          <TouchableOpacity style={[buttonStyles, { marginTop: 1, width: '100%', height: '100%', alignItems: 'center', justifyContent: 'center' }]} onPress={onPress} >
+          style={styles.gradient}
+          colors={['#a6a6a6', "#444"]}
+        >
+          <TouchableOpacity style={[buttonStyles, styles.btnOption]} onPress={onPress} >
             {typeof text == 'string' ? <Text style={textStyles}>{text}</Text> : text}
           </TouchableOpacity>
         </LinearGradient>
       </View>
-
     )
   }
-  // console.log({opt})
-  return (
-
-    <View style={{ flex: 1, minHeight: 50 }}>
-      <View style={{ transform: [{ scale: 0.9 }] }}>
-        {typeof opt == 'string' ? <Text style={{ color: '#E6B658', fontSize: 13, textAlign: 'center', fontWeight: "bold", }}>{opt}</Text> : opt}
-      </View>
-      <TouchableOpacity style={[buttonStyles, { marginTop: 1 }]} onPress={onPress} >
-        {typeof text == 'string' ? <Text style={textStyles}>{text}</Text> : text}
-      </TouchableOpacity>
-    </View>
-  );
+  // return (
+  //   <View style={{ flex: 1, minHeight: 50 }}>
+  //     <View style={{ transform: [{ scale: 0.9 }] }}>
+  //       {typeof opt == 'string' ? <Text style={{ color: '#E6B658', fontSize: 13, textAlign: 'center', fontWeight: "bold", }}>{opt}</Text> : opt}
+  //     </View>
+  //     <TouchableOpacity style={[buttonStyles, { marginTop: 1 }]} onPress={onPress} >
+  //       {typeof text == 'string' ? <Text style={textStyles}>{text}</Text> : text}
+  //     </TouchableOpacity>
+  //   </View>
+  // );
 };
 
 
