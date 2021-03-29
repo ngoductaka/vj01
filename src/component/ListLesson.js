@@ -65,7 +65,7 @@ const ListLesson = (props) => {
 	const frequency = useSelector(state => get(state, 'subjects.frequency', 6));
 	useEffect(() => {
 		if (learningTimes % frequency === 0) {
-			console.log('kajskjadkasjdksj');
+			// console.log('kajskjadkasjdksj');
 			advert = firebase.admob().interstitial(unitIntertitialId);
 			request = new AdRequest();
 			request.addKeyword('facebook').addKeyword('google').addKeyword('instagram').addKeyword('zalo').addKeyword('google').addKeyword('pubg').addKeyword('asphalt').addKeyword('covid-19');

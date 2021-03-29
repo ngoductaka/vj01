@@ -31,6 +31,7 @@ const styles = StyleSheet.create({
   },
   btnMini: {
     paddingVertical: 3,
+    height: 27
   },
   textMini: {
     fontSize: 17,
@@ -68,24 +69,25 @@ export default ({ onPress, text, size, theme }) => {
     textStyles.push(styles.textMini);
   }
 
-  if (1) {
-    return (
-      <LinearGradient
-        start={{ x: 0, y: 0 }}
-        end={{ x: 0, y: 1 }}
-        style={styles.gradient}
-        colors={['#a6a6a6', "#333"]}>
-        <TouchableOpacity onPress={onPress} style={[
-          buttonStyles,
-          styles.btnNomal]}>
-          <View>
-
-            {typeof text == 'string' ? <Text style={textStyles}>{text}</Text> : text}
-          </View>
-        </TouchableOpacity>
-      </LinearGradient>
-    )
-  }
+  return (
+    <LinearGradient
+      start={{ x: 0, y: 0 }}
+      end={{ x: 0, y: 1 }}
+      style={[styles.gradient]}
+      colors={['#a6a6a6', "#333"]}>
+      <TouchableOpacity onPress={onPress} style={[
+        buttonStyles,
+        styles.btnNomal,
+        {
+          // height: 50
+        }
+      ]}>
+        <View>
+          {typeof text == 'string' ? <Text style={textStyles}>{text}</Text> : text}
+        </View>
+      </TouchableOpacity>
+    </LinearGradient>
+  )
 
   // return (
   //   <TouchableOpacity onPress={onPress} style={buttonStyles}>
@@ -111,25 +113,25 @@ export const BtnOption = ({ onPress, text, size, theme, opt = "" }) => {
     buttonStyles.push(styles.btnMini);
     textStyles.push(styles.textMini);
   }
-  if (1) {
-    return (
-      <View style={{ flex: 1, minHeight: 50 }}>
-        <View style={{ transform: [{ scale: 0.9 }] }}>
+  return (
+    <View style={{ flex: 1, minHeight: 50 }}>
+      {opt ?
+        <View style={{ transform: [{ scale: 0.9 }], marginVertical: -1 }}>
           {typeof opt == 'string' ? <Text style={styles.textOpt}>{opt}</Text> : opt}
-        </View>
-        <LinearGradient
-          start={{ x: 0, y: 0 }}
-          end={{ x: 0, y: 1 }}
-          style={styles.gradient}
-          colors={['#a6a6a6', "#444"]}
-        >
-          <TouchableOpacity style={[buttonStyles, styles.btnOption]} onPress={onPress} >
-            {typeof text == 'string' ? <Text style={textStyles}>{text}</Text> : text}
-          </TouchableOpacity>
-        </LinearGradient>
-      </View>
-    )
-  }
+        </View> : null}
+      <LinearGradient
+        start={{ x: 0, y: 0 }}
+        end={{ x: 0, y: 1 }}
+        style={styles.gradient}
+        colors={['#a6a6a6', "#444"]}
+      >
+        <TouchableOpacity style={[buttonStyles, styles.btnOption]} onPress={onPress} >
+          {typeof text == 'string' ? <Text style={textStyles}>{text}</Text> : text}
+        </TouchableOpacity>
+      </LinearGradient>
+    </View>
+  )
+
   // return (
   //   <View style={{ flex: 1, minHeight: 50 }}>
   //     <View style={{ transform: [{ scale: 0.9 }] }}>
