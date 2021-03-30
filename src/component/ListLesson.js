@@ -92,12 +92,12 @@ const ListLesson = (props) => {
 	}, [subjectID, bookId]);
 
 	// 
-	const _handleSelectLesson = (item) => {
+	const _handleSelectLesson = (item, chapterData) => {
 		// navigation.navigate("Lesson", { key: item.url, subjectID, title: item.title });
 		navigation.navigate("LessonOverview", {
 			// key: item.url, subjectID, title: item.title
 			lessonId: item.id,
-			advert
+			advert, chapterData
 		});
 		if (isBar) closeBar();
 	}
@@ -267,16 +267,20 @@ const RenderDetailLesson = ({ lessonItem, isBar, _handleSelect, activeDetail }) 
 			keyExtractor={(item, index) => `${item.id}-${index}_detail`}
 			extraData={expandedDetail}
 			renderItem={({ item: itemDetailLesson, index }) => {
-				return _renderItemDetailListLesson({ itemDetailLesson, isBar, _handleSelect, expandedDetail, setExpandedDetail, index, activeDetail })
+				return _renderItemDetailListLesson({
+					itemDetailLesson, isBar, _handleSelect,
+					expandedDetail, setExpandedDetail, index, activeDetail,
+					chapterData: get(lessonItem, 'chapters', [])
+				})
 			}}
 		/>
 	)
 }
 
-const _renderItemDetailListLesson = ({ activeDetail, itemDetailLesson, isBar = false, _handleSelect, expandedDetail, setExpandedDetail, index }) => {
+const _renderItemDetailListLesson = ({ activeDetail, itemDetailLesson, isBar = false, _handleSelect, expandedDetail, setExpandedDetail, index, chapterData }) => {
 	if (isEmpty(itemDetailLesson.children)) { // return end ==================
 		return (
-			<TouchableOpacity style={styles.contentMenu} onPress={() => _handleSelect(itemDetailLesson)} >
+			<TouchableOpacity style={styles.contentMenu} onPress={() => _handleSelect(itemDetailLesson, chapterData)} >
 				<View style={styles.textLessonWapper}>
 					<Text numberOfLines={2} style={styles.detailLesson} >{itemDetailLesson.title} </Text>
 				</View>

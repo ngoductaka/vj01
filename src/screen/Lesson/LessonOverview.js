@@ -22,7 +22,7 @@ import { COLOR, fontSize, blackColor, TIMES_SHOW_FULL_ADS, unitIntertitialId } f
 
 import { VideoItem } from './component/VideosList';
 import { ExcerciseItem } from './component/ExamList';
-import { ArticleItem } from './component/ArticleList'
+import { ArticleItem, RenderChapterLesson } from './component/ArticleList'
 const { width, height } = Dimensions.get('window');
 import BackHeader from '../Bookmark/Component/BackHeader';
 import { fontMaker, fontStyles } from '../../utils/fonts';
@@ -58,6 +58,7 @@ const LessonOverview = (props) => {
     const dispatch = useDispatch();
     let endPoint = ''
     const lessonId = navigation.getParam('lessonId', '');
+    const chapterData = navigation.getParam('chapterData', '');
     const lesson_id = navigation.getParam('lesson_id', '');
     // get lesson by id menuItem
     if (lessonId) endPoint = `/menu-items/${lessonId}/lesson`;
@@ -387,6 +388,9 @@ const LessonOverview = (props) => {
                                     if (item.type == 'exam') return <ExcerciseItem data={item.data} advertParam={otherAdvert} handleNavigate={handleNavigate} book={get(_dataLesson, 'data.book')} lessonId={lessonId} SeeMore={SeeMore} />
                                     return null;
                                 }))
+                            }
+                            {
+                                get(chapterData, '[0]') ? <RenderChapterLesson data={get(chapterData, '[0]')} /> : null
                             }
                         </View>
 
