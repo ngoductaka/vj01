@@ -5,7 +5,8 @@ import {
   SafeAreaView, TextInput, TouchableOpacity
 } from "react-native";
 import { Icon } from 'native-base';
-import { evaluate } from 'mathjs'
+import { evaluate } from 'mathjs';
+import Toast from 'react-native-simple-toast';
 
 import Row from "./components/Row";
 import Button, { BtnOption, OPT } from "./components/Button";
@@ -29,7 +30,11 @@ const App = (props) => {
       const newHis = [result, history[0]];
       setHistory(newHis)
     }
-  }, [result])
+  }, [result]);
+
+  useEffect(() => {
+    Toast.showWithGravity("Máy tính mặc định ở chế độ radian. ấn R->D để chuyển đổi", 2, Toast.CENTER)
+  }, [])
 
   // handle poiter
   useInterval(() => {
@@ -143,13 +148,13 @@ const App = (props) => {
           />
           <Text style={styles.historyString}>{historyCal ? historyCal.replace(regexEnd, '') + '=' : ''}</Text>
         </View>
-        <Text style={styles.value}> {isNaN(result) ? result : (+result).toFixed(3)} </Text>
-        <Text style={[styles.value, styles.fontH2]}> {result} </Text>
+        <Text style={styles.value}> {result} </Text>
+        <Text style={[styles.value, styles.fontH2]}> {isNaN(result) ? result : (+result).toFixed(3)} </Text>
         <Row>
           <Button theme="secondary" size="mini" text="ln" onPress={useCallback(() => handleConcatStringCal("ln("), [pointIndex, stringCal])} />
           <Button theme={!opt ? "accent" : "secondary"} size="mini" text="SHIFT" onPress={() => setOpt(!opt)} />
-          <Button theme="secondary" size="mini" text={mold ? "R->D": "D->R"} onPress={_hanldeChangeMold} />
-          <Button theme="secondary" size="mini" text="MENU" onPress={() => handleConcatStringCal("")} />
+          <Button theme="secondary" size="mini" text={mold ? "R->D" : "D->R"} onPress={_hanldeChangeMold} />
+          <Button theme="secondary" size="mini" text="MENU" onPress={useCallback(() => {Toast.show("Tính năng mới sẽ được cập nhật sớm nhất", 1)}, [])} />
         </Row>
         <Row>
           <Button theme="secondary" size="mini" text={<Icon style={{ fontSize: 18 }} type="AntDesign" name="caretleft" />} onPress={() => { setPointIndex(pointIndex > 0 ? pointIndex - 1 : 0) }} />

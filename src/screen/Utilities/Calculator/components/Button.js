@@ -14,15 +14,6 @@ const styles = StyleSheet.create({
   textSecondary: {
     color: "#060606"
   },
-  button: {
-    backgroundColor: "#333333",
-    flex: 1,
-    // height: Math.floor(buttonWidth - 10),
-    alignItems: "center",
-    justifyContent: "center",
-    borderRadius: 5,
-    margin: 4,
-  },
   buttonSecondary: {
     // backgroundColor: "#a6a6a6"
   },
@@ -40,13 +31,14 @@ const styles = StyleSheet.create({
     width: '100%',
     justifyContent: 'center',
     alignItems: 'center',
+    borderRadius: 5,
   },
   gradient: {
     flex: 1,
     alignItems: "center",
     justifyContent: "center",
     borderRadius: 5,
-    margin: 4,
+    margin: 3,
   },
   textOpt: { color: '#E6B658', fontSize: 13, textAlign: 'center', fontWeight: "bold", },
   btnOption: { marginTop: 1, width: '100%', height: '100%', alignItems: 'center', justifyContent: 'center' }
