@@ -24,6 +24,7 @@ import { ExitModal } from '../../component/shared/ExitModal';
 import api, { useRequest } from '../../handle/api';
 import { actGetListSubjects } from '../../redux/action/class';
 import { get } from 'lodash';
+import { saveItem, KEY } from '../../handle/handleStorage';
 
 const Profile = (props) => {
 
@@ -79,8 +80,14 @@ const Profile = (props) => {
 
     const _setCurrentClass = (cls) => {
         setShowClassModal(false);
-        dispatch(setUserInfo({ class: cls }))
-        AsyncStorage.setItem('class', String(cls));
+        dispatch(setUserInfo({ class: cls, grade_id: cls }));
+        AsyncStorage.getItem(KEY.saved_user)
+            .then(user => {
+                const userData = JSON.parse(user);
+                if (userData) {
+                    saveItem(KEY.saved_user, { ...userData, grade_id: cls });
+                }
+            })
         setClass(cls);
         setTimeout(() => {
             if (mount) SimpleToast.showWithGravity('Thay đổi lớp học thành công', 3, SimpleToast.TOP);

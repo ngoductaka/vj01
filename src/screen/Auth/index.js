@@ -104,15 +104,15 @@ const Auth = (props) => {
             if (status !== "1") {
                 _navigateTo('Intro');
             } else {
-                AsyncStorage.getItem('class')
-                    .then(className => {
-                        if (className) {
-                            props.setUserInfo({ class: className });
-                        }
-                    })
-                    .catch(err => {
+                // AsyncStorage.getItem('class')
+                //     .then(className => {
+                //         if (className) {
+                //             props.setUserInfo({ class: className });
+                //         }
+                //     })
+                //     .catch(err => {
 
-                    });
+                //     });
                 AsyncStorage.getItem(KEY.saved_user)
                     .then(user => {
                         const userData = JSON.parse(user);
