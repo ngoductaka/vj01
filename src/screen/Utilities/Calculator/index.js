@@ -64,8 +64,9 @@ const App = (props) => {
     }, 510);
   }, [pointIndex, stringCal]);
 
-  const handleCalculate = async () => {
+  const handleCalculate = () => {
     try {
+      if(!stringCal.replace(regexEnd, '')) return 1;
       // normal
       const res = _handleCalString(stringCal);
       // if (res) {
@@ -149,7 +150,7 @@ const App = (props) => {
           <Text style={styles.historyString}>{historyCal ? historyCal.replace(regexEnd, '') + '=' : ''}</Text>
         </View>
         <Text style={styles.value}> {result} </Text>
-        <Text style={[styles.value, styles.fontH2]}> {isNaN(result) ? result : (+result).toFixed(3)} </Text>
+        <Text numberOfLines={1} style={[styles.value, styles.fontH2]}> {isNaN(result) ? result : (+result).toFixed(3)} </Text>
         <Row>
           <Button theme="secondary" size="mini" text="ln" onPress={useCallback(() => handleConcatStringCal("ln("), [pointIndex, stringCal])} />
           <Button theme={!opt ? "accent" : "secondary"} size="mini" text="SHIFT" onPress={() => setOpt(!opt)} />
@@ -168,18 +169,18 @@ const App = (props) => {
         <Row>
           <BtnOption text={opt ? "sin" : "arcsin"} opt={opt ? "arcsin" : "sin"}
             theme="secondary" size="mini" onPress={() => handleConcatStringCal(
-              !opt ? "asin(" : (mold ? "sin(" : "sin(deg)"),
-              !opt ? 0 : (mold ? 0 : -4)
+              !opt ? "asin(" : (mold ? "sin(" : "sin(°)"),
+              !opt ? 0 : (mold ? 0 : -2)
             )} />
           <BtnOption text={opt ? "cos" : "arccos"} opt={opt ? "arccos" : "cos"}
             theme="secondary" size="mini" onPress={() => handleConcatStringCal(
-              !opt ? "acos(" : (mold ? "cos(" : "cos(deg)"),
-              !opt ? 0 : (mold ? 0 : -4)
+              !opt ? "acos(" : (mold ? "cos(" : "cos(°)"),
+              !opt ? 0 : (mold ? 0 : -2)
             )} />
           <BtnOption text={opt ? "tan" : "arctan"} opt={opt ? "arctan" : "tan"}
             theme="secondary" size="mini" onPress={() => handleConcatStringCal(
-              !opt ? "atan(" : (mold ? "tan(" : "tan(deg)"),
-              !opt ? 0 : (mold ? 0 : -4)
+              !opt ? "atan(" : (mold ? "tan(" : "tan(°)"),
+              !opt ? 0 : (mold ? 0 : -2)
             )} />
           <BtnOption text={opt ? "log" : "10^"} opt={opt ? "10^" : "log"}
             theme="secondary" size="mini" onPress={() => handleConcatStringCal(!opt ? "10^" : "log(,10)", !opt ? 0 : -4)} />
@@ -263,7 +264,7 @@ const styles = StyleSheet.create({
   },
   value: {
     color: "#fff",
-    fontSize: 34,
+    fontSize: 30,
     textAlign: "right",
     marginRight: 20,
     // marginBottom: 0
@@ -317,7 +318,7 @@ function useInterval(callback, delay) {
 const _handleCalString = (str) => {
   try {
     const regexLn = /ln/ig;
-    let strConvert = str.replace(regexLn, 'log').replace(regexEnd, '');
+    let strConvert = str.replace(regexLn, 'log').replace(regexEnd, '').replace('°', 'deg');
     return evaluate(strConvert);
   } catch (err) {
     console.log(err, '-----')
