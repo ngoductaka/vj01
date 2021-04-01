@@ -33,7 +33,7 @@ const App = (props) => {
   }, [result]);
 
   useEffect(() => {
-    Toast.showWithGravity("Máy tính mặc định ở chế độ radian. ấn R->D để chuyển đổi", 2, Toast.CENTER)
+    Toast.showWithGravity("Máy tính mặc định ở chế độ radian. ấn R->D để chuyển đổi", 3.4, Toast.TOP)
   }, [])
 
   // handle poiter
@@ -66,7 +66,7 @@ const App = (props) => {
 
   const handleCalculate = () => {
     try {
-      if(!stringCal.replace(regexEnd, '')) return 1;
+      if (!stringCal.replace(regexEnd, '')) return 1;
       // normal
       const res = _handleCalString(stringCal);
       // if (res) {
@@ -149,13 +149,13 @@ const App = (props) => {
           />
           <Text style={styles.historyString}>{historyCal ? historyCal.replace(regexEnd, '') + '=' : ''}</Text>
         </View>
-        <Text style={styles.value}> {result} </Text>
-        <Text numberOfLines={1} style={[styles.value, styles.fontH2]}> {isNaN(result) ? result : (+result).toFixed(3)} </Text>
+        <Text style={styles.value}> {isNaN(result) ? result : +(+result).toFixed(10)} </Text>
+        {/* <Text numberOfLines={1} style={[styles.value, styles.fontH2]}> {isNaN(result) ? result : +(+result).toFixed(3)} </Text> */}
         <Row>
           <Button theme="secondary" size="mini" text="ln" onPress={useCallback(() => handleConcatStringCal("ln("), [pointIndex, stringCal])} />
-          <Button theme={!opt ? "accent" : "secondary"} size="mini" text="SHIFT" onPress={() => setOpt(!opt)} />
+          <Button theme={!opt ? "accent" : "secondary2"} size="mini" text="SHIFT" onPress={() => setOpt(!opt)} />
           <Button theme="secondary" size="mini" text={mold ? "R->D" : "D->R"} onPress={_hanldeChangeMold} />
-          <Button theme="secondary" size="mini" text="MENU" onPress={useCallback(() => {Toast.show("Tính năng mới sẽ được cập nhật sớm nhất", 1)}, [])} />
+          <Button theme="secondary" size="mini" text="MENU" onPress={useCallback(() => { Toast.show("Tính năng mới sẽ được cập nhật sớm nhất", 1) }, [])} />
         </Row>
         <Row>
           <Button theme="secondary" size="mini" text={<Icon style={{ fontSize: 18 }} type="AntDesign" name="caretleft" />} onPress={() => { setPointIndex(pointIndex > 0 ? pointIndex - 1 : 0) }} />
@@ -200,7 +200,7 @@ const App = (props) => {
             opt={OPT.powx[opt ? 'opt2' : 'opt1'](opt)}
             theme="secondary"
             size="mini"
-            onPress={() => handleConcatStringCal(opt ? "^" : "nthRoot(,x)", opt ? 0 : -3)}
+            onPress={() => handleConcatStringCal(opt ? "^" : "ª√(,a)", opt ? 0 : -3)}
           />
 
           <BtnOption
@@ -208,14 +208,14 @@ const App = (props) => {
             text={OPT.can[opt ? 'opt2' : 'opt1'](!opt)}
             theme="secondary"
             size="mini"
-            onPress={() => handleConcatStringCal(opt ? "sqrt(" : "nthRoot(,3)", opt ? 0 : -3)}
+            onPress={() => handleConcatStringCal(opt ? "√(" : "ª√(,3)", opt ? 0 : -3)}
           />
           <BtnOption
-            opt={opt ? "n!" : <Text style={{ textAlign: 'center', fontWeight: 'bold', color: !opt ? "#E6B658" : "#000" }}>&#960;</Text>}
-            text={!opt ? "n!" : <Text style={{ textAlign: 'center', fontWeight: 'bold', color: !opt ? "#E6B658" : "#000" }}>&#960;</Text>}
+            opt={opt ? "n!" : <Text style={{ textAlign: 'center', fontWeight: 'bold', color: !opt ? "#E6B658" : "#000" }}>π</Text>}
+            text={!opt ? "n!" : <Text style={{ textAlign: 'center', fontWeight: 'bold', color: !opt ? "#E6B658" : "#000" }}>π</Text>}
             theme="secondary"
             size="mini"
-            onPress={() => handleConcatStringCal(opt ? "PI" : "factorial(")}
+            onPress={() => handleConcatStringCal(opt ? "π" : "factorial(")}
           />
         </Row>
 
@@ -314,12 +314,27 @@ function useInterval(callback, delay) {
   }, [delay]);
 }
 
-
 const _handleCalString = (str) => {
   try {
     const regexLn = /ln/ig;
-    let strConvert = str.replace(regexLn, 'log').replace(regexEnd, '').replace('°', 'deg');
-    return evaluate(strConvert);
+    const regexNthRoot = /ª√/ig;
+    const regexSqrt = /√/ig;
+    const regexC = /°/ig;
+    const regexPI = /π/ig;
+
+    let strConvert = str
+      .replace(regexLn, 'log')
+      .replace(regexPI, 'PI')
+      .replace(regexEnd, '')
+      .replace(regexNthRoot, 'nthRoot')
+      .replace(regexSqrt, 'sqrt')
+      .replace(regexC, 'deg');
+
+    const result = evaluate(strConvert);
+    if ((''+result).includes('i') || result==Math.tan(Math.PI/2)) {
+      return 'Phép tính lỗi'
+    }
+    return result;
   } catch (err) {
     console.log(err, '-----')
     throw err

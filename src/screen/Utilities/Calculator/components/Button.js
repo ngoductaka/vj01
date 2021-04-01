@@ -14,6 +14,9 @@ const styles = StyleSheet.create({
   textSecondary: {
     color: "#060606"
   },
+  textSecondary2: {
+    color: "#E6B658"
+  },
   buttonSecondary: {
     // backgroundColor: "#a6a6a6"
   },
@@ -53,6 +56,9 @@ export default ({ onPress, text, size, theme }) => {
   if (theme === "secondary") {
     buttonStyles.push(styles.buttonSecondary);
     textStyles.push(styles.textSecondary);
+  }else if (theme === "secondary2") {
+    buttonStyles.push(styles.buttonSecondary);
+    textStyles.push(styles.textSecondary2);
   } else if (theme === "accent") {
     buttonStyles.push(styles.buttonAccent);
   }
