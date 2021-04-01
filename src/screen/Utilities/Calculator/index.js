@@ -24,6 +24,7 @@ const App = (props) => {
   const [mold, setMold] = useState(true);// true is rad false is deg
 
   const [opt, setOpt] = useState(true);
+  const [showConvertDeg, setShowConvertDeg] = useState(false);
 
   useEffect(() => {
     if (result) {
@@ -31,6 +32,14 @@ const App = (props) => {
       setHistory(newHis)
     }
   }, [result]);
+
+  useEffect(() => {
+    if (historyCal && (historyCal + '').includes('a')) {
+      setShowConvertDeg(true)
+    } else {
+      setShowConvertDeg(false)
+    }
+  }, [historyCal])
 
   useEffect(() => {
     Toast.showWithGravity("Máy tính mặc định ở chế độ radian. ấn R->D để chuyển đổi", 3.4, Toast.TOP)
@@ -126,6 +135,11 @@ const App = (props) => {
     handleClean(true, true)
   }, [mold])
 
+  const _handlePressConvertDeg = useCallback(() => {
+    setShowConvertDeg(false);
+    setResult(convertToDeg(result))
+  }, [result]);
+
   return (
     <View style={styles.container}>
       <SafeAreaView style={{ flex: 1 }}>
@@ -149,7 +163,14 @@ const App = (props) => {
           />
           <Text style={styles.historyString}>{historyCal ? historyCal.replace(regexEnd, '') + '=' : ''}</Text>
         </View>
-        <Text style={styles.value}> {isNaN(result) ? result : +(+result).toFixed(10)} </Text>
+        <View style={styles.resultView}>
+          {showConvertDeg ? <TouchableOpacity
+            onPress={_handlePressConvertDeg}
+            style={styles.btnConvert}>
+            <Text>Rad=>Deg</Text>
+          </TouchableOpacity> : <View />}
+          <Text style={styles.value}> {isNaN(result) ? result : +(+result).toFixed(10)} </Text>
+        </View>
         {/* <Text numberOfLines={1} style={[styles.value, styles.fontH2]}> {isNaN(result) ? result : +(+result).toFixed(3)} </Text> */}
         <Row>
           <Button theme="secondary" size="mini" text="ln" onPress={useCallback(() => handleConcatStringCal("ln("), [pointIndex, stringCal])} />
@@ -288,7 +309,9 @@ const styles = StyleSheet.create({
     textAlignVertical: 'top'
   },
   historyString: { fontSize: 30 },
-  fontH2: { fontSize: 16 }
+  fontH2: { fontSize: 16 },
+  btnConvert: { paddingHorizontal: 6, paddingVertical: 3, backgroundColor: '#ddd', borderRadius: 6 },
+  resultView: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', paddingVertical: 2 },
 });
 
 export default App;
@@ -331,12 +354,21 @@ const _handleCalString = (str) => {
       .replace(regexC, 'deg');
 
     const result = evaluate(strConvert);
-    if ((''+result).includes('i') || result==Math.tan(Math.PI/2)) {
+    if (('' + result).includes('i') || result == Math.tan(Math.PI / 2)) {
       return 'Phép tính lỗi'
     }
     return result;
   } catch (err) {
     console.log(err, '-----')
     throw err
+  }
+}
+
+
+const convertToDeg = num => {
+  try {
+    return +num / 2 / Math.PI * 360
+  } catch (err) {
+    return num
   }
 }
