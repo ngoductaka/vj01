@@ -107,7 +107,7 @@ export const LIST_UTILITIES = [
 	},
 	{
 		src: images.calculator,
-		name: 'Máy tính', slogan: 'Thay thế máy tính', route: 'Calculator'
+		name: 'Máy tính', slogan: 'Máy tính khoa học 570VN', route: 'Calculator'
 	},
 	// { src: images.flappybird, name: 'Flappy Bird', slogan: 'Vui mà học, học mà chơi', route: 'FlappyBird' },
 ];

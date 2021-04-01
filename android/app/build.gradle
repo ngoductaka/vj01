@@ -138,7 +138,7 @@ android {
         }
         minSdkVersion 21
         multiDexEnabled true
-        versionCode 121
+        versionCode 122
         versionName "2.2.9"
     }
     signingConfigs {
