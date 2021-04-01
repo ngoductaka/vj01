@@ -401,3 +401,10 @@ export const mapHeaderImage = (id) => {
         return header_images[2];
     }
 }
+
+export const convertLink = (link, base) => {
+    if (link && link.includes('http')) {
+        return link;
+    }
+    return `${base}${link}`
+}

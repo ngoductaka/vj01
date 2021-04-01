@@ -65,7 +65,7 @@ const QnA = (props) => {
     const [isFollow, setFollow] = useState(false);
     // show img in content
     const [showImg, setShowImg] = useState(false);
-    console.log('=====, ",(', handleImgLink(get(showImg, 'uri', '')))
+    // console.log(get(showImg, 'uri', ''), '=====, ",(', handleImgLink(get(showImg, 'uri', '')))
     // show img upload
     const [listImgShow, setListShowImg] = useState(false);
     const [refreshing, setRefesh] = useState(false);
@@ -430,7 +430,6 @@ const mapImg = {
 }
 
 const RenderQuestion = ({ questionId, item, index, handleClickAnswer = () => { }, setListShowImg = () => { }, setShowImg }) => {
-    // console.log('item.image[0]', endpoints.BASE_URL)
     const [like, setLike] = useState(false);
     const _handleLike = useCallback(() => {
         search_services.handleLike(questionId, { "rate": like ? -1 : 1 })
