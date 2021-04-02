@@ -54,28 +54,28 @@ const ArticleItem = ({ data, advertParam = null, handleNavigate, SeeMore, title 
 }
 
 const RenderChapterLesson = ({ data = null, advertParam = null, handleNavigate = () => { } }) => {
-    console.log('datachapter', data)
+    console.log('datachapter', data.articles)
     const [expand, setExpand] = useState(false);
-    if (!get(data, 'contents.length')) return null;
+    if (!get(data, 'articles.length')) return null;
 
     return (
         <View style={{ overflow: 'hidden', marginBottom: 20 }}>
             <View style={{ flexDirection: 'row', alignItems: 'flex-end', paddingRight: 10, paddingBottom: 8, }}>
                 <Text style={{ fontSize: 22, ...fontMaker({ weight: fontStyles.Regular }) }}>Bài học theo chương</Text>
-                <Text style={{ fontSize: 19, marginLeft: 4, color: '#555' }}>({data.contents.length} bài)</Text>
+                <Text style={{ fontSize: 19, marginLeft: 4, color: '#555' }}>({data.articles.length} bài)</Text>
             </View>
 
             {
-                !data.contents.length ? null :
+                !data.articles.length ? null :
                     <Animatable.View animation={"fadeIn"} style={{ marginBottom: 10 }}>
-
                         <View>
                             {
-                                data.contents.slice(0, expand ? 100 : 3).map((item, index) => {
+                                data.articles.slice(0, expand ? 100 : 3).map((item, index) => {
                                     return (
-
                                         <TouchableOpacity
-                                            onPress={() => { handleNavigate('Lesson', { articleId: get(item, 'partable.id', ''), advert: advertParam }) }}
+                                            onPress={() => { 
+                                                console.log('---'); 
+                                                handleNavigate('Lesson', { articleId: get(item, 'id', ''), advert: advertParam, relatedArticle:[] }) }}
                                             style={stylesComponent.textItem}>
                                             <View style={{ flexDirection: 'row', paddingRight: 3 }}>
                                                 <Text>{`${index + 1}.  `}</Text>
@@ -90,11 +90,11 @@ const RenderChapterLesson = ({ data = null, advertParam = null, handleNavigate =
                             }
                         </View>
                         {
-                            data.contents.length > 3 && <SeeMore
+                            data.articles.length > 3 && <SeeMore
                                 // onPress={() => handleNavigate('ListDetailLesson', { title, data })}
                                 onPress={() => setExpand(!expand)}
                                 expanded={expand}
-                                count={data.contents.length - 3}
+                                count={data.articles.length - 3}
                             />
                         }
 
