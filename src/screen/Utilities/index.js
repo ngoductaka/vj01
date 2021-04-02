@@ -62,8 +62,8 @@ export const UtilitiesItem = ({ src = images.game1, name, slogan, navigation, ro
                 />
             </View>
             <View style={{ padding: 5 }}>
-                <Text style={{ fontSize: 15, color: COLOR.black(.8), marginTop: 2 }}>{name}</Text>
-                <Text style={{ fontSize: 13, color: COLOR.black(.5), marginTop: 3 }}>{slogan}</Text>
+                <Text style={{ fontSize: 15, color: COLOR.black(.8), marginTop: 2, textAlign: 'center' }}>{name}</Text>
+                <Text style={{ fontSize: 13, color: COLOR.black(.5), marginTop: 3, textAlign: 'center' }}>{slogan}</Text>
             </View>
         </TouchableOpacity>
     );

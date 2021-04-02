@@ -49,7 +49,6 @@ const Lesson = (props) => {
 
 	const showFullAds = navigation.getParam('showFullAds', true);
 	const advertParam = navigation.getParam('advert', null);
-	// console.log('--a-sd-asd-asdlesson ads', advertParam);
 
 	const scrollY = new Animated.Value(0)
 	const diffClamp = Animated.diffClamp(scrollY, 0, 100)
@@ -101,6 +100,8 @@ const Lesson = (props) => {
 			if (screenAds && screenAds[TAG] == "1") {
 				// if ((learningTimes + 3) % frequency === 0) {
 				if (advertParam) {
+					console.log('<ads lesson>', advertParam);
+
 					advertParam.show();
 					// }
 					// setAdsLoading(true);

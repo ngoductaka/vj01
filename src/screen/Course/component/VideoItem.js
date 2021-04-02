@@ -166,9 +166,6 @@ const plaidImg = (key) => imgSubject[key] ? imgSubject[key] : defaultImg
 const ImgVideoLage = ({ imgLecture, lectureId, isLecture, videoUrl, _handlePress, widthImg = width * 3 / 4 }) => {
     const [opacity] = useState(new Animated.Value(0))
     const [opacityPlade] = useState(new Animated.Value(1))
-    // const opacity = new Animated.Value(0);
-    // const opacityPlade = new Animated.Value(1);
-    // console.log('===================end load img')
 
     const _handleLoadEnd = (e) => {
         Animated.timing(opacity, {

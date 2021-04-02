@@ -70,47 +70,37 @@ const OverviewTest = (props) => {
     }, [learnTime]);
 
     useEffect(() => {
-        if (showFullAds) {
-            if (screenAds && screenAds[TAG] == "1" && learnTime % 2) {
-                // console.log('--a-sd-asd-asd', advertParam);
-                if (advertParam) {
-                    advertParam.show();
-                } else {
-                    fbFull()
-                        .catch(err => {
-                            try {
-                                console.log('load ggg')
-                                if (advertParam) {
-                                    advertParam.show();
-                                    // advert.show();
+        try {
+            if (showFullAds) {
+                if (screenAds && screenAds[TAG] == "1" && learnTime % 2) {
+                    // if (advert) {
+                    //     console.log('<ads-advert>', advert);
+                    //     advert.show()
+                    // }
+                    if (advertParam) {
+                        console.log('<ads-lessonOverview>', advertParam);
+                        advertParam.show();
+                    } else {
+                        fbFull()
+                            .catch(err => {
+                                try {
+                                    console.log('load ggg')
+                                    if (advertParam) {
+                                        advertParam.show();
+                                        // advert.show();
+                                    }
+                                } catch (err) {
+                                    advert.show();
+                                    console.log(err, 'err load gg')
                                 }
-                            } catch (err) {
-                                advert.show();
-                                console.log(err, 'err load gg')
-                            }
-                        })
+                            })
+                    }
                 }
-                // setAdsLoading(true);
-                // advert = firebase.admob().interstitial(unitIntertitialId);
-                // request = new AdRequest();
-                // request.addKeyword('facebook').addKeyword('google').addKeyword('instagram').addKeyword('zalo').addKeyword('google').addKeyword('pubg').addKeyword('asphalt').addKeyword('covid-19');
-
-                // advert.loadAd(request.build());
-
-                // advert.on('onAdLoaded', () => {
-                //     // console.log('----------Advert ready to show.--------');
-                //     // if (navigation.isFocused() && advert.isLoaded()) {
-                //     if (advert.isLoaded()) {
-                //         advert.show();
-                //     } else {
-                //         // console.log('---------interstitial fail---------', navigation.isFocused());
-                //     }
-                // });
-                // advert.on('onAdClosed', () => {
-                //     setAdsLoading(false);
-                // });
             }
+        } catch (err) {
+            console.log('err load ads ', err)
         }
+
 
         BackHandler.addEventListener(
             'hardwareBackPress',

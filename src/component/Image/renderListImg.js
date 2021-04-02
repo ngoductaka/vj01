@@ -3,6 +3,7 @@ import { View, Image, TouchableOpacity } from 'react-native';
 import { get } from 'lodash';
 
 import { endpoints } from "../../constant/endpoints";
+import { convertLink } from '../../utils/images';
 
 export const RenderListImg = ({ listImg, setVisible = () => { } }) => {
     if (!listImg || !listImg[0]) return null;
@@ -33,7 +34,7 @@ export const RenderOne = ({ img, setVisible }) => {
             }}>
             <Image
                 resizeMode='cover'
-                source={{ uri: `${endpoints.MEDIA_URL}${get(img, 'path', '')}` }}
+                source={{ uri: convertLink(get(img, 'path', ''), endpoints.MEDIA_URL) }}
                 style={{
                     height: null,
                     width: null,
@@ -67,7 +68,7 @@ export const RenderTwo = ({ listImg, setVisible }) => {
 
                                 <Image
                                     resizeMode='cover'
-                                    source={{ uri: `${endpoints.MEDIA_URL}${get(img, 'path', '')}` }}
+                                    source={{ uri: convertLink(get(img, 'path', ''), endpoints.MEDIA_URL) }}
                                     style={{
                                         height: null,
                                         width: null,

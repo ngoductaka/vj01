@@ -24,6 +24,7 @@ const App = (props) => {
   const [mold, setMold] = useState(true);// true is rad false is deg
 
   const [opt, setOpt] = useState(true);
+  const [showConvertDeg, setShowConvertDeg] = useState(false);
 
   useEffect(() => {
     if (result) {
@@ -33,7 +34,15 @@ const App = (props) => {
   }, [result]);
 
   useEffect(() => {
-    Toast.showWithGravity("Máy tính mặc định ở chế độ radian. ấn R->D để chuyển đổi", 2, Toast.CENTER)
+    if (historyCal && (historyCal + '').includes('a')) {
+      setShowConvertDeg(true)
+    } else {
+      setShowConvertDeg(false)
+    }
+  }, [historyCal])
+
+  useEffect(() => {
+    Toast.showWithGravity("Máy tính mặc định ở chế độ radian. ấn R->D để chuyển đổi", 3.4, Toast.TOP)
   }, [])
 
   // handle poiter
@@ -64,8 +73,9 @@ const App = (props) => {
     }, 510);
   }, [pointIndex, stringCal]);
 
-  const handleCalculate = async () => {
+  const handleCalculate = () => {
     try {
+      if (!stringCal.replace(regexEnd, '')) return 1;
       // normal
       const res = _handleCalString(stringCal);
       // if (res) {
@@ -125,6 +135,11 @@ const App = (props) => {
     handleClean(true, true)
   }, [mold])
 
+  const _handlePressConvertDeg = useCallback(() => {
+    setShowConvertDeg(false);
+    setResult(convertToDeg(result))
+  }, [result]);
+
   return (
     <View style={styles.container}>
       <SafeAreaView style={{ flex: 1 }}>
@@ -148,13 +163,20 @@ const App = (props) => {
           />
           <Text style={styles.historyString}>{historyCal ? historyCal.replace(regexEnd, '') + '=' : ''}</Text>
         </View>
-        <Text style={styles.value}> {result} </Text>
-        <Text style={[styles.value, styles.fontH2]}> {isNaN(result) ? result : (+result).toFixed(3)} </Text>
+        <View style={styles.resultView}>
+          {showConvertDeg ? <TouchableOpacity
+            onPress={_handlePressConvertDeg}
+            style={styles.btnConvert}>
+            <Text>Rad=>Deg</Text>
+          </TouchableOpacity> : <View />}
+          <Text style={styles.value}> {isNaN(result) ? result : +(+result).toFixed(10)} </Text>
+        </View>
+        {/* <Text numberOfLines={1} style={[styles.value, styles.fontH2]}> {isNaN(result) ? result : +(+result).toFixed(3)} </Text> */}
         <Row>
           <Button theme="secondary" size="mini" text="ln" onPress={useCallback(() => handleConcatStringCal("ln("), [pointIndex, stringCal])} />
-          <Button theme={!opt ? "accent" : "secondary"} size="mini" text="SHIFT" onPress={() => setOpt(!opt)} />
+          <Button theme={!opt ? "accent" : "secondary2"} size="mini" text="SHIFT" onPress={() => setOpt(!opt)} />
           <Button theme="secondary" size="mini" text={mold ? "R->D" : "D->R"} onPress={_hanldeChangeMold} />
-          <Button theme="secondary" size="mini" text="MENU" onPress={useCallback(() => {Toast.show("Tính năng mới sẽ được cập nhật sớm nhất", 1)}, [])} />
+          <Button theme="secondary" size="mini" text="MENU" onPress={useCallback(() => { Toast.show("Tính năng mới sẽ được cập nhật sớm nhất", 1) }, [])} />
         </Row>
         <Row>
           <Button theme="secondary" size="mini" text={<Icon style={{ fontSize: 18 }} type="AntDesign" name="caretleft" />} onPress={() => { setPointIndex(pointIndex > 0 ? pointIndex - 1 : 0) }} />
@@ -168,18 +190,18 @@ const App = (props) => {
         <Row>
           <BtnOption text={opt ? "sin" : "arcsin"} opt={opt ? "arcsin" : "sin"}
             theme="secondary" size="mini" onPress={() => handleConcatStringCal(
-              !opt ? "asin(" : (mold ? "sin(" : "sin(deg)"),
-              !opt ? 0 : (mold ? 0 : -4)
+              !opt ? "asin(" : (mold ? "sin(" : "sin(°)"),
+              !opt ? 0 : (mold ? 0 : -2)
             )} />
           <BtnOption text={opt ? "cos" : "arccos"} opt={opt ? "arccos" : "cos"}
             theme="secondary" size="mini" onPress={() => handleConcatStringCal(
-              !opt ? "acos(" : (mold ? "cos(" : "cos(deg)"),
-              !opt ? 0 : (mold ? 0 : -4)
+              !opt ? "acos(" : (mold ? "cos(" : "cos(°)"),
+              !opt ? 0 : (mold ? 0 : -2)
             )} />
           <BtnOption text={opt ? "tan" : "arctan"} opt={opt ? "arctan" : "tan"}
             theme="secondary" size="mini" onPress={() => handleConcatStringCal(
-              !opt ? "atan(" : (mold ? "tan(" : "tan(deg)"),
-              !opt ? 0 : (mold ? 0 : -4)
+              !opt ? "atan(" : (mold ? "tan(" : "tan(°)"),
+              !opt ? 0 : (mold ? 0 : -2)
             )} />
           <BtnOption text={opt ? "log" : "10^"} opt={opt ? "10^" : "log"}
             theme="secondary" size="mini" onPress={() => handleConcatStringCal(!opt ? "10^" : "log(,10)", !opt ? 0 : -4)} />
@@ -199,7 +221,7 @@ const App = (props) => {
             opt={OPT.powx[opt ? 'opt2' : 'opt1'](opt)}
             theme="secondary"
             size="mini"
-            onPress={() => handleConcatStringCal(opt ? "^" : "nthRoot(,x)", opt ? 0 : -3)}
+            onPress={() => handleConcatStringCal(opt ? "^" : "ª√(,a)", opt ? 0 : -3)}
           />
 
           <BtnOption
@@ -207,14 +229,14 @@ const App = (props) => {
             text={OPT.can[opt ? 'opt2' : 'opt1'](!opt)}
             theme="secondary"
             size="mini"
-            onPress={() => handleConcatStringCal(opt ? "sqrt(" : "nthRoot(,3)", opt ? 0 : -3)}
+            onPress={() => handleConcatStringCal(opt ? "√(" : "ª√(,3)", opt ? 0 : -3)}
           />
           <BtnOption
-            opt={opt ? "n!" : <Text style={{ textAlign: 'center', fontWeight: 'bold', color: !opt ? "#E6B658" : "#000" }}>&#960;</Text>}
-            text={!opt ? "n!" : <Text style={{ textAlign: 'center', fontWeight: 'bold', color: !opt ? "#E6B658" : "#000" }}>&#960;</Text>}
+            opt={opt ? "n!" : <Text style={{ textAlign: 'center', fontWeight: 'bold', color: !opt ? "#E6B658" : "#000" }}>π</Text>}
+            text={!opt ? "n!" : <Text style={{ textAlign: 'center', fontWeight: 'bold', color: !opt ? "#E6B658" : "#000" }}>π</Text>}
             theme="secondary"
             size="mini"
-            onPress={() => handleConcatStringCal(opt ? "PI" : "factorial(")}
+            onPress={() => handleConcatStringCal(opt ? "π" : "factorial(")}
           />
         </Row>
 
@@ -263,7 +285,7 @@ const styles = StyleSheet.create({
   },
   value: {
     color: "#fff",
-    fontSize: 34,
+    fontSize: 30,
     textAlign: "right",
     marginRight: 20,
     // marginBottom: 0
@@ -287,7 +309,9 @@ const styles = StyleSheet.create({
     textAlignVertical: 'top'
   },
   historyString: { fontSize: 30 },
-  fontH2: { fontSize: 16 }
+  fontH2: { fontSize: 16 },
+  btnConvert: { paddingHorizontal: 6, paddingVertical: 3, backgroundColor: '#ddd', borderRadius: 6 },
+  resultView: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', paddingVertical: 2 },
 });
 
 export default App;
@@ -313,14 +337,38 @@ function useInterval(callback, delay) {
   }, [delay]);
 }
 
-
 const _handleCalString = (str) => {
   try {
     const regexLn = /ln/ig;
-    let strConvert = str.replace(regexLn, 'log').replace(regexEnd, '');
-    return evaluate(strConvert);
+    const regexNthRoot = /ª√/ig;
+    const regexSqrt = /√/ig;
+    const regexC = /°/ig;
+    const regexPI = /π/ig;
+
+    let strConvert = str
+      .replace(regexLn, 'log')
+      .replace(regexPI, 'PI')
+      .replace(regexEnd, '')
+      .replace(regexNthRoot, 'nthRoot')
+      .replace(regexSqrt, 'sqrt')
+      .replace(regexC, 'deg');
+
+    const result = evaluate(strConvert);
+    if (('' + result).includes('i') || result == Math.tan(Math.PI / 2)) {
+      return 'Phép tính lỗi'
+    }
+    return result;
   } catch (err) {
     console.log(err, '-----')
     throw err
+  }
+}
+
+
+const convertToDeg = num => {
+  try {
+    return +num / 2 / Math.PI * 360
+  } catch (err) {
+    return num
   }
 }

@@ -62,23 +62,28 @@ const TestMenu = (props) => {
                 advertParam.show();
             } else {
                 fbFull()
-                .catch(err => {
-                    if (advertParam) {
-                        advertParam.show();
-                    }
-                })
+                    .catch(err => {
+                        if (advertParam) {
+                            advertParam.show();
+                        }
+                    })
             }
         }
+
+        advert = firebase.admob().interstitial(unitIntertitialId);
+        request = new AdRequest();
+        request.addKeyword('facebook').addKeyword('google').addKeyword('instagram').addKeyword('zalo').addKeyword('google').addKeyword('pubg').addKeyword('asphalt').addKeyword('covid-19');
+        advert.loadAd(request.build());
     }, []);
-    useEffect(() => {
-        if ((learningTimes + 3) % frequency === 0) {
-            // console.log('---1-1-TestMenu-1-2');
-            advert = firebase.admob().interstitial(unitIntertitialId);
-            request = new AdRequest();
-            request.addKeyword('facebook').addKeyword('google').addKeyword('instagram').addKeyword('zalo').addKeyword('google').addKeyword('pubg').addKeyword('asphalt').addKeyword('covid-19');
-            advert.loadAd(request.build());
-        }
-    }, [learningTimes]);
+    // useEffect(() => {
+    //     if ((learningTimes + 2) % frequency === 0) {
+    //         console.log('---1-1-TestMenu-1-2');
+    //         advert = firebase.admob().interstitial(unitIntertitialId);
+    //         request = new AdRequest();
+    //         request.addKeyword('facebook').addKeyword('google').addKeyword('instagram').addKeyword('zalo').addKeyword('google').addKeyword('pubg').addKeyword('asphalt').addKeyword('covid-19');
+    //         advert.loadAd(request.build());
+    //     }
+    // }, [learningTimes]);
 
     return (
         <ViewContainer
