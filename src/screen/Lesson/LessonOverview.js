@@ -375,6 +375,54 @@ const LessonOverview = (props) => {
 
                         <View style={{ padding: 10, flex: 1 }}>
                             {
+                                dataLesson.find(item => item.type == 'sgk') ?
+                                    <ArticleItem data={dataLesson.find(item => item.type == 'sgk').data} advertParam={advert} handleNavigate={handleNavigate} SeeMore={SeeMore} title="Sách giáo khoa" />
+                                    : null
+                            }
+                            {
+                                dataLesson.find(item => item.type == 'sbt') ?
+                                    <ArticleItem data={dataLesson.find(item => item.type == 'sbt').data} advertParam={advert} handleNavigate={handleNavigate} SeeMore={SeeMore} title="Sách bài tập" />
+                                    : null
+                            }
+                            {
+                                dataLesson.find(item => item.type == 'vbt') ?
+                                    <ArticleItem data={dataLesson.find(item => item.type == 'vbt').data} advertParam={advert} handleNavigate={handleNavigate} SeeMore={SeeMore} title="Vở bài tập" />
+                                    : null
+                            }
+                            {
+                                dataLesson.find(item => item.type == 'bookType1') ?
+                                    <ArticleItem data={dataLesson.find(item => item.type == 'bookType1').data} advertParam={advert} handleNavigate={handleNavigate} SeeMore={SeeMore} title="Tài liệu" />
+                                    : null
+                            }
+                            {
+                                dataLesson.find(item => item.type == 'bookType2') ?
+                                    <ArticleItem data={dataLesson.find(item => item.type == 'bookType2').data} advertParam={advert} handleNavigate={handleNavigate} SeeMore={SeeMore} title="Soạn văn" />
+                                    : null
+                            }
+                            {
+                                dataLesson.find(item => item.type == 'bookType3') ?
+                                    <ArticleItem data={dataLesson.find(item => item.type == 'bookType3').data} advertParam={advert} handleNavigate={handleNavigate} SeeMore={SeeMore} title="Lý thuyết" />
+                                    : null
+                            }
+                            {
+                                dataLesson.find(item => item.type == 'bookType4') ?
+                                    <ArticleItem data={dataLesson.find(item => item.type == 'bookType4').data} advertParam={advert} handleNavigate={handleNavigate} SeeMore={SeeMore} title="Tác giả-tác phẩm" />
+                                    : null
+                            }
+                            {
+                                get(chapterData, '[0]') ? <RenderChapterLesson advertParam={otherAdvert} handleNavigate={handleNavigate} data={get(chapterData, '[0]')} SeeMore={SeeMore} /> : null
+                            }
+                            {
+                                dataLesson.find(item => item.type == 'exam') ?
+                                    <ExcerciseItem data={dataLesson.find(item => item.type == 'exam').data} advertParam={otherAdvert} handleNavigate={handleNavigate} book={get(_dataLesson, 'data.book')} lessonId={lessonId} SeeMore={SeeMore} />
+                                    : null
+                            }
+                            {
+                                dataLesson.find(item => item.type == 'video') ?
+                                    <VideoItem setVisible={setVisible} advertParam={otherAdvert} data={dataLesson.find(item => item.type == 'video').data} handleNavigate={handleNavigate} />
+                                    : null
+                            }
+                            {/* {
                                 dataLesson.map(((item, index) => {
                                     if (item.type == 'sgk') return <ArticleItem data={item.data} advertParam={advert} handleNavigate={handleNavigate} SeeMore={SeeMore} title="Sách giáo khoa" />
                                     if (item.type == 'sbt') return <ArticleItem data={item.data} advertParam={advert} handleNavigate={handleNavigate} SeeMore={SeeMore} title="Sách bài tập" />
@@ -390,8 +438,8 @@ const LessonOverview = (props) => {
                                 }))
                             }
                             {
-                                get(chapterData, '[0]') ? <RenderChapterLesson advertParam={otherAdvert} handleNavigate={handleNavigate} data={get(chapterData, '[0]')} SeeMore={SeeMore}/> : null
-                            }
+                                get(chapterData, '[0]') ? <RenderChapterLesson advertParam={otherAdvert} handleNavigate={handleNavigate} data={get(chapterData, '[0]')} SeeMore={SeeMore} /> : null
+                            } */}
                         </View>
 
                     </ScrollView>

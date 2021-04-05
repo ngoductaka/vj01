@@ -61,7 +61,7 @@ const RenderChapterLesson = ({ data = null, advertParam = null, handleNavigate =
     return (
         <View style={{ overflow: 'hidden', marginBottom: 20 }}>
             <View style={{ flexDirection: 'row', alignItems: 'flex-end', paddingRight: 10, paddingBottom: 8, }}>
-                <Text style={{ fontSize: 22, ...fontMaker({ weight: fontStyles.Regular }) }}>Bài học theo chương</Text>
+                <Text style={{ fontSize: 22, ...fontMaker({ weight: fontStyles.Regular }) }}>{get(data, 'title', '')}</Text>
                 <Text style={{ fontSize: 19, marginLeft: 4, color: '#555' }}>({data.articles.length} bài)</Text>
             </View>
 
@@ -73,9 +73,10 @@ const RenderChapterLesson = ({ data = null, advertParam = null, handleNavigate =
                                 data.articles.slice(0, expand ? 100 : 3).map((item, index) => {
                                     return (
                                         <TouchableOpacity
-                                            onPress={() => { 
-                                                console.log('---'); 
-                                                handleNavigate('Lesson', { articleId: get(item, 'id', ''), advert: advertParam, relatedArticle:[] }) }}
+                                            onPress={() => {
+                                                console.log('---');
+                                                handleNavigate('Lesson', { articleId: get(item, 'id', ''), advert: advertParam, relatedArticle: [] })
+                                            }}
                                             style={stylesComponent.textItem}>
                                             <View style={{ flexDirection: 'row', paddingRight: 3 }}>
                                                 <Text>{`${index + 1}.  `}</Text>
