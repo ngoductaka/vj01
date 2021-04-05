@@ -390,7 +390,7 @@ const LessonOverview = (props) => {
                                 }))
                             }
                             {
-                                get(chapterData, '[0]') ? <RenderChapterLesson advertParam={otherAdvert} handleNavigate={handleNavigate} data={get(chapterData, '[0]')} /> : null
+                                get(chapterData, '[0]') ? <RenderChapterLesson advertParam={otherAdvert} handleNavigate={handleNavigate} data={get(chapterData, '[0]')} SeeMore={SeeMore}/> : null
                             }
                         </View>
 

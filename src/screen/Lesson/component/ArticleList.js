@@ -53,7 +53,7 @@ const ArticleItem = ({ data, advertParam = null, handleNavigate, SeeMore, title 
     );
 }
 
-const RenderChapterLesson = ({ data = null, advertParam = null, handleNavigate = () => { } }) => {
+const RenderChapterLesson = ({ data = null, advertParam = null, handleNavigate = () => { }, SeeMore }) => {
     console.log('datachapter', data.articles)
     const [expand, setExpand] = useState(false);
     if (!get(data, 'articles.length')) return null;
