@@ -30,6 +30,7 @@ import { fontMaker, fontStyles } from '../../utils/fonts';
 /**-------------interstitial ad----------------- */
 import firebase from 'react-native-firebase';
 import { setLearningTimes } from '../../redux/action/user_info';
+import { ViewWithBanner } from '../../utils/facebookAds';
 const AdRequest = firebase.admob.AdRequest;
 let advert;
 let request;
@@ -412,6 +413,7 @@ const LessonOverview = (props) => {
                             {
                                 get(chapterData, '[0]') ? <RenderChapterLesson advertParam={otherAdvert} handleNavigate={handleNavigate} data={get(chapterData, '[0]')} SeeMore={SeeMore} /> : null
                             }
+                            <ViewWithBanner />
                             {
                                 dataLesson.find(item => item.type == 'exam') ?
                                     <ExcerciseItem data={dataLesson.find(item => item.type == 'exam').data} advertParam={otherAdvert} handleNavigate={handleNavigate} book={get(_dataLesson, 'data.book')} lessonId={lessonId} SeeMore={SeeMore} />

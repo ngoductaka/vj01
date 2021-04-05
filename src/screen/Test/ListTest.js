@@ -29,7 +29,7 @@ const { width, height } = Dimensions.get('window');
 
 /**-------------interstitial ad----------------- */
 import firebase from 'react-native-firebase';
-import { fbFull } from '../../utils/facebookAds';
+import { fbFull, ViewWithBanner } from '../../utils/facebookAds';
 const AdRequest = firebase.admob.AdRequest;
 let advert;
 let request;
@@ -107,7 +107,7 @@ const TestMenu = (props) => {
                 err={err}
                 com={LoadingCom}
             >
-                <View style={{ flex: 1, marginTop: 40 }}>
+                <View style={{ flex: 1, marginTop: 40, marginBottom: 20 }}>
                     <FlatList
                         data={get(testMenu, 'children', [])}
                         initialNumToRender={10}
@@ -124,6 +124,7 @@ const TestMenu = (props) => {
                         keyExtractor={(item, index) => 'LessonCard' + index}
                     />
                 </View>
+                <ViewWithBanner />
                 {/* {adsLoading && (
                     <View style={{ position: 'absolute', top: 0, left: 0, bottom: 0, right: 0, backgroundColor: COLOR.white(1), justifyContent: 'center', alignItems: 'center' }}>
                         <ActivityIndicator animating={true} size='large' color={COLOR.MAIN} />

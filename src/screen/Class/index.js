@@ -41,6 +41,7 @@ import { localNotificationService } from '../../utils/notificationServices';
 import { GameItem } from '../GameCenter';
 import { UtilitiesItem } from '../Utilities';
 import { useDeepLink } from '../../utils/useDeeplink';
+import { ViewWithBanner } from '../../utils/facebookAds';
 
 const { width } = Dimensions.get('window');
 
@@ -388,6 +389,7 @@ const Class = memo((props) => {
 							}}
 							keyExtractor={(item, index) => index + 'game_item'}
 						/>
+						<ViewWithBanner />
 						{helpers.isIOS ? null :
 							<>
 								<View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', marginBottom: 10, marginTop: 30 }}>
