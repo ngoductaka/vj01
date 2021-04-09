@@ -92,11 +92,6 @@ const CoursePlayer = (props) => {
     }, [navigation]);
 
     useEffect(() => {
-        if (navigation.getParam('showConsoult', true) &&
-            get(videoLesson, 'raw_url', '') &&
-            get(videoLesson, 'preview', '') !== "active") {
-            setShowConsult(true)
-        }
         changeKeepAwake(true);
         return () => {
             changeKeepAwake(false)
@@ -154,6 +149,11 @@ const CoursePlayer = (props) => {
     }, [])
 
     const _onEnd = useCallback(() => {
+        if (navigation.getParam('showConsoult', true) &&
+            get(videoLesson, 'raw_url', '') &&
+            get(videoLesson, 'preview', '') !== "active") {
+            setShowConsult(true)
+        }
         if (videoLesson && videoLesson.courseId && videoLesson.curriculumnId) {
             updateDoneVideo({
                 'courseId': videoLesson.courseId,

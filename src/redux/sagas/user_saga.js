@@ -128,15 +128,15 @@ function* loginWithFacebook() {
 
     } catch (error) {
         console.log('LOGIN_WITH_FACEBOOKfail', error);
-        if(error.message) {
-            console.log('LOGIN_WITH_FACEBOOKfail', error.message);
-            Toast.showWithGravity(error.message, Toast.LONG, Toast.TOP)
-        } else {
-            Toast.showWithGravity("Login facebook thất bại vui lòng thử lại sau", Toast.LONG, Toast.TOP)
-        }
-        yield put({
-            type: LOGIN_WITH_FACEBOOK_FAIL,
-        });
+        // if(error.message) {
+        //     console.log('LOGIN_WITH_FACEBOOKfail', error.message);
+        //     Toast.showWithGravity(error.message, Toast.LONG, Toast.TOP)
+        // } else {
+        //     Toast.showWithGravity("Login facebook thất bại vui lòng thử lại sau", Toast.LONG, Toast.TOP)
+        // }
+        // yield put({
+        //     type: LOGIN_WITH_FACEBOOK_FAIL,
+        // });
     }
 };
 
@@ -177,7 +177,7 @@ function* loginWithGoogle() {
         // console.log('error gg login', error)
         console.log('gg login fail', error);
         if(error.message) {
-            Toast.showWithGravity(error.message, Toast.LONG, Toast.TOP)
+            Toast.showWithGravity(String(error.message), Toast.LONG, Toast.TOP)
         } else {
             Toast.showWithGravity("Login google thất bại vui lòng thử lại sau", Toast.LONG, Toast.TOP)
         }

@@ -109,7 +109,7 @@ const App = (props) => {
       }
     }
   }
-  const handleClean = useCallback((isAll, isResetResult = false) => {
+  const handleClean = useCallback(async (isAll, isResetResult = false) => {
     if (isAll) {
       setString('');
       if (isResetResult) {
@@ -121,8 +121,8 @@ const App = (props) => {
       const removeEnd = stringCal.replace(regexEnd, '');
       const newString = removeEnd.slice(0, pointIndex - 1) + removeEnd.slice(pointIndex);
 
-      setString(newString);
-      setPointIndex(pointIndex - 1);
+      await setString(newString);
+      await setPointIndex(pointIndex - 1);
     }
   }, [stringCal, pointIndex])
 
