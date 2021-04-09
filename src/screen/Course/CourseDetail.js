@@ -112,7 +112,7 @@ const CourseDetail = (props) => {
                         </View>
                     </Loading>
                 </ScrollView>
-                {showConsoult ? <BtnFullWidth
+                {showConsoult && helpers.isAndroid ? <BtnFullWidth
                     onPress={() => navigation.navigate('ConsultingForm')}
                     text={"Nhận tư vấn khoá học"}
                     styles={{
