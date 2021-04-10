@@ -12,6 +12,8 @@ import SimpleToast from 'react-native-simple-toast';
 import { Snackbar } from 'react-native-paper';
 import firebase from 'react-native-firebase';
 import moment from 'moment';
+import ModalBox from 'react-native-modalbox';
+
 
 import MenuItem, { NUMBER_COLUMS } from '../../component/menuItem';
 import api, { Loading, useRequest, handleTimeInfo } from '../../handle/api';
@@ -138,6 +140,7 @@ const Class = memo((props) => {
 	// }, [props.rated]);
 
 	const [dataAllBook, isLoading, err] = useRequest(`/subjects?grade_id=${props.userInfo.class}`, [props.userInfo.class]);
+	console.log('dataAllBook000', dataAllBook)
 
 	const _handleNavigation = (dataBook) => {
 		const {
@@ -266,8 +269,9 @@ const Class = memo((props) => {
 		// localNotificationService.configure();
 	}
 
-
+	const [showImg, setShowImg] = useState(false);
 	useEffect(() => {
+		setShowImg(true)
 
 		async function getListScreenForAds() {
 			const data = await user_services.getListScreensForAds();
@@ -389,7 +393,7 @@ const Class = memo((props) => {
 							}}
 							keyExtractor={(item, index) => index + 'game_item'}
 						/>
-						<ViewWithBanner />
+						{/* <ViewWithBanner /> */}
 						{helpers.isIOS ? null :
 							<>
 								<View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', marginBottom: 10, marginTop: 30 }}>
@@ -459,6 +463,40 @@ const Class = memo((props) => {
 						< ActivityIndicator size="large" color={COLOR.MAIN} />
 					</View> : null
 			}
+
+			<ModalBox
+				onClosed={() => setShowImg(false)}
+				isOpen={showImg}
+				animationDuration={300}
+				coverScreen={true}
+				backdropPressToClose={true}
+				swipeToClose={true}
+				backdropColor='rgba(0, 0, 0, .25)'
+				style={{ width: helpers.width, height: null, overflow: 'hidden', backgroundColor: 'transparent' }}
+				position='center'
+			>
+				<View style={{
+					height: helpers.width * 3 / 2,
+					//  backgroundColor: 'red',
+				}}>
+					<TouchableOpacity style={{ flex: 1 }}>
+						<Animatable.Image animation="bounceIn" duration={3500}
+							resizeMode="contain"
+							source={{
+								// uri: 'https://www.ox.ac.uk/sites/files/oxford/Choosing-an-Oxford-course.jpg',
+								uri: 'https://previews.123rf.com/images/captainvector/captainvector1705/captainvector170506666/77173965-e-learning-on-mobile-phone-concept.jpg',
+								// height: helpers.height * 2 / 3
+							}}
+							style={{ height: null, width: null, flex: 1 }}
+						/>
+					</TouchableOpacity>
+					<TouchableOpacity onPress={() => setShowImg(false)} style={{alignSelf: 'center'}}>
+						<Animatable.View delay={1000} animation="rotate" style={{ height: 50, width: 50, borderRadius: 50, backgroundColor: '#fefefe', justifyContent: 'center', alignItems: 'center'}}>
+							<Icon name='close' style={{ fontSize: 40 }} />
+						</Animatable.View>
+					</TouchableOpacity>
+				</View>
+			</ModalBox>
 		</View >
 	)
 })

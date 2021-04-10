@@ -1,4 +1,4 @@
-import { Platform, Linking } from 'react-native';
+import { Platform, Linking, Dimensions } from 'react-native';
 import DeviceInfo from 'react-native-device-info';
 import { isIphoneX, getStatusBarHeight, getBottomSpace } from 'react-native-iphone-x-helper';
 import moment from 'moment';
@@ -15,6 +15,8 @@ export const scrollToTop = (scrollRef) => {
         scrollRef.current.scrollResponderScrollTo({ x: 0 })
     }
 }
+
+const { width, height } = Dimensions.get('window');
 
 const openUrl = (url) => {
     Linking.canOpenURL(url)
@@ -205,5 +207,6 @@ export const helpers = {
     randomName,
     capitalizeFirstLetter,
     changeTimeView,
-    default_name
+    default_name,
+    width, height
 }
