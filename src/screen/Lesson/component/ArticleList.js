@@ -53,6 +53,59 @@ const ArticleItem = ({ data, advertParam = null, handleNavigate, SeeMore, title 
     );
 }
 
+const RenderChapterLesson = ({ data = null, advertParam = null, handleNavigate = () => { }, SeeMore }) => {
+    console.log('datachapter', data.articles)
+    const [expand, setExpand] = useState(false);
+    if (!get(data, 'articles.length')) return null;
+
+    return (
+        <View style={{ overflow: 'hidden', marginBottom: 20 }}>
+            <View style={{ flexDirection: 'row', alignItems: 'flex-end', paddingRight: 10, paddingBottom: 8, }}>
+                <Text style={{ fontSize: 22, ...fontMaker({ weight: fontStyles.Regular }) }}>{get(data, 'title', '')}</Text>
+                <Text style={{ fontSize: 19, marginLeft: 4, color: '#555' }}>({data.articles.length} bài)</Text>
+            </View>
+
+            {
+                !data.articles.length ? null :
+                    <Animatable.View animation={"fadeIn"} style={{ marginBottom: 10 }}>
+                        <View>
+                            {
+                                data.articles.slice(0, expand ? 100 : 3).map((item, index) => {
+                                    return (
+                                        <TouchableOpacity
+                                            onPress={() => {
+                                                console.log('---');
+                                                handleNavigate('Lesson', { articleId: get(item, 'id', ''), advert: advertParam, relatedArticle: [] })
+                                            }}
+                                            style={stylesComponent.textItem}>
+                                            <View style={{ flexDirection: 'row', paddingRight: 3 }}>
+                                                <Text>{`${index + 1}.  `}</Text>
+                                                <Text numberOfLines={3} style={stylesComponent.textContent}>
+                                                    {get(item, 'title', '')}
+                                                </Text>
+                                            </View>
+                                            <Icon style={[stylesComponent.icon, { color: COLOR.MAIN }]} type="AntDesign" name="right" />
+                                        </TouchableOpacity>
+                                    )
+                                })
+                            }
+                        </View>
+                        {
+                            data.articles.length > 3 && <SeeMore
+                                // onPress={() => handleNavigate('ListDetailLesson', { title, data })}
+                                onPress={() => setExpand(!expand)}
+                                expanded={expand}
+                                count={data.articles.length - 3}
+                            />
+                        }
+
+                    </Animatable.View>
+            }
+        </View>
+    )
+
+}
+
 
 const RenderArticle = ({ handleNavigate, advertParam = null, item, index, relatedArticle = [] }) => {
     return (
@@ -106,7 +159,8 @@ const RenderArticlRelated = ({ handleNavigate, advertParam = null, item, index, 
 export {
     ArticleItem,
     RenderArticle,
-    RenderArticlRelated
+    RenderArticlRelated,
+    RenderChapterLesson
 }
 
 

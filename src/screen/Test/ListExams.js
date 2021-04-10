@@ -28,6 +28,7 @@ import { GradientText } from '../../component/shared/GradientText';
 import { handleSrc } from '../../component/menuItem';
 import { handleImgSrc, handleImgTest, images } from '../../utils/images';
 import { helpers } from '../../utils/helpers';
+// import { ViewWithBanner } from '../../utils/facebookAds';
 
 const Test = (props) => {
 
@@ -104,7 +105,7 @@ const Test = (props) => {
 	return (
 		// <ImageBackground style={styles.container} source={images.bg}>
 		<View style={{ backgroundColor: 'white', flex: 1 }}>
-		<StatusBar backgroundColor={'#fff'} barStyle='dark-content' />
+			<StatusBar backgroundColor={'#fff'} barStyle='dark-content' />
 			<SafeAreaView style={{ flex: 1 }}>
 				<Loading>
 					<ScrollView

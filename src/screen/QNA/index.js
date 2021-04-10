@@ -2,7 +2,7 @@ import React, { useState, useEffect, useCallback, useRef } from 'react';
 import {
     View, FlatList, Text, StyleSheet, Platform,
     TouchableOpacity, Dimensions, Image, ScrollView,
-    SafeAreaView, ActivityIndicator, Pressable
+    SafeAreaView, ActivityIndicator, Pressable, ViewPropTypes
 } from 'react-native';
 import { Icon } from 'native-base';
 import { withNavigationFocus } from 'react-navigation';
@@ -27,6 +27,7 @@ import { images } from '../../utils/images';
 import { endpoints } from '../../constant/endpoints';
 import { RenderListImg } from '../../component/Image/renderListImg';
 import { useDeepLink } from '../../utils/useDeeplink';
+import { ViewWithBanner } from '../../utils/facebookAds';
 
 const { height } = Dimensions.get('screen');
 
@@ -666,6 +667,12 @@ const RenderQestion = ({ item, index, hanldleClick, _handleNavigate = () => { },
                 visible={!!listImgShow}
                 onRequestClose={() => setVisible(false)}
             />
+            {
+                [3, 10, 20].includes(index) ? <View style={{ paddingTop: 10 }}>
+                    <ViewWithBanner index={index} />
+                </View>
+                    : null
+            }
         </View >
     )
 }

@@ -10,6 +10,7 @@ import { fontMaker, fontStyles } from "../../utils/fonts";
 import ViewContainer from "../../component/shared/ViewContainer";
 import { helpers } from "../../utils/helpers";
 import api, { Loading, useRequest } from '../../handle/api';
+import { ViewWithBanner } from "../../utils/facebookAds";
 
 
 const Book = memo((props) => {
@@ -97,6 +98,7 @@ const Book = memo((props) => {
                                 : null
                         }
                     </Loading>
+                    <ViewWithBanner />
                 </View>
             </ViewContainer>
         </View >
