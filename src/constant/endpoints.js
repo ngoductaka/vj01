@@ -1,4 +1,4 @@
-export const endpoints_ = {
+export const endpoints = {
     BASE_URL: 'https://apps.vietjack.com:8081/api',
     
     BASE_URL_COURSE: 'https://apps.vietjack.com:8081',
@@ -25,10 +25,10 @@ export const endpoints_ = {
     LOG_OUT: '/logout',
 }
 
-export const endpoints = {
-    BASE_URL: 'http://45.124.87.227:8081/api',
+export const endpoints_ = {
+    BASE_URL: 'http://45.124.87.227:8181/api',
 
-    BASE_URL_COURSE: 'https://apps.vietjack.com:8081',
+    BASE_URL_COURSE: 'https://apps.vietjack.com:8181',
     MEDIA_URL: 'https://media.vietjack.com:6969/',
     BASE_URL_EXAM: 'https://khoahoc.vietjack.com/mobile-api/v2/exam/',
     BASE_HOI_DAP: 'https://hoidap.vietjack.com',

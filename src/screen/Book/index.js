@@ -87,6 +87,8 @@ const Book = memo((props) => {
                                                 listBook={dataConvert[book]}
                                                 handleNavigation={(bookItem) => {
                                                     const { icon_id, id, title } = bookItem;
+        console.log(' { book: url, title }',  { icon_id, bookId: id, title, subject: subjectID })
+                                                    
                                                     props.navigation.navigate('Subject', { icon_id, bookId: id, title, subject: subjectID })
                                                 }}
                                             />

@@ -12,7 +12,7 @@ import {
     SafeAreaView,
     ScrollView
 } from 'react-native';
-import { COLOR, GAME_CENTERS } from '../../handle/Constant';
+import { COLOR, GAME_CENTERS, LIST_UTILITIES } from '../../handle/Constant';
 import { images } from '../../utils/images';
 import BackHeader from '../History/Component/BackHeader';
 
@@ -30,17 +30,17 @@ const GameCenter = (props) => {
     return (
         <View style={{ flex: 1, backgroundColor: 'white' }}>
             <BackHeader
-                title={'Kho trò chơi'}
+                title={'Kho Tiện ích'}
                 showRight={false}
             />
             <View style={{ flex: 1, }}>
                 <FlatList
                     style={{ padding: 10 }}
-                    data={GAME_CENTERS}
+                    data={LIST_UTILITIES}
                     numColumns={3}
                     renderItem={({ item, index }) => {
                         return (
-                            <GameItem src={item.src} name={item.name} slogan={item.slogan} navigation={navigation} route={item.route} />
+                            <UtilitiesItem src={item.src} name={item.name} slogan={item.slogan} navigation={navigation} route={item.route} />
                         );
                     }}
                     keyExtractor={(item, index) => index + 'game_item'}
@@ -54,8 +54,8 @@ export default GameCenter
 
 export const UtilitiesItem = ({ src = images.game1, name, slogan, navigation, route }) => {
     return (
-        <TouchableOpacity onPress={() => navigation.navigate(route)} style={{ width: (width - 40) / 3, marginRight: 10 }}>
-            <View style={{ width: (width - 40) / 3, height: (width - 40) / 3, padding: 10 }}>
+        <TouchableOpacity onPress={() => navigation.navigate(route)} style={{ width: (width - 40) / 3.5, marginRight: 10 }}>
+            <View style={{ width: (width - 40) / 3.5, height: (width - 40) / 3.5, padding: 10 }}>
                 <Image
                     source={src}
                     style={{ width: null, height: null, flex: 1, resizeMode: 'contain' }}

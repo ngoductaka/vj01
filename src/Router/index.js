@@ -70,7 +70,9 @@ import Game2048 from '../screen/GameCenter/Game2048';
 import FlappyBird from '../screen/GameCenter/FlappyBird';
 import TimeTable from '../screen/Utilities/TimeTable';
 import ScroreAnalyse from '../screen/Utilities/ScroreAnalyse';
+import Dictionary from '../screen/Utilities/Dictionary';
 import Calculator from '../screen/Utilities/Calculator';
+import UtilitiesCenter from '../screen/Utilities';
 import SudokuInstruction from '../screen/GameCenter/Sudoku/containers/Instruction';
 
 const NUMBER_OF_TABS = 5;
@@ -457,6 +459,12 @@ const InAppStack = createStackNavigator({
 			...TransitionPresets.ModalSlideFromBottomIOS,
 		}
 	},
+	Dictionary: {
+		screen: Dictionary,
+		navigationOptions: {
+			...TransitionPresets.ModalSlideFromBottomIOS,
+		}
+	},
 	VideoLesson: {
 		screen: VideoLesson,
 		navigationOptions: {
@@ -464,6 +472,7 @@ const InAppStack = createStackNavigator({
 		}
 	},
 	PdfView: PdfView,
+	UtilitiesCenter: UtilitiesCenter,
 	// ConsultingForm:ConsultingForm,
 }, {
 	// defaultNavigationOptions: {

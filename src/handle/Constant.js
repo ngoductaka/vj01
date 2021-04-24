@@ -94,6 +94,14 @@ export const GAME_CENTERS = [
 ];
 export const LIST_UTILITIES = [
 	{
+		src: images.calculator,
+		name: 'Máy tính', slogan: 'Máy tính khoa học 570VN', route: 'Calculator'
+	},
+	{
+		src: images.dic,
+		name: 'Từ điển', slogan: 'Từ điển anh việt', route: 'Dictionary'
+	},
+	{
 		src: images.timetable,
 		name: 'Thời khoá biểu',
 		slogan: 'Lên lịch học tập',
@@ -104,10 +112,6 @@ export const LIST_UTILITIES = [
 		name: 'Kết quả học tập',
 		slogan: 'Thống kê kết quả học tập',
 		route: 'ScroreAnalyse'
-	},
-	{
-		src: images.calculator,
-		name: 'Máy tính', slogan: 'Máy tính khoa học 570VN', route: 'Calculator'
 	},
 	// { src: images.flappybird, name: 'Flappy Bird', slogan: 'Vui mà học, học mà chơi', route: 'FlappyBird' },
 ];

@@ -30,7 +30,7 @@ const TableContent = ({
 
             {title ? <View style={{ paddingHorizontal: 10, borderBottomColor: '#ddd', borderBottomWidth: 1, paddingBottom: 7 }}>
                 <Text style={{ fontSize: 18, textTransform: 'capitalize', ...fontMaker({ weight: fontStyles.Regular }) }}>{title}</Text>
-            </View>: null}
+            </View> : null}
             {
                 listCourse.map((chapter = {}, index) => {
                     return (
@@ -200,21 +200,20 @@ const RenderListLesson = ({ chapter, index, l1, l2, _navigateToCourse,
                                                     console.log("course.course_id", course.id, course.course_id)
 
                                                     videoData.courseId = course.course_id,
-                                                    videoData.curriculumnId = course.id,
-                                                    _navigateToCourse({
-                                                        showConsoult,
-                                                        videoData,
-                                                        listPdf,
-                                                        listCourse,
-                                                        pathPlay: [index, indexVideo],
-                                                    })
+                                                        videoData.curriculumnId = course.id,
+                                                        _navigateToCourse({
+                                                            showConsoult,
+                                                            videoData,
+                                                            listPdf,
+                                                            listCourse,
+                                                            pathPlay: [index, indexVideo],
+                                                        })
                                                 } else {
                                                     if (get(listPdf, `[0].raw_url`)) {
-                                                        console.log(setShowConsultModal && showConsoult, setShowConsultModal, showConsoult)
+                                                        console.log('-----')
                                                         if (setShowConsultModal && showConsoult) {
+                                                            if (helpers.isIOS) return 1;
                                                             setShowConsultModal(true);
-                                                        } else {
-                                                            // navigation.navigate('PdfView', { uri: listPdf[0].raw_url })
                                                         }
                                                     }
                                                 }
@@ -245,10 +244,9 @@ const RenderListLesson = ({ chapter, index, l1, l2, _navigateToCourse,
                                                 return (
                                                     <TouchableOpacity
                                                         onPress={() => {
-
                                                             if (pdf.raw_url) {
-                                                                console.log(setShowConsultModal && showConsoult, setShowConsultModal, showConsoult)
                                                                 if (setShowConsultModal && showConsoult) {
+                                                                    if (helpers.isIOS) return
                                                                     setShowConsultModal(true);
                                                                 } else {
                                                                     // navigation.navigate('PdfView', { uri: listPdf[0].raw_url })

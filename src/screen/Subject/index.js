@@ -26,6 +26,7 @@ const Subject = (props) => {
 	const bookTitle = props.navigation.getParam('title', '');
 	const activeLevel = props.navigation.getParam('activeLevel', []);
 	const bookId = props.navigation.getParam('bookId', '');
+	const source = props.navigation.getParam('source', '');
 
 	useEffect(() => {
 		if (subjectID)
@@ -47,7 +48,9 @@ const Subject = (props) => {
 	}, []);
 
 	const _handleBack = () => {
-		if (subject) {
+		if (source == 'dic') {
+			props.navigation.goBack()
+		} else if (subject) {
 			props.navigation.navigate('Book', {
 				subjectID: subject,
 			});

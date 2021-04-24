@@ -116,20 +116,23 @@ const convertTime = (seconds) => {
 	return ((m < 10 ? '0' + m : m) + ':' + (s < 10 ? '0' + s : s));
 };
 
-const useSound = (url) => {
+export const useSound = (url) => {
 	const [sound, setSound] = useState(new Sound('', null));
 
 	useEffect(() => {
 		// apiFace(url)
 		// 	.then(result => {
-		const ns = new Sound(url, null, (err) => {
-			if (err) {
-				// console.log('url=====: ', url, 'err sound -----: ', err);
-			}
-			else setSound(ns);
-		});
+		if (url) {
+			console.log('url', url)
+			const ns = new Sound(url, null, (err) => {
+				if (err) {
+					// console.log('url=====: ', url, 'err sound -----: ', err);
+				}
+				else setSound(ns);
+			});
+		}
 		// })
-	}, []);
+	}, [url]);
 
 	return [sound];
 }

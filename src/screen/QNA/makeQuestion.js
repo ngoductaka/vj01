@@ -21,6 +21,9 @@ import { TollBar } from './com/com';
 import services from '../../handle/services';
 import api from '../../handle/api';
 import { helpers } from '../../utils/helpers';
+import useDebounce from '../../utils/useDebounce';
+import { search_services } from './service';
+import { RenderQnASearch } from '../../component/shared/ItemDocument';
 
 const { width, height } = Dimensions.get('window');
 const userImg = "https://www.xaprb.com/media/2018/08/kitten.jpg";
@@ -31,10 +34,36 @@ const QnA = (props) => {
     const [questionContent, setContent] = useState('');
     const [showKeyboad, setShowKeyboard] = useState(false);
 
+    const [searchText] = useDebounce(questionContent, 1000);
+    const [resultSearch, setResultSearch] = useState([])
+
     // const userInfo.class
     const userInfo = useSelector(state => state.userInfo);
     const current_class = useSelector(state => state.userInfo.class);
     useEffect(() => { setFilter({ cls: current_class }) }, [current_class])
+    // search
+
+    useEffect(() => {
+        if (searchText && filter) {
+            const { cls = '', currSub = '' } = filter || {};
+            const query = { grade_id: cls == 13 ? '' : cls };
+            if (currSub && currSub.id) {
+                query.subject_id = currSub.id
+            }
+            setLoading(true)
+            search_services.handleSearch(searchText, query)
+                .then(({ data }) => {
+                    console.log(data, '=========ddd')
+                    setResultSearch(data);
+                    setLoading(false)
+                })
+                .catch(err => {
+                    setLoading(false)
+                    Toast.showWithGravity("Load câu hỏi lỗi!", Toast.SHORT, Toast.CENTER);
+                })
+        }
+
+    }, [searchText, filter]);
 
     // console.log('userInfo42345', userInfo.user.photo)
     const inputRef = useRef(null);
@@ -307,14 +336,9 @@ const QnA = (props) => {
                 <View style={{ flex: 1, marginBottom: 20 }}>
                     <ScrollView
                         // contentContainerStyle={{ flex: 1, backgroundColor: 'red' }}
-                        // onPress={() => {
-                        //     console.log('asdfasdfasfaf')
-                        //     Keyboard.dismiss();
-                        // }}
                         onScroll={() => Keyboard.dismiss()}
                         scrollEventThrottle={24}
                     >
-
                         {/* Form */}
                         <TextInput
                             value={questionContent}
@@ -323,18 +347,7 @@ const QnA = (props) => {
                             multiline
                             numberOfLines={4}
                             placeholder={`Hãy hỏi 1 câu duy nhất hoặc chia nhỏ câu hỏi để có lời giải nhanh nhất nhé `}
-                            style={[{
-                                maxHeight: height / 5,
-                                borderBottomColor: '#efefef',
-                                paddingBottom: 20,
-                                borderBottomWidth: 1,
-                                textAlignVertical: 'top',
-                                fontSize: 18,
-                                paddingHorizontal: 15,
-                                marginTop: 15,
-                                marginBottom: 10,
-                                // backgroundColor: 'red'
-                            }]}
+                            style={[styles.inputQnA, styles.shadow]}
                         />
                         {
                             photos[0] ? photos.map((photo, index) => {
@@ -365,6 +378,36 @@ const QnA = (props) => {
                                     </View>
                                 )
                             }) : null
+                        }
+                        {
+                            resultSearch && resultSearch[0] ?
+                                <FlatList
+                                    showsVerticalScrollIndicator={false}
+                                    data={resultSearch}
+                                    contentContainerStyle={{ paddingHorizontal: 10 }}
+                                    ListHeaderComponent={() => {
+                                        return (
+                                            <View style={{ marginTop: 15 }}>
+                                                <Text style={{fontSize: 22}}>Câu hỏi liên quan:</Text>
+                                            </View>
+                                        )
+                                    }}
+                                    renderItem={({ item, index }) => {
+                                        const { title = '',
+                                            grade_id: grade = '',
+                                            subject_id: book = '',
+                                            id: questionId = '',
+                                            subject_name = ""
+                                        } = item
+                                        return (
+                                            <RenderQnASearch
+                                                onPress={() => { props.navigation.navigate('QuestionDetail', { questionId }) }}
+                                                {...{ title, grade: "Lớp " + grade, book: subject_name }}
+                                            />
+                                        )
+                                    }}
+                                    keyExtractor={(item, index) => item.id}
+                                /> : null
                         }
                     </ScrollView>
                 </View>
@@ -420,10 +463,28 @@ const styles = StyleSheet.create({
         backgroundColor: '#fff',
         // paddingHorizontal: 10
     },
+    inputQnA: {
+        maxHeight: height / 5,
+        borderBottomColor: '#ddd',
+        paddingBottom: 20,
+        borderBottomWidth: 1,
+        textAlignVertical: 'top',
+        fontSize: 18,
+        paddingHorizontal: 15,
+        marginTop: 15,
+        marginBottom: 10,
+    },
+	shadow: {
+		backgroundColor: '#FFFFFF',
+		shadowColor: 'rgba(0, 0, 0, 0.1)',
+		shadowOpacity: 0.8,
+		elevation: 6,
+		shadowRadius: 10,
+		shadowOffset: { width: 12, height: 13 },
+	},
     headerText: {
         paddingVertical: 5,
         // textAlign: 'center',
-        fontSize: 20,
         fontSize: 26,
         marginTop: 4,
         ...fontMaker({ weight: fontStyles.Bold })

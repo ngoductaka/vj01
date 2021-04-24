@@ -20,6 +20,8 @@ const KEY = {
 	soundOn: 'soundOn',
 	TIMETABLE: 'TIMETABLE',
 	SCORETABLE: 'SCORETABLE',
+	HIS_DICTIONARY: 'HIS_DICTIONARY',
+	SAVE_DICTIONARY: 'SAVE_DICTIONARY',
 };
 
 const saveItem = (key, value) => {
@@ -37,7 +39,7 @@ const getItem = async (key) => {
 	}
 }
 
-const insertItem = async (key, value) => {
+const insertItem = async (key, value, max=20) => {
 	try {
 		const valLocal = await getItem(key);
 
@@ -45,7 +47,10 @@ const insertItem = async (key, value) => {
 			const newData = [
 				value,
 				...valLocal
-			]
+			];
+			if(newData.length>max) {
+				newData.length = max;
+			}
 			saveItem(key, newData)
 		} else {
 			saveItem(key, [value])

@@ -272,6 +272,7 @@ export const images = {
     timetable: require('../public/image/timetable.png'),
     transcript: require('../public/image/transcript.png'),
     calculator: require('../public/image/calculator.png'),
+    dic: require('../public/image/dic.png'),
 }
 
 export const mapImg = {

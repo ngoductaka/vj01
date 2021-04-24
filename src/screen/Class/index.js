@@ -1,3 +1,4 @@
+// class => book => Subject
 import React, { memo, useState, useEffect, useRef, useCallback, useSelector } from 'react';
 import {
 	View, BackHandler, FlatList, SafeAreaView, ScrollView, Text, StyleSheet, Linking,
@@ -140,7 +141,7 @@ const Class = memo((props) => {
 	// }, [props.rated]);
 
 	const [dataAllBook, isLoading, err] = useRequest(`/subjects?grade_id=${props.userInfo.class}`, [props.userInfo.class]);
-	console.log('dataAllBook000', dataAllBook)
+	// console.log('dataAllBook000', dataAllBook)
 
 	const _handleNavigation = (dataBook) => {
 		const {
@@ -271,7 +272,7 @@ const Class = memo((props) => {
 
 	const [showImg, setShowImg] = useState(false);
 	useEffect(() => {
-		setShowImg(true)
+		// setShowImg(true)
 
 		async function getListScreenForAds() {
 			const data = await user_services.getListScreensForAds();
@@ -373,19 +374,23 @@ const Class = memo((props) => {
 						<View style={{
 							flexDirection: 'row', alignItems: 'center',
 							justifyContent: 'space-between', marginVertical: 10,
-
 						}}>
 							<Text style={{ fontSize: 18, ...fontMaker({ weight: fontStyles.SemiBold }) }}>Kho Tiện ích</Text>
 							{/* <TouchableOpacity
-								onPress={() => navigation.navigate('GameCenter')}
+								onPress={() => navigation.navigate('UtilitiesCenter')}
 								style={{}}>
 								<Text style={{ fontSize: 14, ...fontMaker({ weight: fontStyles.Regular }), textDecorationColor: COLOR.MAIN, color: COLOR.MAIN }}>Xem tất cả</Text>
 							</TouchableOpacity> */}
 						</View>
 						<FlatList
 							style={{}}
-							data={LIST_UTILITIES.slice(0, 3)}
-							numColumns={3}
+							data={LIST_UTILITIES}
+							pagingEnabled={true}
+							showsHorizontalScrollIndicator={false}
+						  
+							legacyImplementation={false}
+							// numColumns={4}
+							horizontal
 							renderItem={({ item, index }) => {
 								return (
 									<UtilitiesItem src={item.src} name={item.name} slogan={item.slogan} navigation={navigation} route={item.route} />

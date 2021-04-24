@@ -2,6 +2,7 @@ import React, { useEffect } from "react";
 import { Provider } from 'react-redux';
 import firebase from 'react-native-firebase';
 import { Provider as PaperProvider } from 'react-native-paper';
+import { AppEventsLogger } from 'react-native-fbsdk';
 import Icon from 'react-native-vector-icons/MaterialIcons'
 import 'react-native-gesture-handler';
 
@@ -39,6 +40,10 @@ const App = () => {
 							// change the tracker here to use other Mobile analytics SDK.
 							const dataSend = mapScreenName[currentRouteName] ? mapScreenName[currentRouteName] : currentRouteName
 							firebase.analytics().setCurrentScreen(dataSend, dataSend);
+							console.log({dataSend})
+							AppEventsLogger.logEvent('ViewContent', {
+								page: dataSend
+							});
 						}
 					}}
 				/>

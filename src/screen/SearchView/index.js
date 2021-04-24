@@ -50,13 +50,13 @@ const SearchView = memo((props) => {
 
 	// tab content
 	const [articleState, setArticleState] = useState({ article_total_page: 1000, article_data: [], loading: false });
-	const [articleCurrPage, setArticleCurrPage] = useState(0);
+	// const [articleCurrPage, setArticleCurrPage] = useState(0);
 
 	const [videoState, setVideoState] = useState({ video_total_page: 1000, video_data: [], loading: false });
-	const [videoCurrPage, setVideoCurrPage] = useState(0);
+	// const [videoCurrPage, setVideoCurrPage] = useState(0);
 
 	const [examState, setExamState] = useState({ exam_total_page: 1000, exam_data: [], loading: false });
-	const [examCurrPage, setExamCurrPage] = useState(0);
+	// const [examCurrPage, setExamCurrPage] = useState(0);
 
 	// const [ hostKeySearch, loadingHost, errHost ] = useRequest(`search/top?class_id=${}`, )
 	const [hotKeySearch, setHotKey] = useState([]);

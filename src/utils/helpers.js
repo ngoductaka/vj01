@@ -35,7 +35,7 @@ export const removeDiacritics = (sen) => {
 
 export const convertMoney = (number) => {
     try {
-        return (number).toFixed(0).replace(/\d(?=(\d{3})+$)/g, '$&.')  + ' đ';
+        return (number).toFixed(0).replace(/\d(?=(\d{3})+$)/g, '$&.') + ' đ';
         //    return Number((number).toFixed(1)).toLocaleString()
         // return new Intl.NumberFormat('de-DE', { style: 'currency', currency: 'VND' }).format(number);
     } catch (err) {
@@ -70,6 +70,7 @@ const checkValidMail = value => {
 };
 
 const checkValidPhone = (phone) => {
+    if (phone.length > 10 || phone.length < 9) return false;
     const regexPhone = new RegExp(/^[\+]?[(]?[0-9]{3}[)]?[-\s\.]?[0-9]{3}[-\s\.]?[0-9]{4,6}$/);
     return regexPhone.test(phone);
 }

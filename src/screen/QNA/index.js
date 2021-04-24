@@ -374,7 +374,8 @@ const RenderHead = ({ filter, setFilter, setShowFilter, navigation, loading, ava
                 borderBottomColor: '#ddd', borderBottomWidth: 1, paddingBottom: 10, paddingHorizontal: 10, alignItems: 'center'
             }}>
                 <TouchableOpacity
-                    onPress={() => navigation.navigate('MakeQuestion')}
+                    // onPress={() => navigation.navigate('MakeQuestion')}
+                    onPress={() => navigation.navigate('SearchQnA')}
                     style={{
                         flexDirection: 'row', alignItems: 'center', flex: 1
                     }}>

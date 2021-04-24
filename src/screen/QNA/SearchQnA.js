@@ -128,7 +128,7 @@ const QnA = (props) => {
                             data={resultSearch}
                             renderItem={({ item, index }) => {
                                 const { title = '',
-                                    class_id: grade = '',
+                                    grade_id: grade = '',
                                     subject_id: book = '',
                                     id: questionId = '',
                                     subject_name = ""

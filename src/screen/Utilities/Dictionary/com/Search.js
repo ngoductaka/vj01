@@ -2,10 +2,11 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { View, TextInput, Keyboard, StyleSheet, TouchableOpacity, Platform, Text } from 'react-native';
 import { Icon } from 'native-base';
 
-import useDebounce from '../utils/useDebounce';
-import { fontMaker } from '../utils/fonts';
-import { Colors } from '../utils/colors';
-import { blackColor, COLOR } from '../handle/Constant';
+import { fontMaker } from '../../../../utils/fonts';
+import { Colors } from '../../../../utils/colors';
+import { blackColor, COLOR } from '../../../../handle/Constant';
+import useDebounce from '../../../../utils/useDebounce';
+
 
 const Search = ({ style = {}, handleTypeKeyword = () => { }, handleSaveSearchingKey = () => { }, setIsBlank = () => { }, setIsShowAuto = () => { }, showFilter = () => { }, placeholder = 'Nhập từ khóa tìm kiếm...', ...props }) => {
 	const [value, setValue] = useState(props.initKey ? props.initKey : '');
@@ -22,12 +23,14 @@ const Search = ({ style = {}, handleTypeKeyword = () => { }, handleSaveSearching
 	}, [valueDebounce]);
 
 	const handleOnFocus = useCallback(() => {
-		setIsShowAuto(true);
+		if (value && String(value).trim() !== '') {
+			setIsShowAuto(true);
+		}
 	});
 
 	return (
 		<View style={[stylesSearch.inputForm, style]} >
-			<View style={[{ flex: 1, flexDirection: 'row', alignItems: 'center' }]}>
+			<View style={{ flex: 1, flexDirection: 'row', alignItems: 'center' }}>
 				<TextInput
 					keyboardType={Platform.OS === 'ios' ? 'web-search' : 'default'}
 					onFocus={handleOnFocus}
@@ -47,13 +50,13 @@ const Search = ({ style = {}, handleTypeKeyword = () => { }, handleSaveSearching
 					}}
 					returnKeyType='search'
 					onSubmitEditing={() => {
-						handleSaveSearchingKey();
+						handleSaveSearchingKey(value);
 						setIsShowAuto(false);
 						Keyboard.dismiss();
 					}}
 					style={stylesSearch.inputTag}
 				/>
-				<Icon name='ios-search' style={{ position: 'absolute', left: 0, color: COLOR.black(.3), fontSize: 20, paddingLeft: 12, paddingTop: 3 }} />
+				<Icon name='ios-search' style={{ position: 'absolute', left: 0, color: COLOR.black(.3), fontSize: 25, paddingLeft: 12, paddingTop: 3 }} />
 				{value.trim().length > 0 &&
 					<TouchableOpacity style={stylesSearch.icon} onPress={() => {
 						setValue('');
@@ -81,26 +84,20 @@ const stylesSearch = StyleSheet.create({
 	},
 	inputTag: {
 		flex: 1,
-		backgroundColor: '#E6E6E6',
+		backgroundColor: '#fff',
 		color: Colors.black,
-		borderRadius: 30,
-		paddingLeft: 35,
+		borderRadius: 10,
+		paddingLeft: 50,
 		paddingRight: 42,
-		paddingVertical: Platform.OS === 'ios' ? 12 : 8,
+        paddingVertical: Platform.OS === 'ios' ? 12 : 8,
+        minHeight: 50,
+        fontSize: 19,
 		...fontMaker({ weight: 'Light' })
 	},
 	icon: {
 		position: 'absolute', right: 10,
 		justifyContent: 'center',
 		alignItems: 'center'
-	},
-	shadow: {
-		backgroundColor: '#FFFFFF',
-		shadowColor: 'rgba(0, 0, 0, 0.1)',
-		shadowOpacity: 0.8,
-		elevation: 6,
-		shadowRadius: 10,
-		shadowOffset: { width: 12, height: 13 },
 	},
 })
 

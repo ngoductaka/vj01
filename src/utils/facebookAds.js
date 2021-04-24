@@ -7,10 +7,40 @@ import {
     TriggerableView,
     NativeAdsManager,
     BannerView,
-    InterstitialAdManager
+    InterstitialAdManager,
+    AdSettings
 } from 'react-native-fbads';
 
 import BannerAd from '../component/shared/BannerAd';
+
+const initAdSetting = async () => {
+    try {
+        // AdSettings.setMediationService('foobar');
+        // const trackingStatus = await AdSettings.requestTrackingPermission();
+        // if (trackingStatus === 'authorized' || trackingStatus === 'unavailable') {
+        //     AdSettings.setAdvertiserIDCollectionEnabled(true);
+        //     AdSettings.setAdvertiserTrackingEnabled(true);
+        // }
+        // const trackingStatus = await AdSettings.getTrackingStatus();
+        // console.log('trackingStatus', trackingStatus)
+
+        // if (trackingStatus === 'authorized' || trackingStatus === 'unavailable') {
+        //     AdSettings.setAdvertiserIDCollectionEnabled(true);
+        // }
+
+    } catch (err) {
+        console.log('------err init ads settings-----', err)
+    }
+}
+
+setTimeout(() => {
+    console.log('===========ads=============')
+    initAdSetting()
+    .catch(err => {
+        console.log('dnd====', err)
+    })
+}, 1000)
+
 
 const { width } = Dimensions.get('window');
 const widthAd = Math.floor(width - 20);

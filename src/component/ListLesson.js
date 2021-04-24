@@ -1,7 +1,8 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import {
 	Dimensions, StyleSheet, View, Text, SafeAreaView, FlatList, TouchableOpacity,
-	ScrollView
+	ScrollView,
+	Pressable
 } from 'react-native';
 import { Icon } from "native-base";
 import {
@@ -50,15 +51,13 @@ const ListLesson = (props) => {
 	let endPoint = ``;
 	if (bookId) endPoint = `/books/${bookId}`;
 	if (subjectID) endPoint = `/subjects/${subjectID}/first-book`;
-	const [allBookData, loading, err] = useRequest(endPoint, [endPoint]);
-	// console.log('------', subjectID, subject);
-	const [hostLesson, hostLoading, errHost] = useRequest(`/subjects/${subjectID || subject}/parts-data`, [subjectID || subject])
-	// console.log(subjectID, 'hostLessonhostLessonhostLessonhostLessonhostLesson', hostLesson)
-	let bookData = {};
 
-	if (allBookData) {
-		bookData = allBookData.data;
-	}
+
+	const [allBookData, loading, err] = useRequest(endPoint, [endPoint]);
+	const [hostLesson, hostLoading, errHost] = useRequest(`/subjects/${subjectID || subject}/parts-data`, [subjectID || subject])
+
+	let bookData = {};
+	if (allBookData) bookData = allBookData.data;
 
 	// interstial ad
 	const learningTimes = useSelector(state => state.timeMachine.learning_times);
@@ -76,11 +75,13 @@ const ListLesson = (props) => {
 	useEffect(() => {
 		setTimeout(() => {
 			setShowContent(true);
-		}, 100);
+		}, 5000);
 	}, []);
 
 	useEffect(() => {
-		setItemExpanded(0);
+		setTimeout(() => {
+			setItemExpanded(0);
+		}, 1500);
 		// if (subjectID) {
 		// 	if (level1 && bookData.children) {
 		// 		const indexActive = bookData.children.findIndex(i => i._id == level1);
@@ -111,8 +112,13 @@ const ListLesson = (props) => {
 	};
 	return (
 		<SafeAreaView style={styles.base}>
-			{showContent &&
-				<Loading isLoading={loading} err={err} com={LoadingCom}>
+
+			<Loading isLoading={loading} err={err} com={LoadingCom}>
+				{isEmpty(bookData) || isEmpty(bookData.children) ? 
+				<Pressable onPress={() => navigation.goBack()}>
+					<Text style={{textAlign: 'center', fontSize: 20}}>Tài liệu lỗi vui lòng thử lại</Text>
+				</Pressable>
+				:
 					<FlatList
 						data={bookData.children}
 						style={{}}
@@ -120,77 +126,79 @@ const ListLesson = (props) => {
 						extraData={itemExpanded}
 						renderItem={({ item: lessonItem, index: indexLesson }) =>
 							_renderListLesson({ lessonItem, indexLesson, ...propsItem })}
-					/>
-				</Loading>
-			}
+					/>}
+			</Loading>
 			{/* {} */}
-			<View>
-				{
-					hostLesson && !isEmpty(hostLesson.exams) ?
-						<View>
-							<View style={{ flexDirection: 'row', alignItems: 'flex-end', justifyContent: 'space-between', marginTop: 35, marginBottom: 5, }}>
-								<Text style={{ fontSize: 22, ...fontMaker({ weight: fontStyles.SemiBold }) }}>Đang thi nhiều </Text>
-								<TouchableOpacity onPress={() => navigation.navigate('TestStack')}>
-									<Text style={{ ...fontMaker({ weight: fontStyles.Regular }), fontSize: 16, color: COLOR.MAIN }}>Xem thêm</Text>
-								</TouchableOpacity>
-							</View>
-							{
-								// RenderExamRelated
-								get(hostLesson, 'exams').map(item => {
-									return <RenderExamRelated
-										title={get(item, 'title', '')}
-										time={get(item, 'duration', 0)}
-										totalQues={get(item, 'questions_count', 0)}
-										onPress={() => {
-											navigation.navigate('OverviewTest', {
-												idExam: get(item, 'id', ''),
-												title: get(item, 'title', ''),
-												// icon: get(book, 'icon_id'),
-												// subject: get(book, 'title'),
-												// lessonId: lessonId,
-												time: get(item, 'duration', 0),
-												count: get(item, 'questions_count', 0),
-												advert
-											})
-										}}
+
+			{showContent &&
+				<View>
+					{
+						hostLesson && !isEmpty(hostLesson.exams) ?
+							<View>
+								<View style={{ flexDirection: 'row', alignItems: 'flex-end', justifyContent: 'space-between', marginTop: 35, marginBottom: 5, }}>
+									<Text style={{ fontSize: 22, ...fontMaker({ weight: fontStyles.SemiBold }) }}>Đang thi nhiều </Text>
+									<TouchableOpacity onPress={() => navigation.navigate('TestStack')}>
+										<Text style={{ ...fontMaker({ weight: fontStyles.Regular }), fontSize: 16, color: COLOR.MAIN }}>Xem thêm</Text>
+									</TouchableOpacity>
+								</View>
+								{
+									// RenderExamRelated
+									get(hostLesson, 'exams').map(item => {
+										return <RenderExamRelated
+											title={get(item, 'title', '')}
+											time={get(item, 'duration', 0)}
+											totalQues={get(item, 'questions_count', 0)}
+											onPress={() => {
+												navigation.navigate('OverviewTest', {
+													idExam: get(item, 'id', ''),
+													title: get(item, 'title', ''),
+													// icon: get(book, 'icon_id'),
+													// subject: get(book, 'title'),
+													// lessonId: lessonId,
+													time: get(item, 'duration', 0),
+													count: get(item, 'questions_count', 0),
+													advert
+												})
+											}}
+										/>
+									})}
+							</View> : null
+					}
+					<Text style={{ fontSize: 22, marginTop: 35, marginBottom: 15, ...fontMaker({ weight: fontStyles.SemiBold }) }}>Gợi ý cho bạn </Text>
+					{
+						isEmpty(hostLesson) ? null :
+							<ScrollView horizontal showsHorizontalScrollIndicator={false}>
+								{hostLesson.videos.map(item => {
+									return <VideoContinue
+										navigate={navigation.navigate}
+										setVisible={handleShowToast}
+										videos={item}
+										style={{ marginRight: 20, width: width * 4 / 5 }}
 									/>
 								})}
-						</View> : null
-				}
-				<Text style={{ fontSize: 22, marginTop: 35, marginBottom: 15, ...fontMaker({ weight: fontStyles.SemiBold }) }}>Gợi ý cho bạn </Text>
-				{
-					isEmpty(hostLesson) ? null :
-						<ScrollView horizontal showsHorizontalScrollIndicator={false}>
-							{hostLesson.videos.map(item => {
-								return <VideoContinue
-									navigate={navigation.navigate}
-									setVisible={handleShowToast}
-									videos={item}
-									style={{ marginRight: 20, width: width * 4 / 5 }}
-								/>
-							})}
-						</ScrollView>
+							</ScrollView>
 
-				}
+					}
 
-				{
-					hostLesson && !isEmpty(hostLesson.articles) ?
-						get(hostLesson, 'articles', []).map(item => {
-							const { title = '', id: articleId = '', view_count = 0, content_type, lesson_id } = item || {};
-							return (
-								// RenderArticlRelated
-								<RenderArticlRelated
-									title={title}
-									viewCount={view_count}
-									contentType={content_type}
-									onPress={() => navigation.navigate("Lesson", { articleId, lesson_id, advert })}
-								/>
-							)
-						})
-						: null
-				}
+					{
+						hostLesson && !isEmpty(hostLesson.articles) ?
+							get(hostLesson, 'articles', []).map(item => {
+								const { title = '', id: articleId = '', view_count = 0, content_type, lesson_id } = item || {};
+								return (
+									// RenderArticlRelated
+									<RenderArticlRelated
+										title={title}
+										viewCount={view_count}
+										contentType={content_type}
+										onPress={() => navigation.navigate("Lesson", { articleId, lesson_id, advert })}
+									/>
+								)
+							})
+							: null
+					}
 
-			</View>
+				</View>
+			}
 
 		</SafeAreaView>
 	)
@@ -199,7 +207,7 @@ const ListLesson = (props) => {
 const _renderListLesson = (props) => {
 	const { lessonItem, isBar, _handleSelect, indexLesson, itemExpanded, activeDetail } = props;
 	return (
-		<Animatable.View animation="fadeIn" delay={100 * indexLesson}>
+		<Animatable.View animation="fadeIn" delay={500 * indexLesson}>
 			{_renderTitleLesson({ ...props })}
 			{indexLesson == itemExpanded && <RenderDetailLesson lessonItem={lessonItem} isBar={isBar} _handleSelect={_handleSelect} activeDetail={activeDetail} />}
 		</Animatable.View>
@@ -210,7 +218,6 @@ const _renderTitleLesson = (props) => {
 	const { lessonItem, isBar = false, setItemExpanded, indexLesson, itemExpanded, _handleSelect } = props;
 	const expanded = indexLesson == itemExpanded;
 	return (
-
 		<TouchableOpacity
 			style={stylesMainItem.wrapper}
 			activeOpacity={0.95}
@@ -247,18 +254,16 @@ const RenderDetailLesson = ({ lessonItem, isBar, _handleSelect, activeDetail }) 
 	const flatRef = useRef(null);
 
 	useEffect(() => {
-		if (activeDetail && lessonItem.children) {
-			// const activeIndex = lessonItem.children.findIndex(i => activeDetail.includes(i._id));
-			// if (activeIndex !== undefined && activeIndex !== -1) {
-			// 	setExpandedDetail(activeIndex);
-			// }
-
+		if (activeDetail && lessonItem && lessonItem.children) {
 			if (lessonItem.children && lessonItem.children[0]) {
-				setExpandedDetail(0)
+				setTimeout(() => {
+					setExpandedDetail(0)
+				}, 1500)
 			}
 
 		}
 	}, [activeDetail, lessonItem]);
+	if (!lessonItem) return null;
 
 	return (
 		<FlatList
