@@ -11,8 +11,9 @@ import Modal from 'react-native-modal';
 import { useSelector } from 'react-redux';
 import DropDownPicker from 'react-native-dropdown-picker';
 import { get } from 'lodash';
-
+import Toast from 'react-native-simple-toast';
 import { Icon } from 'native-base';
+
 import { blackColor, COLOR } from '../../../handle/Constant';
 import { Colors } from '../../../utils/colors';
 import { helpers } from '../../../utils/helpers';
@@ -38,7 +39,7 @@ export const FilterModal = (props) => {
     const [subjects, setSubjects] = useState([]);
 
     const [currSub, setCurrSub] = useState(null);
-    const [currIndex, setCurrIndex] = useState(0);
+    const [currIndex, setCurrIndex] = useState(null);
 
     const [curType, setCurType] = useState(Object.keys(mapTypeQestion)[0]);
 
@@ -48,10 +49,14 @@ export const FilterModal = (props) => {
         async function fetchAllSubjects() {
             const result = await class_services.getAllSubjectsInClass(cls);
             setSubjects(result.data);
-            setCurrIndex(0);
+            // setCurrIndex(0);
             if (!showAll) {
-                setCurrSub(result.data[0]);
-                setFilter({ cls, currSub: { index: currIndex, ...get(result, 'data[0]', {}) }, curType });
+                // setCurrSub(result.data[0]);
+                setFilter({
+                    cls, currSub: {
+                        // index: currIndex, ...get(result, 'data[0]', {})
+                    }, curType
+                });
             } else {
                 setCurrSub(null);
             }
@@ -64,10 +69,10 @@ export const FilterModal = (props) => {
         if (filter.cls) {
             setCls('' + filter.cls);
             if (filter.cls == '13') {
-                setCurrIndex(0);
-                setCurrSub(null);
+                // setCurrIndex(0);
+                // setCurrSub(null);
             } else {
-                setCurrIndex(0);
+                // setCurrIndex(0);
             }
         }
     }, [filter.cls]);
@@ -78,14 +83,22 @@ export const FilterModal = (props) => {
 
     const handleSubmit = () => {
         setFilter({ cls, currSub: { index: currIndex, ...currSub }, curType });
+        if (!currSub) {
+            Toast.show('Vui lòng chọn môn để tiếp tục');
+            return 1;
+        }
         onClose(false);
     }
 
     const hanldeCancel = useCallback(() => {
+        if (!currSub) {
+            Toast.showWithGravity('Vui lòng chọn môn để tiếp tục', Toast.SHORT, Toast.CENTER);
+            return 1;
+        }
         if (cancelAble) {
             onClose(false)
         }
-    }, [cancelAble])
+    }, [cancelAble, currSub])
 
     return (
         <Modal
@@ -105,7 +118,7 @@ export const FilterModal = (props) => {
 
                 <View style={styles.titleContainer}>
                     <Text style={{ color: '#282828', fontSize: 18, ...fontMaker({ weight: 'Bold' }) }}>{headerText}</Text>
-                    <TouchableOpacity onPress={() => onClose(false)}>
+                    <TouchableOpacity onPress={hanldeCancel}>
                         <Icon name='ios-close' style={{ fontSize: 32, color: '#ACACAC' }} />
                     </TouchableOpacity>
                 </View>
@@ -122,6 +135,7 @@ export const FilterModal = (props) => {
                                     renderItem={({ item, index }) => (
                                         <TouchableOpacity
                                             onPress={() => {
+                                                setFilter({ cls, currSub: { index, ...item }, curType });
                                                 setCurrSub(item);
                                                 setCurrIndex(index);
                                             }}

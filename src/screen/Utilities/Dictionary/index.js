@@ -12,22 +12,16 @@ import Search from './com/Search';
 import AutoComplete from './com/AutoComplete';
 import api from '../../../handle/api';
 import { useSound } from '../../../component/Sound'
+// import { COLOR } from '../../../handle/Constant';
+// import History from './com/History';
+import { insertItem, KEY, useStorage, getItem } from '../../../handle/handleStorage';
+import OptionView from './com/OptionView';
+import HeaderSearch from './com/HeaderSearch';
 import { COLOR } from '../../../handle/Constant';
-import History from './com/History';
-import { insertItem, KEY, useStorage } from '../../../handle/handleStorage';
 
 
 const Dictionary = (props) => {
     const [searchText, setSearchText] = useState('');
-    const [showAutoComplete, setIsShowAuto] = useState('');
-
-    const [history] = useStorage(KEY.HIS_DICTIONARY, []);
-    const [savedWord] = useStorage(KEY.SAVE_DICTIONARY, []);
-
-    const grade = useSelector(state => {
-        return get(state, 'userInfo.class')
-    })
-    // console.log({ searchText })
     const [data, setData] = useState({});
 
     const [ukSound] = useSound(get(data, 'sounds.uk') ? `http://171.244.27.129:8088${get(data, 'sounds.uk')}` : null);
@@ -41,40 +35,47 @@ const Dictionary = (props) => {
         }
     }
 
-    const handleSaveSearchingKey = useCallback((val) => {
-        handleRequestSearch(val)
-    }, [])
-
     const handleRequestSearch = (key) => {
-        console.log('http://171.244.27.129:8088/api/find?query=' + key)
         api.get('http://171.244.27.129:8088/api/find?query=' + key)
             .then(({ data }) => {
                 if (data) {
-                    const checkExit = history.find(h => h.word === data.word)
-                    if (!checkExit) insertItem(KEY.HIS_DICTIONARY, { word: data.word, suggest_text: data.suggest_text })
-                    setData(data)
+                    setData(data);
+                    getItem(KEY.HIS_DICTIONARY).then(historyDic => {
+                        if (historyDic) {
+                            const checkExit = historyDic.find(h => h.word === data.word)
+                            if (!checkExit) insertItem(KEY.HIS_DICTIONARY, { word: data.word, suggest_text: data.suggest_text })
+                        } else {
+                            insertItem(KEY.HIS_DICTIONARY, { word: data.word, suggest_text: data.suggest_text })
+                        }
+
+                    })
                 }
             })
     }
 
-    const _handlePressItem = (item, type) => {
-        console.log('------', type)
-        if (type === "saved") {
-            setData(item)
-        } else {
-            console.log('-typetypetype-----', type)
-            handleRequestSearch(item.word)
-        }
-        setSearchText(item.word)
-    }
-
     const _handleSave = (data) => {
-        const checkExit = history.find(h => h.word === data.word)
-        if (!checkExit) insertItem(KEY.SAVE_DICTIONARY, {
-            word: data.word,
-            suggest_text: data.suggest_text,
-            pronounce: data.pronounce,
-            content_html: data.content_html,
+
+        getItem(KEY.SAVE_DICTIONARY).then(savedWord => {
+
+            let checkExit = false;
+            if (savedWord) checkExit = savedWord.find(h => h.word == data.word)
+            else {
+                insertItem(KEY.SAVE_DICTIONARY, {
+                    word: data.word,
+                    suggest_text: data.suggest_text,
+                    pronounce: data.pronounce,
+                    content_html: data.content_html,
+                })
+            }
+
+            if (!checkExit) {
+                insertItem(KEY.SAVE_DICTIONARY, {
+                    word: data.word,
+                    suggest_text: data.suggest_text,
+                    pronounce: data.pronounce,
+                    content_html: data.content_html,
+                })
+            }
         })
     }
     return (
@@ -91,49 +92,20 @@ const Dictionary = (props) => {
                 <View style={{ width: 40 }} />
             </View>
             <View style={{ flex: 1 }}>
-                <View style={{ height: 65, marginTop: 15 }}>
-                    <Search
-                        setIsBlank={() => { setSearchText(''), setIsShowAuto(false) }}
-                        handleSaveSearchingKey={handleSaveSearchingKey}
-                        showFilter={false}
-                        setIsShowAuto={setIsShowAuto}
-                        handleTypeKeyword={setSearchText}
-                        initKey={searchText}
-                        placeholder="Tra từ điển anh việt"
-                        setSearchText={setSearchText}
-                        navigation={props.navigation} />
-                </View>
-                <ScrollView style={{ paddingHorizontal: 15 }}>
+                <ScrollView style={{ paddingHorizontal: 15, marginTop: 80 }}>
                     {isEmpty(data) ?
+                        <OptionView
+                            setData={setData}
+                            handleRequestSearch={handleRequestSearch}
+                            setSearchText={setSearchText}
+                            navigation={props.navigation}
+                        // updateVal={}
+                        />
+                        :
                         <View>
-                            <History history={history} _handlePressItem={_handlePressItem} />
-                            <History history={savedWord} _handlePressItem={_handlePressItem} type="saved" text="Từ của bạn" />
-                            {/* <View style={[styles.shadow, styles.itemsFun]}>
-                                <Icon name="star" type="AntDesign" style={{ color: COLOR.MAIN, width: 40 }} />
-                                <Text style={{ marginLeft: 15, fontSize: 18 }}>Từ của bạn</Text>
-                            </View> */}
-                            <TouchableOpacity onPress={() => {
-                                Toast.showWithGravity('Tính năng sẽ ra mắt trong thời gian tới', Toast.LONG, Toast.CENTER)
-                            }} style={[styles.shadow, styles.itemsFun]}>
-                                <Icon name="graduation-cap" type="FontAwesome" style={{ color: COLOR.MAIN, width: 40 }} />
-                                <Text style={{ marginLeft: 15, fontSize: 18 }}>Từ vựng lớp {grade}</Text>
-                            </TouchableOpacity>
-                            <TouchableOpacity onPress={() => {
-                                props.navigation.navigate('Subject', { 
-                                    source: 'dic',
-                                    icon_id: 4, bookId: 406, 
-                                    title: "Bảng Động Từ Bất Quy Tắc (480 Động Từ)",
-                                     subject: 104 })
-
-                            }} style={[styles.shadow, styles.itemsFun]}>
-                                <Icon name="list" style={{ color: COLOR.MAIN, width: 40 }} />
-                                <Text style={{ marginLeft: 15, fontSize: 18 }}>Động từ bất quy tắc</Text>
-                            </TouchableOpacity>
-                        </View> :
-                        <View>
-                            <TouchableOpacity onPress={() => setData(null)}>
-                                <Text style={{ alignSelf: 'center', marginBottom: -5 }}>
-                                    <Icon style={{ fontSize: 17 }} name="down" type="AntDesign" />
+                            <TouchableOpacity onPress={() => { setData(null) }}>
+                                <Text style={{ alignSelf: 'center', marginBottom: -6 }}>
+                                    <Icon style={{ fontSize: 19 }} name="down" type="AntDesign" />
                                 </Text>
                             </TouchableOpacity>
                             <View style={{ flexDirection: 'row' }}>
@@ -146,8 +118,10 @@ const Dictionary = (props) => {
                                     <Text>{data.pronounce}</Text>
                                 </View>
                                 <View style={{ flexDirection: 'row' }}>
-                                    <TouchableOpacity onPress={() => _handleSave(data)} style={{ marginRight: 8 }}>
-                                        <Icon name={0 ? "star" : "staro"} type="AntDesign" />
+                                    <TouchableOpacity onPress={() => _handleSave(data)} style={{
+                                        marginRight: 10,
+                                    }}>
+                                        <Icon style={{ color: COLOR.MAIN }} name={0 ? "star" : "staro"} type="AntDesign" />
                                     </TouchableOpacity>
                                     <View>
                                         <TouchableOpacity
@@ -181,37 +155,8 @@ const Dictionary = (props) => {
                         </View>
                     }
                 </ScrollView>
-                {showAutoComplete ?
-                    <TouchableOpacity
-                        activeOpacity={1}
-                        onPress={() => {
-                            setIsShowAuto(false);
-                            Keyboard.dismiss();
-                        }}
-                        style={{
-                            position: 'absolute', top: 60,
-                            left: 0, right: 0,
-                            // backgroundColor: '#111'
-                        }}
-                    >
-                        <View>
-                            <AutoComplete
-                                setShowAutoText={setIsShowAuto}
-                                searchText={searchText}
-                                // gradeId={filter.cls}
-                                setSearchText={(val) => {
-                                    console.log('-----', val)
-                                    setSearchText(val);
-                                    handleRequestSearch(val)
-                                }}
-                                handleSaveSearchingKey={handleSaveSearchingKey}
-                            />
-                        </View>
-                    </TouchableOpacity>
-                    : null}
+                <HeaderSearch setData={setData} initText={searchText} handleRequestSearch={handleRequestSearch} navigation={props.navigation} />
             </View>
-
-
         </SafeAreaView>
     )
 

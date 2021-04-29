@@ -8,9 +8,8 @@ import { useStorage, KEY } from '../../../../handle/handleStorage';
 import { FlatList } from 'react-native-gesture-handler';
 
 const History = ({ _handlePressItem, history = [], text = "Lịch sử tìm kiếm", type }) => {
-    const [expand, setExpand] = useState(type ? true : false);
+    const [expand, setExpand] = useState((type) ? true : false);
     const [showAll, setShowAll] = useState(false)
-    console.log({ type, text })
     return (
         <View style={[styles.shadow, { marginTop: 20, borderRadius: 10, paddingBottom: expand ? 0 : 20 }]}>
             <TouchableOpacity onPress={() => setExpand(!expand)} style={styles.header}>

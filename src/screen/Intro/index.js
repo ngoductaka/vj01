@@ -89,6 +89,13 @@ const Intro = (props) => {
         </ImageBackground>
     );
 
+    const skipBtn = () => {
+        return (
+            <View style={{}}>
+                <Text style={{color: '#fff', fontSize: 20}}>Skip</Text>
+            </View>
+        )
+    }
 
     return (
         <View style={{ flex: 1 }}>
@@ -98,6 +105,8 @@ const Intro = (props) => {
                 renderItem={_renderItem}
                 renderDoneButton={_renderDoneButton}
                 renderNextButton={_renderNextButton}
+                renderSkipButton={skipBtn}
+                showSkipButton
             />
         </View>
     )

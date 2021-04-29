@@ -376,19 +376,18 @@ const Class = memo((props) => {
 							justifyContent: 'space-between', marginVertical: 10,
 						}}>
 							<Text style={{ fontSize: 18, ...fontMaker({ weight: fontStyles.SemiBold }) }}>Kho Tiện ích</Text>
-							{/* <TouchableOpacity
+							<TouchableOpacity
 								onPress={() => navigation.navigate('UtilitiesCenter')}
 								style={{}}>
 								<Text style={{ fontSize: 14, ...fontMaker({ weight: fontStyles.Regular }), textDecorationColor: COLOR.MAIN, color: COLOR.MAIN }}>Xem tất cả</Text>
-							</TouchableOpacity> */}
+							</TouchableOpacity>
 						</View>
 						<FlatList
 							style={{}}
 							data={LIST_UTILITIES}
-							pagingEnabled={true}
+							// pagingEnabled={true}
 							showsHorizontalScrollIndicator={false}
-						  
-							legacyImplementation={false}
+							// legacyImplementation={false}
 							// numColumns={4}
 							horizontal
 							renderItem={({ item, index }) => {

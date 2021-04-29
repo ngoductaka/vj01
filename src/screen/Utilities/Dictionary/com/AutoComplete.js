@@ -6,6 +6,7 @@ import { useRequest, Loading } from '../../../../handle/api';
 import { Card, Icon } from 'native-base';
 import { fontMaker } from '../../../../utils/fonts';
 import { COLOR } from '../../../../handle/Constant';
+import { ActivityIndicator } from 'react-native-paper';
 
 
 const AutoComplete = (props) => {
@@ -28,6 +29,7 @@ const AutoComplete = (props) => {
 	}, [searchText])
 	return (
 		<View style={{ backgroundColor: 'white', borderBottomLeftRadius: 18, borderBottomRightRadius: 18, ...styles.shadow }}>
+			{loading ? <ActivityIndicator /> : null}
 			{!isEmpty(result) ?
 				<FlatList
 					keyboardShouldPersistTaps='handled'

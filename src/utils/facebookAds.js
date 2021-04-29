@@ -97,7 +97,7 @@ export function ViewWithBanner({ index = 0 } = {}) {
     if (fb) {
         return (
             <View style={{ width: widthAd }}>
-                {/* <Text>Quảng cáo facebook</Text> */}
+                <Text style={{textAlign: 'center', marginTop: 5}}>Quảng cáo</Text>
                 <BannerView
                     placementId={index > 10 ? placementIdBanner : placementIdBanner2}
                     type="rectangle"//large" //"standard"
