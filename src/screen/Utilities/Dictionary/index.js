@@ -14,7 +14,7 @@ import api from '../../../handle/api';
 import { useSound } from '../../../component/Sound'
 // import { COLOR } from '../../../handle/Constant';
 // import History from './com/History';
-import { insertItem, KEY, useStorage, getItem } from '../../../handle/handleStorage';
+import { insertItem, KEY, saveItem, getItem } from '../../../handle/handleStorage';
 import OptionView from './com/OptionView';
 import HeaderSearch from './com/HeaderSearch';
 import { COLOR } from '../../../handle/Constant';
@@ -23,10 +23,18 @@ import { COLOR } from '../../../handle/Constant';
 const Dictionary = (props) => {
     const [searchText, setSearchText] = useState('');
     const [data, setData] = useState({});
+    const [isSaved, setIsSaved] = useState(false);
 
     const [ukSound] = useSound(get(data, 'sounds.uk') ? `http://171.244.27.129:8088${get(data, 'sounds.uk')}` : null);
     const [usSound] = useSound(get(data, 'sounds.us') ? `http://171.244.27.129:8088${get(data, 'sounds.us')}` : null);
 
+    useEffect(() => {
+        // check save offline
+        getItem(KEY.SAVE_DICTIONARY).then(savedList => {
+            const checkSaved = savedList.find(itemDic => itemDic.word === data.word);
+            setIsSaved(!!checkSaved);
+        });
+    }, [data])
     const setPlay = (type) => {
         if (type = 'uk') {
             if (ukSound.isLoaded()) ukSound.play()
@@ -40,6 +48,9 @@ const Dictionary = (props) => {
             .then(({ data }) => {
                 if (data) {
                     setData(data);
+                    // setIsSaved
+
+                    // save history
                     getItem(KEY.HIS_DICTIONARY).then(historyDic => {
                         if (historyDic) {
                             const checkExit = historyDic.find(h => h.word === data.word)
@@ -54,9 +65,17 @@ const Dictionary = (props) => {
     }
 
     const _handleSave = (data) => {
-
+        if (isSaved) {
+            // remove from storage
+            getItem(KEY.SAVE_DICTIONARY).then(savedWord => {
+                const newList = savedWord.filter(h => h.word != data.word);
+                saveItem(KEY.SAVE_DICTIONARY, newList);
+                setIsSaved(false);
+            }).catch((err) => { console.log('err remove dic in storage', err) })
+            return 1;
+        }
+        setIsSaved(true)
         getItem(KEY.SAVE_DICTIONARY).then(savedWord => {
-
             let checkExit = false;
             if (savedWord) checkExit = savedWord.find(h => h.word == data.word)
             else {
@@ -76,7 +95,7 @@ const Dictionary = (props) => {
                     content_html: data.content_html,
                 })
             }
-        })
+        }).catch((err) => { console.log('err insert dic in storage', err) })
     }
     return (
         <SafeAreaView style={styles.container}>
@@ -121,7 +140,7 @@ const Dictionary = (props) => {
                                     <TouchableOpacity onPress={() => _handleSave(data)} style={{
                                         marginRight: 10,
                                     }}>
-                                        <Icon style={{ color: COLOR.MAIN }} name={0 ? "star" : "staro"} type="AntDesign" />
+                                        <Icon style={{ color: !isSaved ? "#ddd" : COLOR.MAIN }} name={isSaved ? "star" : "staro"} type="AntDesign" />
                                     </TouchableOpacity>
                                     <View>
                                         <TouchableOpacity
