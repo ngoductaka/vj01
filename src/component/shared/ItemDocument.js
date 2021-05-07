@@ -164,14 +164,14 @@ const RenderVideoSearch = ({ uri, title, url, onPress, grade, subject, time, isL
 }
 
 
-const RenderQnASearch = ({ title, onPress, viewCount, index, book, grade }) => {
+const RenderQnASearch = ({ title, onPress, viewCount, index, book, grade, answers_count = 0 }) => {
 	return (
 		<TouchableOpacity
 			onPress={onPress}
 			style={[stylesComponent.textItem, { paddingLeft: 0, borderBottomWidth: 0, borderBottomWidth: 1, borderColor: '#ddd' }]}
 		>
 			<View style={{ flexDirection: 'row', alignItems: 'center' }}>
-				<View
+				{/* <View
 					style={{
 						height: 30, width: 30, marginRight: 15, borderRadius: 20, justifyContent: 'center', alignItems: 'center',
 						borderColor: COLOR.MAIN,
@@ -179,13 +179,16 @@ const RenderQnASearch = ({ title, onPress, viewCount, index, book, grade }) => {
 					}}
 				>
 					<Icon type='FontAwesome' name='question' style={{ color: COLOR.MAIN, fontSize: 18 }} />
-				</View>
+				</View> */}
 				<View style={{ flex: 1 }}>
 					<Text numberOfLines={2} style={stylesComponent.textContent}>
 						{title}
 					</Text>
+					<View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
+						<Text style={{ fontSize: 12, color: '#777', textAlign: 'right', marginTop: 7 }}>{answers_count ? `${answers_count} câu trả lời`: 'Chưa có câu trả lời'} </Text>
+						<Text style={{ fontSize: 12, color: '#777', textAlign: 'right', marginTop: 7 }}>{book} • {grade}</Text>
+					</View>
 
-					<Text style={{ fontSize: 12, color: '#777', textAlign: 'right', marginTop: 7 }}>{book} • {grade}</Text>
 				</View>
 			</View>
 		</TouchableOpacity>

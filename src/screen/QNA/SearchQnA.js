@@ -28,6 +28,7 @@ import { RenderQnASearch } from '../../component/shared/ItemDocument';
 
 import { search_services } from './service';
 import { images } from '../../utils/images';
+import LinearGradient from 'react-native-linear-gradient';
 
 const { width, height } = Dimensions.get('window');
 const userImg = "https://www.xaprb.com/media/2018/08/kitten.jpg";
@@ -77,7 +78,7 @@ const QnA = (props) => {
                     leftAction={() => props.navigation.goBack()}
                     text="Tìm câu hỏi"
                 />
-                <View style={{ flex: 1 }}>
+                <View style={{ flex: 1, paddingBottom: 5 }}>
                     <QuestionFrom
                         placeholder="Câu hỏi của bạn là gì?"
                         // handleSaveSearchingKey={() => (searchText)}
@@ -131,12 +132,14 @@ const QnA = (props) => {
                                     grade_id: grade = '',
                                     subject_id: book = '',
                                     id: questionId = '',
-                                    subject_name = ""
+                                    subject_name = "",
+                                    answers_count = 0
                                 } = item
                                 return (
                                     <RenderQnASearch
                                         onPress={() => { props.navigation.navigate('QuestionDetail', { questionId }) }}
                                         {...{ title, grade: "Lớp " + grade, book: subject_name }}
+                                        answers_count={answers_count}
                                     />
                                 )
                             }}
@@ -166,31 +169,37 @@ const QnA = (props) => {
                     animation="lightSpeedIn"
                     delay={100}
                     style={{
-                        position: 'absolute', bottom: 50, right: 0,
+                        // position: 'absolute', 
+                        // bottom: 30, 
+                        opacity: 0.5,
+                        // paddingBottom: 30,
                     }}
                 >
-                    <TouchableOpacity
-                        onPress={() => props.navigation.navigate('MakeQuestion')}
-                        style={{
-                            // position: 'absolute', bottom: 60, right: 0,
-                            flexDirection: 'row', alignItems: 'center', paddingHorizontal: 15,
-                            paddingVertical: 10
-                        }}>
-                        <View
-                            style={{ backgroundColor: COLOR.MAIN, paddingVertical: 10, paddingHorizontal: 15, borderRadius: 15, position: 'relative' }}>
-                            <Text style={{ color: '#fff', fontWeight: 'bold', fontSize: 18 }}> Đặt câu hỏi mới</Text>
-                            <View style={{
-                                height: 12, width: 12, position: 'absolute', backgroundColor: COLOR.MAIN, right: -5, top: '50%', transform: [
-                                    {
-                                        rotate: "45deg"
-                                    }
-                                ]
-                            }} />
-                        </View>
-                        <View style={{ backgroundColor: COLOR.MAIN, marginLeft: 10, padding: 5, borderRadius: 50, height: 50, width: 50, justifyContent: 'center', alignItems: 'center' }}>
-                            <Icon style={{ color: '#fff', fontWeight: 'bold', marginTop: 5 }} type="AntDesign" name="plus" />
-                        </View>
-                    </TouchableOpacity>
+                    <LinearGradient
+                        start={{ x: 0, y: 0 }}
+                        end={{ x: 1, y: 0 }}
+                        colors={['#8FCAEA', '#fff']} 
+                        // style={{ flex: 1 }}
+                        >
+                        <TouchableOpacity
+                            onPress={() => props.navigation.navigate('MakeQuestion')}
+                            style={{
+                                // position: 'absolute', bottom: 60, right: 0,
+                                flexDirection: 'row',
+                                alignItems: 'center', paddingHorizontal: 10,
+                                justifyContent: 'space-between',
+                                // paddingVertical: 5
+                            }}>
+                            <View
+                                style={{ paddingVertical: 10, paddingHorizontal: 15, borderRadius: 15, position: 'relative' }}>
+                                <Text style={{ color: '#555', fontWeight: 'bold', fontSize: 18 }}>Đặt câu hỏi mới</Text>
+                                <Text style={{ color: '#111', fontWeight: 'bold', fontSize: 13, marginTop: 3 }}>Không phải những gì bạn đang tìm kiếm?</Text>
+                            </View>
+                            <View style={{ backgroundColor: '#60869B', marginLeft: 10, padding: 5, borderRadius: 40, height: 40, width: 40, justifyContent: 'center', alignItems: 'center' }}>
+                                <Icon style={{ color: '#fff', fontWeight: 'bold', }} type="AntDesign" name="plus" />
+                            </View>
+                        </TouchableOpacity>
+                    </LinearGradient>
                 </Animatable.View>
             </SafeAreaView>
 
@@ -209,6 +218,7 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         backgroundColor: '#fff',
+        // position: 'relative'
         // paddingHorizontal: 10
     },
     headerText: {

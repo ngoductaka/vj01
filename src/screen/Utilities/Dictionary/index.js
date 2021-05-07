@@ -27,7 +27,6 @@ const Dictionary = (props) => {
 
     const [ukSound] = useSound(get(data, 'sounds.uk') ? `http://171.244.27.129:8088${get(data, 'sounds.uk')}` : null);
     const [usSound] = useSound(get(data, 'sounds.us') ? `http://171.244.27.129:8088${get(data, 'sounds.us')}` : null);
-
     useEffect(() => {
         // check save offline
         getItem(KEY.SAVE_DICTIONARY).then(savedList => {
@@ -37,9 +36,10 @@ const Dictionary = (props) => {
     }, [data])
     const setPlay = (type) => {
         if (type = 'uk') {
-            if (ukSound.isLoaded()) ukSound.play()
+            if (get(data, 'sounds.uk') && ukSound.isLoaded()) ukSound.play()
+            else Toast.showWithGravity("Âm thanh không khả dụng", Toast.LONG, Toast.CENTER)
         } else {
-            if (usSound.isLoaded()) usSound.play()
+            if (get(data, 'sounds.uk') && usSound.isLoaded()) usSound.play()
         }
     }
 

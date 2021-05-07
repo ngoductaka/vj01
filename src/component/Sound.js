@@ -126,9 +126,10 @@ export const useSound = (url) => {
 			console.log('url', url)
 			const ns = new Sound(url, null, (err) => {
 				if (err) {
-					// console.log('url=====: ', url, 'err sound -----: ', err);
+					console.log('url=====: ', url, 'err sound -----: ', err);
 				}
 				else setSound(ns);
+				ns.setVolume(1);
 			});
 		}
 		// })

@@ -227,12 +227,16 @@ const QnA = (props) => {
                 return 1;
             };
             const { cls = '', currSub = '' } = filter || {};
-            if (!currSub) {
+            if (!get(currSub, 'id')) {
                 Toast.showWithGravity("Vui lòng chọn môn học", Toast.SHORT, Toast.CENTER);
+                setTimeout(() => {
+                    setShowFilter(true)
+                }, 500)
                 return 1;
             };
             if (cls == 13) {
                 Toast.showWithGravity("Vui lòng chọn lớp", Toast.SHORT, Toast.CENTER);
+
                 return 1;
             }
             // 
@@ -388,7 +392,7 @@ const QnA = (props) => {
                                     ListHeaderComponent={() => {
                                         return (
                                             <View style={{ marginTop: 15 }}>
-                                                <Text style={{fontSize: 22}}>Câu hỏi liên quan:</Text>
+                                                <Text style={{ fontSize: 22 }}>Câu hỏi liên quan:</Text>
                                             </View>
                                         )
                                     }}
@@ -474,14 +478,14 @@ const styles = StyleSheet.create({
         marginTop: 15,
         marginBottom: 10,
     },
-	shadow: {
-		backgroundColor: '#FFFFFF',
-		shadowColor: 'rgba(0, 0, 0, 0.1)',
-		shadowOpacity: 0.8,
-		elevation: 6,
-		shadowRadius: 10,
-		shadowOffset: { width: 12, height: 13 },
-	},
+    shadow: {
+        backgroundColor: '#FFFFFF',
+        shadowColor: 'rgba(0, 0, 0, 0.1)',
+        shadowOpacity: 0.8,
+        elevation: 6,
+        shadowRadius: 10,
+        shadowOffset: { width: 12, height: 13 },
+    },
     headerText: {
         paddingVertical: 5,
         // textAlign: 'center',

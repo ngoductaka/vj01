@@ -91,10 +91,6 @@ export const FilterModal = (props) => {
     }
 
     const hanldeCancel = useCallback(() => {
-        if (!currSub) {
-            Toast.showWithGravity('Vui lòng chọn môn để tiếp tục', Toast.SHORT, Toast.CENTER);
-            return 1;
-        }
         if (cancelAble) {
             onClose(false)
         }
