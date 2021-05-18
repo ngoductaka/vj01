@@ -357,6 +357,9 @@ export const RenderRow = ({ indexItem = '', row, indexRow, setShowImg, isAnwser 
               return <RenderItemPow
                 key={indexRow + indexItem + index + 'text'}
                 indexRow={index} content={content}
+                style={{
+                  ...fontMaker({ weight: fontStyles.Light }),
+                }}
               />
             }
             else if (type === 'svg') {
