@@ -336,7 +336,7 @@ export const RenderRow = ({ indexItem = '', row, indexRow, setShowImg, isAnwser 
                 key={indexRow + indexItem + index + 'text'}
                 indexRow={index} content={content}
                 style={{
-                  ...fontMaker({ weight: fontStyles.Bold }),
+                  ...fontMaker({ weight: fontStyles.Regular }),
                   color: '#000',
                   fontSize: 20
                 }}
@@ -347,7 +347,7 @@ export const RenderRow = ({ indexItem = '', row, indexRow, setShowImg, isAnwser 
                 key={indexRow + indexItem + index + 'text'}
                 indexRow={index} content={content}
                 style={{
-                  ...fontMaker({ weight: fontStyles.Bold }),
+                  ...fontMaker({ weight: fontStyles.Regular }),
                   color: '#000',
                   fontSize: 26
                 }}

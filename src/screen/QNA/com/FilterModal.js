@@ -84,8 +84,8 @@ export const FilterModal = (props) => {
     const handleSubmit = () => {
         setFilter({ cls, currSub: { index: currIndex, ...currSub }, curType });
         if (!currSub) {
-            Toast.show('Vui lòng chọn môn để tiếp tục');
-            return 1;
+            Toast.show('Bạn chưa chọn môn để tiếp tục');
+            // return 1;
         }
         onClose(false);
     }

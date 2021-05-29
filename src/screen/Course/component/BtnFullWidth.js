@@ -78,7 +78,7 @@ const TitleCourse = ({
                     <Text style={stylesTitle.title} numberOfLines={3}>{title} </Text>
                 </View>
                 <View style={stylesTitle.priceView}>
-                    <Text style={stylesTitle.price}>{convertMoney(price)} </Text>
+                    {helpers.isIOS ? null : <Text style={stylesTitle.price}>{convertMoney(price)} </Text>}
                     <View style={{ alignItems: 'center', flexDirection:'row', marginBottom: 10 }}>
                         <StarRating
                             // disabled={true}

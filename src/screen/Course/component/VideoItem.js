@@ -105,20 +105,13 @@ export const LargeVideo = (props) => {
                             {rate} ({get(get_rating, 'length')})
                         </Text>
                     </View>
-                    <View style={{ flexDirection: 'row', alignItems: 'flex-end' }}>
+                    {helpers.isIOS ? null : <View style={{ flexDirection: 'row', alignItems: 'flex-end' }}>
                         <Text style={{
                             color: COLOR.MAIN,
                             fontWeight: 'bold',
                             fontSize: fontSize.h2,
                         }}>{convertMoney(price)} </Text>
-                        {/* <Text style={{
-                            color: '#999',
-                            fontWeight: 'bold',
-                            fontSize: fontSize.h3,
-                            textDecorationLine: 'line-through',
-                            marginLeft: 6
-                        }}>{convertMoney(price)} </Text> */}
-                    </View>
+                    </View>}
                 </View>
                 {/* handle click three dot */}
                 {/* <TouchableOpacity

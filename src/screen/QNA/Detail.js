@@ -130,7 +130,7 @@ const QnA = (props) => {
         requesQuestion();
         setTimeout(() => {
             setShowKeyBoard(true);
-            handleComment()
+            // handleComment()
         }, 1000);
 
         BackHandler.addEventListener('hardwareBackPress', () => {
@@ -555,7 +555,7 @@ const RenderAnwser = ({ item, index, handleComment, _gotoProfile = () => { }, se
                 <View style={{ flex: 1 }}>
                     <View style={{ padding: 10, backgroundColor: '#F1F2F6', flex: 1, borderRadius: 10 }}>
                         <View style={{ flexDirection: 'row' }}>
-                            <Text style={{ fontWeight: 'bold', marginBottom: 8 }}>{name}</Text>
+                            <Text style={{ marginBottom: 8, ...fontMaker(fontStyles.Thin), fontSize: 17 }}>{name}</Text>
                             {(role_id == 1 || role_id == 2) ?
                                 <Icon style={{ color: COLOR.MAIN, fontSize: 15, marginLeft: 5, fontWeight: 'bolid' }} name="check-circle" type="FontAwesome" />
                                 : null}
@@ -716,11 +716,11 @@ const Header = ({
                     <TouchableOpacity onPress={gotoProfile} style={styles.largeImgWapper} >
                         <Image style={userStyle.imgLargeWapper} source={{ uri: handleAvatarLink(avatar) }} />
                         <View style={{ backgroundColor: '#fff', position: 'absolute', right: -3, bottom: -3, borderRadius: 10 }}>
-                            {isCheck ? <Icon style={{ color: 'green', fontSize: 15, fontWeight: 'bolid' }} name="check-circle" type="FontAwesome" /> : null}
+                            {isCheck ? <Icon style={{ color: 'green', fontSize: 15, fontWeight: 'bold' }} name="check-circle" type="FontAwesome" /> : null}
                         </View>
                     </TouchableOpacity>
                     <View style={{ marginLeft: 10 }}>
-                        <Text style={{ fontWeight: 'bold', fontSize: 16 }}>{userName}</Text>
+                        <Text style={{fontSize: 16 }}>{userName}</Text>
                         <Text numberOfLines={1} style={{ fontSize: 13 }}>{getDiffTime(time)} {subtitle}</Text>
                     </View>
                 </View>

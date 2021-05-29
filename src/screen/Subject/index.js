@@ -75,7 +75,7 @@ const Subject = (props) => {
 			>
 				<SubjectContent navigation={props.navigation} visible={visible} setVisible={setVisible} subject={subject} subjectID={subjectID} navigation={props.navigation} activeLevel={activeLevel} bookId={bookId} />
 			</ViewContainer>
-			<SafeAreaView />
+			<SafeAreaView type="LESSON_TREE" />
 			<Snackbar
 				visible={visible}
 				duration={5000}

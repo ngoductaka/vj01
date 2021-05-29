@@ -162,7 +162,7 @@ const QnA = (props) => {
         <View style={styles.container}>
             <SafeAreaView style={{ flex: 1 }}>
                 {/* top */}
-                <TollBar navigation={props.navigation} />
+                <TollBar current_class={filter.cls} navigation={props.navigation} />
                 <View style={{ flex: 1, position: 'relative' }}>
                     <FlatList
                         onScroll={({ nativeEvent }) => delayedQuery(nativeEvent)}
@@ -181,7 +181,7 @@ const QnA = (props) => {
                         ListHeaderComponent={_renderHeader}
                         renderItem={_renderItem}
                         keyExtractor={(item) => '' + item.id}
-                        style={{ backgroundColor: '#CACCD1', flex: 1 }}
+                        style={{ flex: 1 }}
                         onEndReachedThreshold={0.5}
                         onMomentumScrollBegin={hanldleScroll}
                         onScrollToTop={() => setAni('lightSpeedOut')}
@@ -287,7 +287,20 @@ const styles = StyleSheet.create({
         paddingVertical: 10,
         // padding: 10,
         // borderRadius: 10,
-        marginBottom: 6
+        marginBottom: 5,
+        borderBottomLeftRadius: 10,
+        borderBottomRightRadius: 10,
+        borderBottomColor: '#ededed',
+        borderBottomWidth: 2,
+    },
+    headItemQ: {
+        flexDirection: 'row', alignItems: 'center',
+        marginBottom: 10, justifyContent: 'space-between'
+    },
+    subjectQ: { flex: 1, flexDirection: 'row', alignItems: 'center', paddingHorizontal: 10 },
+    subjectTextQ: {
+        fontSize: 18,
+        ...fontMaker({ weight: fontStyles.Light })
     },
     itemHead: {
         fontSize: 17,
@@ -513,13 +526,13 @@ const PopularFilter = ({ filter, setFilter, loading = false }) => {
 }
 
 
-const TollBar = ({ navigation }) => {
+const TollBar = ({ navigation, current_class }) => {
     return (
         <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', paddingHorizontal: 10, }}>
             <GradientText
                 colors={['#955DF9', '#aaa4f5', '#aaa4f5', '#aaa4f5']}
                 style={styles.headerText}
-            >Hỏi đáp</GradientText>
+            >Hỏi đáp {current_class < 13 ? `lớp ${current_class}` : ''}</GradientText>
 
             {/* <View style={{ flexDirection: 'row' }}> */}
             <View style={{ flexDirection: 'row' }}>
@@ -575,25 +588,23 @@ const RenderQestion = ({ item, index, hanldleClick, _handleNavigate = () => { },
 
     return (
         <View style={styles.itemQ} >
-            <View style={{
-                flexDirection: 'row', alignItems: 'center',
-                marginBottom: 10, justifyContent: 'space-between'
-            }}>
-                <View style={{ flex: 1, flexDirection: 'row', alignItems: 'center', paddingHorizontal: 10 }}>
+            <View style={styles.headItemQ}>
+                <View style={styles.subjectQ}>
                     <TouchableOpacity onPress={() => _handleNavigate(get(item, 'user.id', ''))} style={styles.largeImgWapper} >
                         <Image style={userStyle.img} source={{ uri: handleAvatarLink(avatar) }} />
                         {(role_id == 1 || role_id == 2) ? <View style={{ backgroundColor: '#fff', position: 'absolute', right: -3, bottom: -3, borderRadius: 10 }}>
                             <Icon style={{ color: 'green', fontSize: 15, fontWeight: 'bolid' }} name="check-circle" type="FontAwesome" />
                         </View> : null}
                     </TouchableOpacity>
-                    <View style={{ marginLeft: 10 }}>
-                        <Text numberOfLines={1} style={{ fontWeight: 'bold', fontSize: 16 }}>{name}</Text>
-                        <Text style={{ fontSize: 13 }}>Lớp {class_id} • {get(subject, 'subject_name', '') + ' • '} {getDiffTime(timestamp)}</Text>
+                    <View>
+                        <Text style={styles.subjectTextQ}>{get(subject, 'subject_name', '') + ' • '} {getDiffTime(timestamp)}</Text>
+                        <Text numberOfLines={1} style={{ ...fontMaker(fontStyles.Thin), color: '#777', fontSize: 13, marginTop: 4 }}>{name}</Text>
                     </View>
+
                 </View>
                 {/* select option */}
                 <OptionsMenu
-                    customButton={<Icon name='dots-three-vertical' type='Entypo' style={{ fontSize: 16, color: '#040404', paddingLeft: 20, paddingBottom: 20, marginLeft: 20 }} />}
+                    customButton={<Icon name='dots-three-vertical' type='Entypo' style={{ fontSize: 16, color: '#040404', paddingLeft: 20, marginLeft: 20 }} />}
                     destructiveIndex={1}
                     options={[isFollow ? "Bỏ theo dõi" : 'Theo dõi', "Báo cáo", "Huỷ bỏ"]}
                     actions={[() => { _handleFollow(id, isFollow); setFollow(!isFollow) }, () => _handleReport(id)]} />
@@ -623,7 +634,6 @@ const RenderQestion = ({ item, index, hanldleClick, _handleNavigate = () => { },
             }}>
                 {/* <ListUser /> */}
                 <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-
                     <TouchableOpacity
                         onPress={() => {
                             hanldleClick({
@@ -632,7 +642,6 @@ const RenderQestion = ({ item, index, hanldleClick, _handleNavigate = () => { },
                             })
                         }}
                         style={{ justifyContent: 'center', alignItems: 'center', flexDirection: 'row', marginRight: 20 }} >
-                        {/* <Icon name="comment" type="EvilIcons" style={{ fontSize: 35, marginHorizontal: 4, }} /> */}
                         <Text style={{ color: '#74B2D6', fontWeight: 'bold' }}> {commentCount ? `${commentCount} câu trả lời` : "Chưa có câu trả lời"}</Text>
                     </TouchableOpacity>
                     {/* <ListUser /> */}
@@ -670,7 +679,7 @@ const RenderQestion = ({ item, index, hanldleClick, _handleNavigate = () => { },
             />
             {
                 [3, 10, 20].includes(index) ? <View style={{ paddingTop: 10 }}>
-                    <ViewWithBanner index={index} />
+                    <ViewWithBanner index={index} type="QNA_LIST" />
                 </View>
                     : null
             }

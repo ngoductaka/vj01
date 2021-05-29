@@ -36,9 +36,9 @@ const initAdSetting = async () => {
 setTimeout(() => {
     console.log('===========ads=============')
     initAdSetting()
-    .catch(err => {
-        console.log('dnd====', err)
-    })
+        .catch(err => {
+            console.log('dnd====', err)
+        })
 }, 1000)
 
 
@@ -76,6 +76,34 @@ export const placementIdBanner2 = Platform.select({
     android: '688221958666283_700255430796269',
 }); // ios Biểu ngữ
 
+const BANNER_ADS = {
+    BOOK_BN: Platform.select({
+        ios: '688221958666283_877020706453073',
+        android: androidAdds.rectangle,
+    }),
+    LESSON_TREE: Platform.select({
+        ios: '688221958666283_700259354129210',
+        android: androidAdds.rectangle,
+    }),
+    TEST_TREE: Platform.select({
+        ios: '688221958666283_946435429511600',
+        android: androidAdds.rectangle,
+    }),
+    QNA_LIST: Platform.select({
+        ios: '688221958666283_946435682844908',
+        android: androidAdds.rectangle,
+    }),
+    LESSON_LIST: Platform.select({
+        ios: '688221958666283_946435986178211',
+        android: androidAdds.rectangle,
+    }),
+    LESSON_OVERVIEW: Platform.select({
+        ios: '688221958666283_946455286176281',
+        android: androidAdds.rectangle,
+    }),
+
+}
+
 export const fbFull = () => {
     return new Promise((res, rej) => {
         // return null;
@@ -92,23 +120,23 @@ export const fbFull = () => {
 }
 
 
-export function ViewWithBanner({ index = 0 } = {}) {
+export function ViewWithBanner({ index = 0, type = "" } = {}) {
     const [fb, setFb] = useState(true);
     if (fb) {
         return (
             <View style={{ width: widthAd }}>
-                <Text style={{textAlign: 'center', marginTop: 5}}>Quảng cáo</Text>
+                <Text style={{ textAlign: 'center', marginTop: 5 }}>.Quảng cáo.</Text>
                 <BannerView
-                    placementId={index > 10 ? placementIdBanner : placementIdBanner2}
+                    placementId={index > 10 ? placementIdBanner : (type ? BANNER_ADS[type]: placementIdBanner)}
                     type="rectangle"//large" //"standard"
-                    onPress={() => console.log('click')}
+                    // onPress={() => console.log('click')}
                     onLoad={() => {
                         // setFb(false)
                         console.log('<load facebook banner ads>')
                     }}
                     onError={(err) => {
                         setFb(false)
-                        console.log('<err load banner===========>', err)
+                        console.log('<err load banner===========>')
                     }}
                 />
             </View>

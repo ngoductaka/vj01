@@ -100,7 +100,7 @@ const Book = memo((props) => {
                                 : null
                         }
                     </Loading>
-                    <ViewWithBanner />
+                    <ViewWithBanner type="BOOK_BN" />
                 </View>
             </ViewContainer>
         </View >

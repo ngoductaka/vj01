@@ -26,6 +26,7 @@ const { height, width } = Dimensions.get('window');
 import firebase from 'react-native-firebase';
 import { useSelector } from 'react-redux';
 import { setArticleLearningTimes } from '../redux/action/user_info';
+import { ViewWithBanner } from '../utils/facebookAds';
 const AdRequest = firebase.admob.AdRequest;
 let advert;
 let request;
@@ -80,7 +81,7 @@ const ListLesson = (props) => {
 
 	useEffect(() => {
 		setTimeout(() => {
-			setItemExpanded(0);
+			// setItemExpanded(0);
 		}, 1500);
 		// if (subjectID) {
 		// 	if (level1 && bookData.children) {
@@ -114,11 +115,11 @@ const ListLesson = (props) => {
 		<SafeAreaView style={styles.base}>
 
 			<Loading isLoading={loading} err={err} com={LoadingCom}>
-				{isEmpty(bookData) || isEmpty(bookData.children) ? 
-				<Pressable onPress={() => navigation.goBack()}>
-					<Text style={{textAlign: 'center', fontSize: 20}}>Tài liệu lỗi vui lòng thử lại</Text>
-				</Pressable>
-				:
+				{isEmpty(bookData) || isEmpty(bookData.children) ?
+					<Pressable onPress={() => navigation.goBack()}>
+						<Text style={{ textAlign: 'center', fontSize: 20 }}>Tài liệu lỗi vui lòng thử lại</Text>
+					</Pressable>
+					:
 					<FlatList
 						data={bookData.children}
 						style={{}}
@@ -135,7 +136,7 @@ const ListLesson = (props) => {
 					{
 						hostLesson && !isEmpty(hostLesson.exams) ?
 							<View>
-								<View style={{ flexDirection: 'row', alignItems: 'flex-end', justifyContent: 'space-between', marginTop: 35, marginBottom: 5, }}>
+								<View style={{ flexDirection: 'row', alignItems: 'flex-end', justifyContent: 'space-between', marginTop: 35, marginBottom: 15, }}>
 									<Text style={{ fontSize: 22, ...fontMaker({ weight: fontStyles.SemiBold }) }}>Đang thi nhiều </Text>
 									<TouchableOpacity onPress={() => navigation.navigate('TestStack')}>
 										<Text style={{ ...fontMaker({ weight: fontStyles.Regular }), fontSize: 16, color: COLOR.MAIN }}>Xem thêm</Text>
@@ -164,6 +165,7 @@ const ListLesson = (props) => {
 									})}
 							</View> : null
 					}
+
 					<Text style={{ fontSize: 22, marginTop: 35, marginBottom: 15, ...fontMaker({ weight: fontStyles.SemiBold }) }}>Gợi ý cho bạn </Text>
 					{
 						isEmpty(hostLesson) ? null :
@@ -179,7 +181,9 @@ const ListLesson = (props) => {
 							</ScrollView>
 
 					}
-
+					<View>
+						<ViewWithBanner type="LESSON_TREE" />
+					</View>
 					{
 						hostLesson && !isEmpty(hostLesson.articles) ?
 							get(hostLesson, 'articles', []).map(item => {
@@ -256,9 +260,9 @@ const RenderDetailLesson = ({ lessonItem, isBar, _handleSelect, activeDetail }) 
 	useEffect(() => {
 		if (activeDetail && lessonItem && lessonItem.children) {
 			if (lessonItem.children && lessonItem.children[0]) {
-				setTimeout(() => {
-					setExpandedDetail(0)
-				}, 1500)
+				// setTimeout(() => {
+				// setExpandedDetail(0)
+				// }, 1500)
 			}
 
 		}

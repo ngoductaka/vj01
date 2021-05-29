@@ -419,7 +419,7 @@ export const RenderRow = ({ indexItem = '', row, indexRow=0, setShowImg = () => 
               </View>
             } else if (type == 'ads') {
               if (indexRow > 20 || indexRow < 10) {
-                return <ViewWithBanner index={indexRow} />
+                return <ViewWithBanner type="LESSON_LIST" index={indexRow} />
               }
               return <BannerAd type={indexRow} />
             }

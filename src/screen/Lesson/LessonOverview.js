@@ -413,7 +413,7 @@ const LessonOverview = (props) => {
                             {
                                 get(chapterData, '[0]') ? <RenderChapterLesson advertParam={otherAdvert} handleNavigate={handleNavigate} data={get(chapterData, '[0]')} SeeMore={SeeMore} /> : null
                             }
-                            <ViewWithBanner />
+                            <ViewWithBanner type="LESSON_OVERVIEW" />
                             {
                                 dataLesson.find(item => item.type == 'exam') ?
                                     <ExcerciseItem data={dataLesson.find(item => item.type == 'exam').data} advertParam={otherAdvert} handleNavigate={handleNavigate} book={get(_dataLesson, 'data.book')} lessonId={lessonId} SeeMore={SeeMore} />
