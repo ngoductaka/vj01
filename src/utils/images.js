@@ -270,6 +270,7 @@ export const images = {
     gametrainbg: require('../public/image/gametrainbg.png'),
     gameTetris: require('../public/image/tetrisgame.png'),
     timetable: require('../public/image/timetable.png'),
+    units_convert: require('../public/image/units_convert.png'),
     transcript: require('../public/image/transcript.png'),
     calculator: require('../public/image/calculator.png'),
     dic: require('../public/image/dic.png'),

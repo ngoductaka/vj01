@@ -72,6 +72,7 @@ import TimeTable from '../screen/Utilities/TimeTable';
 import ScroreAnalyse from '../screen/Utilities/ScroreAnalyse';
 import Dictionary from '../screen/Utilities/Dictionary';
 import Calculator from '../screen/Utilities/Calculator';
+import UnitConvert from '../screen/Utilities/UnitConvert';
 import UtilitiesCenter from '../screen/Utilities';
 import SudokuInstruction from '../screen/GameCenter/Sudoku/containers/Instruction';
 
@@ -455,6 +456,12 @@ const InAppStack = createStackNavigator({
 	ScroreAnalyse: ScroreAnalyse,
 	Calculator: {
 		screen: Calculator,
+		navigationOptions: {
+			...TransitionPresets.ModalSlideFromBottomIOS,
+		}
+	},
+	UnitConvert: {
+		screen: UnitConvert,
 		navigationOptions: {
 			...TransitionPresets.ModalSlideFromBottomIOS,
 		}

@@ -503,6 +503,8 @@ PODS:
     - React-Core
   - RNCMaskedView (0.1.10):
     - React
+  - RNCPicker (1.16.1):
+    - React-Core
   - RNCPushNotificationIOS (1.8.0):
     - React-Core
   - RNDeviceInfo (5.6.5):
@@ -647,6 +649,7 @@ DEPENDENCIES:
   - "RNAppleAuthentication (from `../node_modules/@invertase/react-native-apple-authentication`)"
   - "RNCAsyncStorage (from `../node_modules/@react-native-community/async-storage`)"
   - "RNCMaskedView (from `../node_modules/@react-native-community/masked-view`)"
+  - "RNCPicker (from `../node_modules/@react-native-picker/picker`)"
   - "RNCPushNotificationIOS (from `../node_modules/@react-native-community/push-notification-ios`)"
   - RNDeviceInfo (from `../node_modules/react-native-device-info`)
   - RNExitApp (from `../node_modules/react-native-exit-app`)
@@ -819,6 +822,8 @@ EXTERNAL SOURCES:
     :path: "../node_modules/@react-native-community/async-storage"
   RNCMaskedView:
     :path: "../node_modules/@react-native-community/masked-view"
+  RNCPicker:
+    :path: "../node_modules/@react-native-picker/picker"
   RNCPushNotificationIOS:
     :path: "../node_modules/@react-native-community/push-notification-ios"
   RNDeviceInfo:
@@ -945,6 +950,7 @@ SPEC CHECKSUMS:
   RNAppleAuthentication: 46cbc67739bae83ca229497f9b0038f3f5431443
   RNCAsyncStorage: b03032fdbdb725bea0bd9e5ec5a7272865ae7398
   RNCMaskedView: 5a8ec07677aa885546a0d98da336457e2bea557f
+  RNCPicker: 61c7a0645b9e4ac67960aa7f22a3effcecfdfb8d
   RNCPushNotificationIOS: 61a7c72bd1ebad3568025957d001e0f0e7b32191
   RNDeviceInfo: c5f8f3a456adcbba405ace475254b08febc4c095
   RNExitApp: c4e052df2568b43bec8a37c7cd61194d4cfee2c3

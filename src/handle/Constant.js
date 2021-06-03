@@ -102,6 +102,12 @@ export const LIST_UTILITIES = [
 		name: 'Từ điển', slogan: 'Từ điển anh việt', route: 'Dictionary'
 	},
 	{
+		src: images.units_convert,
+		name: 'Đổi đơn vị',
+		slogan: 'Chuyển đổi nhanh',
+		route: 'UnitConvert'
+	},
+	{
 		src: images.timetable,
 		name: 'Thời khoá biểu',
 		slogan: 'Lên lịch học tập',
