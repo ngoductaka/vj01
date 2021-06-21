@@ -15,6 +15,8 @@ import firebase from 'react-native-firebase';
 import moment from 'moment';
 import ModalBox from 'react-native-modalbox';
 
+import LottieView from 'lottie-react-native';
+
 
 import MenuItem, { NUMBER_COLUMS } from '../../component/menuItem';
 import api, { Loading, useRequest, handleTimeInfo } from '../../handle/api';
@@ -44,8 +46,8 @@ import { localNotificationService } from '../../utils/notificationServices';
 import { GameItem } from '../GameCenter';
 import { UtilitiesItem } from '../Utilities';
 import { useDeepLink } from '../../utils/useDeeplink';
-import { ViewWithBanner } from '../../utils/facebookAds';
-
+import { ViewWithBanner, FbNativeBanner } from '../../utils/facebookAds';
+import LiveStream from './component/LiveStream';
 const { width } = Dimensions.get('window');
 
 const TAG = 'lesson';
@@ -397,6 +399,9 @@ const Class = memo((props) => {
 							}}
 							keyExtractor={(item, index) => index + 'game_item'}
 						/>
+
+						<LiveStream />
+
 						{/* <ViewWithBanner /> */}
 						{helpers.isIOS ? null :
 							<>
@@ -494,8 +499,8 @@ const Class = memo((props) => {
 							style={{ height: null, width: null, flex: 1 }}
 						/>
 					</TouchableOpacity>
-					<TouchableOpacity onPress={() => setShowImg(false)} style={{alignSelf: 'center'}}>
-						<Animatable.View delay={1000} animation="rotate" style={{ height: 50, width: 50, borderRadius: 50, backgroundColor: '#fefefe', justifyContent: 'center', alignItems: 'center'}}>
+					<TouchableOpacity onPress={() => setShowImg(false)} style={{ alignSelf: 'center' }}>
+						<Animatable.View delay={1000} animation="rotate" style={{ height: 50, width: 50, borderRadius: 50, backgroundColor: '#fefefe', justifyContent: 'center', alignItems: 'center' }}>
 							<Icon name='close' style={{ fontSize: 40 }} />
 						</Animatable.View>
 					</TouchableOpacity>
@@ -859,31 +864,54 @@ const RecommendCoure = ({ dataRecommend, navigate, dataContinue, setVisible }) =
 const HeaderView = (props, noti = 0, getNumberOfUnseenNoti = () => { }, avatarIdx) => {
 
 	return (
-		<View style={{}}>
-			<View style={{ flex: 1, }}>
-				<View style={{ paddingTop: (helpers.isIpX ? 15 : 0) + helpers.statusBarHeight, paddingHorizontal: 10, marginBottom: 10, flexDirection: 'row', alignItems: 'center', paddingBottom: 20 }}>
+		<View>
+			<View style={{ flex: 1 }}>
 
-					<TouchableOpacity onPress={() => props.navigation.navigate('AccountStack')} style={{ width: 38, height: 38, padding: 4, borderRadius: 20, marginRight: 10, borderWidth: 1, borderColor: COLOR.black(.08) }}>
-						<Image
-							source={avatarIndex[avatarIdx || 0].img}
-							style={{ flex: 1, width: null, height: null, resizeMode: 'contain' }}
-						/>
-					</TouchableOpacity>
+				<LottieView
+					autoPlay
+					loop
+					style={{ width: width, height: 130, alignSelf: 'center' }}
+					source={require('../../public/12055-snowing.json')}
+				/>
+				<LinearGradient
+					colors={['rgba(253, 193, 83, 0.9)', '#fff']}
+					start={{ x: 0, y: 0 }}
+					end={{ x: 0, y: 1 }}
 
-					<TouchableOpacity onPress={() => props.navigation.navigate('SearchView')} style={{ flex: 1, borderRadius: 38, flexDirection: 'row', alignItems: 'center', paddingVertical: 8, paddingLeft: 10, backgroundColor: 'white', backgroundColor: '#F3F3F3', }}>
-						<Icon name='search' type='Feather' style={{ fontSize: 20, color: '#888888' }} />
-						<Text numberOfLines={1} style={{ ...fontMaker({ weight: fontStyles.Regular }), marginHorizontal: 10, color: '#888888', flex: 1 }}>Tìm kiếm bài tập, đề thi, bài giảng...</Text>
+					style={{
+						position: 'absolute', left: 0, right: 0, opacity: 0.91,
+
+						paddingTop: (helpers.isIpX ? 15 : 0) + helpers.statusBarHeight,
+						paddingHorizontal: 10, marginBottom: 10, paddingBottom: 20
+					}}>
+					<View style={{ flexDirection: 'row', alignItems: 'center', }}>
+
+
+						<TouchableOpacity onPress={() => props.navigation.navigate('AccountStack')} style={{ width: 38, height: 38, padding: 4, borderRadius: 20, marginRight: 10, borderWidth: 1, borderColor: COLOR.black(.08) }}>
+							<Image
+								source={avatarIndex[avatarIdx || 0].img}
+								style={{ flex: 1, width: null, height: null, resizeMode: 'contain' }}
+							/>
+						</TouchableOpacity>
+
+						<TouchableOpacity onPress={() => props.navigation.navigate('SearchView')} style={{ flex: 1, borderRadius: 38, flexDirection: 'row', alignItems: 'center', paddingVertical: 8, paddingLeft: 10, backgroundColor: 'white', backgroundColor: '#F3F3F3', }}>
+							<Icon name='search' type='Feather' style={{ fontSize: 20, color: '#888888' }} />
+							<Text numberOfLines={1} style={{ ...fontMaker({ weight: fontStyles.Regular }), marginHorizontal: 10, color: '#888888', flex: 1 }}>Tìm kiếm bài tập, đề thi, bài giảng...</Text>
+						</TouchableOpacity>
+						<TouchableOpacity onPress={() => props.navigation.navigate('Notification', { getNumberOfUnseenNoti })} style={{ alignItems: 'center', paddingLeft: 10, }}>
+							<Icon name='bell' type='Entypo' style={{ fontSize: 28, color: noti > 0 ? COLOR.MAIN_GREEN : COLOR.black(.6), alignSelf: 'center' }} />
+							{noti > 0 &&
+								<View style={{ width: 18, height: 18, borderRadius: 10, justifyContent: 'center', alignItems: 'center', position: 'absolute', top: 8, right: -2, backgroundColor: 'red' }}>
+									<Text style={{ fontSize: 12, color: COLOR.white(1) }}>{noti}</Text>
+								</View>
+							}
+						</TouchableOpacity>
+					</View>
+					<TouchableOpacity onPress={() => openLink('https://khoahoc.vietjack.com/khoa-hoc')} style={{ marginVertical: 10 }}>
+						<Animatable.Text duration={1500} animation="bounceInLeft" style={{ ...fontMaker({ weight: fontStyles.Light }), color: '#777BF0', fontSize: 20 }}>Khoá học đồng giá 250k</Animatable.Text>
 					</TouchableOpacity>
-					<TouchableOpacity onPress={() => props.navigation.navigate('Notification', { getNumberOfUnseenNoti })} style={{ alignItems: 'center', paddingLeft: 10, }}>
-						<Icon name='bell' type='Entypo' style={{ fontSize: 28, color: noti > 0 ? COLOR.MAIN_GREEN : COLOR.black(.6), alignSelf: 'center' }} />
-						{noti > 0 &&
-							<View style={{ width: 18, height: 18, borderRadius: 10, justifyContent: 'center', alignItems: 'center', position: 'absolute', top: 8, right: -2, backgroundColor: 'red' }}>
-								<Text style={{ fontSize: 12, color: COLOR.white(1) }}>{noti}</Text>
-							</View>
-						}
-					</TouchableOpacity>
-				</View>
-				<View style={{ paddingHorizontal: 10, paddingTop: 10 }} >
+				</LinearGradient>
+				<View style={{ paddingHorizontal: 10, borderTopEndRadius: 20 }} >
 					<Animatable.Text duration={2000} animation="bounceInLeft" style={{ ...fontMaker({ weight: fontStyles.Light }), color: '#777BF0', fontSize: 26, }}>{GetTime()}</Animatable.Text>
 					<Animatable.View duration={2500} animation="bounceInLeft" delay={200}>
 						<GradientText
@@ -894,6 +922,18 @@ const HeaderView = (props, noti = 0, getNumberOfUnseenNoti = () => { }, avatarId
 				</View>
 			</View>
 		</View>)
+}
+
+const openLink = async (url) => {
+	const supported = await Linking.canOpenURL(url);
+
+	if (supported) {
+		// Opening the link with some app, if the URL scheme is "http" the web link should be opened
+		// by some browser in the mobile
+		await Linking.openURL(url);
+	} else {
+		Alert.alert(`Don't know how to open this URL: ${url}`);
+	}
 }
 
 

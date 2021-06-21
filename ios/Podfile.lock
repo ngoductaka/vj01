@@ -524,7 +524,7 @@ PODS:
     - Fabric
     - Firebase/Core
     - React
-  - RNGestureHandler (1.9.0):
+  - RNGestureHandler (1.10.3):
     - React-Core
   - RNGoogleSignin (6.0.0):
     - GoogleSignIn (~> 5.0.0)
@@ -956,7 +956,7 @@ SPEC CHECKSUMS:
   RNExitApp: c4e052df2568b43bec8a37c7cd61194d4cfee2c3
   RNFastImage: d4870d58f5936111c56218dbd7fcfc18e65b58ff
   RNFirebase: 37daa9a346d070f9f6ee1f3b4aaf4c8e3b1d5d1c
-  RNGestureHandler: 9b7e605a741412e20e13c512738a31bd1611759b
+  RNGestureHandler: a479ebd5ed4221a810967000735517df0d2db211
   RNGoogleSignin: 111fd4792913208f338fe3178005f7a22e490ff9
   RNImageCropPicker: 9e0bf18cf4184a846fed55747c8e622208b39947
   RNPermissions: 99dd8d4a30ff13509b949ca63cd1f69edc461775
@@ -976,4 +976,4 @@ SPEC CHECKSUMS:
 
 PODFILE CHECKSUM: 1822369b1722b5c55cf2c29e58ab0ca3dd5cd8dc
 
-COCOAPODS: 1.9.1
+COCOAPODS: 1.10.1

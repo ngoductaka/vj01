@@ -76,6 +76,11 @@ export const placementIdBanner2 = Platform.select({
     android: '688221958666283_700255430796269',
 }); // ios Biểu ngữ
 
+const bannerNative = Platform.select({
+    android: '688221958666283_700255614129584',
+    ios: '688221958666283_700259390795873',
+})
+
 const BANNER_ADS = {
     BOOK_BN: Platform.select({
         ios: '688221958666283_877020706453073',
@@ -132,6 +137,32 @@ export function ViewWithBanner({ index = 0, type = "" } = {}) {
                     // onPress={() => console.log('click')}
                     onLoad={() => {
                         // setFb(false)
+                        console.log('<load facebook banner ads>')
+                    }}
+                    onError={(err) => {
+                        setFb(false)
+                        console.log('<err load banner===========>')
+                    }}
+                />
+            </View>
+        );
+    } else {
+        return <BannerAd />
+
+    }
+}
+
+
+export function FbNativeBanner({ index = 0, type = "" } = {}) {
+    const [fb, setFb] = useState(true);
+    if (fb) {
+        return (
+            <View style={{ width: widthAd }}>
+                {/* <Text style={{ textAlign: 'center', marginTop: 5 }}>.Quảng cáo.</Text> */}
+                <BannerView
+                    placementId={index > 10 ? placementIdBanner : (type ? BANNER_ADS[type]: placementIdBanner)}
+                    type="rectangle"//large" //"standard"
+                    onLoad={() => {
                         console.log('<load facebook banner ads>')
                     }}
                     onError={(err) => {
