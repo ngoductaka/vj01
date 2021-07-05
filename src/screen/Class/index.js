@@ -361,7 +361,26 @@ const Class = memo((props) => {
 				headerView={HeaderView(props, noti, getNumberOfUnseenNoti, get(props.userInfo, 'user.avatar_id', 0))}
 				contentStyle={{ padding: 0 }}
 			>
-				<View style={{ flex: 1, padding: 10 }}>
+				<View style={{ flex: 1, padding: 10, paddingRight: 0 }}>
+					<TouchableOpacity onPress={() => openLink('https://m.me/hoc.cung.vietjack')}>
+						<LinearGradient
+							colors={["#F4D6E8", '#FFE7E9', '#fefefe']}
+							start={{ x: 0, y: 0 }}
+							end={{ x: 1, y: 1 }}
+							style={{ backgroundColor: '#efefef', borderRadius: 10, flexDirection: 'row', alignItems: 'center', paddingHorizontal: 10, paddingRight: 0 }}>
+							<LottieView
+								autoPlay
+								loop
+								style={{ height: 100, width: 100, alignSelf: 'center' }}
+								source={require('../../public/learning-web-site.json')}
+							/>
+							<View style={{ paddingHorizontal: 10, flex: 1, paddingTop: 10 }}>
+								<Animatable.Text duration={1500} animation="bounceInRight" delay={200} style={{ marginLeft: -6, fontSize: 16, fontWeight: 'bold', ...fontMaker({ weight: fontStyles.Regular }) }}>Ưu đãi lớn bất ngờ từ vietjack</Animatable.Text>
+								<Animatable.Text duration={2500} animation="bounceInRight" delay={200} style={{ fontSize: 15, marginTop: 10, marginBottom: 8, ...fontMaker({ weight: fontStyles.Light }) }}>Tất cả khoá học chỉ với 250k </Animatable.Text>
+								<Animatable.Text duration={3500} animation="bounceInRight" delay={200} style={{ marginLeft: -5, ...fontMaker({ weight: fontStyles.Thin }) }}>Nhận tư vấn ngay ></Animatable.Text>
+							</View>
+						</LinearGradient>
+					</TouchableOpacity>
 					<FlatList
 						style={{ marginVertical: 20, marginTop: 25 }}
 						data={get(dataAllBook, 'data', [])}
@@ -400,7 +419,7 @@ const Class = memo((props) => {
 							keyExtractor={(item, index) => index + 'game_item'}
 						/>
 
-						<LiveStream />
+						{/* <LiveStream /> */}
 
 						{/* <ViewWithBanner /> */}
 						{helpers.isIOS ? null :
@@ -866,11 +885,10 @@ const HeaderView = (props, noti = 0, getNumberOfUnseenNoti = () => { }, avatarId
 	return (
 		<View>
 			<View style={{ flex: 1 }}>
-
 				<LottieView
 					autoPlay
 					loop
-					style={{ width: width, height: 130, alignSelf: 'center' }}
+					style={{ width: width, height: 100, alignSelf: 'center' }}
 					source={require('../../public/12055-snowing.json')}
 				/>
 				<LinearGradient
@@ -907,9 +925,6 @@ const HeaderView = (props, noti = 0, getNumberOfUnseenNoti = () => { }, avatarId
 							}
 						</TouchableOpacity>
 					</View>
-					<TouchableOpacity onPress={() => openLink('https://khoahoc.vietjack.com/khoa-hoc')} style={{ marginVertical: 10 }}>
-						<Animatable.Text duration={1500} animation="bounceInLeft" style={{ ...fontMaker({ weight: fontStyles.Light }), color: '#777BF0', fontSize: 20 }}>Khoá học đồng giá 250k</Animatable.Text>
-					</TouchableOpacity>
 				</LinearGradient>
 				<View style={{ paddingHorizontal: 10, borderTopEndRadius: 20 }} >
 					<Animatable.Text duration={2000} animation="bounceInLeft" style={{ ...fontMaker({ weight: fontStyles.Light }), color: '#777BF0', fontSize: 26, }}>{GetTime()}</Animatable.Text>
