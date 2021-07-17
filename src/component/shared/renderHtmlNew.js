@@ -418,9 +418,9 @@ export const RenderRow = ({ indexItem = '', row, indexRow=0, setShowImg = () => 
                 <Sound url={content} />
               </View>
             } else if (type == 'ads') {
-              if (indexRow > 20 || indexRow < 10) {
-                return <ViewWithBanner type="LESSON_LIST" index={indexRow} />
-              }
+              // if (indexRow > 20) {
+              //   return <ViewWithBanner type="LESSON_LIST" index={indexRow} />
+              // }
               return <BannerAd type={indexRow} />
             }
             else return null;

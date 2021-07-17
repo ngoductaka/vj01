@@ -41,7 +41,7 @@ const BannerAd = ({ height = 300, type = 1, isShow = true }) => {
                     size={`${widthAd}x${height}`}
                     request={request.build()}
                     onAdLoaded={() => {
-                        // console.log('admob_tungbt_success', 'Advert loaded');
+                        // console.log('admob_tungbt_success', type < 10 ? unitId : (type < 20 ? unitId2 : unitId1));
                     }}
                     onAdFailedToLoad={err => {
                         // console.log('admob_tungbt_err', err.code);
