@@ -2,7 +2,7 @@
 import React, { memo, useState, useEffect, useRef, useCallback, useSelector } from 'react';
 import {
 	View, BackHandler, FlatList, SafeAreaView, ScrollView, Text, StyleSheet, Linking,
-	Platform, Dimensions, TouchableOpacity, Image, StatusBar, Alert, ActivityIndicator
+	Platform, Dimensions, TouchableOpacity, Image, StatusBar, Alert, ActivityIndicator, ImageBackground
 } from 'react-native';
 import { connect, useDispatch } from 'react-redux';
 import Share from 'react-native-share';
@@ -17,10 +17,9 @@ import ModalBox from 'react-native-modalbox';
 
 import LottieView from 'lottie-react-native';
 
-
 import MenuItem, { NUMBER_COLUMS } from '../../component/menuItem';
 import api, { Loading, useRequest, handleTimeInfo } from '../../handle/api';
-import { Icon, Card } from 'native-base';
+import { Icon, Card, Tabs, Tab, ScrollableTab } from 'native-base';
 import { setRatingStatus, setUserInfo, setDeviceInfo } from '../../redux/action/user_info';
 import { RatingModal } from '../../component/RatingModal';
 import { images } from '../../utils/images';
@@ -48,7 +47,11 @@ import { UtilitiesItem } from '../Utilities';
 import { useDeepLink } from '../../utils/useDeeplink';
 import { ViewWithBanner, FbNativeBanner } from '../../utils/facebookAds';
 import LiveStream from './component/LiveStream';
+import { Colors } from '../../utils/colors';
+import LiveNow from './component/LiveNow';
+
 const { width } = Dimensions.get('window');
+
 
 const TAG = 'lesson';
 
@@ -135,15 +138,7 @@ const Class = memo((props) => {
 		}
 	}
 
-	// useEffect(() => {
-	// 	// if (props.rated === 0) {
-	// 	handleTimeInfo();
-	// 	console.log('asajhsajhskjahskjas');
-	// 	// }
-	// }, [props.rated]);
-
 	const [dataAllBook, isLoading, err] = useRequest(`/subjects?grade_id=${props.userInfo.class}`, [props.userInfo.class]);
-	// console.log('dataAllBook000', dataAllBook)
 
 	const _handleNavigation = (dataBook) => {
 		const {
@@ -346,7 +341,7 @@ const Class = memo((props) => {
 		}
 	}, [props.userInfo.class, dataAllBook]);
 
-	const [dataContinue] = useRequest('/lessons/continue/learn', [1]);
+	// const [dataContinue] = useRequest('/lessons/continue/learn', [1]);
 	// const [dataRecommend] = useRequest('/lessons/recommend/learn', [1]);
 	useDeepLink(props.navigation);
 
@@ -362,55 +357,77 @@ const Class = memo((props) => {
 				contentStyle={{ padding: 0 }}
 			>
 				<View style={{ flex: 1, padding: 10, paddingRight: 0 }}>
-					<TouchableOpacity onPress={() => openLink('https://m.me/hoc.cung.vietjack')}>
-						<LinearGradient
-							colors={["#F4D6E8", '#FFE7E9', '#fefefe']}
-							start={{ x: 0, y: 0 }}
-							end={{ x: 1, y: 1 }}
-							style={{ backgroundColor: '#efefef', borderRadius: 10, flexDirection: 'row', alignItems: 'center', paddingHorizontal: 10, paddingRight: 0 }}>
-							<LottieView
-								autoPlay
-								loop
-								style={{ height: 100, width: 100, alignSelf: 'center' }}
-								source={require('../../public/learning-web-site.json')}
+					{
+						props.userInfo.class == 6 ?
+							<Tabs renderTabBar={() => <ScrollableTab />}
+								tabContainerStyle={styles.barContainer} tabBarUnderlineStyle={{ height: 2, backgroundColor: Colors.pri }} tabBarActiveTextColor={Colors.pri} tabBarBackgroundColor={Colors.white}>
+								<Tab textStyle={styles.textStyle}
+									activeTextStyle={styles.activeTextStyle}
+									activeTabStyle={styles.activeTabStyle} tabStyle={styles.tabStyle}
+									heading="Cánh diều">
+									<FlatList
+										style={{ marginVertical: 20, marginTop: 25 }}
+										data={get(dataAllBook, 'data', []).filter(i => i.subject_type == 1)}
+										renderItem={({ item, index }) => _renderMenuItem(item, index, _handleNavigation)}
+										numColumns={NUMBER_COLUMS}
+										keyExtractor={(_, index) => 'book_item' + index.toString()}
+									/>
+								</Tab>
+								<Tab textStyle={styles.textStyle} activeTextStyle={styles.activeTextStyle} activeTabStyle={styles.activeTabStyle} tabStyle={styles.tabStyle} heading="Kết nối tri thức ...">
+									<FlatList
+										style={{ marginVertical: 20, marginTop: 25 }}
+										data={get(dataAllBook, 'data', []).filter(i => i.subject_type == 2)}
+										renderItem={({ item, index }) => _renderMenuItem(item, index, _handleNavigation)}
+										numColumns={NUMBER_COLUMS}
+										keyExtractor={(_, index) => 'book_item' + index.toString()}
+									/>
+								</Tab>
+								<Tab textStyle={styles.textStyle} activeTextStyle={styles.activeTextStyle} activeTabStyle={styles.activeTabStyle} tabStyle={styles.tabStyle} heading="Chân trời sáng tạo">
+									<FlatList
+										style={{ marginVertical: 20, marginTop: 25 }}
+										data={get(dataAllBook, 'data', []).filter(i => i.subject_type == 3)}
+										renderItem={({ item, index }) => _renderMenuItem(item, index, _handleNavigation)}
+										numColumns={NUMBER_COLUMS}
+										keyExtractor={(_, index) => 'book_item' + index.toString()}
+									/>
+								</Tab>
+							</Tabs> :
+							<FlatList
+								style={{ marginVertical: 20, marginTop: 25 }}
+								data={get(dataAllBook, 'data', [])}
+								renderItem={({ item, index }) => _renderMenuItem(item, index, _handleNavigation)}
+								numColumns={NUMBER_COLUMS}
+								keyExtractor={(_, index) => 'book_item' + index.toString()}
 							/>
-							<View style={{ paddingHorizontal: 10, flex: 1, paddingTop: 10 }}>
-								<Animatable.Text duration={1500} animation="bounceInRight" delay={200} style={{ marginLeft: -6, fontSize: 16, fontWeight: 'bold', ...fontMaker({ weight: fontStyles.Regular }) }}>Ưu đãi lớn bất ngờ từ vietjack</Animatable.Text>
-								<Animatable.Text duration={2500} animation="bounceInRight" delay={200} style={{ fontSize: 15, marginTop: 10, marginBottom: 8, ...fontMaker({ weight: fontStyles.Light }) }}>Tất cả khoá học chỉ với 250k </Animatable.Text>
-								<Animatable.Text duration={3500} animation="bounceInRight" delay={200} style={{ marginLeft: -5, ...fontMaker({ weight: fontStyles.Thin }) }}>Nhận tư vấn ngay ></Animatable.Text>
-							</View>
-						</LinearGradient>
-					</TouchableOpacity>
-					<FlatList
-						style={{ marginVertical: 20, marginTop: 25 }}
-						data={get(dataAllBook, 'data', [])}
-						renderItem={({ item, index }) => _renderMenuItem(item, index, _handleNavigation)}
-						numColumns={NUMBER_COLUMS}
-						keyExtractor={(_, index) => 'book_item' + index.toString()}
-					/>
+
+
+					}
+					<LiveStream />
+
+					{/*  */}
 
 					<View style={{ marginBottom: 30 }}>
 
 						{/* utiliti */}
 						<View style={{
 							flexDirection: 'row', alignItems: 'center',
-							justifyContent: 'space-between', marginVertical: 10,
+							justifyContent: 'space-between', marginVertical: 10, marginRight: 20
 						}}>
 							<Text style={{ fontSize: 18, ...fontMaker({ weight: fontStyles.SemiBold }) }}>Kho Tiện ích</Text>
-							<TouchableOpacity
+							{/* <TouchableOpacity
 								onPress={() => navigation.navigate('UtilitiesCenter')}
 								style={{}}>
 								<Text style={{ fontSize: 14, ...fontMaker({ weight: fontStyles.Regular }), textDecorationColor: COLOR.MAIN, color: COLOR.MAIN }}>Xem tất cả</Text>
-							</TouchableOpacity>
+							</TouchableOpacity> */}
 						</View>
 						<FlatList
 							style={{}}
 							data={LIST_UTILITIES}
 							// pagingEnabled={true}
-							showsHorizontalScrollIndicator={false}
+							// showsHorizontalScrollIndicator={false}
 							// legacyImplementation={false}
-							// numColumns={4}
-							horizontal
+							numColumns={3}
+							// horizontal
 							renderItem={({ item, index }) => {
 								return (
 									<UtilitiesItem src={item.src} name={item.name} slogan={item.slogan} navigation={navigation} route={item.route} />
@@ -419,7 +436,6 @@ const Class = memo((props) => {
 							keyExtractor={(item, index) => index + 'game_item'}
 						/>
 
-						{/* <LiveStream /> */}
 
 						{/* <ViewWithBanner /> */}
 						{helpers.isIOS ? null :
@@ -447,12 +463,7 @@ const Class = memo((props) => {
 						{/* hot exam */}
 						<HotExam classId={props.userInfo.class} loading={hostLoading} hotSubIdx={hotSubIdx} setHotSubIdx={setHotSubIdx} hotExamData={get(hostLesson, 'exams', [])} navigation={navigation} />
 						{/* continue learning */}
-						<ContinueLearn setVisible={setVisible} dataContinue={dataContinue} navigate={navigation.navigate} />
-						{/* fanpage */}
-						{/* <FanpageBanner /> */}
-						{/* resume learning */}
-						{/* <RecommendCoure dataRecommend={dataRecommend} dataContinue={dataContinue} setVisible={setVisible} navigate={navigation.navigate} /> */}
-
+						{/* <ContinueLearn setVisible={setVisible} dataContinue={dataContinue} navigate={navigation.navigate} /> */}
 						{/* share app */}
 						<Text style={{ ...fontMaker({ weight: fontStyles.SemiBold }), fontSize: 18, marginTop: 20, marginBottom: 5, }}>Chia sẻ ứng dụng</Text>
 						<RecommendShareCard
@@ -460,6 +471,7 @@ const Class = memo((props) => {
 						/>
 					</View>
 				</View>
+
 			</ViewContainer>
 			<RatingModal
 				show={showRating}
@@ -525,6 +537,7 @@ const Class = memo((props) => {
 					</TouchableOpacity>
 				</View>
 			</ModalBox>
+			<LiveNow />
 		</View >
 	)
 })
@@ -566,6 +579,25 @@ const styles = StyleSheet.create({
 		shadowOffset: { width: 12, height: 3 },
 	},
 	btn: { marginTop: 20, flexDirection: 'row', alignItems: 'center', paddingVertical: 5, paddingHorizontal: 20, borderRadius: 25, },
+	barContainer: { height: 33, borderTopWidth: 0, borderTopColor: 'white', elevation: 0 },
+	tabContainerStyle: {
+		backgroundColor: Colors.white,
+	},
+	activeTabStyle: {
+		backgroundColor: Colors.white,
+	},
+	tabStyle: {
+		backgroundColor: Colors.white,
+	},
+	textStyle: {
+		fontSize: 15,
+		color: '#000'
+	},
+	activeTextStyle: {
+		fontSize: 17,
+		fontWeight: 'bold',
+		color: Colors.pri,
+	},
 })
 
 const mapDispatchToProps = dispatch => {
@@ -630,7 +662,7 @@ const HotExam = ({ navigate, hotExamData, classId = null, setHotSubIdx = () => {
 					Đang thi nhiều
 				</Text>
 				<TouchableOpacity onPress={() => navigation.navigate('TestStack')}>
-					<Text style={{ fontSize: 14, ...fontMaker({ weight: fontStyles.Regular }), textDecorationColor: COLOR.MAIN, color: COLOR.MAIN }}>Xem thêm</Text>
+					<Text style={{ fontSize: 14, marginRight: 20, ...fontMaker({ weight: fontStyles.Regular }), textDecorationColor: COLOR.MAIN, color: COLOR.MAIN }}>Xem thêm</Text>
 				</TouchableOpacity>
 			</View>
 			{classId &&
@@ -879,54 +911,37 @@ const RecommendCoure = ({ dataRecommend, navigate, dataContinue, setVisible }) =
 	)
 }
 
-
 const HeaderView = (props, noti = 0, getNumberOfUnseenNoti = () => { }, avatarIdx) => {
-
+	console.log('123')
 	return (
-		<View>
-			<View style={{ flex: 1 }}>
-				<LottieView
-					autoPlay
-					loop
-					style={{ width: width, height: 100, alignSelf: 'center' }}
-					source={require('../../public/12055-snowing.json')}
-				/>
-				<LinearGradient
-					colors={['rgba(253, 193, 83, 0.9)', '#fff']}
-					start={{ x: 0, y: 0 }}
-					end={{ x: 0, y: 1 }}
+		<View style={{}}>
+			<View style={{ flex: 1, }}>
+				<View style={{ paddingTop: (helpers.isIpX ? 15 : 0) + helpers.statusBarHeight, paddingHorizontal: 10, flexDirection: 'row', alignItems: 'center', paddingBottom: 10 }}>
+					<TouchableOpacity onPress={() => props.navigation.navigate('AccountStack')} style={{ width: 38, height: 38, padding: 4, borderRadius: 20, marginRight: 10, borderWidth: 1, borderColor: COLOR.black(.08) }}>
+						<Image
+							source={avatarIndex[avatarIdx || 0].img}
+							style={{ flex: 1, width: null, height: null, resizeMode: 'contain' }}
+						/>
+					</TouchableOpacity>
 
-					style={{
-						position: 'absolute', left: 0, right: 0, opacity: 0.91,
+					<TouchableOpacity onPress={() => props.navigation.navigate('SearchView')} style={{ flex: 1, borderRadius: 38, flexDirection: 'row', alignItems: 'center', paddingVertical: 8, paddingLeft: 10, backgroundColor: 'white', backgroundColor: '#F3F3F3', }}>
+						<Icon name='search' type='Feather' style={{ fontSize: 20, color: '#888888' }} />
+						<Text numberOfLines={1} style={{ ...fontMaker({ weight: fontStyles.Regular }), marginHorizontal: 10, color: '#888888', flex: 1 }}>Tìm kiếm bài tập, đề thi, bài giảng...</Text>
+					</TouchableOpacity>
+					<TouchableOpacity onPress={() => props.navigation.navigate('Notification', { getNumberOfUnseenNoti })} style={{ alignItems: 'center', paddingLeft: 10, }}>
+						<Icon name='bell' type='Entypo' style={{ fontSize: 28, color: noti > 0 ? COLOR.MAIN_GREEN : COLOR.black(.6), alignSelf: 'center' }} />
+						{noti > 0 &&
+							<View style={{ width: 18, height: 18, borderRadius: 10, justifyContent: 'center', alignItems: 'center', position: 'absolute', top: 8, right: -2, backgroundColor: 'red' }}>
+								<Text style={{ fontSize: 12, color: COLOR.white(1) }}>{noti}</Text>
+							</View>
+						}
+					</TouchableOpacity>
+				</View>
 
-						paddingTop: (helpers.isIpX ? 15 : 0) + helpers.statusBarHeight,
-						paddingHorizontal: 10, marginBottom: 10, paddingBottom: 20
-					}}>
-					<View style={{ flexDirection: 'row', alignItems: 'center', }}>
-
-
-						<TouchableOpacity onPress={() => props.navigation.navigate('AccountStack')} style={{ width: 38, height: 38, padding: 4, borderRadius: 20, marginRight: 10, borderWidth: 1, borderColor: COLOR.black(.08) }}>
-							<Image
-								source={avatarIndex[avatarIdx || 0].img}
-								style={{ flex: 1, width: null, height: null, resizeMode: 'contain' }}
-							/>
-						</TouchableOpacity>
-
-						<TouchableOpacity onPress={() => props.navigation.navigate('SearchView')} style={{ flex: 1, borderRadius: 38, flexDirection: 'row', alignItems: 'center', paddingVertical: 8, paddingLeft: 10, backgroundColor: 'white', backgroundColor: '#F3F3F3', }}>
-							<Icon name='search' type='Feather' style={{ fontSize: 20, color: '#888888' }} />
-							<Text numberOfLines={1} style={{ ...fontMaker({ weight: fontStyles.Regular }), marginHorizontal: 10, color: '#888888', flex: 1 }}>Tìm kiếm bài tập, đề thi, bài giảng...</Text>
-						</TouchableOpacity>
-						<TouchableOpacity onPress={() => props.navigation.navigate('Notification', { getNumberOfUnseenNoti })} style={{ alignItems: 'center', paddingLeft: 10, }}>
-							<Icon name='bell' type='Entypo' style={{ fontSize: 28, color: noti > 0 ? COLOR.MAIN_GREEN : COLOR.black(.6), alignSelf: 'center' }} />
-							{noti > 0 &&
-								<View style={{ width: 18, height: 18, borderRadius: 10, justifyContent: 'center', alignItems: 'center', position: 'absolute', top: 8, right: -2, backgroundColor: 'red' }}>
-									<Text style={{ fontSize: 12, color: COLOR.white(1) }}>{noti}</Text>
-								</View>
-							}
-						</TouchableOpacity>
-					</View>
-				</LinearGradient>
-				<View style={{ paddingHorizontal: 10, borderTopEndRadius: 20 }} >
+				{/* banner */}
+				<BannerCourse name={get(props, 'userInfo.user.name', '')} />
+				{/*  */}
+				{/* <View style={{ paddingHorizontal: 10, paddingTop: 0 }} >
 					<Animatable.Text duration={2000} animation="bounceInLeft" style={{ ...fontMaker({ weight: fontStyles.Light }), color: '#777BF0', fontSize: 26, }}>{GetTime()}</Animatable.Text>
 					<Animatable.View duration={2500} animation="bounceInLeft" delay={200}>
 						<GradientText
@@ -934,17 +949,14 @@ const HeaderView = (props, noti = 0, getNumberOfUnseenNoti = () => { }, avatarId
 							style={{ fontSize: 26, marginTop: 4, ...fontMaker({ weight: fontStyles.Bold }) }}
 						>{get(props, 'userInfo.user.name', '')}</GradientText>
 					</Animatable.View>
-				</View>
+				</View> */}
 			</View>
 		</View>)
 }
 
 const openLink = async (url) => {
 	const supported = await Linking.canOpenURL(url);
-
 	if (supported) {
-		// Opening the link with some app, if the URL scheme is "http" the web link should be opened
-		// by some browser in the mobile
 		await Linking.openURL(url);
 	} else {
 		Alert.alert(`Don't know how to open this URL: ${url}`);
@@ -952,33 +964,43 @@ const openLink = async (url) => {
 }
 
 
-// const notification = {
-// 	"_android": {
-// 		"_actions": [],
-// 		"_autoCancel": undefined,
-// 		"_badgeIconType": undefined,
-// 		"_bigPicture": {
-// 			"largeIcon": null,
-// 			"picture": "https://apps.vietjack.com:8081/logo_icon.png"
-// 		}, "_bigText": undefined, "_category": undefined, "_channelId": undefined, "_clickAction": undefined, "_color": undefined, "_colorized": undefined, "_contentInfo": undefined, "_defaults": undefined, "_group": "campaign_collapse_key_1301470110662546743", "_groupAlertBehaviour": undefined, "_groupSummary": undefined, "_largeIcon": "https://apps.vietjack.com:8081/logo_icon.png", "_lights": undefined, "_localOnly": undefined, "_notification": [Circular], "_number": undefined, "_ongoing": undefined, "_onlyAlertOnce": undefined, "_people": [], "_priority": undefined, "_progress": undefined, "_remoteInputHistory": undefined, "_shortcutId": undefined, "_showWhen": undefined, "_smallIcon": {
-// 			"icon": "ic_launcher"
-// 		}, "_sortKey": undefined, "_tag": "campaign_collapse_key_1301470110662546743", "_ticker": undefined, "_timeoutAfter": undefined, "_usesChronometer": undefined, "_vibrate": undefined, "_visibility": undefined, "_when": undefined
-// 	},
-// 	"_body": "Nỗ lực không ngừng cùng Vietjack nhé",
-// 	"_data": { },
-// 	"_ios": {
-// 		"_attachments": [], "_notification": [Circular]
-// 	},
-// 	"_notificationId": "0:1603179081129495%22ff5bc322ff5bc3",
-// 	"_sound": undefined,
-// 	"_subtitle": undefined,
-// 	"_title": "Vui học cùng vietjack"
-// }
+const BannerCourse = ({ name = "" }) => {
+	return (
+		<TouchableOpacity onPress={() => openLink('https://m.me/hoc.cung.vietjack')}>
+			<View
+				// colors={["#F4D6E8", '#FFE7E9', '#fefefe',]}
+				// start={{ x: 0, y: 0 }}
+				// end={{ x: 1, y: 1 }}
+				style={{
+					backgroundColor: '#E8F1EA',
+					// backgroundColor: '#FFE7E9', 
+					flexDirection: 'row',
+					alignItems: 'center', paddingHorizontal: 10, paddingRight: 0,
+					paddingVertical: 15,
+					// borderRadius: 10
+				}}>
+				{/* <ImageBackground resizeMethod="resize" source={images.bgSimp} style={{height: '100%', width: '100%', opacity: 0.1}}> */}
+				<LottieView
+					autoPlay
+					loop
+					style={{
+						height: 100, width: 100, alignSelf: 'center',
+						opacity: 0.7,
+						position: 'absolute', right: 0
+					}}
+					source={require('../../public/learning-web-site.json')}
+				/>
+				<View style={{ paddingHorizontal: 10, flex: 1 }}>
+					<Animatable.Text duration={1000} animation="bounceInRight" delay={200} style={{ fontSize: 18, fontWeight: 'bold', ...fontMaker({ weight: fontStyles.Regular }) }}>Xin chào <Text style={{ fontWeight: 'bold', color: '#D54B3E' }}>{name}</Text></Animatable.Text>
+					<Animatable.Text duration={1500} animation="bounceInRight" delay={200} style={{ fontSize: 23, fontWeight: 'bold', ...fontMaker({ weight: fontStyles.Regular }) }}>Ưu đãi lớn bất ngờ từ vietjack</Animatable.Text>
+					<Animatable.Text duration={2500} animation="bounceInRight" delay={200} style={{ fontSize: 16, marginTop: 10, marginBottom: 8, ...fontMaker({ weight: fontStyles.Light }) }}>Tất cả khoá học chỉ với 250k </Animatable.Text>
+					<Animatable.View duration={3500} animation="bounceInRight" delay={200} style={{ backgroundColor: '#50A664', paddingHorizontal: 9, borderRadius: 5, paddingVertical: 7, alignSelf: 'baseline' }}>
+						<Text style={{ color: '#fff' }}>Đăng ký ngay! Ưu đãi có hạn</Text>
+					</Animatable.View>
+				</View>
 
-
-const dataMes = {
-	"_collapseKey": "org.jsmile.native.vietjack",
-	"_data": {
-		"redirect_to": "{\"lesson\": {\"id\": 5178, \"parts\": [{\"id\": 439942, \"partable\": {\"id\": 6547, \"title\": \"Giải SGK - Unit 2 City life - Getting started\", \"author\": {\"id\": 144993, \"name\": \"Cô Đỗ Lê Diễm Ngọc\"}, \"author_id\": 144993}, \"lesson_id\": 5178, \"partable_id\": 6547, \"partable_type\": \"App\\\\Models\\\\Video\"}], \"title\": \"Unit 2: City life\", \"book_id\": 61, \"menu_item_id\": 5191}}", "time": "2020-10-20 11:40:14", "logo_right_side": "http://app-vietjack-server-v2.deve/logo_icon.png", "score": "850"
-	}, "_from": "62511586249", "_messageId": "-MK3IgGUwBXBkUBmbefp", "_ttl": 3600
+				{/* </ImageBackground> */}
+			</View>
+		</TouchableOpacity>
+	)
 }

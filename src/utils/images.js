@@ -274,6 +274,8 @@ export const images = {
     transcript: require('../public/image/transcript.png'),
     calculator: require('../public/image/calculator.png'),
     dic: require('../public/image/dic.png'),
+    bgSimp: require('../public/image/bg_simple.jpeg'),
+
 }
 
 export const mapImg = {

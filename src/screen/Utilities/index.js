@@ -54,8 +54,8 @@ export default GameCenter
 
 export const UtilitiesItem = ({ src = images.game1, name, slogan, navigation, route }) => {
     return (
-        <TouchableOpacity onPress={() => navigation.navigate(route)} style={{ width: (width - 40) / 3.5, marginRight: 10 }}>
-            <View style={{ width: (width - 40) / 3.5, height: (width - 40) / 3.5, padding: 10 }}>
+        <TouchableOpacity onPress={() => navigation.navigate(route)} style={{ width: (width - 40) / 3, marginRight: 10 }}>
+            <View style={{ width: (width - 40) / 3, height: (width - 40) / 3.5, padding: 10 }}>
                 <Image
                     source={src}
                     style={{ width: null, height: null, flex: 1, resizeMode: 'contain' }}

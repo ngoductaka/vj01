@@ -53,7 +53,7 @@ const LiveStream = () => {
                 layoutCardOffset={`18`}
                 loop={true}
                 loopClonesPerSide={2}
-                // autoplay={true}
+                autoplay={true}
                 autoplayDelay={500}
                 autoplayInterval={3000}
             // onSnapToItem={index => setIndex(index)}
