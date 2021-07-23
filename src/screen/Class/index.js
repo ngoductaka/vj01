@@ -912,7 +912,6 @@ const RecommendCoure = ({ dataRecommend, navigate, dataContinue, setVisible }) =
 }
 
 const HeaderView = (props, noti = 0, getNumberOfUnseenNoti = () => { }, avatarIdx) => {
-	console.log('123')
 	return (
 		<View style={{}}>
 			<View style={{ flex: 1, }}>

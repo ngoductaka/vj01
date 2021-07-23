@@ -197,75 +197,75 @@ export const mapScreenName = {
 
 const HOT_SUBJECT_CLASS = {
 	'3': [
-		{ id: 11, grade_id: 3, icon_id: 1, title: "Tiếng Việt" },
 		{ id: 12, grade_id: 3, icon_id: 3, title: "Toán" },
-		{ id: 13, grade_id: 3, icon_id: 4, title: "Tiếng Anh" }
+		{ id: 11, grade_id: 3, icon_id: 1, title: "Tiếng Việt" },
+		{ id: 13, grade_id: 3, icon_id: 4, title: "Tiếng Anh" },
 	],
 	'4': [
-		{ id: 17, grade_id: 4, icon_id: 1, title: "Tiếng Việt" },
 		{ id: 18, grade_id: 4, icon_id: 3, title: "Toán", },
+		{ id: 17, grade_id: 4, icon_id: 1, title: "Tiếng Việt" },
 		{ id: 19, grade_id: 4, icon_id: 4, title: "Tiếng Anh" },
 	],
 	'5': [
-		{ id: 24, grade_id: 5, icon_id: 1, title: "Tiếng Việt" },
 		{ id: 25, grade_id: 5, icon_id: 3, title: "Toán" },
+		{ id: 24, grade_id: 5, icon_id: 1, title: "Tiếng Việt" },
 		{ id: 26, grade_id: 5, icon_id: 4, title: "Tiếng Anh" },
 	],
 	'6': [
-		{ id: 31, grade_id: 6, icon_id: 2, title: "Ngữ văn" },
 		{ id: 32, grade_id: 6, icon_id: 3, title: "Toán" },
 		{ id: 33, grade_id: 6, icon_id: 11, title: "Vật lí" },
+		{ id: 31, grade_id: 6, icon_id: 2, title: "Ngữ văn" },
 		{ id: 36, grade_id: 6, icon_id: 4, title: "Tiếng anh" },
 	],
 	'7': [
-		{ id: 42, grade_id: 7, icon_id: 2, title: "Ngữ văn" },
 		{ id: 43, grade_id: 7, icon_id: 3, title: "Toán" },
 		{ id: 44, grade_id: 7, icon_id: 11, title: "Vật lí" },
+		{ id: 42, grade_id: 7, icon_id: 2, title: "Ngữ văn" },
 		{ id: 45, grade_id: 7, icon_id: 12, title: "Sinh học" },
 		{ id: 47, grade_id: 7, icon_id: 4, title: "Tiếng Anh" },
 	],
 	'8': [
-		{ id: 53, grade_id: 8, icon_id: 2, title: "Ngữ văn" },
 		{ id: 54, grade_id: 8, icon_id: 3, title: "Toán" },
 		{ id: 55, grade_id: 8, icon_id: 11, title: "Vật lí" },
 		{ id: 56, grade_id: 8, icon_id: 15, title: "Hóa học" },
+		{ id: 53, grade_id: 8, icon_id: 2, title: "Ngữ văn" },
 		{ id: 57, grade_id: 8, icon_id: 12, title: "Sinh học" },
 		{ id: 59, grade_id: 8, icon_id: 4, title: "Tiếng Anh" },
 	],
 	'9': [
-		{ id: 65, grade_id: 9, icon_id: 2, title: "Ngữ văn" },
 		{ id: 66, grade_id: 9, icon_id: 3, title: "Toán" },
 		{ id: 67, grade_id: 9, icon_id: 11, title: "Vật lí" },
 		{ id: 68, grade_id: 9, icon_id: 15, title: "Hóa học" },
 		{ id: 69, grade_id: 9, icon_id: 12, title: "Sinh học" },
 		{ id: 71, grade_id: 9, icon_id: 4, title: "Tiếng Anh" },
+		{ id: 65, grade_id: 9, icon_id: 2, title: "Ngữ văn" },
 	],
 	'10': [
-		{ id: 76, grade_id: 10, icon_id: 2, title: "Ngữ văn" },
 		{ id: 77, grade_id: 10, icon_id: 3, title: "Toán" },
 		{ id: 78, grade_id: 10, icon_id: 11, title: "Vật lí" },
 		{ id: 79, grade_id: 10, icon_id: 15, title: "Hóa học" },
 		{ id: 80, grade_id: 10, icon_id: 12, title: "Sinh học" },
 		{ id: 82, grade_id: 10, icon_id: 4, title: "Tiếng Anh" },
-		{ id: 84, grade_id: 10, icon_id: 7, title: "Tin học", }
+		{ id: 84, grade_id: 10, icon_id: 7, title: "Tin học", },
+		{ id: 76, grade_id: 10, icon_id: 2, title: "Ngữ văn" },
 	],
 	'11': [
-		{ id: 98, grade_id: 12, icon_id: 2, title: "Ngữ văn", },
 		{ id: 99, grade_id: 12, icon_id: 3, title: "Toán", },
 		{ id: 100, grade_id: 12, icon_id: 11, title: "Vật lí", },
 		{ id: 101, grade_id: 12, icon_id: 15, title: "Hóa học", },
 		{ id: 102, grade_id: 12, icon_id: 12, title: "Sinh học", },
 		{ id: 104, grade_id: 12, icon_id: 4, title: "Tiếng Anh", },
-		{ id: 106, grade_id: 12, icon_id: 7, title: "Tin học", books_count: 3 }
+		{ id: 106, grade_id: 12, icon_id: 7, title: "Tin học", books_count: 3 },
+		{ id: 98, grade_id: 12, icon_id: 2, title: "Ngữ văn", },
 	],
 	'12': [
-		{ id: 98, grade_id: 12, icon_id: 2, title: "Ngữ văn" },
 		{ id: 99, grade_id: 12, icon_id: 3, title: "Toán" },
 		{ id: 100, grade_id: 12, icon_id: 11, title: "Vật lí" },
 		{ id: 101, grade_id: 12, icon_id: 15, title: "Hóa học" },
 		{ id: 102, grade_id: 12, icon_id: 12, title: "Sinh học" },
 		{ id: 104, grade_id: 12, icon_id: 4, title: "Tiếng Anh" },
-		{ id: 106, grade_id: 12, icon_id: 7, title: "Tin học" }
+		{ id: 98, grade_id: 12, icon_id: 2, title: "Ngữ văn" },
+		{ id: 106, grade_id: 12, icon_id: 7, title: "Tin học" },
 	],
 };
 
