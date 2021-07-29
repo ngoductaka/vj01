@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { View, TouchableOpacity, Text, StyleSheet } from 'react-native';
 import { Icon } from 'native-base';
 
+import * as Animatable from 'react-native-animatable';
 import { UserLive } from '../../../component/User';
 import { openLink } from '../hepper';
 
@@ -9,13 +10,15 @@ const LiveNow = () => {
     const [show, setShow] = useState(true);
 
     useEffect(() => {
-        setShow(true)
+        setTimeout(() => {
+            setShow(true)
+        }, 6000)
     }, [])
 
     if (!show) return null;
 
     return (
-        <View style={styles.container}>
+        <Animatable.View animation="slideInRight" style={styles.container}>
             <TouchableOpacity
                 onPress={() => {
                     openLink('https://www.facebook.com/cohuyenhoa')
@@ -37,7 +40,7 @@ const LiveNow = () => {
                 </TouchableOpacity>
             </TouchableOpacity>
 
-        </View>
+        </Animatable.View>
     )
 };
 

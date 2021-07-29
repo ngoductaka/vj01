@@ -230,41 +230,43 @@ const useRequest = (url, context = [], delay = 0, method = 'get', header, payloa
 		if (context[0]) {
 			if (data !== null) setData(null);
 			if (err !== null) setErr(null);
-			api[method](url, header, payload)
-				.then(data => {
-					netNoInternet(false);
-					if (data === null) {
-						setErr('no_data')
-					} else {
-						setData(data);
-					}
-				})
-				.catch(err => {
-					if (!netInfo.isConnected) { // no internet
-						// Toast.showWithGravity("Mất kết nối internet", Toast.SHORT, Toast.TOP);
-						netNoInternet(true);
-						// console.log('<no internet>')
-						const listPreRecall = Store.getState().userInfo.reCall || {};
-						const listRecall = {
-							...listPreRecall,
-							[keyRecall]: setRecall,
-						}
-						dispatch(setUserInfo({ reCall: listRecall }))
-						clear = NetInfo.addEventListener(state => {
-							if (state.isConnected) {
-								setRecall(() => new Date());
-								clear();
-							}
-						});
-					} else {
+			setTimeout(() => {
+				api[method](url, header, payload)
+					.then(data => {
 						netNoInternet(false);
-						// console.log('<errors useRequest> ', err)
-						const listRecall = Store.getState().userInfo.reCall || {};
-						delete listRecall[keyRecall];
-						dispatch(setUserInfo({ reCall: listRecall }))
-						setErr(err);
-					}
-				})
+						if (data === null) {
+							setErr('no_data')
+						} else {
+							setData(data);
+						}
+					})
+					.catch(err => {
+						if (!netInfo.isConnected) { // no internet
+							// Toast.showWithGravity("Mất kết nối internet", Toast.SHORT, Toast.TOP);
+							netNoInternet(true);
+							// console.log('<no internet>')
+							const listPreRecall = Store.getState().userInfo.reCall || {};
+							const listRecall = {
+								...listPreRecall,
+								[keyRecall]: setRecall,
+							}
+							dispatch(setUserInfo({ reCall: listRecall }))
+							clear = NetInfo.addEventListener(state => {
+								if (state.isConnected) {
+									setRecall(() => new Date());
+									clear();
+								}
+							});
+						} else {
+							netNoInternet(false);
+							// console.log('<errors useRequest> ', err)
+							const listRecall = Store.getState().userInfo.reCall || {};
+							delete listRecall[keyRecall];
+							dispatch(setUserInfo({ reCall: listRecall }))
+							setErr(err);
+						}
+					})
+			}, delay || 0)
 		}
 		return () => {
 			const listRecall = Store.getState().userInfo.reCall || {};

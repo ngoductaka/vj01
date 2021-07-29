@@ -15,8 +15,6 @@ import firebase from 'react-native-firebase';
 import moment from 'moment';
 import ModalBox from 'react-native-modalbox';
 
-import LottieView from 'lottie-react-native';
-
 import MenuItem, { NUMBER_COLUMS } from '../../component/menuItem';
 import api, { Loading, useRequest, handleTimeInfo } from '../../handle/api';
 import { Icon, Card, Tabs, Tab, ScrollableTab } from 'native-base';
@@ -59,23 +57,28 @@ const TAG = 'lesson';
 const Class = memo((props) => {
 	const { navigation } = props;
 
+	const classRef = useRef(null);
+	const dispatch = useDispatch();
+	let currentCount = 0;
+
 	const [visible, setVisible] = useState(false);
+	const [delayShow, setDelayShow] = useState(true);
+	const [delayShow2, setDelayShow2] = useState(true);
+
 	const [showRating, setShowRating] = useState(false);
 	const [noti, setNoti] = useState(0);
 	const [hotSubIdx, setHotSubIdx] = useState('');
-
-	const [hostLesson, hostLoading, errHost] = useRequest(`/subjects/${hotSubIdx}/parts-data`, [hotSubIdx]);
+	const [loadingNoti, setLoadNoti] = useState(false)
+	const [showImg, setShowImg] = useState(false);
+	// api
+	const [hostLesson, hostLoading, errHost] = useRequest(`/subjects/${hotSubIdx}/parts-data`, [hotSubIdx], 1000);
 	// console.log('---as-a-s-as-a-sa-s');
+	const [dataAllBook, isLoading, err] = useRequest(`/subjects?grade_id=${props.userInfo.class}`, [props.userInfo.class], 1);
 
 	useEffect(() => {
 		if (get(HOT_SUBJECT_CLASS, `[${props.userInfo.class}]['0'].id`, ''))
 			setHotSubIdx(HOT_SUBJECT_CLASS[props.userInfo.class]['0'].id);
 	}, [props.userInfo.class]);
-
-	const classRef = useRef(null);
-
-	const dispatch = useDispatch();
-
 	const checkLowDevice = async () => {
 		try {
 			if (helpers.isIOS) {
@@ -107,7 +110,6 @@ const Class = memo((props) => {
 		}, 2000)
 	}, [classRef])
 
-	let currentCount = 0;
 
 	const _handleBackButtonPressAndroid = () => {
 		if (!props.navigation.isFocused()) {
@@ -137,8 +139,6 @@ const Class = memo((props) => {
 			}
 		}
 	}
-
-	const [dataAllBook, isLoading, err] = useRequest(`/subjects?grade_id=${props.userInfo.class}`, [props.userInfo.class]);
 
 	const _handleNavigation = (dataBook) => {
 		const {
@@ -233,7 +233,6 @@ const Class = memo((props) => {
 		firebase.notifications().android.createChannel(channel);
 	}
 
-	const [loadingNoti, setLoadNoti] = useState(false)
 
 	const _checkFirebase = async () => {
 		try {
@@ -267,13 +266,11 @@ const Class = memo((props) => {
 		// localNotificationService.configure();
 	}
 
-	const [showImg, setShowImg] = useState(false);
 	useEffect(() => {
 		// setShowImg(true)
 
 		async function getListScreenForAds() {
 			const data = await user_services.getListScreensForAds();
-			console.log('--------', data);
 			dispatch(actGetAllScreensForAds(data.data));
 		}
 
@@ -282,7 +279,7 @@ const Class = memo((props) => {
 				.catch(err => {
 					console.log('err <getListScreenForAds>', err)
 				});
-		}, 100)
+		}, 500)
 
 		async function postActiveDaily() {
 			const date = moment().format('YYYY-MM-DD');
@@ -300,7 +297,7 @@ const Class = memo((props) => {
 				.catch(err => {
 					console.log('err <getNumberOfUnseenNoti>', err)
 				});
-		}, 1500);
+		}, 2000);
 		handleTimeInfo()
 			.catch(err => {
 				console.log('err <handleTimeInfo>', err)
@@ -321,7 +318,7 @@ const Class = memo((props) => {
 
 		setTimeout(() => {
 			api.post('users/sync', {})
-		}, 3000)
+		}, 4000)
 
 		return () => {
 			BackHandler.removeEventListener(
@@ -338,6 +335,12 @@ const Class = memo((props) => {
 
 		if (dataAllBook && dataAllBook.data) {
 			dispatch(actGetListSubjects(dataAllBook.data));
+			setTimeout(() => {
+				setDelayShow(false)
+			}, 800)
+			setTimeout(() => {
+				setDelayShow2(false)
+			}, 4000)
 		}
 	}, [props.userInfo.class, dataAllBook]);
 
@@ -358,118 +361,118 @@ const Class = memo((props) => {
 			>
 				<View style={{ flex: 1, padding: 10, paddingRight: 0 }}>
 					{
-						props.userInfo.class == 6 ?
-							<Tabs renderTabBar={() => <ScrollableTab />}
-								tabContainerStyle={styles.barContainer} tabBarUnderlineStyle={{ height: 2, backgroundColor: Colors.pri }} tabBarActiveTextColor={Colors.pri} tabBarBackgroundColor={Colors.white}>
-								<Tab textStyle={styles.textStyle}
-									activeTextStyle={styles.activeTextStyle}
-									activeTabStyle={styles.activeTabStyle} tabStyle={styles.tabStyle}
-									heading="Cánh diều">
-									<FlatList
-										style={{ marginVertical: 20, marginTop: 25 }}
-										data={get(dataAllBook, 'data', []).filter(i => i.subject_type == 1)}
-										renderItem={({ item, index }) => _renderMenuItem(item, index, _handleNavigation)}
-										numColumns={NUMBER_COLUMS}
-										keyExtractor={(_, index) => 'book_item' + index.toString()}
-									/>
-								</Tab>
-								<Tab textStyle={styles.textStyle} activeTextStyle={styles.activeTextStyle} activeTabStyle={styles.activeTabStyle} tabStyle={styles.tabStyle} heading="Kết nối tri thức ...">
-									<FlatList
-										style={{ marginVertical: 20, marginTop: 25 }}
-										data={get(dataAllBook, 'data', []).filter(i => i.subject_type == 2)}
-										renderItem={({ item, index }) => _renderMenuItem(item, index, _handleNavigation)}
-										numColumns={NUMBER_COLUMS}
-										keyExtractor={(_, index) => 'book_item' + index.toString()}
-									/>
-								</Tab>
-								<Tab textStyle={styles.textStyle} activeTextStyle={styles.activeTextStyle} activeTabStyle={styles.activeTabStyle} tabStyle={styles.tabStyle} heading="Chân trời sáng tạo">
-									<FlatList
-										style={{ marginVertical: 20, marginTop: 25 }}
-										data={get(dataAllBook, 'data', []).filter(i => i.subject_type == 3)}
-										renderItem={({ item, index }) => _renderMenuItem(item, index, _handleNavigation)}
-										numColumns={NUMBER_COLUMS}
-										keyExtractor={(_, index) => 'book_item' + index.toString()}
-									/>
-								</Tab>
-							</Tabs> :
-							<FlatList
-								style={{ marginVertical: 20, marginTop: 25 }}
-								data={get(dataAllBook, 'data', [])}
-								renderItem={({ item, index }) => _renderMenuItem(item, index, _handleNavigation)}
-								numColumns={NUMBER_COLUMS}
-								keyExtractor={(_, index) => 'book_item' + index.toString()}
-							/>
+						delayShow ? null :
+							(props.userInfo.class == 6 ?
+								<Tabs renderTabBar={() => <ScrollableTab />}
+									tabContainerStyle={styles.barContainer} tabBarUnderlineStyle={{ height: 2, backgroundColor: Colors.pri }} tabBarActiveTextColor={Colors.pri} tabBarBackgroundColor={Colors.white}>
+									<Tab textStyle={styles.textStyle}
+										activeTextStyle={styles.activeTextStyle}
+										activeTabStyle={styles.activeTabStyle} tabStyle={styles.tabStyle}
+										heading="Cánh diều">
+										<FlatList
+											style={{ marginVertical: 20, marginTop: 25 }}
+											data={get(dataAllBook, 'data', []).filter(i => i.subject_type == 1)}
+											renderItem={({ item, index }) => _renderMenuItem(item, index, _handleNavigation)}
+											numColumns={NUMBER_COLUMS}
+											keyExtractor={(_, index) => 'book_item' + index.toString()}
+										/>
+									</Tab>
+									<Tab textStyle={styles.textStyle} activeTextStyle={styles.activeTextStyle} activeTabStyle={styles.activeTabStyle} tabStyle={styles.tabStyle} heading="Kết nối tri thức ...">
+										<FlatList
+											style={{ marginVertical: 20, marginTop: 25 }}
+											data={get(dataAllBook, 'data', []).filter(i => i.subject_type == 2)}
+											renderItem={({ item, index }) => _renderMenuItem(item, index, _handleNavigation)}
+											numColumns={NUMBER_COLUMS}
+											keyExtractor={(_, index) => 'book_item' + index.toString()}
+										/>
+									</Tab>
+									<Tab textStyle={styles.textStyle} activeTextStyle={styles.activeTextStyle} activeTabStyle={styles.activeTabStyle} tabStyle={styles.tabStyle} heading="Chân trời sáng tạo">
+										<FlatList
+											style={{ marginVertical: 20, marginTop: 25 }}
+											data={get(dataAllBook, 'data', []).filter(i => i.subject_type == 3)}
+											renderItem={({ item, index }) => _renderMenuItem(item, index, _handleNavigation)}
+											numColumns={NUMBER_COLUMS}
+											keyExtractor={(_, index) => 'book_item' + index.toString()}
+										/>
+									</Tab>
+								</Tabs> :
+								<FlatList
+									style={{ marginVertical: 20, marginTop: 25 }}
+									data={get(dataAllBook, 'data', [])}
+									renderItem={({ item, index }) => _renderMenuItem(item, index, _handleNavigation)}
+									numColumns={NUMBER_COLUMS}
+									keyExtractor={(_, index) => 'book_item' + index.toString()}
+								/>)
 
 
 					}
-					<LiveStream />
+
+					{delayShow2 ? null :
+						<LiveStream />}
 
 					{/*  */}
 
-					<View style={{ marginBottom: 30 }}>
+					{delayShow2 ? null :
+						<View style={{ marginBottom: 30 }}>
 
-						{/* utiliti */}
-						<View style={{
-							flexDirection: 'row', alignItems: 'center',
-							justifyContent: 'space-between', marginVertical: 10, marginRight: 20
-						}}>
-							<Text style={{ fontSize: 18, ...fontMaker({ weight: fontStyles.SemiBold }) }}>Kho Tiện ích</Text>
-							{/* <TouchableOpacity
-								onPress={() => navigation.navigate('UtilitiesCenter')}
-								style={{}}>
-								<Text style={{ fontSize: 14, ...fontMaker({ weight: fontStyles.Regular }), textDecorationColor: COLOR.MAIN, color: COLOR.MAIN }}>Xem tất cả</Text>
-							</TouchableOpacity> */}
-						</View>
-						<FlatList
-							style={{}}
-							data={LIST_UTILITIES}
-							// pagingEnabled={true}
-							// showsHorizontalScrollIndicator={false}
-							// legacyImplementation={false}
-							numColumns={3}
-							// horizontal
-							renderItem={({ item, index }) => {
-								return (
-									<UtilitiesItem src={item.src} name={item.name} slogan={item.slogan} navigation={navigation} route={item.route} />
-								);
-							}}
-							keyExtractor={(item, index) => index + 'game_item'}
-						/>
+							{/* utiliti */}
+							<View style={{
+								flexDirection: 'row', alignItems: 'center',
+								justifyContent: 'space-between', marginVertical: 10, marginRight: 20
+							}}>
+								<Text style={{ fontSize: 18, ...fontMaker({ weight: fontStyles.SemiBold }) }}>Kho Tiện ích</Text>
+							</View>
+							<FlatList
+								style={{}}
+								data={LIST_UTILITIES}
+								// pagingEnabled={true}
+								// showsHorizontalScrollIndicator={false}
+								// legacyImplementation={false}
+								numColumns={3}
+								// horizontal
+								renderItem={({ item, index }) => {
+									return (
+										<UtilitiesItem src={item.src} name={item.name} slogan={item.slogan} navigation={navigation} route={item.route} />
+									);
+								}}
+								keyExtractor={(item, index) => index + 'game_item'}
+							/>
 
 
-						{/* <ViewWithBanner /> */}
-						{helpers.isIOS ? null :
-							<>
-								<View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', marginBottom: 10, marginTop: 30 }}>
-									<Text style={{ fontSize: 18, ...fontMaker({ weight: fontStyles.SemiBold }) }}>Kho trò chơi</Text>
-									<TouchableOpacity onPress={() => navigation.navigate('GameCenter')} style={{}}>
-										<Text style={{ fontSize: 14, ...fontMaker({ weight: fontStyles.Regular }), textDecorationColor: COLOR.MAIN, color: COLOR.MAIN }}>Xem tất cả</Text>
-									</TouchableOpacity>
-								</View>
-								<FlatList
-									style={{}}
-									data={GAME_CENTERS.slice(0, 3)}
-									numColumns={3}
-									renderItem={({ item, index }) => {
-										return (
-											<GameItem src={item.src} name={item.name} slogan={item.slogan} navigation={navigation} route={item.route} />
-										);
-									}}
-									keyExtractor={(item, index) => index + 'game_item'}
-								/>
-							</>
-						}
+							{/* <ViewWithBanner /> */}
+							{helpers.isIOS ? null :
+								<>
+									<View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', marginBottom: 10, marginTop: 30 }}>
+										<Text style={{ fontSize: 18, ...fontMaker({ weight: fontStyles.SemiBold }) }}>Kho trò chơi</Text>
+										<TouchableOpacity onPress={() => navigation.navigate('GameCenter')} style={{}}>
+											<Text style={{ fontSize: 14, ...fontMaker({ weight: fontStyles.Regular }), textDecorationColor: COLOR.MAIN, color: COLOR.MAIN }}>Xem tất cả</Text>
+										</TouchableOpacity>
+									</View>
+									<FlatList
+										style={{}}
+										data={GAME_CENTERS.slice(0, 3)}
+										numColumns={3}
+										renderItem={({ item, index }) => {
+											return (
+												<GameItem src={item.src} name={item.name} slogan={item.slogan} navigation={navigation} route={item.route} />
+											);
+										}}
+										keyExtractor={(item, index) => index + 'game_item'}
+									/>
+								</>
+							}
 
-						{/* hot exam */}
-						<HotExam classId={props.userInfo.class} loading={hostLoading} hotSubIdx={hotSubIdx} setHotSubIdx={setHotSubIdx} hotExamData={get(hostLesson, 'exams', [])} navigation={navigation} />
-						{/* continue learning */}
-						{/* <ContinueLearn setVisible={setVisible} dataContinue={dataContinue} navigate={navigation.navigate} /> */}
-						{/* share app */}
-						<Text style={{ ...fontMaker({ weight: fontStyles.SemiBold }), fontSize: 18, marginTop: 20, marginBottom: 5, }}>Chia sẻ ứng dụng</Text>
-						<RecommendShareCard
-							onPress={() => Share.open(makeOptionShare())}
-						/>
-					</View>
+							{/* hot exam */}
+							<HotExam classId={props.userInfo.class} loading={hostLoading} hotSubIdx={hotSubIdx} setHotSubIdx={setHotSubIdx} hotExamData={get(hostLesson, 'exams', [])} navigation={navigation} />
+							{/* continue learning */}
+							{/* <ContinueLearn setVisible={setVisible} dataContinue={dataContinue} navigate={navigation.navigate} /> */}
+							{/* share app */}
+							<Text style={{ ...fontMaker({ weight: fontStyles.SemiBold }), fontSize: 18, marginTop: 20, marginBottom: 5, }}>Chia sẻ ứng dụng</Text>
+
+							<RecommendShareCard
+								onPress={() => Share.open(makeOptionShare())}
+							/>
+						</View>}
 				</View>
 
 			</ViewContainer>
@@ -979,7 +982,7 @@ const BannerCourse = ({ name = "" }) => {
 					// borderRadius: 10
 				}}>
 				{/* <ImageBackground resizeMethod="resize" source={images.bgSimp} style={{height: '100%', width: '100%', opacity: 0.1}}> */}
-				<LottieView
+				{/* <LottieView
 					autoPlay
 					loop
 					style={{
@@ -988,7 +991,13 @@ const BannerCourse = ({ name = "" }) => {
 						position: 'absolute', right: 0
 					}}
 					source={require('../../public/learning-web-site.json')}
-				/>
+				/> */}
+				<Image source={images.avatar2}
+					style={{
+						height: 100, width: 100, alignSelf: 'center',
+						opacity: 0.7,
+						position: 'absolute', right: 0
+					}} />
 				<View style={{ paddingHorizontal: 10, flex: 1 }}>
 					<Animatable.Text duration={1000} animation="bounceInRight" delay={200} style={{ fontSize: 18, fontWeight: 'bold', ...fontMaker({ weight: fontStyles.Regular }) }}>Xin chào <Text style={{ fontWeight: 'bold', color: '#D54B3E' }}>{name}</Text></Animatable.Text>
 					<Animatable.Text duration={1500} animation="bounceInRight" delay={200} style={{ fontSize: 23, fontWeight: 'bold', ...fontMaker({ weight: fontStyles.Regular }) }}>Ưu đãi lớn bất ngờ từ vietjack</Animatable.Text>
