@@ -224,7 +224,7 @@ const CoursePlayer = (props) => {
                         isLoading={isLoading} err={err}
                     >
                         {
-                            (get(videoData, 'data.type', 0)) ?
+                            (get(videoData, 'data.type', 0)) && get(videoData, 'data.youtube_id', 0) ?
                                 <YoutubePlayer
                                     ref={mediaPlayer}
                                     height={PixelRatio.roundToNearestPixel(width / (16 / 9))}
