@@ -430,12 +430,12 @@ const QnA = (props) => {
                             paddingTop: 5,
                         }}>
                             <View style={{ flex: 1, flexDirection: 'row' }}>
-                                {/* <TouchableOpacity onPress={_handleClickPhoto} style={{ paddingHorizontal: 10, marginLeft: 15 }} >
+                                <TouchableOpacity onPress={_handleClickPhoto} style={{ paddingHorizontal: 10, marginLeft: 15 }} >
                                     <Icon name="image" type='Entypo' />
                                 </TouchableOpacity>
                                 <TouchableOpacity onPress={_handleClickCamera} style={{ paddingHorizontal: 10 }} >
                                     <Icon name="camera" type='Entypo' />
-                                </TouchableOpacity> */}
+                                </TouchableOpacity>
                             </View>
                             {
                                 loading ? <ActivityIndicator color="#000" style={{ paddingRight: 20 }} /> :

@@ -28,7 +28,7 @@ class ImagePickerModule {
     ImagePickerCrop.openCamera({
       compressImageMaxWidth: 1920,
       compressImageMaxHeight: 1080,
-      cropping: false,
+      cropping: true,
       multiple: multiple,
       useFrontCamera: true,
       mediaType: "photo",
@@ -65,6 +65,7 @@ class ImagePickerModule {
         compressImageMaxWidth: 1920,
         compressImageMaxHeight: 1080,
         mediaType: "photo",
+        cropping: true,
         ...otherOption,
       })
         .then(response => {
