@@ -1,13 +1,32 @@
 import React from 'react';
 import { TouchableOpacity, View, Text, Dimensions, StyleSheet, ImageBackground, Image, Linking } from 'react-native';
 import { Icon } from 'native-base';
+import { get } from 'lodash';
 import Carousel, { Pagination } from 'react-native-snap-carousel';
+import moment from 'moment';
+
 import { helpers } from '../../../utils/helpers';
 import { COLOR } from '../../../handle/Constant';
 import LinearGradient from 'react-native-linear-gradient';
+import { useRequest } from '../../../handle/api';
 
 
+const dataFake = [
+    {
+        img: 'https://ak.picdn.net/shutterstock/videos/1032145772/thumb/4.jpg',
+        colors: ['rgba(126, 189, 233, 0.8)', 'rgba(128, 163, 241, 0.9)']
+    },
+    {
 
+        colors: ['rgba(231, 169, 103, 0.8)', 'rgba(238, 160, 99, 0.9)'],
+        img: 'https://fiverr-res.cloudinary.com/videos/t_main1,q_auto,f_auto/fzracxoscbzkyrhewymu/make-you-video-look-like-facebook-live-interface.png'
+    },
+    {
+
+        colors: ['rgba(222, 102, 143, 0.8)', 'rgba(227, 91, 116, 0.9)'],
+        img: 'https://www.pngkey.com/png/full/92-928896_facebook-live-reactions-png-facebook.png'
+    },
+];
 
 const { width, height } = Dimensions.get('window');
 
@@ -25,27 +44,16 @@ export const sliderWidth = width;
 export const itemWidth = slideWidth + itemHorizontalMargin * 2;
 
 const LiveStream = () => {
+    const [data, loading] = useRequest('http://45.124.87.227:8181/courses/recent-livestreams', [1])
+
+    // console.log('data123', data)
+    if (!get(data, 'data[0]')) return null;
     return (
         <View style={{ paddingVertical: 10 }}>
             <Carousel
                 // ref={refCar}
-                data={[
-                    {
-                        img: 'https://ak.picdn.net/shutterstock/videos/1032145772/thumb/4.jpg',
-                        colors: ['rgba(126, 189, 233, 0.8)', 'rgba(128, 163, 241, 0.9)']
-                    },
-                    {
-
-                        colors: ['rgba(231, 169, 103, 0.8)', 'rgba(238, 160, 99, 0.9)'],
-                        img: 'https://fiverr-res.cloudinary.com/videos/t_main1,q_auto,f_auto/fzracxoscbzkyrhewymu/make-you-video-look-like-facebook-live-interface.png'
-                    },
-                    {
-
-                        colors: ['rgba(222, 102, 143, 0.8)', 'rgba(227, 91, 116, 0.9)'],
-                        img: 'https://www.pngkey.com/png/full/92-928896_facebook-live-reactions-png-facebook.png'
-                    },
-                ]}
-                renderItem={({ item }) => <RenderItem item={item} />}
+                data={get(data, 'data')}
+                renderItem={({ item, index }) => <RenderItem item={item} index={index} />}
                 sliderWidth={sliderWidth}
                 parallaxFactor={0.4}
                 itemWidth={itemWidth}
@@ -62,22 +70,22 @@ const LiveStream = () => {
     )
 }
 
-const RenderItem = ({ item }) => {
+const RenderItem = ({ item, index }) => {
     return (
 
-        <ImageBackground source={{ uri: item.img }} style={[styles.itemLive, styles.shadowStyle]}>
+        <ImageBackground source={{ uri: get(dataFake, `[${index % 3}].img`) }} style={[styles.itemLive, styles.shadowStyle]}>
             <LinearGradient
                 start={{ x: 0, y: 0 }} end={{ x: 1, y: 0 }}
-                colors={item.colors}
-                style={{
-                    flex: 1,
-                }}
+                colors={get(dataFake, `[${index % 3}].colors`)}
+                style={{ flex: 1 }}
             >
                 <TouchableOpacity
                     onPress={async () => {
-                        const supported = await Linking.canOpenURL('https://www.facebook.com/cohuyenhoa');
+                        const supported = await Linking.canOpenURL(item.livestreams_lesson_url);
                         if (supported) {
-                            await Linking.openURL('https://www.facebook.com/cohuyenhoa');
+                            await Linking.openURL(item.livestreams_lesson_url);
+                        } else {
+
                         }
                     }}
                     style={{
@@ -90,16 +98,16 @@ const RenderItem = ({ item }) => {
 
 
                     <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-                        <Image style={{ height: 40, width: 40, borderRadius: 40 }} source={{ uri: "https://khoahoc.vietjack.com/upload/msmaianh@gmail.com/avarta/raw-file-65b58c36-9f87-40b2-86f2-92525f42d9bf-1621308170.jpg" }} />
+                        <Image style={{ height: 40, width: 40, borderRadius: 40 }} source={{ uri: item.author_avatar }} />
                     </View>
                     <View style={{ flex: 4, paddingRight: 20 }}>
-                        <Text numberOfLines={1} style={{ fontSize: 22, fontWeight: 'bold', color: '#fff' }}>Cô</Text>
-                        <Text numberOfLines={2} style={{ fontSize: 18, marginTop: 8, fontWeight: 'bold', color: '#fff' }}>[LIVE 09] LIVE ĐẶC BIỆT : CÁCH SỬ DỤNG VÒNG TRÒN LƯỢNG GIÁC TRONG DAO ĐỘNG DỄ NHẤT</Text>
-                        <Text style={{ color: '#fff', textAlign: 'right', fontWeight: 'bold', fontSize: 15, }}>20h Hôm nay</Text>
+                        <Text numberOfLines={1} style={{ fontSize: 22, fontWeight: 'bold', color: '#fff' }}>{item.author_name}</Text>
+                        <Text numberOfLines={2} style={{ fontSize: 18, marginTop: 8, fontWeight: 'bold', color: '#fff' }}>{item.livestreams_lesson_name}</Text>
+                        <Text style={{ color: '#fff', textAlign: 'right', fontWeight: 'bold', fontSize: 15, }}>{formatLiveStreamTime(item.livestreams_lesson_published_at)}</Text>
                         <View style={{ flexDirection: 'row', marginTop: 10, justifyContent: 'space-between' }}>
                             <View style={{ justifyContent: 'center', alignItems: 'center' }}>
-                                <Text style={{ fontWeight: 'bold', color: '#fff' }}>Lớp 12</Text>
-                                <Text style={{ fontWeight: 'bold', color: '#fff' }}>Tiếng anh</Text>
+                                {/* <Text style={{ fontWeight: 'bold', color: '#fff' }}>Lớp 12</Text> */}
+                                <Text style={{ fontWeight: 'bold', color: '#fff' }}>{item.subject_name}</Text>
                             </View>
                             <View style={{ justifyContent: 'center', alignItems: 'center' }}>
                                 <Text style={{ fontWeight: 'bold', color: '#fff' }}>200</Text>
@@ -133,15 +141,7 @@ const LiveItem = () => {
             onPress={() => {
             }}
             style={[styles.shadowStyle, styles.container]}
-        // key={'hot_exam' + idx}
         >
-            {/* <View style={{
-                width: (helpers.isTablet ? width * 2 / 5 : width * 4 / 5) - 1,
-                height: 15, backgroundColor: '#DFE5EA',
-                borderTopLeftRadius: 8, borderTopRightRadius: 8
-            }}>
-
-            </View> */}
             <View style={{ padding: 10, flex: 1, marginTop: -9, borderTopLeftRadius: 6, borderTopRightRadius: 6, borderBottomLeftRadius: 8, borderBottomRightRadius: 8, backgroundColor: '#fff', }}>
                 <View style={{ flex: 1 }}>
                     <Text numberOfLines={2}
@@ -198,4 +198,15 @@ const data = {
             "answer": "asdvasdvasdv"
         }
     ]
+}
+const formatLiveStreamTime = (time) => {
+    try {
+        return !moment(time).diff(moment(), 'days') ?
+            moment(time).format("HH:mm:ss") + "Hôm nay" :
+            moment(time).format("HH:mm:ss DD-MM")
+
+    } catch (err) {
+        console.log('err9999999999999999999999999999', err)
+        return time
+    }
 }

@@ -24,7 +24,7 @@ const defaultHeader = {
 const request = axios.create({
 	baseURL: endpoints.BASE_URL,
 	timeout: TIMEOUT,
-	headers: defaultHeader,
+	// headers: defaultHeader,
 });
 
 // Add a request interceptor
@@ -147,10 +147,45 @@ const api = {
 				return response && response.data;
 			})
 			.catch(err => {
+				if (err.request) {
+					console.log('error4', err.request);
+				}
 				// if (err.response) {
 				// 	console.log('error1', err.response.data);
 				// 	console.log('error2', err.response.status);
-				// 	console.log('error3', err.response.headers);
+				// console.log('error3', err.response.headers);
+				// } else if (err.request) {
+				// 	console.log('error4', err.request);
+				// } else {
+				// 	console.log('Error==', err.message);
+				// }
+				// return err;
+				throw err;
+			});
+	},
+	postFile: (url, data, header = {}, baseURL = endpoints.BASE_URL) => {
+		console.log('post ', { url }, { data });
+		return request({
+			method: 'post',
+			url: url,
+			baseURL,
+			data: data,
+			headers: {
+				'Content-Type': 'multipart/form-data'
+			},
+		})
+			.then(response => {
+				// console.log('=====response', response)
+				return response && response.data;
+			})
+			.catch(err => {
+				if (err.request) {
+					console.log('error4', err.request);
+				}
+				// if (err.response) {
+				// 	console.log('error1', err.response.data);
+				// 	console.log('error2', err.response.status);
+				// console.log('error3', err.response.headers);
 				// } else if (err.request) {
 				// 	console.log('error4', err.request);
 				// } else {

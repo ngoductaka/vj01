@@ -88,6 +88,28 @@ const QnA = (props) => {
 
     const [photos, setPhotos] = useState([]);
 
+    const _handleUploadImg = async (file) => {
+        try {
+
+            const dataUpload = new FormData();
+            if (file.path) {
+                dataUpload.append("file", {
+                    uri: file.path,
+                    name: get(file, 'filename', 'img'),
+                    type: 'multipart/form-data',
+                });
+                // http://45.117.82.169:5411/api/vj/extracteq?file
+
+                const data = await services.uploadFile('http://45.117.82.169:5411/api/vj/extracteq', dataUpload);
+                console.log("dat242423a", data);
+            } else {
+                alert("dnd err")
+            }
+        } catch (err) {
+            console.log('err dsfadsfasfdupload', err)
+        }
+    }
+
     const _handleOpenSetting = () => {
         Alert.alert(
             "Mở cài đặt",
@@ -143,12 +165,15 @@ const QnA = (props) => {
             onChooseImage: (response) => {
                 if (response) {
                     try {
-                        const arrImg = [...photos, response];
-                        if (arrImg.length < 2) {
-                            setPhotos(arrImg);
-                        }
-                        else
-                            Toast.showWithGravity("Bạn chỉ được chọn 1 ảnh", Toast.SHORT, Toast.CENTER);
+                        // setPhotos([...photos, response])
+                        setPhotos([response])
+                        _handleUploadImg(response)
+                        // const arrImg = [...photos, response];
+                        // if (arrImg.length < 2) {
+                        //     setPhotos(arrImg);
+                        // }
+                        // else
+                        //     Toast.showWithGravity("Bạn chỉ được chọn 1 ảnh", Toast.SHORT, Toast.CENTER);
 
                     } catch (err) {
                         console.log(err)
@@ -165,10 +190,14 @@ const QnA = (props) => {
                 if (response.path) {
                     console.log('response1111', response)
                     try {
-                        if (photos.length < 3)
-                            setPhotos([...photos, response])
-                        else
-                            Toast.showWithGravity("Bạn chỉ được chọn 1 ảnh", Toast.SHORT, Toast.CENTER);
+                        setPhotos([response])
+                        _handleUploadImg(response)
+                        // if (photos.length < 3){
+                        //     // setPhotos([...photos, response])
+                        //     setPhotos([response])
+                        // }
+                        // else
+                        //     Toast.showWithGravity("Bạn chỉ được chọn 1 ảnh", Toast.SHORT, Toast.CENTER);
 
                     } catch (err) {
                         console.log(err)
