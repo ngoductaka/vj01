@@ -7,7 +7,7 @@ import {
 import Toast from 'react-native-simple-toast';
 import { Icon } from 'native-base';
 import { useSelector, useDispatch } from 'react-redux';
-import { get } from 'lodash';
+import { get, debounce } from 'lodash';
 import { check, PERMISSIONS, RESULTS, openSettings, request } from 'react-native-permissions';
 
 import { fontSize, COLOR } from '../../handle/Constant';
@@ -35,6 +35,8 @@ const QnA = (props) => {
     const [showKeyboad, setShowKeyboard] = useState(false);
 
     const [searchText] = useDebounce(questionContent, 1000);
+    // const [searchText, setSearchText] = useState('');
+
     const [resultSearch, setResultSearch] = useState([])
 
     // const userInfo.class
@@ -44,26 +46,40 @@ const QnA = (props) => {
     // search
 
     useEffect(() => {
-        if (searchText && filter) {
+        if (questionContent) {
             const { cls = '', currSub = '' } = filter || {};
             const query = { grade_id: cls == 13 ? '' : cls };
             if (currSub && currSub.id) {
                 query.subject_id = currSub.id
             }
             setLoading(true)
-            search_services.handleSearch(searchText, query)
-                .then(({ data }) => {
-                    console.log(data, '=========ddd')
-                    setResultSearch(data);
-                    setLoading(false)
+            api.post('http://45.117.82.169:9998/search_raw', {
+                text: questionContent
+            })
+                .then(({ response }) => {
+                    console.log('response123', response)
+                    setResultSearch(response);
                 })
                 .catch(err => {
-                    setLoading(false)
-                    Toast.showWithGravity("Load câu hỏi lỗi!", Toast.SHORT, Toast.CENTER);
+                    console.log(err)
+                    // Toast.showWithGravity("Load câu hỏi lỗi!", Toast.SHORT, Toast.CENTER);
                 })
+                .finally(() => {
+                    setLoading(false)
+                })
+            // search_services.handleSearch(questionContent, query)
+            //     .then(({ data }) => {
+            //         console.log(data, '=========ddd')
+            //         setResultSearch(data);
+            //         setLoading(false)
+            //     })
+            //     .catch(err => {
+            //         setLoading(false)
+            //         Toast.showWithGravity("Load câu hỏi lỗi!", Toast.SHORT, Toast.CENTER);
+            //     })
         }
 
-    }, [searchText, filter]);
+    }, [questionContent, filter]);
 
     // console.log('userInfo42345', userInfo.user.photo)
     const inputRef = useRef(null);
@@ -73,15 +89,17 @@ const QnA = (props) => {
 
     // console.log('vvvvv', filter);
     useEffect(() => {
+        // show key board 
         // if (inputRef && inputRef.current) {
         //     setTimeout(() => {
         //         inputRef.current.focus();
         //     }, 1000)
         // }
-
-        setTimeout(() => {
-            setShowFilter(true)
-        }, 700)
+        // show filter
+        // setTimeout(() => {
+        //     setShowFilter(true)
+        // }, 700)
+        // _handleClickCamera()
 
         setShowKeyboard(true);
     }, []);
@@ -93,20 +111,31 @@ const QnA = (props) => {
 
             const dataUpload = new FormData();
             if (file.path) {
+                console.log(file, 'sdsdsd', get(file, 'filename', 'file'))
                 dataUpload.append("file", {
                     uri: file.path,
-                    name: get(file, 'filename', 'img'),
+                    name: get(file, 'filename',  'dnd.jpg'),
                     type: 'multipart/form-data',
                 });
+                // dataUpload.append("list_equation_boxes", []);
                 // http://45.117.82.169:5411/api/vj/extracteq?file
 
                 const data = await services.uploadFile('http://45.117.82.169:5411/api/vj/extracteq', dataUpload);
-                console.log("dat242423a", data);
+                // console.log("dat242423a", data);
+
+                const result = get(data, 'data.result.lines', '');
+                if (result && result[0]) {
+                    setContent(result.reduce((car, cur) => `${car} \n ${cur}`))
+                }
             } else {
                 alert("dnd err")
             }
         } catch (err) {
-            console.log('err dsfadsfasfdupload', err)
+            console.log('err dsfadsfasfdupload', get(err, 'data[0]', ''), err)
+            const result = get(err, 'data[0].data.result.lines', '');
+            if (result && result[0]) {
+                setContent(result.reduce((car, cur) => `${car} \n ${cur}`))
+            }
         }
     }
 
@@ -265,7 +294,6 @@ const QnA = (props) => {
             };
             if (cls == 13) {
                 Toast.showWithGravity("Vui lòng chọn lớp", Toast.SHORT, Toast.CENTER);
-
                 return 1;
             }
             // 
@@ -273,7 +301,7 @@ const QnA = (props) => {
             // console.log('currSub=========', currSub)
             const body = {
                 "grade": cls,
-                "subject": currSub && currSub.id || '99',
+                "subject": currSub && currSub.id || 31,
                 // subject: 1,
                 "content": questionContent
                     .replace(/&/g, "&amp;")
@@ -282,13 +310,13 @@ const QnA = (props) => {
                     .replace(/"/g, "&quot;")
             };
             // console.log('photosphotos', photos)
-            if (photos[0]) {
+            if (photos[0] && 0) {
                 const dataUpload = new FormData();
                 photos.map(file => {
                     if (file.path) {
                         dataUpload.append("img[]", {
                             uri: file.path,
-                            name: get(file, 'filename', 'dd'),
+                            name: get(file, 'filename', 'dd.jpg'),
                             type: 'multipart/form-data',
                         });
                     }
@@ -298,11 +326,13 @@ const QnA = (props) => {
                     const imageUpload = await services.uploadImage(dataUpload);
                     if (imageUpload && imageUpload.data) {
                         body.image = imageUpload.data;
-                        const data = await api.post('/question', body);
-                        if (data && data.question_id) {
-                            props.navigation.navigate('QuestionDetail', { questionId: data.question_id, source: "QnA" })
-                        }
                     }
+                    const data = await api.post('/question', body);
+                    if (data && data.question_id) {
+                        // dnds
+                        props.navigation.navigate('QuestionDetail', { questionId: data.question_id, source: "QnA" })
+                    }
+
                     setLoading(false)
 
                 } catch (err) {
@@ -361,12 +391,11 @@ const QnA = (props) => {
                             <FilterTag {...{ filter, setFilter, setShowFilter }} />
                         </View>
                     </View>
-                    <TouchableOpacity onPress={() => setShowFilter(true)} style={styles.filter}>
+                    {/* <TouchableOpacity onPress={() => setShowFilter(true)} style={styles.filter}>
                         <Icon style={styles.iconFilter} type="AntDesign" name="filter" />
-                        {/* <Text style={styles.h2}> Lọc câu hỏi</Text> */}
-                    </TouchableOpacity>
+                    </TouchableOpacity> */}
                 </View>
-                <View style={{ flex: 1, marginBottom: 20 }}>
+                <View style={{ flex: 1 }}>
                     <ScrollView
                         // contentContainerStyle={{ flex: 1, backgroundColor: 'red' }}
                         onScroll={() => Keyboard.dismiss()}
@@ -414,37 +443,61 @@ const QnA = (props) => {
                         }
                         {
                             resultSearch && resultSearch[0] ?
-                                <FlatList
-                                    showsVerticalScrollIndicator={false}
-                                    data={resultSearch}
-                                    contentContainerStyle={{ paddingHorizontal: 10 }}
-                                    ListHeaderComponent={() => {
-                                        return (
-                                            <View style={{ marginTop: 15 }}>
-                                                <Text style={{ fontSize: 22 }}>Câu hỏi liên quan:</Text>
-                                            </View>
-                                        )
-                                    }}
-                                    renderItem={({ item, index }) => {
-                                        const { title = '',
-                                            grade_id: grade = '',
-                                            subject_id: book = '',
-                                            id: questionId = '',
-                                            subject_name = ""
-                                        } = item
-                                        return (
-                                            <RenderQnASearch
-                                                onPress={() => { props.navigation.navigate('QuestionDetail', { questionId }) }}
-                                                {...{ title, grade: "Lớp " + grade, book: subject_name }}
-                                            />
-                                        )
-                                    }}
-                                    keyExtractor={(item, index) => item.id}
-                                /> : null
+                                <View style={{ paddingLeft: 8 }}>
+                                    {
+                                        resultSearch.map((item, index) => {
+                                            const {
+                                                content_vi: title = '',
+                                                class: grade = '',
+                                                subject: book = '',
+                                                subject: subject_name = "",
+                                                answers = []
+                                            } = item;
+                                            const questionId = get(item, 'answers[0].question_id');
+                                            if(!questionId) return null
+                                            return (
+                                                <RenderQnASearch
+                                                    onPress={() => { props.navigation.navigate('QuestionDetail', { questionId }) }}
+                                                    {...{ title, grade: "Lớp " + grade, book: subject_name, answers }}
+                                                />
+                                            )
+                                        })
+                                    }
+
+                                </View>
+
+                                // <FlatList
+                                //     showsVerticalScrollIndicator={false}
+                                //     data={resultSearch}
+                                //     contentContainerStyle={{ paddingHorizontal: 10 }}
+                                //     ListHeaderComponent={() => {
+                                //         return (
+                                //             <View style={{ marginTop: 15 }}>
+                                //                 <Text style={{ fontSize: 22 }}>Câu hỏi liên quan:</Text>
+                                //             </View>
+                                //         )
+                                //     }}
+                                //     renderItem={({ item, index }) => {
+                                //         const { title = '',
+                                //             grade_id: grade = '',
+                                //             subject_id: book = '',
+                                //             id: questionId = '',
+                                //             subject_name = ""
+                                //         } = item
+                                //         return (
+                                //             <RenderQnASearch
+                                //                 onPress={() => { props.navigation.navigate('QuestionDetail', { questionId }) }}
+                                //                 {...{ title, grade: "Lớp " + grade, book: subject_name }}
+                                //             />
+                                //         )
+                                //     }}
+                                //     keyExtractor={(item, index) => item.id}
+                                // />
+                                : null
                         }
                     </ScrollView>
                 </View>
-                {showKeyboad ?
+                {/* {showKeyboad ?
                     <KeyboardStickyView style={{ backgroundColor: '#ddd' }}>
                         <View style={{
                             flex: 1,
@@ -474,7 +527,37 @@ const QnA = (props) => {
                                     </TouchableOpacity>
                             }
                         </View>
-                    </KeyboardStickyView> : null}
+                    </KeyboardStickyView> : null} */}
+
+                <View style={{
+                    // flex: 1,
+                    width: width,
+                    height: 55,
+                    borderTopColor: '#dedede',
+                    borderTopWidth: 1,
+                    flexDirection: 'row',
+                    alignItems: 'center',
+                    backgroundColor: '#fff',
+                    // paddingBottom: 15,
+                    // paddingTop: 5,
+                    // backgroundColor: 'red'
+                }}>
+                    <View style={{ flex: 1, flexDirection: 'row' }}>
+                        <TouchableOpacity onPress={_handleClickPhoto} style={{ paddingHorizontal: 10, marginLeft: 15 }} >
+                            <Icon name="image" type='Entypo' />
+                        </TouchableOpacity>
+                        <TouchableOpacity onPress={_handleClickCamera} style={{ paddingHorizontal: 10 }} >
+                            <Icon name="camera" type='Entypo' />
+                        </TouchableOpacity>
+                    </View>
+                    {
+                        loading ? <ActivityIndicator color="#000" style={{ paddingRight: 20 }} /> :
+
+                            <TouchableOpacity style={{ paddingRight: 20 }} onPress={uploadQuestion}>
+                                <Icon name="ios-send" type="Ionicons" style={{ color: COLOR.MAIN }} />
+                            </TouchableOpacity>
+                    }
+                </View>
             </SafeAreaView>
             <FilterModal
                 show={showFilter}

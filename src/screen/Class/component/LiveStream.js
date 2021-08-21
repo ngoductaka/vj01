@@ -44,7 +44,7 @@ export const sliderWidth = width;
 export const itemWidth = slideWidth + itemHorizontalMargin * 2;
 
 const LiveStream = () => {
-    const [data, loading] = useRequest('http://45.124.87.227:8181/courses/recent-livestreams', [1])
+    const [data, loading] = useRequest('https://apps.vietjack.com:8081/courses/recent-livestreams', [1])
 
     // console.log('data123', data)
     if (!get(data, 'data[0]')) return null;
@@ -106,7 +106,7 @@ const RenderItem = ({ item, index }) => {
                         <Text style={{ color: '#fff', textAlign: 'right', fontWeight: 'bold', fontSize: 15, }}>{formatLiveStreamTime(item.livestreams_lesson_published_at)}</Text>
                         <View style={{ flexDirection: 'row', marginTop: 10, justifyContent: 'space-between' }}>
                             <View style={{ justifyContent: 'center', alignItems: 'center' }}>
-                                {/* <Text style={{ fontWeight: 'bold', color: '#fff' }}>Lớp 12</Text> */}
+                                <Text style={{ fontWeight: 'bold', color: '#fff' }}>Lớp 12</Text>
                                 <Text style={{ fontWeight: 'bold', color: '#fff' }}>{item.subject_name}</Text>
                             </View>
                             <View style={{ justifyContent: 'center', alignItems: 'center' }}>
@@ -117,7 +117,6 @@ const RenderItem = ({ item, index }) => {
                             <View style={{ justifyContent: 'center', alignItems: 'center' }}>
                                 <Text style={{ fontWeight: 'bold', color: '#fff' }}>500</Text>
                                 <Text style={{ fontWeight: 'bold', color: '#fff' }}>Đăng ký</Text>
-
                             </View>
                         </View>
                     </View>

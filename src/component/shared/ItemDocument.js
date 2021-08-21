@@ -2,6 +2,8 @@ import React from 'react';
 import {
 	View, Text, StyleSheet, TouchableOpacity, Dimensions, Image
 } from 'react-native';
+
+import HTML from 'react-native-render-html';
 import { fontSize, blackColor, COLOR } from '../../handle/Constant';
 import { fontMaker, fontStyles } from '../../utils/fonts';
 import { Icon } from 'native-base';
@@ -10,6 +12,7 @@ import FastImage from 'react-native-fast-image';
 import { helpers } from '../../utils/helpers';
 import { Thumbnail } from 'react-native-thumbnail-video';
 import { isNumber } from 'lodash';
+import { RenderHtmlCustom } from '../../screen/Lesson/saved';
 const { width } = Dimensions.get('window');
 
 
@@ -164,11 +167,11 @@ const RenderVideoSearch = ({ uri, title, url, onPress, grade, subject, time, isL
 }
 
 
-const RenderQnASearch = ({ title, onPress, viewCount, index, book, grade, answers_count = 0 }) => {
+const RenderQnASearch = ({ title, onPress, viewCount, index, book, grade, answers_count = 0, answers = [] }) => {
 	return (
 		<TouchableOpacity
 			onPress={onPress}
-			style={[stylesComponent.textItem, { paddingLeft: 0, borderBottomWidth: 0, borderBottomWidth: 1, borderColor: '#ddd' }]}
+			style={[stylesComponent.textItem, { paddingLeft: 0, borderBottomWidth: 0, borderBottomWidth: 2, borderColor: '#ddd' }]}
 		>
 			<View style={{ flexDirection: 'row', alignItems: 'center' }}>
 				{/* <View
@@ -184,9 +187,18 @@ const RenderQnASearch = ({ title, onPress, viewCount, index, book, grade, answer
 					<Text numberOfLines={2} style={stylesComponent.textContent}>
 						{title}
 					</Text>
-					<View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
-						<Text style={{ fontSize: 12, color: '#777', textAlign: 'right', marginTop: 7 }}>{answers_count ? `${answers_count} câu trả lời`: 'Chưa có câu trả lời'} </Text>
+					<View style={{ flexDirection: 'row', justifyContent: 'flex-end' }}>
+						{/* <Text style={{ fontSize: 12, color: '#777', textAlign: 'right', marginTop: 7 }}>{answers_count ? `${answers_count} câu trả lời` : 'Chưa có câu trả lời'} </Text> */}
 						<Text style={{ fontSize: 12, color: '#777', textAlign: 'right', marginTop: 7 }}>{book} • {grade}</Text>
+					</View>
+					<View style={{ marginLeft: 20 }}>
+						<Text style={{ fontSize: 18 }}>Câu trả lời gần nhất :</Text>
+						{
+							answers && answers[0] ?
+								answers.map(((a, index) => {
+									return <RenderHtmlCustom content={a.content} />
+								})) : null
+						}
 					</View>
 
 				</View>

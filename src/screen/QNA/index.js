@@ -109,7 +109,7 @@ const QnA = (props) => {
     const [animatableView, setAni] = useState('')
     const hanldleScroll = useCallback(() => {
         onMomentumScrollBeginRef.current = false
-        setAni('lightSpeedIn');
+        // setAni('lightSpeedIn');
     }, []);
     const [refreshing, setRefreshing] = React.useState(false);
 

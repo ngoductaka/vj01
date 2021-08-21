@@ -131,7 +131,7 @@ const api = {
 	// post: (url, data, header = {}) => {
 	// 	console.log('<--post-->', url, data, header);
 	post: (url, data, header = {}, baseURL = endpoints.BASE_URL) => {
-		console.log('post ', { url }, { data });
+		console.log('post ', { url, data });
 		return request({
 			method: 'post',
 			url: url,

@@ -185,12 +185,38 @@ class ErrorBoundary extends React.Component {
 	}
 }
 
-const _renderHtml = (content, key = '') => {
+export const _renderHtml = (content, key = '') => {
 	return (
 		<HTML
 			key={key}
 			classesStyles={classesStyles}
-			ignoredStyles={['font-size']}
+			ignoredStyles={['font-size', 'font-family', 'font-weight']}
+			tagsStyles={tagsStyles}
+			html={content}
+			imagesMaxWidth={Dimensions.get('window').width - 45}
+			onLinkPress={(evt, href) => _handleOnPressLink(href)}
+			containerStyle={{ paddingLeft: 10, paddingRight: 10 }}
+			listsPrefixesRenderers={{ ul: () => null }}
+			ignoredTags={[...tags, 'hr']}
+			renderers={renderers}
+		/>
+	);
+}
+
+const tagsStylesCustom = {
+	p: { display: 'flex', flexDirection: 'row', flexWrap: 'wrap', lineHeight: 30, marginBottom: 5, fontSize: 9 },
+};
+
+export const RenderHtmlCustom = ({ content, styleTag = tagsStylesCustom }) => {
+	return (
+		<HTML
+			classesStyles={classesStyles}
+			ignoredStyles={['font-size', 'font-family', 'font-weight',
+				'text-decoration-style', 'text-decoration-color', 'height', 'width',
+				'font-family', 'letter-spacing', 'font-style',
+				'font-variant', 'font-weight', 'font-stretch', 'line-height'
+			]}
+			// ignoredStyles={["*"]}
 			tagsStyles={tagsStyles}
 			html={content}
 			imagesMaxWidth={Dimensions.get('window').width - 45}

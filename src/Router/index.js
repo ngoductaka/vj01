@@ -183,12 +183,12 @@ const MainContent = createBottomTabNavigator({
 	CourseScreen: {
 		screen: Course,
 	},
-	TestStack: {
-		screen: TestStack,
-	},
 	QnA: {
 		screen: QnA,
 		path: 'question/:id'
+	},
+	TestStack: {
+		screen: TestStack,
 	},
 	AccountStack: {
 		screen: Profile,
@@ -216,8 +216,8 @@ const MainContent = createBottomTabNavigator({
 				src = 'user';
 				text = "Tài khoản";
 			} else if (routeName === 'QnA') {
-				type = 'MaterialCommunityIcons';
-				src = 'comment-question';
+				type = 'Feather';
+				src = 'camera';
 				text = "Hỏi đáp";
 			}
 

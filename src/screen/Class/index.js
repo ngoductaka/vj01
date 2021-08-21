@@ -74,6 +74,7 @@ const Class = memo((props) => {
 	const [hostLesson, hostLoading, errHost] = useRequest(`/subjects/${hotSubIdx}/parts-data`, [hotSubIdx], 1000);
 	// console.log('---as-a-s-as-a-sa-s');
 	const [dataAllBook, isLoading, err] = useRequest(`/subjects?grade_id=${props.userInfo.class}`, [props.userInfo.class], 1);
+	// console.log('datadataAllBookAllBook', dataAllBook)
 
 	useEffect(() => {
 		if (get(HOT_SUBJECT_CLASS, `[${props.userInfo.class}]['0'].id`, ''))
