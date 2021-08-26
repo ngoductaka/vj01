@@ -1,9 +1,10 @@
+const root = 'https://apps.vietjack.com:8081';
+// const root = 'http://45.124.87.227:8181';
 export const endpoints = {
-    BASE_URL: 'https://apps.vietjack.com:8081/api',
-    ROOT_URL: 'https://apps.vietjack.com:8081/api',
-    // BASE_URL: 'http://45.124.87.227:8181/api',
+    BASE_URL:  `${root}/api`,
+    ROOT_URL: `${root}`,
     
-    BASE_URL_COURSE: 'https://apps.vietjack.com:8081',
+    BASE_URL_COURSE: `${root}`,
     MEDIA_URL: 'https://media.vietjack.com:6969/',
     BASE_URL_EXAM: 'https://khoahoc.vietjack.com/mobile-api/v2/exam/',
     BASE_HOI_DAP: 'https://hoidap.vietjack.com',
