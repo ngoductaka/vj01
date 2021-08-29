@@ -13,8 +13,15 @@ import {
 
 import BannerAd from '../component/shared/BannerAd';
 
+
 const initAdSetting = async () => {
     try {
+        const trackingStatus = await AdSettings.requestTrackingPermission();
+        if (trackingStatus === 'authorized' || trackingStatus === 'unavailable') {
+            AdSettings.setAdvertiserIDCollectionEnabled(true);
+            AdSettings.setAdvertiserTrackingEnabled(true);
+        }
+
         // AdSettings.setMediationService('foobar');
         // const trackingStatus = await AdSettings.requestTrackingPermission();
         // if (trackingStatus === 'authorized' || trackingStatus === 'unavailable') {
@@ -126,13 +133,16 @@ export const fbFull = () => {
 
 
 export function ViewWithBanner({ index = 0, type = "" } = {}) {
+    // fix for fb
+    return <BannerAd />
+
     const [fb, setFb] = useState(true);
     if (fb) {
         return (
             <View style={{ width: widthAd }}>
                 <Text style={{ textAlign: 'center', marginTop: 5 }}>.Quảng cáo.</Text>
                 <BannerView
-                    placementId={index > 10 ? placementIdBanner : (type ? BANNER_ADS[type]: placementIdBanner)}
+                    placementId={index > 10 ? placementIdBanner : (type ? BANNER_ADS[type] : placementIdBanner)}
                     type="rectangle"//large" //"standard"
                     // onPress={() => console.log('click')}
                     onLoad={() => {
@@ -160,7 +170,7 @@ export function FbNativeBanner({ index = 0, type = "" } = {}) {
             <View style={{ width: widthAd }}>
                 {/* <Text style={{ textAlign: 'center', marginTop: 5 }}>.Quảng cáo.</Text> */}
                 <BannerView
-                    placementId={index > 10 ? placementIdBanner : (type ? BANNER_ADS[type]: placementIdBanner)}
+                    placementId={index > 10 ? placementIdBanner : (type ? BANNER_ADS[type] : placementIdBanner)}
                     type="rectangle"//large" //"standard"
                     onLoad={() => {
                         console.log('<load facebook banner ads>')

@@ -61,12 +61,14 @@ const TestMenu = (props) => {
             if (advertParam && advertParam.show) {
                 advertParam.show();
             } else {
-                fbFull()
-                    .catch(err => {
-                        if (advertParam) {
-                            advertParam.show();
-                        }
-                    })
+                advertParam.show();
+                // pre dnd
+                // fbFull()
+                //     .catch(err => {
+                //         if (advertParam) {
+                //             advertParam.show();
+                //         }
+                //     })
             }
         }
 

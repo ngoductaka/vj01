@@ -95,16 +95,14 @@ const RenderItem = ({ item, index }) => {
                         borderRadius: 5,
                         position: 'relative'
                     }}>
-
-
                     <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
                         <Image style={{ height: 40, width: 40, borderRadius: 40 }} source={{ uri: item.author_avatar }} />
                     </View>
                     <View style={{ flex: 4, paddingRight: 20 }}>
                         <Text numberOfLines={1} style={{ fontSize: 22, fontWeight: 'bold', color: '#fff' }}>{item.author_name}</Text>
                         <Text numberOfLines={2} style={{ fontSize: 18, marginTop: 8, fontWeight: 'bold', color: '#fff' }}>{item.livestreams_lesson_name}</Text>
-                        <Text style={{ color: '#fff', textAlign: 'right', fontWeight: 'bold', fontSize: 15, }}>{formatLiveStreamTime(item.livestreams_lesson_published_at)}</Text>
-                        <View style={{ flexDirection: 'row', marginTop: 10, justifyContent: 'space-between' }}>
+                        <Text style={{ color: '#fff', textAlign: 'right', fontWeight: 'bold', fontSize: 15, marginTop: 15 }}>{formatLiveStreamTime(item.livestreams_lesson_published_at)}</Text>
+                        {/* <View style={{ flexDirection: 'row', marginTop: 10, justifyContent: 'space-between' }}>
                             <View style={{ justifyContent: 'center', alignItems: 'center' }}>
                                 <Text style={{ fontWeight: 'bold', color: '#fff' }}>Lớp 12</Text>
                                 <Text style={{ fontWeight: 'bold', color: '#fff' }}>{item.subject_name}</Text>
@@ -118,7 +116,7 @@ const RenderItem = ({ item, index }) => {
                                 <Text style={{ fontWeight: 'bold', color: '#fff' }}>500</Text>
                                 <Text style={{ fontWeight: 'bold', color: '#fff' }}>Đăng ký</Text>
                             </View>
-                        </View>
+                        </View> */}
                     </View>
                     <TouchableOpacity style={{ position: 'absolute', top: 10, right: 10 }}>
                         <Icon name="dots-three-horizontal" type={'Entypo'} style={{ color: '#fff', fontSize: 19 }} />
@@ -169,7 +167,7 @@ const styles = StyleSheet.create({
         borderWidth: 1, borderColor: '#DFE5EA', borderRadius: 8,
     },
     itemLive: {
-        height: 200, flex: 1, borderRadius: 5,
+        height: 170, flex: 1, borderRadius: 5,
         marginVertical: 10,
         resizeMode: "cover",
         justifyContent: "center",
@@ -201,8 +199,8 @@ const data = {
 const formatLiveStreamTime = (time) => {
     try {
         return !moment(time).diff(moment(), 'days') ?
-            moment(time).format("HH:mm:ss") + "Hôm nay" :
-            moment(time).format("HH:mm:ss DD-MM")
+            moment(time).format("HH:mm") + " Hôm nay" :
+            moment(time).format("HH:mm DD-MM")
 
     } catch (err) {
         console.log('err9999999999999999999999999999', err)

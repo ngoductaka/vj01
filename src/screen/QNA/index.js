@@ -183,7 +183,7 @@ const QnA = (props) => {
                         keyExtractor={(item) => '' + item.id}
                         style={{ flex: 1 }}
                         onEndReachedThreshold={0.5}
-                        onMomentumScrollBegin={hanldleScroll}
+                        // onMomentumScrollBegin={hanldleScroll}
                         onScrollToTop={() => setAni('lightSpeedOut')}
                         onEndReached={onEndReached}
                         removeClippedSubviews
@@ -205,31 +205,30 @@ const QnA = (props) => {
                         {showHeader && <FilterHeader loading={page.loading} filter={filter} setFilter={setFilter} show={showHeader} />}
                     </View>
                 </View>
-                {
-                    animatableView ?
-                        <Animatable.View
-                            animation={animatableView}
-                            style={{
-                                position: 'absolute',
-                                bottom: 10,
-                                right: 10,
-                                opacity: 0.5
-                            }}>
-                            <TouchableOpacity
-                                onPress={() => props.navigation.navigate('MakeQuestion')}
-                                style={{
-                                    height: 50,
-                                    width: 50,
-                                    borderRadius: 50,
-                                    flex: 1,
-                                    backgroundColor: COLOR.MAIN,
-                                    justifyContent: 'center', alignItems: 'center',
-                                    opacity: 0.8
-                                }}>
-                                <Icon name="plus" type="AntDesign" style={{ color: '#fff' }} />
-                            </TouchableOpacity>
-                        </Animatable.View> : null
-                }
+                <Animatable.View
+                    animation={'slideInRight'}
+                    delay={1000}
+                    style={{
+                        position: 'absolute',
+                        bottom: 20,
+                        right: 10,
+                        opacity: 0.7
+                    }}>
+                    <TouchableOpacity
+                        onPress={() => props.navigation.navigate('MakeQuestion')}
+                        style={{
+                            height: 50,
+                            width: 50,
+                            borderRadius: 50,
+                            flex: 1,
+                            backgroundColor: COLOR.MAIN,
+                            justifyContent: 'center', alignItems: 'center',
+                            opacity: 0.9
+                        }}>
+                        <Icon name="plus" type="AntDesign" style={{ color: '#fff' }} />
+                    </TouchableOpacity>
+                </Animatable.View>
+
             </SafeAreaView>
 
             <FilterModal

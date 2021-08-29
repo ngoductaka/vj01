@@ -57,10 +57,10 @@ const ViewAnwser = ({ navigation }) => {
 
     useEffect(() => {
         if (screenAds && screenAds[TAG] == "1") {
-
             if (advertParam) {
                 advertParam.show();
             } else {
+                advertParam.show();
                 fbFull()
             }
         }

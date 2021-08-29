@@ -32,10 +32,33 @@ const QnA = (props) => {
     const [filter, setFilter] = useState({ cls: 13 });
     const [showFilter, setShowFilter] = useState(false);
     const [questionContent, setContent] = useState('');
-    const [showKeyboad, setShowKeyboard] = useState(false);
+    // const [showKeyboad, setShowKeyboard] = useState(false);
 
-    const [searchText] = useDebounce(questionContent, 1000);
     // const [searchText, setSearchText] = useState('');
+    const handleSearch = React.useCallback(debounce(({ questionContent, filter }) => {
+
+        const { cls = '', currSub = '' } = filter || {};
+        const query = { grade_id: cls == 13 ? '' : cls };
+        if (currSub && currSub.id) {
+            query.subject_id = currSub.id
+        }
+        setLoading(true)
+        api.post('http://45.117.82.169:9998/search_raw', {
+            text: questionContent
+        })
+            .then(({ response }) => {
+                console.log('response123', response)
+                setResultSearch(response);
+            })
+            .catch(err => {
+                console.log(err)
+                // Toast.showWithGravity("Load câu hỏi lỗi!", Toast.SHORT, Toast.CENTER);
+            })
+            .finally(() => {
+                setLoading(false)
+            })
+
+    }, 500), [])
 
     const [resultSearch, setResultSearch] = useState([])
 
@@ -47,26 +70,7 @@ const QnA = (props) => {
 
     useEffect(() => {
         if (questionContent) {
-            const { cls = '', currSub = '' } = filter || {};
-            const query = { grade_id: cls == 13 ? '' : cls };
-            if (currSub && currSub.id) {
-                query.subject_id = currSub.id
-            }
-            setLoading(true)
-            api.post('http://45.117.82.169:9998/search_raw', {
-                text: questionContent
-            })
-                .then(({ response }) => {
-                    console.log('response123', response)
-                    setResultSearch(response);
-                })
-                .catch(err => {
-                    console.log(err)
-                    // Toast.showWithGravity("Load câu hỏi lỗi!", Toast.SHORT, Toast.CENTER);
-                })
-                .finally(() => {
-                    setLoading(false)
-                })
+            handleSearch({ questionContent, filter })
             // search_services.handleSearch(questionContent, query)
             //     .then(({ data }) => {
             //         console.log(data, '=========ddd')
@@ -99,9 +103,9 @@ const QnA = (props) => {
         // setTimeout(() => {
         //     setShowFilter(true)
         // }, 700)
-        // _handleClickCamera()
+        _handleClickCamera()
 
-        setShowKeyboard(true);
+        // setShowKeyboard(true);
     }, []);
 
     const [photos, setPhotos] = useState([]);
@@ -114,7 +118,7 @@ const QnA = (props) => {
                 console.log(file, 'sdsdsd', get(file, 'filename', 'file'))
                 dataUpload.append("file", {
                     uri: file.path,
-                    name: get(file, 'filename',  'dnd.jpg'),
+                    name: get(file, 'filename', 'dnd.jpg'),
                     type: 'multipart/form-data',
                 });
                 // dataUpload.append("list_equation_boxes", []);
@@ -310,7 +314,7 @@ const QnA = (props) => {
                     .replace(/"/g, "&quot;")
             };
             // console.log('photosphotos', photos)
-            if (photos[0] && 0) {
+            if (photos[0]) {
                 const dataUpload = new FormData();
                 photos.map(file => {
                     if (file.path) {
@@ -337,6 +341,11 @@ const QnA = (props) => {
 
                 } catch (err) {
                     console.log('==== err', err)
+                    const data = await api.post('/question', body);
+                    if (data && data.question_id) {
+                        props.navigation.navigate('QuestionDetail', { questionId: data.question_id, source: "QnA" })
+                    }
+
                     setLoading(false)
 
                 }
@@ -444,6 +453,7 @@ const QnA = (props) => {
                         {
                             resultSearch && resultSearch[0] ?
                                 <View style={{ paddingLeft: 8 }}>
+                                    <Text style={{fontSize: 20, fontWeight: 'bold'}}>Có thể bạn đang tìm: </Text>
                                     {
                                         resultSearch.map((item, index) => {
                                             const {
@@ -454,11 +464,11 @@ const QnA = (props) => {
                                                 answers = []
                                             } = item;
                                             const questionId = get(item, 'answers[0].question_id');
-                                            if(!questionId) return null
+                                            if (!questionId) return null
                                             return (
                                                 <RenderQnASearch
                                                     onPress={() => { props.navigation.navigate('QuestionDetail', { questionId }) }}
-                                                    {...{ title, grade: "Lớp " + grade, book: subject_name, answers }}
+                                                    {...{ title, grade: "Lớp " + grade, book: subject_name, answers, index }}
                                                 />
                                             )
                                         })

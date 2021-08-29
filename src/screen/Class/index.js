@@ -370,40 +370,74 @@ const Class = memo((props) => {
 										activeTextStyle={styles.activeTextStyle}
 										activeTabStyle={styles.activeTabStyle} tabStyle={styles.tabStyle}
 										heading="Cánh diều">
-										<FlatList
-											style={{ marginVertical: 20, marginTop: 25 }}
-											data={get(dataAllBook, 'data', []).filter(i => i.subject_type == 1)}
-											renderItem={({ item, index }) => _renderMenuItem(item, index, _handleNavigation)}
-											numColumns={NUMBER_COLUMS}
-											keyExtractor={(_, index) => 'book_item' + index.toString()}
-										/>
+
+										<View style={{ flexDirection: 'row', flexWrap: 'wrap', marginTop: 10 }}>
+											{
+												get(dataAllBook, 'data', []).filter(i => i.subject_type == 1).map((item, index) => {
+													return (
+														<View key={index + ''}>
+															{_renderMenuItem(item, index, _handleNavigation)}
+														</View>
+													)
+												})
+											}
+										</View>
+
 									</Tab>
 									<Tab textStyle={styles.textStyle} activeTextStyle={styles.activeTextStyle} activeTabStyle={styles.activeTabStyle} tabStyle={styles.tabStyle} heading="Kết nối tri thức ...">
-										<FlatList
-											style={{ marginVertical: 20, marginTop: 25 }}
-											data={get(dataAllBook, 'data', []).filter(i => i.subject_type == 2)}
-											renderItem={({ item, index }) => _renderMenuItem(item, index, _handleNavigation)}
-											numColumns={NUMBER_COLUMS}
-											keyExtractor={(_, index) => 'book_item' + index.toString()}
-										/>
+										<View style={{ flexDirection: 'row', flexWrap: 'wrap', marginTop: 10 }}>
+											{
+												get(dataAllBook, 'data', []).filter(i => i.subject_type == 2).map((item, index) => {
+													return (
+														<View key={index + ''}>
+															{_renderMenuItem(item, index, _handleNavigation)}
+														</View>
+													)
+												})
+											}
+										</View>
 									</Tab>
 									<Tab textStyle={styles.textStyle} activeTextStyle={styles.activeTextStyle} activeTabStyle={styles.activeTabStyle} tabStyle={styles.tabStyle} heading="Chân trời sáng tạo">
-										<FlatList
+
+										<View style={{ flexDirection: 'row', flexWrap: 'wrap', marginTop: 10 }}>
+											{
+												get(dataAllBook, 'data', []).filter(i => i.subject_type == 3).map((item, index) => {
+													return (
+														<View key={index + ''}>
+															{_renderMenuItem(item, index, _handleNavigation)}
+														</View>
+													)
+												})
+											}
+										</View>
+										{/* <FlatList
 											style={{ marginVertical: 20, marginTop: 25 }}
 											data={get(dataAllBook, 'data', []).filter(i => i.subject_type == 3)}
 											renderItem={({ item, index }) => _renderMenuItem(item, index, _handleNavigation)}
 											numColumns={NUMBER_COLUMS}
 											keyExtractor={(_, index) => 'book_item' + index.toString()}
-										/>
+										/> */}
 									</Tab>
 								</Tabs> :
-								<FlatList
-									style={{ marginVertical: 20, marginTop: 25 }}
-									data={get(dataAllBook, 'data', [])}
-									renderItem={({ item, index }) => _renderMenuItem(item, index, _handleNavigation)}
-									numColumns={NUMBER_COLUMS}
-									keyExtractor={(_, index) => 'book_item' + index.toString()}
-								/>)
+								<View style={{ flexDirection: 'row', flexWrap: 'wrap', marginTop: 10 }}>
+									{
+										get(dataAllBook, 'data', []).map((item, index) => {
+											return (
+												<View key={index + ''}>
+													{_renderMenuItem(item, index, _handleNavigation)}
+												</View>
+											)
+										})
+									}
+								</View>
+								// <FlatList
+								// 	style={{ marginVertical: 20, marginTop: 25 }}
+								// 	data={get(dataAllBook, 'data', [])}
+								// 	renderItem={({ item, index }) => _renderMenuItem(item, index, _handleNavigation)}
+								// 	numColumns={NUMBER_COLUMS}
+								// 	keyExtractor={(_, index) => 'book_item' + index.toString()}
+								// />
+							)
 
 
 					}

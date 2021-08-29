@@ -156,11 +156,11 @@ const CustomBottomBar = (props) => {
 						props.navigation.popToTop();
 						break;
 					case 'TestStack':
-						animate(width - (NUMBER_OF_TABS - 2) * width / NUMBER_OF_TABS, route.key);
+						animate(width - (NUMBER_OF_TABS - 3) * width / NUMBER_OF_TABS, route.key);
 						props.navigation.popToTop();
 						break;
 					case 'QnA':
-						animate(width - (NUMBER_OF_TABS - 3) * width / NUMBER_OF_TABS, route.key);
+						animate(width - (NUMBER_OF_TABS - 2) * width / NUMBER_OF_TABS, route.key);
 						break;
 					case 'AccountStack':
 						animate(width - (NUMBER_OF_TABS - 4) * width / NUMBER_OF_TABS, route.key);

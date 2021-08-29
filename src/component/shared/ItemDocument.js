@@ -171,7 +171,7 @@ const RenderQnASearch = ({ title, onPress, viewCount, index, book, grade, answer
 	return (
 		<TouchableOpacity
 			onPress={onPress}
-			style={[stylesComponent.textItem, { paddingLeft: 0, borderBottomWidth: 0, borderBottomWidth: 2, borderColor: '#ddd' }]}
+			style={[stylesComponent.textItem, { paddingLeft: 0, borderBottomWidth: 0, borderBottomWidth: 2, borderColor: '#555' }]}
 		>
 			<View style={{ flexDirection: 'row', alignItems: 'center' }}>
 				{/* <View
@@ -185,7 +185,7 @@ const RenderQnASearch = ({ title, onPress, viewCount, index, book, grade, answer
 				</View> */}
 				<View style={{ flex: 1 }}>
 					<Text numberOfLines={2} style={stylesComponent.textContent}>
-						{title}
+						<Text style={{fontWeight: 'bold', fontSize: 20}}>{index+1}.</Text> {title}
 					</Text>
 					<View style={{ flexDirection: 'row', justifyContent: 'flex-end' }}>
 						{/* <Text style={{ fontSize: 12, color: '#777', textAlign: 'right', marginTop: 7 }}>{answers_count ? `${answers_count} câu trả lời` : 'Chưa có câu trả lời'} </Text> */}

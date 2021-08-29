@@ -77,6 +77,7 @@ const QnA = (props) => {
                 setLoading(false);
                 setFollow(data.is_follow)
                 setQuestionData(data);
+                console.log('datadatadatadata',data)
                 if (isScroll) {
                     try {
                         setTimeout(() => {

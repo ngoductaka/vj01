@@ -1,18 +1,34 @@
 import React, { useState, useEffect } from 'react';
 import { View, TouchableOpacity, Text, StyleSheet } from 'react-native';
 import { Icon } from 'native-base';
+import { get } from 'lodash';
 
 import * as Animatable from 'react-native-animatable';
 import { UserLive } from '../../../component/User';
 import { openLink } from '../hepper';
+import api from '../../../handle/api';
+import { endpoints } from '../../../constant/endpoints';
 
 const LiveNow = () => {
-    const [show, setShow] = useState(true);
-
+    const [show, setShow] = useState(false);
     useEffect(() => {
-        setTimeout(() => {
-            setShow(true)
-        }, 6000)
+        api.get(`${endpoints.ROOT_URL}/courses/trending-livestreams`)
+            .then(({ data }) => {
+                if (data)
+                    setShow(data)
+            })
+
+        let inter = setInterval(() => {
+            api.get(`${endpoints.ROOT_URL}/courses/trending-livestreams`)
+                .then(({ data }) => {
+                    if (data)
+                        setShow(data)
+                })
+        }, 30 * 1000);
+
+        return () => {
+            clearInterval(inter)
+        }
     }, [])
 
     if (!show) return null;
@@ -21,14 +37,14 @@ const LiveNow = () => {
         <Animatable.View animation="slideInRight" style={styles.container}>
             <TouchableOpacity
                 onPress={() => {
-                    openLink('https://www.facebook.com/cohuyenhoa')
+                    openLink(get(show, '[0].livestreams_lesson_url'))
                 }}
                 style={styles.containerView}>
                 <View>
                     <UserLive />
                 </View>
                 <View style={styles.wapperText}>
-                    <Text numberOfLines={2}>[LIVE 09] LIVE ĐẶC BIỆT : CÁCH SỬ DỤNG VÒNG TRÒN LƯỢNG GIÁC TRONG DAO ĐỘNG DỄ NHẤT</Text>
+                    <Text numberOfLines={2}>{get(show, '[0].livestreams_lesson_name')}</Text>
                 </View>
                 <View style={styles.joinView}>
                     <Text style={styles.joinText}>Tham gia</Text>
