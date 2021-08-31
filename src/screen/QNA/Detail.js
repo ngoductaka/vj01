@@ -11,6 +11,7 @@ import Toast from 'react-native-simple-toast';
 import OptionsMenu from "react-native-option-menu";
 import ImageView from "react-native-image-viewing";
 import StarRating from 'react-native-star-rating';
+import MathJax from 'react-native-mathjax';
 import {
     Placeholder,
     PlaceholderMedia,
@@ -77,7 +78,6 @@ const QnA = (props) => {
                 setLoading(false);
                 setFollow(data.is_follow)
                 setQuestionData(data);
-                console.log('datadatadatadata',data)
                 if (isScroll) {
                     try {
                         setTimeout(() => {
@@ -182,6 +182,10 @@ const QnA = (props) => {
                     isFollow={isFollow}
                     subtitle={`• ${get(questionData, 'path.subject.subject_name', '')} • lớp ${get(questionData, 'path.class', '')}`}
                 />
+                {/* <MathJax
+                html={'$\sum_{i=0}^n i^2 = \frac{(n^2+n)(2n+1)}{6}$<br><p style="font-family: "Times New Roman"">This is an equation</p>'}
+                    // html={'Solve the equation $\\frac{x-2}{x+3}=\\frac{x-3}{2}$'}
+                /> */}
 
                 {/* <View style={{ height: 200 }}> */}
                 {/* <ViewWithBanner /> */}
@@ -721,7 +725,7 @@ const Header = ({
                         </View>
                     </TouchableOpacity>
                     <View style={{ marginLeft: 10 }}>
-                        <Text style={{fontSize: 16 }}>{userName}</Text>
+                        <Text style={{ fontSize: 16 }}>{userName}</Text>
                         <Text numberOfLines={1} style={{ fontSize: 13 }}>{getDiffTime(time)} {subtitle}</Text>
                     </View>
                 </View>

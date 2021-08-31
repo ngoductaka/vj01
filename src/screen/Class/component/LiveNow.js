@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { View, TouchableOpacity, Text, StyleSheet } from 'react-native';
 import { Icon } from 'native-base';
 import { get } from 'lodash';
+import moment from 'moment';
 
 import * as Animatable from 'react-native-animatable';
 import { UserLive } from '../../../component/User';
@@ -12,24 +13,39 @@ import { endpoints } from '../../../constant/endpoints';
 const LiveNow = () => {
     const [show, setShow] = useState(false);
     useEffect(() => {
-        api.get(`${endpoints.ROOT_URL}/courses/trending-livestreams`)
-            .then(({ data }) => {
-                if (data)
-                    setShow(data)
-            })
+        _handleGetData()
 
         let inter = setInterval(() => {
-            api.get(`${endpoints.ROOT_URL}/courses/trending-livestreams`)
-                .then(({ data }) => {
-                    if (data)
-                        setShow(data)
-                })
+            _handleGetData()
         }, 30 * 1000);
-
         return () => {
             clearInterval(inter)
         }
     }, [])
+
+    const _handleGetData = () => {
+        // livestreams_lesson_published_at
+
+        api.get(`${endpoints.ROOT_URL}/courses/trending-livestreams`)
+            .then(({ data }) => {
+                if (data) {
+                    let min = -1;
+                    let indexItem = 0;
+                    data.map((i, index) => {
+                        const diff = moment(i.livestreams_lesson_published_at).diff(moment(), 'seconds');
+                        console.log(min, 'diff', diff, i.livestreams_lesson_published_at)
+                        if (diff >= 0 && diff < min) {
+                            min = diff;
+                            indexItem = index;
+                        }
+                    })
+                    if (min >= 0) {
+                        setShow(data[indexItem])
+                    }
+
+                }
+            })
+    }
 
     if (!show) return null;
 
@@ -37,14 +53,14 @@ const LiveNow = () => {
         <Animatable.View animation="slideInRight" style={styles.container}>
             <TouchableOpacity
                 onPress={() => {
-                    openLink(get(show, '[0].livestreams_lesson_url'))
+                    openLink(get(show, 'livestreams_lesson_url'))
                 }}
                 style={styles.containerView}>
                 <View>
                     <UserLive />
                 </View>
                 <View style={styles.wapperText}>
-                    <Text numberOfLines={2}>{get(show, '[0].livestreams_lesson_name')}</Text>
+                    <Text numberOfLines={2}>{get(show, 'livestreams_lesson_name')}</Text>
                 </View>
                 <View style={styles.joinView}>
                     <Text style={styles.joinText}>Tham gia</Text>
