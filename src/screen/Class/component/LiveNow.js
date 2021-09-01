@@ -33,7 +33,6 @@ const LiveNow = () => {
                     let indexItem = 0;
                     data.map((i, index) => {
                         const diff = moment(i.livestreams_lesson_published_at).diff(moment(), 'seconds');
-                        console.log(min, 'diff', diff, i.livestreams_lesson_published_at)
                         if (diff >= 0 && diff < min) {
                             min = diff;
                             indexItem = index;

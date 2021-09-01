@@ -314,6 +314,7 @@ const QnA = (props) => {
                     .replace(/"/g, "&quot;")
             };
             // console.log('photosphotos', photos)
+
             if (photos[0]) {
                 const dataUpload = new FormData();
                 photos.map(file => {
@@ -326,45 +327,50 @@ const QnA = (props) => {
                     }
                 });
                 try {
-
                     const imageUpload = await services.uploadImage(dataUpload);
                     if (imageUpload && imageUpload.data) {
                         body.image = imageUpload.data;
                     }
-                    const data = await api.post('/question', body);
-                    if (data && data.question_id) {
-                        // dnds
-                        props.navigation.navigate('QuestionDetail', { questionId: data.question_id, source: "QnA" })
-                    }
 
-                    setLoading(false)
+                    _handleCreateQuestion(body)
 
                 } catch (err) {
                     console.log('==== err', err)
-                    const data = await api.post('/question', body);
-                    if (data && data.question_id) {
-                        props.navigation.navigate('QuestionDetail', { questionId: data.question_id, source: "QnA" })
-                    }
-
-                    setLoading(false)
+                    _handleCreateQuestion(body)
 
                 }
             } else {
-                try {
-                    const data = await api.post('/question', body);
-                    if (data && data.question_id) {
-                        props.navigation.navigate('QuestionDetail', { questionId: data.question_id, source: "QnA" })
-                    }
-
-                    setLoading(false)
-                } catch (err) {
-                    console.log('<err upload question>', err)
-
-                    setLoading(false)
-                }
+                _handleCreateQuestion(body)
             }
 
         } catch (err) {
+            setLoading(false)
+        }
+
+    }
+
+    const _handleCreateQuestion = async (body) => {
+        try {
+            const data = await api.post('/question', body);
+            // console.log('da24143ta', data)
+            if (!data) return 0;
+            if (!data.status) {
+                Alert.alert(
+                    "Quá số lượng câu hỏi",
+                    "Bạn chỉ được đặt 3 câu hỏi 1 ngày", [
+                    { text: "OK", onPress: () => props.navigation.goBack() }
+                ]
+
+                );
+                return 0;
+            }
+            if (data.question_id) {
+                props.navigation.navigate('QuestionDetail', { questionId: data.question_id, source: "QnA" })
+            }
+            setLoading(false)
+        } catch (err) {
+            console.log('<err upload question>', err)
+
             setLoading(false)
         }
 
@@ -453,7 +459,7 @@ const QnA = (props) => {
                         {
                             resultSearch && resultSearch[0] ?
                                 <View style={{ paddingLeft: 8 }}>
-                                    <Text style={{fontSize: 20, fontWeight: 'bold'}}>Có thể bạn đang tìm: </Text>
+                                    <Text style={{ fontSize: 20, fontWeight: 'bold' }}>Có thể bạn đang tìm: </Text>
                                     {
                                         resultSearch.map((item, index) => {
                                             const {
