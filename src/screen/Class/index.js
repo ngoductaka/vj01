@@ -15,6 +15,8 @@ import firebase from 'react-native-firebase';
 import moment from 'moment';
 import ModalBox from 'react-native-modalbox';
 
+import { withNavigationFocus } from 'react-navigation';
+
 import MenuItem, { NUMBER_COLUMS } from '../../component/menuItem';
 import api, { Loading, useRequest, handleTimeInfo } from '../../handle/api';
 import { Icon, Card, Tabs, Tab, ScrollableTab } from 'native-base';
@@ -575,7 +577,7 @@ const Class = memo((props) => {
 					</TouchableOpacity>
 				</View>
 			</ModalBox>
-			<LiveNow />
+			<LiveNow  isFocused={props.isFocused}/>
 		</View >
 	)
 })
@@ -653,7 +655,7 @@ export default connect(
 		rated: state.timeMachine.rated,
 	}),
 	mapDispatchToProps
-)(Class);
+)(withNavigationFocus(Class));
 
 const RecommendShareCard = ({ onPress, img = images.share_app, title = 'Chia sẻ với bạn bè', subtitle = 'Chia sẻ ứng dụng với bạn bè và đồng hành cùng VietJack nhé' }) => {
 	return (

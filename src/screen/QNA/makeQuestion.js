@@ -8,6 +8,7 @@ import Toast from 'react-native-simple-toast';
 import { Icon } from 'native-base';
 import { useSelector, useDispatch } from 'react-redux';
 import { get, debounce } from 'lodash';
+import { RNCamera } from 'react-native-camera';
 import { check, PERMISSIONS, RESULTS, openSettings, request } from 'react-native-permissions';
 
 import { fontSize, COLOR } from '../../handle/Constant';
@@ -16,6 +17,8 @@ import { fontMaker, fontStyles } from '../../utils/fonts';
 import { FilterModal, mapTypeQestion } from './com/FilterModal';
 import KeyboardStickyView from '../../component/shared/StickeyKeyboad';
 import imagePicker from '../../utils/imagePicker';
+import ImagePickerCrop from "react-native-image-crop-picker";
+
 
 import { TollBar } from './com/com';
 import services from '../../handle/services';
@@ -24,24 +27,137 @@ import { helpers } from '../../utils/helpers';
 import useDebounce from '../../utils/useDebounce';
 import { search_services } from './service';
 import { RenderQnASearch } from '../../component/shared/ItemDocument';
+import { cameraPermission } from '../../utils/permission';
 
 const { width, height } = Dimensions.get('window');
 const userImg = "https://www.xaprb.com/media/2018/08/kitten.jpg";
 
 const QnA = (props) => {
-    const [filter, setFilter] = useState({ cls: 13 });
-    const [showFilter, setShowFilter] = useState(false);
-    const [questionContent, setContent] = useState('');
-    // const [showKeyboad, setShowKeyboard] = useState(false);
+    const [resultSearch, setResultSearch] = useState([])
 
-    // const [searchText, setSearchText] = useState('');
-    const handleSearch = React.useCallback(debounce(({ questionContent, filter }) => {
+    return (
+        <SafeAreaView style={{ flex: 1, position: 'relative' }}>
+            {resultSearch && resultSearch[0] ?
+                <ResultView setResultSearch={setResultSearch} resultSearch={resultSearch} {...props} /> :
+                <CameraView
+                    setResultSearch={setResultSearch}
+                    goBack={() => props.navigation.goBack()}
+                    goToTextQna={() => props.navigation.navigate('createTextQna')}
+                />}
+        </SafeAreaView>
+    );
+};
 
-        const { cls = '', currSub = '' } = filter || {};
-        const query = { grade_id: cls == 13 ? '' : cls };
-        if (currSub && currSub.id) {
-            query.subject_id = currSub.id
+const ResultView = ({ resultSearch, setResultSearch, ...props }) => {
+    return (
+        <View style={{ paddingLeft: 8, position: 'relative' }}>
+            <Text style={{ fontSize: 20, fontWeight: 'bold', marginVertical: 10 }}>Kết quả tìm kiếm: </Text>
+            <FlatList
+                data={resultSearch}
+                renderItem={({ item, index }) => {
+                    const {
+                        content_vi: title = '',
+                        class: grade = '',
+                        subject: book = '',
+                        subject: subject_name = "",
+                        answers = []
+                    } = item;
+                    const questionId = get(item, 'answers[0].question_id');
+                    if (!questionId) return null
+                    return (
+                        <RenderQnASearch
+                            onPress={() => { props.navigation.navigate('QuestionDetail', { questionId }) }}
+                            {...{ title, grade: "Lớp " + grade, book: subject_name, answers, index }}
+                        />
+                    )
+                }}
+            />
+            <View style={{ position: 'absolute', left: 10, bottom: 60, opacity: 0.7 }}>
+                <TouchableOpacity style={styles.btn} onPress={() => setResultSearch([])}>
+                    <Icon name="camera" style={{ color: COLOR.MAIN }} />
+                </TouchableOpacity>
+
+                <TouchableOpacity style={[styles.btn, { marginTop: 20 }]} onPress={() => { props.navigation.navigate('createTextQna') }}>
+                    <Icon type="MaterialCommunityIcons" name="pen-plus" style={{ color: COLOR.MAIN }} />
+                </TouchableOpacity>
+            </View>
+        </View>
+    )
+}
+
+const CameraView = ({ setResultSearch, goBack, goToTextQna = () => { } }) => {
+
+    const camera = useRef(null);
+
+    const [loading, setLoading] = useState(false)
+
+    const takePicture = async () => {
+        if (camera && camera.current) {
+            const options = { quality: 0.5, base64: true };
+            const data = await camera.current.takePictureAsync(options);
+            console.log(data.uri, '=====dnd');
+            ImagePickerCrop.openCropper({
+                path: data.uri,
+
+                freeStyleCropEnabled: true,
+                width: 500,
+                height: 200
+            }).then(image => {
+                console.log('image123ee', image)
+                _handleUploadImg(image)
+            });
         }
+    };
+
+    const _handleUploadImg = async (file) => {
+        try {
+            if (file && file.path) {
+                setLoading(true)
+                const dataUpload = new FormData();
+                dataUpload.append("file", { uri: file.path, name: get(file, 'filename', 'dnd.jpg'), type: 'multipart/form-data', });
+
+                const data = await services.uploadFile('http://45.117.82.169:5411/api/vj/extracteq', dataUpload);
+
+                const result = get(data, 'data.result.lines', '');
+                if (result && result[0]) {
+                    const resultLine = result.reduce((car, cur) => `${car} \n ${cur}`);
+                    console.log({ resultLine })
+                    handleSearch({ questionContent: resultLine })
+                } else {
+                    Alert.alert(
+                        "Không có dữ liệu",
+                        "Không ghi nhận dữ liệu từ ảnh ảnh",
+                        [
+                            { text: "OK", onPress: () => console.log("OK Pressed") }
+                        ]
+                    );
+                    setLoading(false)
+                }
+            } else {
+                Alert.alert(
+                    "Không có dữ liệu",
+                    "Không ghi nhận dữ liệu từ ảnh ảnh",
+                    [
+                        { text: "OK", onPress: () => console.log("OK Pressed") }
+                    ]
+                );
+                setLoading(false)
+                console.log("No img")
+            }
+        } catch (err) {
+            setLoading(false)
+            console.log('err', err)
+            Alert.alert(
+                "Có lỗi!",
+                "Ảnh không thể upload vui lòng thử lại sau",
+                [
+                    { text: "OK", onPress: () => console.log("OK Pressed") }
+                ]
+            );
+        }
+    }
+
+    const handleSearch = ({ questionContent }) => {
         setLoading(true)
         api.post('http://45.117.82.169:9998/search_raw', {
             text: questionContent
@@ -52,721 +168,141 @@ const QnA = (props) => {
             })
             .catch(err => {
                 console.log(err)
-                // Toast.showWithGravity("Load câu hỏi lỗi!", Toast.SHORT, Toast.CENTER);
+                Alert.alert(
+                    "Có lỗi!",
+                    "Ảnh không tìm thấy kết quả tìm kiếm",
+                    [
+                        { text: "OK", onPress: () => console.log("OK Pressed") }
+                    ]
+                );
             })
             .finally(() => {
                 setLoading(false)
             })
-
-    }, 500), [])
-
-    const [resultSearch, setResultSearch] = useState([])
-
-    // const userInfo.class
-    const userInfo = useSelector(state => state.userInfo);
-    const current_class = useSelector(state => state.userInfo.class);
-    useEffect(() => { setFilter({ cls: current_class }) }, [current_class])
-    // search
-
-    useEffect(() => {
-        if (questionContent) {
-            handleSearch({ questionContent, filter })
-            // search_services.handleSearch(questionContent, query)
-            //     .then(({ data }) => {
-            //         console.log(data, '=========ddd')
-            //         setResultSearch(data);
-            //         setLoading(false)
-            //     })
-            //     .catch(err => {
-            //         setLoading(false)
-            //         Toast.showWithGravity("Load câu hỏi lỗi!", Toast.SHORT, Toast.CENTER);
-            //     })
-        }
-
-    }, [questionContent, filter]);
-
-    // console.log('userInfo42345', userInfo.user.photo)
-    const inputRef = useRef(null);
-    const hanldleClick = (params) => {
-        props.navigation.navigate("QuestionDetail", params);
     };
-
-    // console.log('vvvvv', filter);
-    useEffect(() => {
-        // show key board 
-        // if (inputRef && inputRef.current) {
-        //     setTimeout(() => {
-        //         inputRef.current.focus();
-        //     }, 1000)
-        // }
-        // show filter
-        // setTimeout(() => {
-        //     setShowFilter(true)
-        // }, 700)
-        _handleClickCamera()
-
-        // setShowKeyboard(true);
-    }, []);
-
-    const [photos, setPhotos] = useState([]);
-
-    const _handleUploadImg = async (file) => {
-        try {
-
-            const dataUpload = new FormData();
-            if (file.path) {
-                console.log(file, 'sdsdsd', get(file, 'filename', 'file'))
-                dataUpload.append("file", {
-                    uri: file.path,
-                    name: get(file, 'filename', 'dnd.jpg'),
-                    type: 'multipart/form-data',
-                });
-                // dataUpload.append("list_equation_boxes", []);
-                // http://45.117.82.169:5411/api/vj/extracteq?file
-
-                const data = await services.uploadFile('http://45.117.82.169:5411/api/vj/extracteq', dataUpload);
-                // console.log("dat242423a", data);
-
-                const result = get(data, 'data.result.lines', '');
-                if (result && result[0]) {
-                    setContent(result.reduce((car, cur) => `${car} \n ${cur}`))
-                }
-            } else {
-                alert("dnd err")
-            }
-        } catch (err) {
-            console.log('err dsfadsfasfdupload', get(err, 'data[0]', ''), err)
-            const result = get(err, 'data[0].data.result.lines', '');
-            if (result && result[0]) {
-                setContent(result.reduce((car, cur) => `${car} \n ${cur}`))
-            }
-        }
-    }
-
-    const _handleOpenSetting = () => {
-        Alert.alert(
-            "Mở cài đặt",
-            "Vui lòng cấp quyền để upload ảnh",
-            [
-                {
-                    text: "Cancel",
-                    onPress: () => console.log("Cancel Pressed"),
-                    style: "cancel"
-                },
-                { text: "OK", onPress: openSettings }
-            ],
-            { cancelable: true }
-        );
-
-    }
-
-    const _handleClickPhoto = async () => {
-        // 
-        if (helpers.isIOS) {
-            const result = await check(PERMISSIONS.IOS.PHOTO_LIBRARY);
-            if (result == RESULTS.GRANTED) {
-                _handleSelectPhoto()
-            } else if (result === RESULTS.DENIED) {
-                const resultRequest = await request(PERMISSIONS.IOS.PHOTO_LIBRARY);
-                if (resultRequest === RESULTS.GRANTED) {
-                    _handleSelectPhoto()
-                } else {
-                    _handleOpenSetting()
-                }
-            } else {
-                _handleSelectPhoto()
-            }
-        } else {
-            const result = await check(PERMISSIONS.ANDROID.READ_EXTERNAL_STORAGE);
-            if (result === RESULTS.GRANTED) {
-                _handleSelectPhoto();
-            } else if (result === RESULTS.DENIED) {
-                const resultRequest = await request(PERMISSIONS.ANDROID.READ_EXTERNAL_STORAGE);
-                if (resultRequest === RESULTS.GRANTED) {
-                    _handleSelectPhoto()
-                } else {
-                    _handleOpenSetting()
-                }
-            } else {
-                _handleSelectPhoto()
-            }
-        }
-    };
-
     const _handleSelectPhoto = () => {
         imagePicker.launchLibrary({}, {
             onChooseImage: (response) => {
-                if (response) {
-                    try {
-                        // setPhotos([...photos, response])
-                        setPhotos([response])
-                        _handleUploadImg(response)
-                        // const arrImg = [...photos, response];
-                        // if (arrImg.length < 2) {
-                        //     setPhotos(arrImg);
-                        // }
-                        // else
-                        //     Toast.showWithGravity("Bạn chỉ được chọn 1 ảnh", Toast.SHORT, Toast.CENTER);
-
-                    } catch (err) {
-                        console.log(err)
-                    }
-                }
+                _handleUploadImg(response)
             }
         });
     };
-
-    const _handleUseCamera = () => {
-
-        imagePicker.launchCamera(false, {
-            onChooseImage: (response) => {
-                if (response.path) {
-                    console.log('response1111', response)
-                    try {
-                        setPhotos([response])
-                        _handleUploadImg(response)
-                        // if (photos.length < 3){
-                        //     // setPhotos([...photos, response])
-                        //     setPhotos([response])
-                        // }
-                        // else
-                        //     Toast.showWithGravity("Bạn chỉ được chọn 1 ảnh", Toast.SHORT, Toast.CENTER);
-
-                    } catch (err) {
-                        console.log(err)
-                    }
-                }
-            }
-        })
-    }
-
-    const _handleClickCamera = async () => {
-        // 
-        if (helpers.isIOS) {
-            const result = await check(PERMISSIONS.IOS.CAMERA);
-            if (result == RESULTS.GRANTED) {
-                _handleUseCamera()
-            } else if (result === RESULTS.DENIED) {
-                const resultRequest = await request(PERMISSIONS.IOS.CAMERA);
-                if (resultRequest === RESULTS.GRANTED) {
-                    _handleUseCamera()
-                } else {
-                    _handleOpenSetting()
-                }
-
-            } else {
-                _handleUseCamera()
-            }
-        } else {
-            const result = await check(PERMISSIONS.ANDROID.CAMERA);
-            if (result === RESULTS.GRANTED) {
-                _handleUseCamera();
-            } else if (result === RESULTS.DENIED) {
-                const resultRequest = await request(PERMISSIONS.ANDROID.CAMERA);
-                if (resultRequest === RESULTS.GRANTED) {
-                    _handleUseCamera()
-                } else {
-                    _handleOpenSetting()
-                }
-            } else {
-                _handleUseCamera()
-            }
-        }
-    }
-
-    const hanldeRemoveImg = (index) => {
-        photos.splice(index, 1);
-
-        setPhotos([...photos]);
-    }
-
-    const [loading, setLoading] = useState(false);
-
-    const uploadQuestion = async () => {
-        try {
-            if (!questionContent) {
-                Toast.showWithGravity("Vui lòng nhập nội dung câu hỏi", Toast.SHORT, Toast.CENTER);
-                return 1;
-            };
-            const { cls = '', currSub = '' } = filter || {};
-            if (!get(currSub, 'id')) {
-                Toast.showWithGravity("Vui lòng chọn môn học", Toast.SHORT, Toast.CENTER);
-                setTimeout(() => {
-                    setShowFilter(true)
-                }, 500)
-                return 1;
-            };
-            if (cls == 13) {
-                Toast.showWithGravity("Vui lòng chọn lớp", Toast.SHORT, Toast.CENTER);
-                return 1;
-            }
-            // 
-            setLoading(true)
-            // console.log('currSub=========', currSub)
-            const body = {
-                "grade": cls,
-                "subject": currSub && currSub.id || 31,
-                // subject: 1,
-                "content": questionContent
-                    .replace(/&/g, "&amp;")
-                    .replace(/>/g, "&gt;")
-                    .replace(/</g, "&lt;")
-                    .replace(/"/g, "&quot;")
-            };
-            // console.log('photosphotos', photos)
-
-            if (photos[0]) {
-                const dataUpload = new FormData();
-                photos.map(file => {
-                    if (file.path) {
-                        dataUpload.append("img[]", {
-                            uri: file.path,
-                            name: get(file, 'filename', 'dd.jpg'),
-                            type: 'multipart/form-data',
-                        });
-                    }
-                });
-                try {
-                    const imageUpload = await services.uploadImage(dataUpload);
-                    if (imageUpload && imageUpload.data) {
-                        body.image = imageUpload.data;
-                    }
-
-                    _handleCreateQuestion(body)
-
-                } catch (err) {
-                    console.log('==== err', err)
-                    _handleCreateQuestion(body)
-
-                }
-            } else {
-                _handleCreateQuestion(body)
-            }
-
-        } catch (err) {
-            setLoading(false)
-        }
-
-    }
-
-    const _handleCreateQuestion = async (body) => {
-        try {
-            const data = await api.post('/question', body);
-            // console.log('da24143ta', data)
-            if (!data) return 0;
-            if (!data.status) {
-                Alert.alert(
-                    "Quá số lượng câu hỏi",
-                    "Bạn chỉ được đặt 3 câu hỏi 1 ngày", [
-                    { text: "OK", onPress: () => props.navigation.goBack() }
-                ]
-
-                );
-                return 0;
-            }
-            if (data.question_id) {
-                props.navigation.navigate('QuestionDetail', { questionId: data.question_id, source: "QnA" })
-            }
-            setLoading(false)
-        } catch (err) {
-            console.log('<err upload question>', err)
-
-            setLoading(false)
-        }
-
-    }
-
     return (
         <View style={styles.container}>
-            <SafeAreaView style={{ flex: 1, position: 'relative' }}>
-                {/* top */}
-                <TollBar
-                    leftAction={() => props.navigation.goBack()}
-                    text="Đặt câu hỏi"
-                    icon="close"
-                    iconStyle={{ fontSize: 40 }}
-                />
-                <View style={{
-                    flexDirection: 'row', justifyContent: 'space-between',
-                    alignItems: 'center', paddingHorizontal: 8,
-                    borderTopColor: '#ddd', borderTopWidth: 1, paddingTop: 20,
-                }}>
-                    <View style={{
-                        flexDirection: 'row', alignItems: 'center',
-                        marginBottom: 10,
-                    }}>
-                        <View style={styles.largeImgWapper} >
-                            <Image style={userStyle.img} source={{ uri: get(userInfo, 'user.photo', '') }} />
-                            {/* <View style={{ backgroundColor: '#fff', position: 'absolute', right: -3, bottom: -3, borderRadius: 10 }}>
-                                <Icon style={{ color: 'green', fontSize: 15, fontWeight: 'bolid' }} name="check-circle" type="FontAwesome" />
-                            </View> */}
-                        </View>
-                        <View style={{ marginLeft: 10 }}>
-                            <Text style={{ fontWeight: 'bold', fontSize: 14 }}>{userInfo.user.name}</Text>
-                            <FilterTag {...{ filter, setFilter, setShowFilter }} />
-                        </View>
-                    </View>
-                    {/* <TouchableOpacity onPress={() => setShowFilter(true)} style={styles.filter}>
-                        <Icon style={styles.iconFilter} type="AntDesign" name="filter" />
-                    </TouchableOpacity> */}
-                </View>
-                <View style={{ flex: 1 }}>
-                    <ScrollView
-                        // contentContainerStyle={{ flex: 1, backgroundColor: 'red' }}
-                        onScroll={() => Keyboard.dismiss()}
-                        scrollEventThrottle={24}
-                    >
-                        {/* Form */}
-                        <TextInput
-                            value={questionContent}
-                            onChangeText={val => setContent(val)}
-                            ref={inputRef}
-                            multiline
-                            numberOfLines={4}
-                            placeholder={`Hãy hỏi 1 câu duy nhất hoặc chia nhỏ câu hỏi để có lời giải nhanh nhất nhé `}
-                            style={[styles.inputQnA, styles.shadow]}
-                        />
-                        {
-                            photos[0] ? photos.map((photo, index) => {
-                                return (
-                                    <View key={photo.path} style={{
-                                        height: get(photo, 'height', width / 2) * (width / get(photo, 'width', width / 2)),
-                                        width,
-                                        marginBottom: 20
-                                    }}>
-                                        <Image
-                                            source={{ uri: photo.path }}
-                                            style={{ flex: 1, width: undefined, height: undefined }}
-                                        // resizeMode='contain'
-                                        />
-                                        <TouchableOpacity
-                                            onPress={() => hanldeRemoveImg(index)}
-                                            style={{
-                                                position: 'absolute',
-                                                backgroundColor: '#ddd', right: 0,
-                                                // paddingHorizontal: 10, 
-                                                justifyContent: 'center',
-                                                height: 40, width: 40,
-                                                alignItems: 'center', justifyContent: 'center', borderRadius: 40
-                                            }}>
-                                            <Icon name="close" style={{ color: 'red' }} />
-                                        </TouchableOpacity>
-
-                                    </View>
-                                )
-                            }) : null
-                        }
-                        {
-                            resultSearch && resultSearch[0] ?
-                                <View style={{ paddingLeft: 8 }}>
-                                    <Text style={{ fontSize: 20, fontWeight: 'bold' }}>Có thể bạn đang tìm: </Text>
-                                    {
-                                        resultSearch.map((item, index) => {
-                                            const {
-                                                content_vi: title = '',
-                                                class: grade = '',
-                                                subject: book = '',
-                                                subject: subject_name = "",
-                                                answers = []
-                                            } = item;
-                                            const questionId = get(item, 'answers[0].question_id');
-                                            if (!questionId) return null
-                                            return (
-                                                <RenderQnASearch
-                                                    onPress={() => { props.navigation.navigate('QuestionDetail', { questionId }) }}
-                                                    {...{ title, grade: "Lớp " + grade, book: subject_name, answers, index }}
-                                                />
-                                            )
-                                        })
-                                    }
-
-                                </View>
-
-                                // <FlatList
-                                //     showsVerticalScrollIndicator={false}
-                                //     data={resultSearch}
-                                //     contentContainerStyle={{ paddingHorizontal: 10 }}
-                                //     ListHeaderComponent={() => {
-                                //         return (
-                                //             <View style={{ marginTop: 15 }}>
-                                //                 <Text style={{ fontSize: 22 }}>Câu hỏi liên quan:</Text>
-                                //             </View>
-                                //         )
-                                //     }}
-                                //     renderItem={({ item, index }) => {
-                                //         const { title = '',
-                                //             grade_id: grade = '',
-                                //             subject_id: book = '',
-                                //             id: questionId = '',
-                                //             subject_name = ""
-                                //         } = item
-                                //         return (
-                                //             <RenderQnASearch
-                                //                 onPress={() => { props.navigation.navigate('QuestionDetail', { questionId }) }}
-                                //                 {...{ title, grade: "Lớp " + grade, book: subject_name }}
-                                //             />
-                                //         )
-                                //     }}
-                                //     keyExtractor={(item, index) => item.id}
-                                // />
-                                : null
-                        }
-                    </ScrollView>
-                </View>
-                {/* {showKeyboad ?
-                    <KeyboardStickyView style={{ backgroundColor: '#ddd' }}>
-                        <View style={{
-                            flex: 1,
-                            width: width,
-                            height: 55,
-                            borderTopColor: '#dedede',
-                            borderTopWidth: 1,
-                            flexDirection: 'row',
-                            alignItems: 'center',
-                            backgroundColor: '#fff',
-                            paddingBottom: 15,
-                            paddingTop: 5,
-                        }}>
-                            <View style={{ flex: 1, flexDirection: 'row' }}>
-                                <TouchableOpacity onPress={_handleClickPhoto} style={{ paddingHorizontal: 10, marginLeft: 15 }} >
-                                    <Icon name="image" type='Entypo' />
-                                </TouchableOpacity>
-                                <TouchableOpacity onPress={_handleClickCamera} style={{ paddingHorizontal: 10 }} >
-                                    <Icon name="camera" type='Entypo' />
-                                </TouchableOpacity>
-                            </View>
-                            {
-                                loading ? <ActivityIndicator color="#000" style={{ paddingRight: 20 }} /> :
-
-                                    <TouchableOpacity style={{ paddingRight: 20 }} onPress={uploadQuestion}>
-                                        <Icon name="ios-send" type="Ionicons" style={{ color: COLOR.MAIN }} />
-                                    </TouchableOpacity>
-                            }
-                        </View>
-                    </KeyboardStickyView> : null} */}
-
-                <View style={{
-                    // flex: 1,
-                    width: width,
-                    height: 55,
-                    borderTopColor: '#dedede',
-                    borderTopWidth: 1,
-                    flexDirection: 'row',
-                    alignItems: 'center',
-                    backgroundColor: '#fff',
-                    // paddingBottom: 15,
-                    // paddingTop: 5,
-                    // backgroundColor: 'red'
-                }}>
-                    <View style={{ flex: 1, flexDirection: 'row' }}>
-                        <TouchableOpacity onPress={_handleClickPhoto} style={{ paddingHorizontal: 10, marginLeft: 15 }} >
-                            <Icon name="image" type='Entypo' />
-                        </TouchableOpacity>
-                        <TouchableOpacity onPress={_handleClickCamera} style={{ paddingHorizontal: 10 }} >
-                            <Icon name="camera" type='Entypo' />
-                        </TouchableOpacity>
-                    </View>
-                    {
-                        loading ? <ActivityIndicator color="#000" style={{ paddingRight: 20 }} /> :
-
-                            <TouchableOpacity style={{ paddingRight: 20 }} onPress={uploadQuestion}>
-                                <Icon name="ios-send" type="Ionicons" style={{ color: COLOR.MAIN }} />
-                            </TouchableOpacity>
-                    }
-                </View>
-            </SafeAreaView>
-            <FilterModal
-                show={showFilter}
-                onClose={() => setShowFilter(false)}
-                setFilter={setFilter}
-                filter={filter}
-                showState={false}
-                headerText="Thông tin câu hỏi"
-                cancelAble={true}
-                showAll={false}
+            <RNCamera
+                ref={camera}
+                style={styles.preview}
+                type={RNCamera.Constants.Type.back}
+                flashMode={RNCamera.Constants.FlashMode.on}
+                androidCameraPermissionOptions={{
+                    title: 'Permission to use camera',
+                    message: 'We need your permission to use your camera',
+                    buttonPositive: 'Ok',
+                    buttonNegative: 'Cancel',
+                }}
+                androidRecordAudioPermissionOptions={{
+                    title: 'Permission to use audio recording',
+                    message: 'We need your permission to use your audio',
+                    buttonPositive: 'Ok',
+                    buttonNegative: 'Cancel',
+                }}
+            // onGoogleVisionBarcodesDetected={({ barcodes }) => {
+            //     console.log(barcodes);
+            // }}
             />
+
+            {loading ? <View style={{
+                justifyContent: 'center', alignItems: 'center',
+                position: 'absolute', bottom: height / 2 - 200, borderRadius: 10, width: width, backgroundColor: '#fff',
+                paddingHorizontal: 30, paddingVertical: 20, paddingBottom: 40
+            }}>
+                <ActivityIndicator size="large" style={{ marginBottom: 20 }} />
+                <Text>Đang xử lý dữ liệu ảnh</Text>
+                <Text>Vui lòng chờ trong giây lát</Text>
+            </View> : <>
+                    <TouchableOpacity onPress={takePicture} style={styles.btnSnap}>
+                        <Icon name="search" style={{ color: COLOR.MAIN }} />
+                    </TouchableOpacity>
+
+                    <TouchableOpacity onPress={_handleSelectPhoto} style={styles.btnPhoto}>
+                        <Icon type="FontAwesome" name="photo" style={{ color: COLOR.MAIN }} />
+                    </TouchableOpacity>
+                    <TouchableOpacity onPress={goToTextQna} style={styles.btnText}>
+                        <Icon type="MaterialCommunityIcons" name="pen-plus" style={{ color: COLOR.MAIN }} />
+                    </TouchableOpacity>
+                </>}
+            <TouchableOpacity onPress={goBack} style={[styles.btn, { position: 'absolute', left: 10, top: 20, height: 40, width: 40, borderRadius: 40 }]}>
+                <Icon type="Feather" name="arrow-left" style={{ color: COLOR.MAIN }} />
+            </TouchableOpacity>
         </View>
-    );
-};
+    )
+}
+
 
 const styles = StyleSheet.create({
     container: {
         flex: 1,
+        flexDirection: 'column',
         backgroundColor: '#fff',
-        // paddingHorizontal: 10
+        position: 'relative',
     },
-    inputQnA: {
-        maxHeight: height / 5,
-        borderBottomColor: '#ddd',
-        paddingBottom: 20,
-        borderBottomWidth: 1,
-        textAlignVertical: 'top',
-        fontSize: 18,
-        paddingHorizontal: 15,
-        marginTop: 15,
-        marginBottom: 10,
+    preview: {
+        flex: 1,
+        justifyContent: 'flex-end',
+        alignItems: 'center',
     },
-    shadow: {
-        backgroundColor: '#FFFFFF',
-        shadowColor: 'rgba(0, 0, 0, 0.1)',
-        shadowOpacity: 0.8,
-        elevation: 6,
-        shadowRadius: 10,
-        shadowOffset: { width: 12, height: 13 },
+    capture: {
+        flex: 0,
+        backgroundColor: '#fff',
+        borderRadius: 5,
+        padding: 15,
+        paddingHorizontal: 20,
+        alignSelf: 'center',
+        margin: 20,
     },
-    headerText: {
-        paddingVertical: 5,
-        // textAlign: 'center',
-        fontSize: 26,
-        marginTop: 4,
-        ...fontMaker({ weight: fontStyles.Bold })
-    },
-    head: {
-        backgroundColor: '#fff'
-    },
-    filter: {
-        flexDirection: 'row',
-        paddingVertical: 10,
-        backgroundColor: COLOR.MAIN,
-        height: 40,
-        width: 40,
-        borderRadius: 40,
+    btnSnap: {
+        height: 70, width: 70, borderRadius: 70,
+        backgroundColor: '#eee',
+        position: 'absolute',
+        bottom: 50, left: width / 2 - 35,
         justifyContent: 'center',
-        alignItems: 'center'
-        // padding
+        alignItems: 'center',
+        borderWidth: 2,
+        borderColor: COLOR.MAIN
     },
-    iconFilter: {
-        fontSize: 17,
-        color: '#fff'
-    },
-    h2: {
-        fontSize: 18,
-        color: '#555',
-        ...fontMaker({ weight: fontStyles.Bold })
-    },
-    itemQ: {
-        backgroundColor: '#fff',
-        paddingVertical: 10,
-        padding: 10,
-        // borderRadius: 10,
-        marginTop: 10
-    },
-    itemHead: {
-        fontSize: 17,
-        color: '#555',
-        marginBottom: 5,
-        ...fontMaker({ weight: fontStyles.Bold }),
 
+    btnPhoto: {
+        height: 50, width: 50, borderRadius: 50,
+        backgroundColor: '#eee',
+        position: 'absolute',
+        bottom: 40, left: 20,
+        justifyContent: 'center',
+        alignItems: 'center',
+        borderWidth: 2,
+        borderColor: COLOR.MAIN
     },
-    imgWapper: {
-        height: 25, width: 25,
-        borderRadius: 25,
-        // overflow: 'hidden',
-        marginHorizontal: 5,
-        // alignItems: 'center'
-        // justifyContent
+    btnText: {
+        height: 50, width: 50, borderRadius: 50,
+        backgroundColor: '#eee',
+        position: 'absolute',
+        bottom: 40, right: 20,
+        justifyContent: 'center',
+        alignItems: 'center',
+        borderWidth: 2,
+        borderColor: COLOR.MAIN
     },
-    largeImgWapper: {
-        height: 35, width: 35,
-        borderRadius: 35,
-        // overflow: 'hidden',
-        marginHorizontal: 5,
-        // alignItems: 'center'
-        // justifyContent
-    },
-    userComment: {
-        flexDirection: 'row',
-        marginTop: 7,
-    },
-    headerTag: {
-        alignItems: 'center', flexDirection: 'row',
-        paddingVertical: 4, paddingHorizontal: 7, alignSelf: 'baseline',
-        backgroundColor: '#eee', borderRadius: 10,
-        borderColor: '#ddd', borderWidth: 1
-    },
-    contentTag: {
-        color: COLOR.black(0.7),
-        fontSize: 12,
-        marginLeft: 4,
-        ...fontMaker({ weight: fontStyles.SemiBold })
-    },
+    btn: {
+        height: 60, width: 60, borderRadius: 60,
+        backgroundColor: '#eee',
+        justifyContent: 'center',
+        alignItems: 'center',
+        borderWidth: 2,
+        borderColor: COLOR.MAIN,
+    }
 
 })
+
+
 
 
 export default QnA;
-
-const userStyle = StyleSheet.create({
-    imgWapper: {
-        height: 25, width: 25,
-        borderRadius: 25,
-        // overflow: 'hidden',
-        marginHorizontal: 5,
-        // alignItems: 'center'
-        // justifyContent
-    },
-
-    imgWapper: {
-        height: 25, width: 25,
-        borderRadius: 25,
-        // overflow: 'hidden',
-        marginHorizontal: 5,
-        // alignItems: 'center'
-        // justifyContent
-    },
-    userCount: {
-        height: 25,
-        // width: 25,
-        paddingHorizontal: 5,
-        borderRadius: 25,
-        // overflow: 'hidden',
-        marginHorizontal: 5,
-        // alignItems: 'center'
-        // justifyContent
-    },
-    img: { flex: 1, borderRadius: 25 },
-
-    userComment: {
-        flexDirection: 'row',
-        // marginTop: 7,
-    }
-})
-
-
-const FilterTag = ({ filter, setFilter, setShowFilter }) => {
-    return (
-        <View>
-            <ScrollView
-                horizontal
-                showsHorizontalScrollIndicator={false}
-                contentContainerStyle={{ marginTop: 3, paddingHorizontal: 1 }}>
-                <TouchableOpacity onPress={() => {
-                    if (filter.cls != 13) {
-                        setFilter({ cls: '13', currSub: null })
-                    } else {
-                        setShowFilter(true);
-                    }
-                }} style={[styles.headerTag]}>
-                    <Text style={styles.contentTag}>{filter.cls == 13 ? 'Tất cả các lớp' : `Lớp ${filter.cls}`}</Text>
-                    {filter.cls != 13 &&
-                        <View style={{ paddingLeft: 4, }}>
-                            <Icon type='AntDesign' name='close' style={{ fontSize: 12, color: 'red' }} />
-                        </View>
-                    }
-                </TouchableOpacity>
-                {filter.currSub && filter.currSub.title ?
-                    <TouchableOpacity onPress={() => setFilter({ ...filter, currSub: null })} style={[styles.headerTag, { marginLeft: 4 }]}>
-                        <Text style={styles.contentTag}>{filter.currSub.title}</Text>
-                        <View style={{}}>
-                            <Icon type='AntDesign' name='close' style={{ fontSize: 12, color: 'red' }} />
-                        </View>
-                    </TouchableOpacity>
-                    :
-                    <TouchableOpacity onPress={() => setShowFilter(true)} style={[styles.headerTag, { marginHorizontal: 15 }]}>
-                        <Text style={styles.contentTag}>Tất cả các môn</Text>
-                    </TouchableOpacity>
-                }
-            </ScrollView>
-        </View>
-    )
-}

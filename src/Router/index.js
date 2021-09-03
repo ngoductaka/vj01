@@ -56,6 +56,7 @@ import QuestionDetail from '../screen/QNA/Detail';
 import Comment from '../screen/QNA/Comment';
 import MakeQuestion from '../screen/QNA/makeQuestion';
 import SearchQnA from '../screen/QNA/SearchQnA';
+import createTextQna from '../screen/QNA/createTextQna';
 import NotificationQnA from '../screen/QNA/Notification';
 import UserQnA from '../screen/QNA/Profile';
 import GameCenter from '../screen/GameCenter';
@@ -369,6 +370,12 @@ const InAppStack = createStackNavigator({
 	SearchQnA: SearchQnA,
 	MakeQuestion: {
 		screen: MakeQuestion,
+		// navigationOptions: {
+		// 	...TransitionPresets.ModalPresentationIOS,
+		// }
+	},
+	createTextQna: {
+		screen: createTextQna,
 		// navigationOptions: {
 		// 	...TransitionPresets.ModalPresentationIOS,
 		// }

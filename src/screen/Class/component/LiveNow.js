@@ -10,18 +10,20 @@ import { openLink } from '../hepper';
 import api from '../../../handle/api';
 import { endpoints } from '../../../constant/endpoints';
 
-const LiveNow = () => {
+const LiveNow = ({ isFocused = true }) => {
     const [show, setShow] = useState(false);
     useEffect(() => {
         _handleGetData()
-
-        let inter = setInterval(() => {
-            _handleGetData()
-        }, 30 * 1000);
+        let inter = null;
+        if (isFocused) {
+            inter = setInterval(() => {
+                _handleGetData()
+            }, 30 * 1000);
+        }
         return () => {
             clearInterval(inter)
         }
-    }, [])
+    }, [isFocused])
 
     const _handleGetData = () => {
         // livestreams_lesson_published_at

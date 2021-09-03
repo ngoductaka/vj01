@@ -1,5 +1,7 @@
 import ImagePickerCrop from "react-native-image-crop-picker";
+import {Dimensions} from 'react-native';
 
+const { width, height } = Dimensions.get('window');
 const defaultConfig = {
   storageOptions: {
     skipBackup: true,
@@ -33,6 +35,8 @@ class ImagePickerModule {
       multiple: multiple,
       useFrontCamera: true,
       mediaType: "photo",
+      width: width,
+      height: width/2,
     })
       .then(response => {
         // console.log("ImagePicker Success: ", response);
@@ -46,28 +50,15 @@ class ImagePickerModule {
   }
 
   launchLibrary(otherOption, { onChooseImage, onDidCancel, onError }) {
-    // console.log('=======1111111===')
     try {
-      // ImagePickerCrop.openPicker({
-      //   compressImageMaxWidth: 1920,
-      //   compressImageMaxHeight: 1080,
-      //   cropping: true,
-      //   ...otherOption,
-      // })
-      //   .then(response => {
-      //     console.log("ImagePicker Success: ", response);
-      //     onChooseImage && onChooseImage(response);
-      //   })
-      //   .catch(err => {
-      //     onError && onError();
-      //     console.log("ImagePicker Error: ", err);
-      //   });
       ImagePickerCrop.openPicker({
         compressImageMaxWidth: 1920,
         compressImageMaxHeight: 1080,
         freeStyleCropEnabled: true,
         mediaType: "photo",
         cropping: true,
+        width: width,
+        height: width/2,
         ...otherOption,
       })
         .then(response => {

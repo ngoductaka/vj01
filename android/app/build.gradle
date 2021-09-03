@@ -140,6 +140,7 @@ android {
         multiDexEnabled true
         versionCode 126
         versionName "2.2.92"
+        missingDimensionStrategy 'react-native-camera', 'mlkit'
     }
     signingConfigs {
         release {
