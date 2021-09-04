@@ -10,14 +10,14 @@ import { openLink } from '../hepper';
 import api from '../../../handle/api';
 import { endpoints } from '../../../constant/endpoints';
 
-const LiveNow = () => {
+const LiveNow = ({ grade = 0 }) => {
     const [show, setShow] = useState(false);
     useEffect(() => {
         _handleGetData()
 
         let inter = setInterval(() => {
             _handleGetData()
-        }, 30 * 1000);
+        }, 60 * 1000);
         return () => {
             clearInterval(inter)
         }
@@ -26,7 +26,7 @@ const LiveNow = () => {
     const _handleGetData = () => {
         // livestreams_lesson_published_at
 
-        api.get(`${endpoints.ROOT_URL}/courses/trending-livestreams`)
+        api.get(`${endpoints.ROOT_URL}/courses/trending-livestreams?grade=${grade}`)
             .then(({ data }) => {
                 if (data) {
                     let min = -1;

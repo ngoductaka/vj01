@@ -989,14 +989,14 @@ const FormComment = ({
                 alignItems: 'center',
             }}>
                 {commentType.type === 'answer' ? <View style={{ justifyContent: 'center', flexDirection: 'row' }}>
-                    <TouchableOpacity
+                    {/* <TouchableOpacity
                         onPress={_handleClickPhoto}
                         style={{
                             paddingLeft: 5,
                             marginLeft: 5
                         }} >
                         <Icon name="image" type='Entypo' />
-                    </TouchableOpacity>
+                    </TouchableOpacity> */}
                 </View> : null}
                 <View style={{
                     flex: 1,

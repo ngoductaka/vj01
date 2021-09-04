@@ -93,19 +93,19 @@ const QnA = (props) => {
 
     // console.log('vvvvv', filter);
     useEffect(() => {
-        // show key board 
-        // if (inputRef && inputRef.current) {
-        //     setTimeout(() => {
-        //         inputRef.current.focus();
-        //     }, 1000)
-        // }
-        // show filter
-        // setTimeout(() => {
-        //     setShowFilter(true)
-        // }, 700)
-        _handleClickCamera()
+        try {
+            const advertParam = props.navigation.getParam('advert', null);
+            console.log('make qna', advertParam)
+            if (advertParam) {
+                advertParam.show()
+            }
 
-        // setShowKeyboard(true);
+        } catch (err) {
+            console.log('dddd', err)
+        }
+
+        // _handleClickCamera()
+
     }, []);
 
     const [photos, setPhotos] = useState([]);
@@ -559,12 +559,12 @@ const QnA = (props) => {
                     // backgroundColor: 'red'
                 }}>
                     <View style={{ flex: 1, flexDirection: 'row' }}>
-                        <TouchableOpacity onPress={_handleClickPhoto} style={{ paddingHorizontal: 10, marginLeft: 15 }} >
+                        {/* <TouchableOpacity onPress={_handleClickPhoto} style={{ paddingHorizontal: 10, marginLeft: 15 }} >
                             <Icon name="image" type='Entypo' />
                         </TouchableOpacity>
                         <TouchableOpacity onPress={_handleClickCamera} style={{ paddingHorizontal: 10 }} >
                             <Icon name="camera" type='Entypo' />
-                        </TouchableOpacity>
+                        </TouchableOpacity> */}
                     </View>
                     {
                         loading ? <ActivityIndicator color="#000" style={{ paddingRight: 20 }} /> :

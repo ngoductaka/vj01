@@ -443,7 +443,7 @@ const Class = memo((props) => {
 					}
 
 					{delayShow2 ? null :
-						<LiveStream />}
+						<LiveStream  grade={props.userInfo.class} />}
 
 					{/*  */}
 
@@ -575,7 +575,7 @@ const Class = memo((props) => {
 					</TouchableOpacity>
 				</View>
 			</ModalBox>
-			<LiveNow />
+			<LiveNow grade={props.userInfo.class} />
 		</View >
 	)
 })

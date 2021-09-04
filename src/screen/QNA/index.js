@@ -12,9 +12,10 @@ import Toast from 'react-native-simple-toast';
 import { get, debounce } from 'lodash';
 import OptionsMenu from "react-native-option-menu";
 import ImageView from "react-native-image-viewing";
+import firebase from 'react-native-firebase';
 
 import { getDiffTime } from '../../utils/helpers';
-import { fontSize, COLOR } from '../../handle/Constant';
+import { fontSize, COLOR, unitIntertitialId } from '../../handle/Constant';
 import { fontMaker, fontStyles } from '../../utils/fonts';
 import { GradientText } from '../../component/shared/GradientText';
 import { FilterModal, mapTypeQestion } from './com/FilterModal';
@@ -30,6 +31,10 @@ import { useDeepLink } from '../../utils/useDeeplink';
 import { ViewWithBanner } from '../../utils/facebookAds';
 
 const { height } = Dimensions.get('screen');
+
+const AdRequest = firebase.admob.AdRequest;
+let advert;
+let requestAds;
 
 const QnA = (props) => {
     const onMomentumScrollBeginRef = useRef(true);
@@ -86,7 +91,22 @@ const QnA = (props) => {
 
     };
 
-    useEffect(() => { setPage(0); }, []);
+    useEffect(() => {
+        setPage(0);
+
+        try {
+            console.log('dfgxdfbxdfbdfb')
+
+            advert = firebase.admob().interstitial(unitIntertitialId);
+            requestAds = new AdRequest();
+            requestAds.addKeyword('facebook').addKeyword('google').addKeyword('instagram').addKeyword('zalo').addKeyword('google').addKeyword('pubg').addKeyword('asphalt').addKeyword('covid-19');
+            advert.loadAd(requestAds.build());
+            advert.show()
+
+        } catch (err) {
+            console.log('dddd', err)
+        }
+    }, []);
 
     useEffect(() => {
         console.log('----filter009887===', filter)
@@ -215,7 +235,7 @@ const QnA = (props) => {
                         opacity: 0.7
                     }}>
                     <TouchableOpacity
-                        onPress={() => props.navigation.navigate('MakeQuestion')}
+                        onPress={() => props.navigation.navigate('MakeQuestion', { advert })}
                         style={{
                             height: 50,
                             width: 50,
@@ -386,8 +406,7 @@ const RenderHead = ({ filter, setFilter, setShowFilter, navigation, loading, ava
                 borderBottomColor: '#ddd', borderBottomWidth: 1, paddingBottom: 10, paddingHorizontal: 10, alignItems: 'center'
             }}>
                 <TouchableOpacity
-                    // onPress={() => navigation.navigate('MakeQuestion')}
-                    onPress={() => navigation.navigate('SearchQnA')}
+                    onPress={() => navigation.navigate('SearchQnA',  { advert })}
                     style={{
                         flexDirection: 'row', alignItems: 'center', flex: 1
                     }}>
