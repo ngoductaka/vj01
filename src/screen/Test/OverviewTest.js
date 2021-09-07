@@ -13,7 +13,7 @@ import LinearGradient from 'react-native-linear-gradient';
 
 import { Loading } from '../../handle/api';
 import { fontMaker, fontStyles } from '../../utils/fonts';
-import { fontSize, COLOR, unitIntertitialId } from '../../handle/Constant';
+import { fontSize, COLOR, unitIntertitialId2 } from '../../handle/Constant';
 import { GradientText } from '../../component/shared/GradientText';
 import { handleSrc } from '../../component/menuItem';
 import { images } from '../../utils/images';
@@ -26,9 +26,6 @@ const { height, width } = Dimensions.get('window');
 import firebase from 'react-native-firebase';
 import { get } from 'lodash';
 import { fbFull } from '../../utils/facebookAds';
-const AdRequest = firebase.admob.AdRequest;
-let advert;
-let request;
 
 const TAG = 'overview_test';
 
@@ -59,48 +56,16 @@ const OverviewTest = (props) => {
         props.navigation.navigate(screen, params)
     }
 
-
     useEffect(() => {
-        if (learnTime % 2) {
-            advert = firebase.admob().interstitial(unitIntertitialId);
-            request = new AdRequest();
-            request.addKeyword('facebook').addKeyword('google').addKeyword('instagram').addKeyword('zalo').addKeyword('google').addKeyword('pubg').addKeyword('asphalt').addKeyword('covid-19');
-            advert.loadAd(request.build());
-        }
-    }, [learnTime]);
 
-    useEffect(() => {
-        try {
-            if (showFullAds) {
-                if (screenAds && screenAds[TAG] == "1" && learnTime % 2) {
-                    // if (advert) {
-                    //     console.log('<ads-advert>', advert);
-                    //     advert.show()
-                    // }
-                    if (advertParam) {
-                        console.log('<ads-lessonOverview>', advertParam);
-                        advertParam.show();
-                    } else {
-                        fbFull()
-                            .catch(err => {
-                                try {
-                                    console.log('load ggg')
-                                    if (advertParam) {
-                                        advertParam.show();
-                                        // advert.show();
-                                    }
-                                } catch (err) {
-                                    advert.show();
-                                    console.log(err, 'err load gg')
-                                }
-                            })
-                    }
-                }
-            }
-        } catch (err) {
-            console.log('err load ads ', err)
-        }
-
+        const advert = firebase.admob().interstitial(unitIntertitialId2);
+        const AdRequest = firebase.admob.AdRequest;
+        const request = new AdRequest();
+        request.addKeyword('facebook').addKeyword('google').addKeyword('instagram').addKeyword('zalo').addKeyword('google').addKeyword('pubg').addKeyword('asphalt').addKeyword('covid-19');
+        advert.loadAd(request.build());
+        advert.on('onAdLoaded', () => {
+            advert.show();
+        });
 
         BackHandler.addEventListener(
             'hardwareBackPress',
@@ -114,7 +79,6 @@ const OverviewTest = (props) => {
             );
         }
     }, []);
-
     const handleBackButtonPressAndroid = () => {
         if (props.navigation.isFocused()) {
             props.navigation.goBack();

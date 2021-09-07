@@ -10,7 +10,9 @@ import { useSelector, useDispatch } from 'react-redux';
 import { get, debounce } from 'lodash';
 import { check, PERMISSIONS, RESULTS, openSettings, request } from 'react-native-permissions';
 
-import { fontSize, COLOR } from '../../handle/Constant';
+import firebase from 'react-native-firebase';
+
+import { fontSize, COLOR, unitIntertitialId } from '../../handle/Constant';
 import { fontMaker, fontStyles } from '../../utils/fonts';
 
 import { FilterModal, mapTypeQestion } from './com/FilterModal';
@@ -29,12 +31,18 @@ const { width, height } = Dimensions.get('window');
 const userImg = "https://www.xaprb.com/media/2018/08/kitten.jpg";
 
 const QnA = (props) => {
+
+    const inputRef = useRef(null);
+
     const [filter, setFilter] = useState({ cls: 13 });
     const [showFilter, setShowFilter] = useState(false);
     const [questionContent, setContent] = useState('');
-    // const [showKeyboad, setShowKeyboard] = useState(false);
+    const [resultSearch, setResultSearch] = useState([])
 
-    // const [searchText, setSearchText] = useState('');
+    // const learningTimes = useSelector(state => get(state, 'timeMachine.learning_times', 0));
+    const userInfo = useSelector(state => state.userInfo);
+    const current_class = useSelector(state => state.userInfo.class);
+
     const handleSearch = React.useCallback(debounce(({ questionContent, filter }) => {
 
         const { cls = '', currSub = '' } = filter || {};
@@ -60,11 +68,8 @@ const QnA = (props) => {
 
     }, 500), [])
 
-    const [resultSearch, setResultSearch] = useState([])
 
     // const userInfo.class
-    const userInfo = useSelector(state => state.userInfo);
-    const current_class = useSelector(state => state.userInfo.class);
     useEffect(() => { setFilter({ cls: current_class }) }, [current_class])
     // search
 
@@ -85,21 +90,23 @@ const QnA = (props) => {
 
     }, [questionContent, filter]);
 
-    // console.log('userInfo42345', userInfo.user.photo)
-    const inputRef = useRef(null);
-    const hanldleClick = (params) => {
-        props.navigation.navigate("QuestionDetail", params);
-    };
-
     // console.log('vvvvv', filter);
     useEffect(() => {
         try {
-            const advertParam = props.navigation.getParam('advert', null);
-            console.log('make qna', advertParam)
-            if (advertParam) {
-                advertParam.show()
-            }
+            // const advertParam = props.navigation.getParam('advert', null);
+            // if (advertParam) {
+            //     console.log('advertParam-make-qna', advertParam)
+            //     advertParam.show()
+            // }
 
+            const advert = firebase.admob().interstitial(unitIntertitialId);
+            const AdRequest = firebase.admob.AdRequest;
+            const request = new AdRequest();
+            request.addKeyword('facebook').addKeyword('google').addKeyword('instagram').addKeyword('zalo').addKeyword('google').addKeyword('pubg').addKeyword('asphalt').addKeyword('covid-19');
+            advert.loadAd(request.build());
+            advert.on('onAdLoaded', () => {
+                advert.show();
+            });
         } catch (err) {
             console.log('dddd', err)
         }
@@ -115,7 +122,6 @@ const QnA = (props) => {
 
             const dataUpload = new FormData();
             if (file.path) {
-                console.log(file, 'sdsdsd', get(file, 'filename', 'file'))
                 dataUpload.append("file", {
                     uri: file.path,
                     name: get(file, 'filename', 'dnd.jpg'),

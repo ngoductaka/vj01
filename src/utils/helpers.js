@@ -146,7 +146,7 @@ const capitalizeFirstLetter = (string) => {
 }
 
 const changeTimeView = (time) => {
-    console.log('-as-a-s-as-a-s', time);
+    // console.log('-as-a-s-as-a-s', time);
     const temp = new Date(time.replace(/-/g, '/'));
     const now = Date.now();
     const diffTime = now - temp;

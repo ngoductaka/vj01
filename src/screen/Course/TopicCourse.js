@@ -35,6 +35,17 @@ const Course = (props) => {
     const showConsoult = navigation.getParam('showConsoult', true);
 
     useEffect(() => {
+        try {
+            const advertParam = props.navigation.getParam('advert', null);
+            if (advertParam) {
+                advertParam.show()
+            }
+        } catch (err) {
+            console.log('dddd', err)
+        }
+    }, []);
+
+    useEffect(() => {
         // console.log('datadatadatadata', data);
         const dataConvert = data.reduce((cal, cur) => {
             const { subject } = cur;

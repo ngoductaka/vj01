@@ -8,12 +8,13 @@ import {
 import { Icon } from 'native-base';
 import { get } from 'lodash';
 import * as Animatable from 'react-native-animatable';
+import firebase from 'react-native-firebase';
 
 
 import { Loading } from '../../handle/api';
 
 import Header from './component/normalHeader';
-import { COLOR, fontSize } from '../../handle/Constant';
+import { COLOR, fontSize, unitIntertitialId1 } from '../../handle/Constant';
 import { ListLesson as RenderCourseRelated } from './component/ListLesson';
 import { convertMoney, helpers } from '../../utils/helpers';
 
@@ -35,6 +36,30 @@ const CourseDetail = (props) => {
     const [listCourse, setListCourse] = useState([]);
     const [loading, setLoading] = useState(false)
     const [showConsult, setShowConsultModal] = useState(false)
+
+
+    useEffect(() => {
+        // try {
+        //     const advertParam = props.navigation.getParam('advert', null);
+        //     console.log('advesdsdsdrtParam', advertParam)
+        //     if (advertParam) {
+        //         advertParam.show()
+        //     }
+        // } catch (err) {
+        //     console.log('dddd', err)
+        // }
+
+        const advert = firebase.admob().interstitial(unitIntertitialId1);
+        const AdRequest = firebase.admob.AdRequest;
+        const request = new AdRequest();
+        request.addKeyword('facebook').addKeyword('google').addKeyword('instagram').addKeyword('zalo').addKeyword('google').addKeyword('pubg').addKeyword('asphalt').addKeyword('covid-19');
+        advert.loadAd(request.build());
+        advert.on('onAdLoaded', () => {
+            advert.show();
+        });
+
+
+    }, []);
 
     useEffect(() => {
         setLoading(true)

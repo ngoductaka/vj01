@@ -357,7 +357,7 @@ const Class = memo((props) => {
 				err={err}
 				isHome={true}
 				percent={'100%'}
-				headerView={HeaderView(props, noti, getNumberOfUnseenNoti, get(props.userInfo, 'user.avatar_id', 0))}
+				headerView={HeaderView(props, noti, getNumberOfUnseenNoti, get(props.userInfo, 'user.avatar_id', 0), setNoti)}
 				contentStyle={{ padding: 0 }}
 			>
 				<View style={{ flex: 1, padding: 10, paddingRight: 0 }}>
@@ -443,7 +443,7 @@ const Class = memo((props) => {
 					}
 
 					{delayShow2 ? null :
-						<LiveStream  grade={props.userInfo.class} />}
+						<LiveStream grade={props.userInfo.class} />}
 
 					{/*  */}
 
@@ -575,7 +575,7 @@ const Class = memo((props) => {
 					</TouchableOpacity>
 				</View>
 			</ModalBox>
-			<LiveNow grade={props.userInfo.class} />
+			<LiveNow grade={props.userInfo.class} navigation={props.navigation} />
 		</View >
 	)
 })
@@ -949,7 +949,11 @@ const RecommendCoure = ({ dataRecommend, navigate, dataContinue, setVisible }) =
 	)
 }
 
-const HeaderView = (props, noti = 0, getNumberOfUnseenNoti = () => { }, avatarIdx) => {
+const HeaderView = (props, noti = 0,
+	getNumberOfUnseenNoti = () => { },
+	avatarIdx,
+	setNoti = () => { },
+	) => {
 	return (
 		<View style={{}}>
 			<View style={{ flex: 1, }}>
@@ -965,7 +969,10 @@ const HeaderView = (props, noti = 0, getNumberOfUnseenNoti = () => { }, avatarId
 						<Icon name='search' type='Feather' style={{ fontSize: 20, color: '#888888' }} />
 						<Text numberOfLines={1} style={{ ...fontMaker({ weight: fontStyles.Regular }), marginHorizontal: 10, color: '#888888', flex: 1 }}>Tìm kiếm bài tập, đề thi, bài giảng...</Text>
 					</TouchableOpacity>
-					<TouchableOpacity onPress={() => props.navigation.navigate('Notification', { getNumberOfUnseenNoti })} style={{ alignItems: 'center', paddingLeft: 10, }}>
+					<TouchableOpacity onPress={() => {
+						props.navigation.navigate('Notification', { getNumberOfUnseenNoti })
+						setNoti(0)
+					}} style={{ alignItems: 'center', paddingLeft: 10, }}>
 						<Icon name='bell' type='Entypo' style={{ fontSize: 28, color: noti > 0 ? COLOR.MAIN_GREEN : COLOR.black(.6), alignSelf: 'center' }} />
 						{noti > 0 &&
 							<View style={{ width: 18, height: 18, borderRadius: 10, justifyContent: 'center', alignItems: 'center', position: 'absolute', top: 8, right: -2, backgroundColor: 'red' }}>

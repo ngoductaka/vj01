@@ -10,6 +10,7 @@ import { COLOR } from '../../../handle/Constant';
 import LinearGradient from 'react-native-linear-gradient';
 import { useRequest } from '../../../handle/api';
 import { endpoints } from '../../../constant/endpoints';
+import { fontMaker, fontStyles } from '../../../utils/fonts';
 
 
 const dataFake = [
@@ -50,6 +51,7 @@ const LiveStream = ({ grade = null }) => {
     if (!get(data, 'data[0]') || !grade) return null;
     return (
         <View style={{ paddingVertical: 10 }}>
+            <Text style={{marginVertical: 10 ,fontSize: 20, ...fontMaker({ weight: fontStyles.SemiBold })}}>Livestream gần đây </Text>
             <Carousel
                 // ref={refCar}
                 data={get(data, 'data')}

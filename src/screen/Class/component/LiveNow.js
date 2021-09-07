@@ -10,14 +10,18 @@ import { openLink } from '../hepper';
 import api from '../../../handle/api';
 import { endpoints } from '../../../constant/endpoints';
 
-const LiveNow = ({ grade = 0 }) => {
+const LiveNow = ({ grade = 0, navigation }) => {
     const [show, setShow] = useState(false);
-    useEffect(() => {
-        _handleGetData()
 
-        let inter = setInterval(() => {
-            _handleGetData()
+    useEffect(() => {
+        let inter;
+        _handleGetData()
+        inter = setInterval(() => {
+            if (navigation && navigation.isFocused()) {
+                _handleGetData()
+            }
         }, 60 * 1000);
+
         return () => {
             clearInterval(inter)
         }

@@ -21,7 +21,7 @@ import {
 import ViewContainer from '../../component/shared/ViewContainer';
 import { GradientText } from '../../component/shared/GradientText';
 import api, { useRequest, Loading } from '../../handle/api';
-import { COLOR, fontSize, blackColor, unitIntertitialId, TIMES_SHOW_FULL_ADS } from '../../handle/Constant';
+import { COLOR, fontSize, blackColor, unitIntertitialId2, TIMES_SHOW_FULL_ADS } from '../../handle/Constant';
 import { fontMaker, fontStyles } from '../../utils/fonts';
 import { helpers } from '../../utils/helpers';
 
@@ -37,6 +37,7 @@ let request;
 const TAG = 'list_test';
 
 const TestMenu = (props) => {
+    const adsRef =  useRef(null)
     const { navigation } = props;
     const chapter_id = navigation.getParam('chapter_id', '');
     const title = navigation.getParam('title', '');
@@ -56,36 +57,21 @@ const TestMenu = (props) => {
     const learningTimes = useSelector(state => state.timeMachine.learning_times);
     const frequency = useSelector(state => get(state, 'subjects.frequency', 6));
     useEffect(() => {
+        try {
+            adsRef.current = firebase.admob().interstitial(unitIntertitialId2);
+            request = new AdRequest();
+            request.addKeyword('facebook').addKeyword('google').addKeyword('instagram').addKeyword('zalo').addKeyword('google').addKeyword('pubg').addKeyword('asphalt').addKeyword('covid-19');
+            adsRef.current.loadAd(request.build());
 
-        if (screenAds && screenAds[TAG] == "1") {
+            console.log('adsRef.current', adsRef.current)
             if (advertParam && advertParam.show) {
                 advertParam.show();
-            } else {
-                advertParam.show();
-                // pre dnd
-                // fbFull()
-                //     .catch(err => {
-                //         if (advertParam) {
-                //             advertParam.show();
-                //         }
-                //     })
             }
-        }
+        } catch (err) {
 
-        advert = firebase.admob().interstitial(unitIntertitialId);
-        request = new AdRequest();
-        request.addKeyword('facebook').addKeyword('google').addKeyword('instagram').addKeyword('zalo').addKeyword('google').addKeyword('pubg').addKeyword('asphalt').addKeyword('covid-19');
-        advert.loadAd(request.build());
+        }
     }, []);
-    // useEffect(() => {
-    //     if ((learningTimes + 2) % frequency === 0) {
-    //         console.log('---1-1-TestMenu-1-2');
-    //         advert = firebase.admob().interstitial(unitIntertitialId);
-    //         request = new AdRequest();
-    //         request.addKeyword('facebook').addKeyword('google').addKeyword('instagram').addKeyword('zalo').addKeyword('google').addKeyword('pubg').addKeyword('asphalt').addKeyword('covid-19');
-    //         advert.loadAd(request.build());
-    //     }
-    // }, [learningTimes]);
+
 
     return (
         <ViewContainer
@@ -98,9 +84,6 @@ const TestMenu = (props) => {
                     <View style={{ marginTop: 50 + helpers.statusBarHeight }}>
                         <GradientText numberOfLines={3} colors={['#955DF9', '#aaa4f5', '#aaa4f5', '#aaa4f5']} style={{ fontSize: 26, marginTop: 4, ...fontMaker({ weight: fontStyles.Bold }) }}>{get(testMenu, 'title', '')}</GradientText>
                     </View>
-                    {/* <View style={{ marginTop: 10 }}>
-                        <GradientText colors={['#955DF9', '#aaa4f5', '#aaa4f5', '#aaa4f5']} style={{ fontSize: 22, marginTop: 4, ...fontMaker({ weight: fontStyles.Bold }) }}></GradientText>
-                    </View> */}
                 </View>
             }
         >
@@ -120,7 +103,7 @@ const TestMenu = (props) => {
                                 index={index}
                                 handleNavigate={handleNavigate}
                                 isExpandDefalt={index == 0}
-                                advert={advert}
+                                advert={adsRef.current}
                             />
                         }}
                         keyExtractor={(item, index) => 'LessonCard' + index}
@@ -138,8 +121,9 @@ const TestMenu = (props) => {
 }
 
 
-
-const ExcerciseItem = ({ data, advert = null, handleNavigate, isExpandDefalt = false, index }) => {
+const ExcerciseItem = ({ data, 
+    advert = null, 
+    handleNavigate, isExpandDefalt = false, index }) => {
     const [expand, setExpand] = useState(isExpandDefalt);
     return (
         <Animatable.View animation="fadeIn" delay={index * 100} style={[{ marginVertical: 10, marginHorizontal: 5 }, stylesComponent.shadowStyle]}>
@@ -167,7 +151,7 @@ export default connect(
     null
 )(React.memo(TestMenu));
 
-const RenderItemLesson = ({ item, advert = null, handleNavigate, expand, isLast, index }) => {
+const RenderItemLesson = ({ item, advert, handleNavigate, expand, isLast, index }) => {
     return (
         <Animatable.View
             key={item.id}
