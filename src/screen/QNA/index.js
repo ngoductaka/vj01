@@ -200,7 +200,7 @@ const QnA = (props) => {
                         keyExtractor={(item) => '' + item.id}
                         style={{ flex: 1 }}
                         onEndReachedThreshold={0.5}
-                        // onMomentumScrollBegin={hanldleScroll}
+                        onMomentumScrollBegin={hanldleScroll}
                         onScrollToTop={() => setAni('lightSpeedOut')}
                         onEndReached={onEndReached}
                         removeClippedSubviews
