@@ -9,6 +9,8 @@ import { helpers } from '../../../utils/helpers';
 import { COLOR } from '../../../handle/Constant';
 import LinearGradient from 'react-native-linear-gradient';
 import { useRequest } from '../../../handle/api';
+import { endpoints } from '../../../constant/endpoints';
+import { fontMaker, fontStyles } from '../../../utils/fonts';
 
 
 const dataFake = [
@@ -43,13 +45,13 @@ const itemHorizontalMargin = wp(2);
 export const sliderWidth = width;
 export const itemWidth = slideWidth + itemHorizontalMargin * 2;
 
-const LiveStream = () => {
-    const [data, loading] = useRequest('https://apps.vietjack.com:8081/courses/recent-livestreams', [1])
+const LiveStream = ({ grade = null }) => {
+    const [data, loading] = useRequest(`${endpoints.ROOT_URL}/courses/recent-livestreams?grade=${grade}`, [1])
 
-    // console.log('data123', data)
-    if (!get(data, 'data[0]')) return null;
+    if (!get(data, 'data[0]') || !grade) return null;
     return (
         <View style={{ paddingVertical: 10 }}>
+            <Text style={{marginVertical: 10 ,fontSize: 20, ...fontMaker({ weight: fontStyles.SemiBold })}}>Livestream gần đây </Text>
             <Carousel
                 // ref={refCar}
                 data={get(data, 'data')}
@@ -96,7 +98,10 @@ const RenderItem = ({ item, index }) => {
                         position: 'relative'
                     }}>
                     <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-                        <Image style={{ height: 40, width: 40, borderRadius: 40 }} source={{ uri: item.author_avatar }} />
+                        <Image style={{ height: 50, width: 50, borderRadius: 50, borderColor: 'red', borderWidth: 1 }} source={{ uri: item.author_avatar }} />
+                        <View style={styles.liveView}>
+                            <Text style={styles.liveText}>Live</Text>
+                        </View>
                     </View>
                     <View style={{ flex: 4, paddingRight: 20 }}>
                         <Text numberOfLines={1} style={{ fontSize: 22, fontWeight: 'bold', color: '#fff' }}>{item.author_name}</Text>
@@ -175,6 +180,8 @@ const styles = StyleSheet.create({
         borderColor: '#ddd',
         // overflow: 'hidden'
     },
+    liveView: { backgroundColor: "#F5576F", paddingHorizontal: 3, paddingVertical: 1, marginTop: -8 },
+    liveText: { fontSize: 12, fontWeight: 'bold', color: '#fff' },
     shadowStyle: { shadowColor: 'black', shadowOffset: { width: -2, height: 2 }, shadowOpacity: 0.6, elevation: 2 },
 })
 

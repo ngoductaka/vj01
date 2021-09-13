@@ -67,6 +67,15 @@ const unitIntertitialId =
 	Platform.OS === 'ios'
 		? 'ca-app-pub-4508913343091330/9354963926'
 		: 'ca-app-pub-4508913343091330/4960724660';
+// ca-app-pub-4508913343091330~9939580993
+const unitIntertitialId1 =
+	Platform.OS === 'ios'
+		? 'ca-app-pub-4508913343091330/6902956400'
+		: 'ca-app-pub-4508913343091330/2971466160';
+const unitIntertitialId2 =
+	Platform.OS === 'ios'
+		? 'ca-app-pub-4508913343091330/4657735318'
+		: 'ca-app-pub-4508913343091330/4991124846';
 
 export const TIMES_SHOW_FULL_ADS = 6;
 export const CORRECT_POINT = 100;
@@ -279,5 +288,7 @@ export {
 	unitId1,
 	unitId2,
 	unitIntertitialId,
+	unitIntertitialId1,
+	unitIntertitialId2,
 	HOT_SUBJECT_CLASS
 }

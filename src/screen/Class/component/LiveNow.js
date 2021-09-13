@@ -10,16 +10,18 @@ import { openLink } from '../hepper';
 import api from '../../../handle/api';
 import { endpoints } from '../../../constant/endpoints';
 
-const LiveNow = ({ isFocused = true }) => {
+const LiveNow = ({ grade = 0, navigation }) => {
     const [show, setShow] = useState(false);
+
     useEffect(() => {
+        let inter;
         _handleGetData()
-        let inter = null;
-        if (isFocused) {
-            inter = setInterval(() => {
+        inter = setInterval(() => {
+            if (navigation && navigation.isFocused()) {
                 _handleGetData()
-            }, 30 * 1000);
-        }
+            }
+        }, 60 * 1000);
+
         return () => {
             clearInterval(inter)
         }
@@ -28,7 +30,7 @@ const LiveNow = ({ isFocused = true }) => {
     const _handleGetData = () => {
         // livestreams_lesson_published_at
 
-        api.get(`${endpoints.ROOT_URL}/courses/trending-livestreams`)
+        api.get(`${endpoints.ROOT_URL}/courses/trending-livestreams?grade=${grade}`)
             .then(({ data }) => {
                 if (data) {
                     let min = -1;

@@ -30,7 +30,7 @@ const Notification = (props) => {
         getListNoti(page.currentPage);
         return () => {
             if (getNumberOfUnseenNoti) {
-                getNumberOfUnseenNoti();
+                // getNumberOfUnseenNoti();
             }
         }
     }, []);
@@ -39,7 +39,7 @@ const Notification = (props) => {
         try {
             await setLoading(true);
             const result = await api.get(`/notification/list?page=${currPage}`);
-            console.log('-a-sa-s-a-sas', result);
+            // console.log('-a-sa-s-a-sas', result);
             if (result && result.data && Array.isArray(result.data)) {
                 setListNoti(result.data);
                 setPage({ ...page, totalPage: result.meta.last_page });

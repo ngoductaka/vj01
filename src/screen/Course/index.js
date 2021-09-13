@@ -9,7 +9,7 @@ import { withNavigationFocus } from 'react-navigation';
 
 import { images } from '../../utils/images';
 import NormalHeader from '../../component/shared/NormalHeader';
-import { COLOR, fontSize } from '../../handle/Constant';
+import { COLOR, fontSize, unitIntertitialId } from '../../handle/Constant';
 import { ClassChoosenModal } from '../../component/shared/ClassChoosenModal';
 import { ListLesson } from './component/ListLesson';
 import MenuItem from '../../component/menuItem';
@@ -18,7 +18,12 @@ import { User } from '../../component/User';
 import { LargeVideo } from './component/VideoItem';
 
 import { getCouse, getMyCourses } from './services';
-import { convertImgLink } from './utis'
+
+import { convertImgLink } from './utis';
+import firebase from 'react-native-firebase';
+const AdRequest = firebase.admob.AdRequest;
+let advert;
+let requestAds;
 
 const { width } = Dimensions.get('window');
 
@@ -51,6 +56,18 @@ const Course = (props) => {
             _getMyCourse();
         }
     }, [props.isFocused])
+
+    useEffect(() => {
+        try {
+            advert = firebase.admob().interstitial(unitIntertitialId);
+            requestAds = new AdRequest();
+            requestAds.addKeyword('facebook').addKeyword('google').addKeyword('instagram').addKeyword('zalo').addKeyword('google').addKeyword('pubg').addKeyword('asphalt').addKeyword('covid-19');
+            advert.loadAd(requestAds.build());
+        } catch (err) {
+            console.log('dddd', err)
+        }
+    }, []);
+
     const _getMyCourse = async () => {
         try {
             const data = await getMyCourses();
@@ -111,7 +128,7 @@ const Course = (props) => {
                 <ScrollView>
                     {get(myCourse, '[0]') ? <View style={{ backgroundColor: '#fff', marginBottom: 10, padding: 10 }}>
                         <SeeAllTitle
-                            onPress={() => props.navigation.navigate('TopicCourse', { topic: `Khoá học của tôi`, data: myCourse, showConsoult: false })}
+                            onPress={() => props.navigation.navigate('TopicCourse', { advert, topic: `Khoá học của tôi`, data: myCourse, showConsoult: false })}
                             text={`Khoá học của tôi`} />
                         <ScrollView horizontal showsHorizontalScrollIndicator={false}>
                             {myCourse.slice(0, 5).map(videoItem => {
@@ -128,7 +145,7 @@ const Course = (props) => {
 
                     <View style={{ backgroundColor: '#fff', marginBottom: 10, padding: 10 }}>
                         <SeeAllTitle
-                            onPress={() => props.navigation.navigate('TopicCourse', { topic: `Khoá học lớp ${currentClass}`, data: gradeCourse })}
+                            onPress={() => props.navigation.navigate('TopicCourse', { advert, topic: `Khoá học lớp ${currentClass}`, data: gradeCourse })}
                             text={`Khoá học lớp ${currentClass}`} />
                         <ScrollView horizontal showsHorizontalScrollIndicator={false}>
                             {gradeCourse.slice(0, 5).map(videoItem => {
@@ -145,7 +162,7 @@ const Course = (props) => {
 
                     <View style={{ backgroundColor: '#fff', marginBottom: 10, padding: 10 }}>
                         <SeeAllTitle
-                            onPress={() => props.navigation.navigate('TopicCourse', { topic: getGroupByClass(currentClass).text, data: gradeCourse })}
+                            onPress={() => props.navigation.navigate('TopicCourse', { advert, topic: getGroupByClass(currentClass).text, data: gradeCourse })}
                             text={getGroupByClass(currentClass).text} />
                         <ScrollView horizontal showsHorizontalScrollIndicator={false}>
                             {groupCourse.slice(0, 5).map(videoItem => {
@@ -336,7 +353,7 @@ const stylesHeader = StyleSheet.create({
 const VideoItem = ({ navigate, setVisible, videos = {}, style = {}, widthImg = width * 3 / 4, showConsoult = true }) => {
 
     const teacher = get(videos, 'owner', {});
-    // console.log('----', get(videos, 'get_ldp.thumbnail', ''))
+    // console.log('--advert--', advert)
     const videoItem = {
         imgLecture: convertImgLink(get(videos, 'get_ldp.thumbnail', '')),
         teacher: {
@@ -378,7 +395,7 @@ const VideoItem = ({ navigate, setVisible, videos = {}, style = {}, widthImg = w
                     listCourse: videoItem.get_curriculum,
                 })
             } else {
-                navigate('CourseDetail', { videoItem, showConsoult })
+                navigate('CourseDetail', { videoItem, showConsoult, advert })
             }
         },
     };

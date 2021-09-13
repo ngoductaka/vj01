@@ -11,7 +11,9 @@ import { get, debounce } from 'lodash';
 import { RNCamera } from 'react-native-camera';
 import { check, PERMISSIONS, RESULTS, openSettings, request } from 'react-native-permissions';
 
-import { fontSize, COLOR } from '../../handle/Constant';
+import firebase from 'react-native-firebase';
+
+import { fontSize, COLOR, unitIntertitialId } from '../../handle/Constant';
 import { fontMaker, fontStyles } from '../../utils/fonts';
 
 import { FilterModal, mapTypeQestion } from './com/FilterModal';

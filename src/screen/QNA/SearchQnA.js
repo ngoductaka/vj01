@@ -48,6 +48,21 @@ const QnA = (props) => {
     const [resultSearch, setResultSearch] = useState([]);
 
     const [loading, setLoading] = useState(false);
+    useEffect(() => {
+        try {
+            const advertParam = props.navigation.getParam('advert', null);
+            console.log('search ads', advertParam)
+            if (advertParam) {
+                advertParam.show()
+            }
+
+        } catch (err) {
+            console.log('dddd', err)
+        }
+
+        // _handleClickCamera()
+
+    }, []);
 
     useEffect(() => {
         if (searchText && filter) {
