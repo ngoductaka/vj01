@@ -63,7 +63,7 @@ const QnA = (props) => {
             text: questionContent
         })
             .then(({ response }) => {
-                console.log('response123', response)
+                // console.log('response123', response)
                 setResultSearch(response);
             })
             .catch(err => {

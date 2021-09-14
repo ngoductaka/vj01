@@ -185,7 +185,7 @@ const RenderQnASearch = ({ title, onPress, viewCount, index, book, grade, answer
 				</View> */}
 				<View style={{ flex: 1 }}>
 					<Text numberOfLines={2} style={stylesComponent.textContent}>
-						<Text style={{fontWeight: 'bold', fontSize: 20}}>{index+1}.</Text> {title}
+						<Text style={{ fontWeight: 'bold', fontSize: 20 }}>{index + 1}.</Text> {title}
 					</Text>
 					<View style={{ flexDirection: 'row', justifyContent: 'flex-end' }}>
 						{/* <Text style={{ fontSize: 12, color: '#777', textAlign: 'right', marginTop: 7 }}>{answers_count ? `${answers_count} câu trả lời` : 'Chưa có câu trả lời'} </Text> */}
@@ -200,6 +200,47 @@ const RenderQnASearch = ({ title, onPress, viewCount, index, book, grade, answer
 								})) : null
 						}
 					</View>
+
+				</View>
+			</View>
+		</TouchableOpacity>
+	)
+}
+const RenderQnAForImg = ({ title, onPress, viewCount, index, book, grade, answers_count = 0, answers = [] }) => {
+	return (
+		<TouchableOpacity
+			onPress={onPress}
+			style={[stylesComponent.textItem, { paddingLeft: 0, borderBottomWidth: 0, borderBottomWidth: 2, borderColor: '#555' }]}
+		>
+			<View style={{ flexDirection: 'row', alignItems: 'center' }}>
+				{/* <View
+					style={{
+						height: 30, width: 30, marginRight: 15, borderRadius: 20, justifyContent: 'center', alignItems: 'center',
+						borderColor: COLOR.MAIN,
+						borderWidth: 1
+					}}
+				>
+					<Icon type='FontAwesome' name='question' style={{ color: COLOR.MAIN, fontSize: 18 }} />
+				</View> */}
+				<View style={{ flex: 1 }}>
+					<Text style={{ fontSize: 22, color: '#5396CD', fontWeight: 'bold' }}>Câu hỏi :</Text>
+
+					<Text numberOfLines={2} style={stylesComponent.textContent}>
+						<Text style={{ fontWeight: 'bold', fontSize: 20 }}></Text> {title}
+					</Text>
+					<View style={{ flexDirection: 'row', justifyContent: 'flex-end' }}>
+						{/* <Text style={{ fontSize: 12, color: '#777', textAlign: 'right', marginTop: 7 }}>{answers_count ? `${answers_count} câu trả lời` : 'Chưa có câu trả lời'} </Text> */}
+						<Text style={{ fontSize: 12, color: '#777', textAlign: 'right', marginTop: 7 }}>{book} • {grade}</Text>
+					</View>
+					{/* <View style={{ marginLeft: 20 }}> */}
+					<Text style={{ fontSize: 22, color: '#5396CD', fontWeight: 'bold' }}>Câu trả lời gần nhất :</Text>
+					{
+						answers && answers[0] ?
+							answers.map(((a, index) => {
+								return <RenderHtmlCustom content={a.content} />
+							})) : null
+					}
+					{/* </View> */}
 
 				</View>
 			</View>
@@ -244,4 +285,5 @@ export {
 	RenderArticlSearch,
 	RenderVideoSearch,
 	RenderQnASearch,
+	RenderQnAForImg,
 }

@@ -25,7 +25,7 @@ const LiveNow = ({ grade = 0, navigation }) => {
         return () => {
             clearInterval(inter)
         }
-    }, [isFocused])
+    }, [navigation])
 
     const _handleGetData = () => {
         // livestreams_lesson_published_at

@@ -11,6 +11,7 @@ import { get, debounce } from 'lodash';
 import { RNCamera } from 'react-native-camera';
 import { check, PERMISSIONS, RESULTS, openSettings, request } from 'react-native-permissions';
 
+import Carousel, { Pagination } from 'react-native-snap-carousel';
 import firebase from 'react-native-firebase';
 
 import { fontSize, COLOR, unitIntertitialId } from '../../handle/Constant';
@@ -28,7 +29,7 @@ import api from '../../handle/api';
 import { helpers } from '../../utils/helpers';
 import useDebounce from '../../utils/useDebounce';
 import { search_services } from './service';
-import { RenderQnASearch } from '../../component/shared/ItemDocument';
+import { RenderQnAForImg } from '../../component/shared/ItemDocument';
 import { cameraPermission } from '../../utils/permission';
 
 const { width, height } = Dimensions.get('window');
@@ -36,58 +37,131 @@ const userImg = "https://www.xaprb.com/media/2018/08/kitten.jpg";
 
 const QnA = (props) => {
     const [resultSearch, setResultSearch] = useState([])
+    const [path, setPath] = useState([])
 
     return (
         <SafeAreaView style={{ flex: 1, position: 'relative' }}>
             {resultSearch && resultSearch[0] ?
-                <ResultView setResultSearch={setResultSearch} resultSearch={resultSearch} {...props} /> :
+                <ResultView setPath={setPath} path={path} setResultSearch={setResultSearch} resultSearch={resultSearch} {...props} /> :
                 <CameraView
                     setResultSearch={setResultSearch}
                     goBack={() => props.navigation.goBack()}
+                    setPath={setPath}
                     goToTextQna={() => props.navigation.navigate('createTextQna')}
                 />}
         </SafeAreaView>
     );
 };
 
-const ResultView = ({ resultSearch, setResultSearch, ...props }) => {
+const ResultView = ({ setPath, path, resultSearch, setResultSearch, ...props }) => {
+    const [activeSlide, setActiveSlide] = useState(0)
     return (
-        <View style={{ paddingLeft: 8, position: 'relative' }}>
-            <Text style={{ fontSize: 20, fontWeight: 'bold', marginVertical: 10 }}>Kết quả tìm kiếm: </Text>
-            <FlatList
-                data={resultSearch}
-                renderItem={({ item, index }) => {
-                    const {
-                        content_vi: title = '',
-                        class: grade = '',
-                        subject: book = '',
-                        subject: subject_name = "",
-                        answers = []
-                    } = item;
-                    const questionId = get(item, 'answers[0].question_id');
-                    if (!questionId) return null
-                    return (
-                        <RenderQnASearch
-                            onPress={() => { props.navigation.navigate('QuestionDetail', { questionId }) }}
-                            {...{ title, grade: "Lớp " + grade, book: subject_name, answers, index }}
-                        />
-                    )
-                }}
-            />
-            <View style={{ position: 'absolute', left: 10, bottom: 60, opacity: 0.7 }}>
-                <TouchableOpacity style={styles.btn} onPress={() => setResultSearch([])}>
+        <View style={{ paddingLeft: 8, position: 'relative', flex: 1 }}>
+            <View style={{ flexDirection: 'row', alignItems: 'center', marginBottom: 6 }}>
+                <TouchableOpacity onPress={() => props.navigation.goBack()}><Icon type="AntDesign" name="left" /></TouchableOpacity>
+                <Text style={{ fontSize: 20, fontWeight: 'bold', marginVertical: 10, marginLeft: 20 }}>Kết quả tìm kiếm: </Text>
+            </View>
+            <ScrollView style={{ flex: 1 }}>
+                {path ? <Image source={{ uri: path }} style={{ height: 200 }} resizeMode="contain" /> : null}
+                <Pagination
+                    dotsLength={resultSearch.length}
+                    activeDotIndex={activeSlide}
+                    // containerStyle={{ paddingHorizontal: 100 }}
+                    dotStyle={{
+                        width: 10,
+                        height: 10,
+                        borderRadius: 5,
+                        marginHorizontal: 8,
+                        backgroundColor: COLOR.MAIN
+                    }}
+                    inactiveDotStyle={{
+                        // Define styles for inactive dots here
+                    }}
+                    inactiveDotOpacity={0.5}
+                    inactiveDotScale={0.6}
+                />
+                <Carousel
+                    // ref={refCar}
+                    data={resultSearch}
+                    onSnapToItem={index => setActiveSlide(index)}
+                    renderItem={({ item, index }) => {
+                        const {
+                            content_vi: title = '',
+                            class: grade = '',
+                            subject: book = '',
+                            subject: subject_name = "",
+                            answers = []
+                        } = item;
+                        const questionId = get(item, 'answers[0].question_id');
+                        if (!questionId) return null
+                        return (
+                            <RenderQnAForImg
+                                onPress={() => {
+                                    props.navigation.navigate('QuestionDetail', { questionId })
+                                }}
+                                {...{ title, grade: "Lớp " + grade, book: subject_name, answers, index }}
+                            />
+                        )
+                    }}
+                    sliderWidth={width}
+                    parallaxFactor={0.4}
+                    itemWidth={width}
+                    layoutCardOffset={`18`}
+                />
+                {/* <FlatList
+                    data={resultSearch}
+                    // horizontal
+                    ListHeaderComponent={() => {
+                        return path ? <Image source={{ uri: path }} style={{ height: 200 }} resizeMode="contain" /> : null
+                    }}
+                    style={{ flex: 1 }}
+                    renderItem={({ item, index }) => {
+                        const {
+                            content_vi: title = '',
+                            class: grade = '',
+                            subject: book = '',
+                            subject: subject_name = "",
+                            answers = []
+                        } = item;
+                        const questionId = get(item, 'answers[0].question_id');
+                        if (!questionId) return null
+                        return (
+                            <RenderQnAForImg
+                                onPress={() => {
+                                    props.navigation.navigate('QuestionDetail', { questionId })
+                                }}
+                                {...{ title, grade: "Lớp " + grade, book: subject_name, answers, index }}
+                            />
+                        )
+                    }}
+                /> */}
+            </ScrollView>
+            <View style={{ flexDirection: 'row', justifyContent: 'space-around', paddingVertical: 6 }}>
+                <TouchableOpacity style={{
+                    paddingVertical: 10, paddingHorizontal: 30, flexDirection: 'row',
+                    alignItems: 'center', backgroundColor: '#fff', borderRadius: 20
+                }} onPress={() => {
+                    setResultSearch([]);
+                    setPath('')
+                }}>
                     <Icon name="camera" style={{ color: COLOR.MAIN }} />
+                    <Text style={{ color: COLOR.MAIN, fontWeight: 'bold', fontSize: 16, marginLeft: 7 }}>Chụp lại</Text>
                 </TouchableOpacity>
 
-                <TouchableOpacity style={[styles.btn, { marginTop: 20 }]} onPress={() => { props.navigation.navigate('createTextQna') }}>
-                    <Icon type="MaterialCommunityIcons" name="pen-plus" style={{ color: COLOR.MAIN }} />
+                <TouchableOpacity style={{
+                    paddingVertical: 10, paddingHorizontal: 30, flexDirection: 'row',
+                    backgroundColor: COLOR.MAIN,
+                    alignItems: 'center', borderRadius: 20
+                }} onPress={() => { props.navigation.navigate('createTextQna') }}>
+                    <Icon type="MaterialCommunityIcons" name="pen-plus" style={{ color: '#fff' }} />
+                    <Text style={{ color: '#fff', fontWeight: 'bold', fontSize: 16, marginLeft: 7 }}>Đặt câu hỏi</Text>
                 </TouchableOpacity>
             </View>
         </View>
     )
 }
 
-const CameraView = ({ setResultSearch, goBack, goToTextQna = () => { } }) => {
+const CameraView = ({ setResultSearch, goBack, goToTextQna = () => { }, setPath }) => {
 
     const camera = useRef(null);
 
@@ -114,6 +188,7 @@ const CameraView = ({ setResultSearch, goBack, goToTextQna = () => { } }) => {
     const _handleUploadImg = async (file) => {
         try {
             if (file && file.path) {
+                setPath(file.path)
                 setLoading(true)
                 const dataUpload = new FormData();
                 dataUpload.append("file", { uri: file.path, name: get(file, 'filename', 'dnd.jpg'), type: 'multipart/form-data', });
@@ -165,7 +240,7 @@ const CameraView = ({ setResultSearch, goBack, goToTextQna = () => { } }) => {
             text: questionContent
         })
             .then(({ response }) => {
-                console.log('response123', response)
+                // console.log('response123', response)
                 setResultSearch(response);
             })
             .catch(err => {
@@ -212,6 +287,10 @@ const CameraView = ({ setResultSearch, goBack, goToTextQna = () => { } }) => {
             //     console.log(barcodes);
             // }}
             />
+            {/* <View style={{height: 1, backgroundColor: '#fff', width: width, position: 'absolute',top: (height-30)/3}} /> */}
+            <View style={{ height: 1, backgroundColor: '#fff', width: 60, position: 'absolute', top: (height - 100) / 2, left: (width - 60) / 2 }} />
+            <View style={{ width: 1, backgroundColor: '#fff', height: 60, position: 'absolute', top: (height - 160) / 2, left: (width) / 2 }} />
+            {/* <View style={{width: 1, backgroundColor: '#fff', height: height, position: 'absolute',left: 2*(width)/3}} /> */}
 
             {loading ? <View style={{
                 justifyContent: 'center', alignItems: 'center',
