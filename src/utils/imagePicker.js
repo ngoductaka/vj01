@@ -35,8 +35,8 @@ class ImagePickerModule {
       multiple: multiple,
       useFrontCamera: true,
       mediaType: "photo",
-      width: width,
-      height: width/2,
+      width: 350,
+      height: 100,
     })
       .then(response => {
         // console.log("ImagePicker Success: ", response);
@@ -57,8 +57,8 @@ class ImagePickerModule {
         freeStyleCropEnabled: true,
         mediaType: "photo",
         cropping: true,
-        width: width,
-        height: width/2,
+        width: 350,
+        height: 100,
         ...otherOption,
       })
         .then(response => {

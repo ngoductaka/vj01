@@ -164,7 +164,9 @@ const QnA = (props) => {
                                 return (
                                     <View style={{ alignItems: 'center', marginTop: 30 }}>
                                         {
-                                            !searchText ? <Text style={{ fontSize: 20, color: '#333' }}> Vui lòng nhập từ khoá để tìm kiếm</Text> :
+                                            !searchText ?
+                                                <OptionNewQna navigation={props.navigation} />
+                                                :
                                                 <View style={{ justifyContent: 'center', alignItems: 'center' }}>
                                                     <Image source={images.no_item} />
                                                     <Text style={{ fontSize: 20, color: '#666' }}>{"Không tìm thấy kết quả"}</Text>
@@ -178,44 +180,6 @@ const QnA = (props) => {
                     </View>
                 </View>
 
-
-                <Animatable.View
-                    duration={1500}
-                    animation="lightSpeedIn"
-                    delay={100}
-                    style={{
-                        // position: 'absolute', 
-                        // bottom: 30, 
-                        opacity: 0.5,
-                        // paddingBottom: 30,
-                    }}
-                >
-                    <LinearGradient
-                        start={{ x: 0, y: 0 }}
-                        end={{ x: 1, y: 0 }}
-                        colors={['#8FCAEA', '#fff']} 
-                        // style={{ flex: 1 }}
-                        >
-                        <TouchableOpacity
-                            onPress={() => props.navigation.navigate('MakeQuestion')}
-                            style={{
-                                // position: 'absolute', bottom: 60, right: 0,
-                                flexDirection: 'row',
-                                alignItems: 'center', paddingHorizontal: 10,
-                                justifyContent: 'space-between',
-                                // paddingVertical: 5
-                            }}>
-                            <View
-                                style={{ paddingVertical: 10, paddingHorizontal: 15, borderRadius: 15, position: 'relative' }}>
-                                <Text style={{ color: '#555', fontWeight: 'bold', fontSize: 18 }}>Đặt câu hỏi mới</Text>
-                                <Text style={{ color: '#111', fontWeight: 'bold', fontSize: 13, marginTop: 3 }}>Không phải những gì bạn đang tìm kiếm?</Text>
-                            </View>
-                            <View style={{ backgroundColor: '#60869B', marginLeft: 10, padding: 5, borderRadius: 40, height: 40, width: 40, justifyContent: 'center', alignItems: 'center' }}>
-                                <Icon style={{ color: '#fff', fontWeight: 'bold', }} type="AntDesign" name="plus" />
-                            </View>
-                        </TouchableOpacity>
-                    </LinearGradient>
-                </Animatable.View>
             </SafeAreaView>
 
             <FilterModal
@@ -228,6 +192,51 @@ const QnA = (props) => {
         </View>
     );
 };
+
+const OptionNewQna = ({ navigation }) => {
+    return (
+        <Animatable.View
+            duration={1500}
+            animation="zoomIn"
+            delay={100} style={{
+                flex: 1, paddingVertical: 20,
+                width: width - 20,
+            }}>
+            {/* <Text style={{ fontSize: 20, color: '#000', marginVertical: 20 }}>Vui lòng nhập từ khoá để tìm kiếm</Text> */}
+            <TouchableOpacity onPress={() => navigation.navigate('MakeQuestion')} style={styles.shadow}>
+                <LinearGradient
+                    start={{ x: 0, y: 0 }}
+                    end={{ x: 1, y: 0 }}
+                    colors={['#1C4881', '#30AEFA', '#30AEFA', '#1C4881']}
+                    style={{
+                        flex: 1,
+                        borderRadius: 20, justifyContent: 'center',
+                        alignItems: 'center', paddingVertical: 30,
+                    }}
+                >
+                    <Image source={images.camera} style={{ height: 100 }} resizeMode="contain" />
+                    <Text style={{ fontSize: 22, color: '#fff', fontWeight: 'bold' }}>Chụp ảnh giải bài tập</Text>
+                </LinearGradient>
+            </TouchableOpacity>
+
+            <TouchableOpacity onPress={() => navigation.navigate('createTextQna')} style={[styles.shadow, { marginTop: 40 }]}>
+                <LinearGradient
+                    start={{ x: 0, y: 0 }}
+                    end={{ x: 1, y: 0 }}
+                    colors={['#3B8CDC', '#C9A1D9', '#C9A1D9', '#3B8CDC']}
+                    style={{
+                        flex: 1,
+                        borderRadius: 20, justifyContent: 'center',
+                        alignItems: 'center', paddingVertical: 30,
+                    }}
+                >
+                    <Image source={images.qna} style={{ height: 100 }} resizeMode="contain" />
+                    <Text style={{ fontSize: 22, color: '#fff', fontWeight: 'bold' }}>Đặt câu hỏi</Text>
+                </LinearGradient>
+            </TouchableOpacity>
+        </Animatable.View>
+    )
+}
 
 const styles = StyleSheet.create({
     container: {
@@ -311,6 +320,14 @@ const styles = StyleSheet.create({
         ...fontMaker({ weight: fontStyles.SemiBold })
     },
 
+    shadow: {
+        backgroundColor: '#FFFFFF',
+        shadowColor: 'rgba(0, 0, 0, 0.1)',
+        shadowOpacity: 0.8,
+        elevation: 6,
+        shadowRadius: 10,
+        shadowOffset: { width: 12, height: 13 },
+    },
 })
 
 

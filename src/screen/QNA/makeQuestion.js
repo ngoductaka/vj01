@@ -1,15 +1,17 @@
 import React, { useState, useEffect, useRef } from 'react';
 import {
     View, FlatList, Text, StyleSheet, Platform, Alert,
-    TouchableOpacity, Dimensions, Image, ScrollView,
-    SafeAreaView, TextInput, Keyboard, ActivityIndicator
+    TouchableOpacity, Dimensions, Image, ScrollView, NativeEventEmitter,
+    SafeAreaView, TextInput, Keyboard, ActivityIndicator, useWindowDimensions,
 } from 'react-native';
 import Toast from 'react-native-simple-toast';
-import { Icon } from 'native-base';
+import { Icon, Button } from 'native-base';
 import { useSelector, useDispatch } from 'react-redux';
 import { get, debounce } from 'lodash';
 import { RNCamera } from 'react-native-camera';
 import { check, PERMISSIONS, RESULTS, openSettings, request } from 'react-native-permissions';
+
+import Orientation from 'react-native-orientation-locker';
 
 import Carousel, { Pagination } from 'react-native-snap-carousel';
 import firebase from 'react-native-firebase';
@@ -55,6 +57,11 @@ const QnA = (props) => {
 
 const ResultView = ({ setPath, path, resultSearch, setResultSearch, ...props }) => {
     const [activeSlide, setActiveSlide] = useState(0)
+    const resultSearchFilter = React.useMemo(() => {
+        return resultSearch.filter(i => !!get(i, 'answers[0].question_id'))
+    }, [resultSearch]);
+
+    console.log('resultSearchFilter', resultSearchFilter)
     return (
         <View style={{ paddingLeft: 8, position: 'relative', flex: 1 }}>
             <View style={{ flexDirection: 'row', alignItems: 'center', marginBottom: 6 }}>
@@ -62,27 +69,22 @@ const ResultView = ({ setPath, path, resultSearch, setResultSearch, ...props }) 
                 <Text style={{ fontSize: 20, fontWeight: 'bold', marginVertical: 10, marginLeft: 20 }}>Kết quả tìm kiếm: </Text>
             </View>
             <ScrollView style={{ flex: 1 }}>
-                {path ? <Image source={{ uri: path }} style={{ height: 200 }} resizeMode="contain" /> : null}
-                <Pagination
-                    dotsLength={resultSearch.length}
-                    activeDotIndex={activeSlide}
-                    // containerStyle={{ paddingHorizontal: 100 }}
-                    dotStyle={{
-                        width: 10,
-                        height: 10,
-                        borderRadius: 5,
-                        marginHorizontal: 8,
-                        backgroundColor: COLOR.MAIN
-                    }}
-                    inactiveDotStyle={{
-                        // Define styles for inactive dots here
-                    }}
-                    inactiveDotOpacity={0.5}
-                    inactiveDotScale={0.6}
-                />
+                {path ? <Image source={{ uri: path }} style={{ height: 100 }} resizeMode="contain" /> : null}
+                <View style={{ flexDirection: 'row' }}>
+                    {
+                        new Array(resultSearchFilter.length).fill(0).map((_, index) => {
+                            return <View style={{
+                                height: 21, width: 21, borderRadius: 21, marginLeft: 5,
+                                backgroundColor: activeSlide == index ? COLOR.MAIN : '#ddd', justifyContent: 'center', alignContent: 'center',
+                            }}>
+                                <Text style={{ textAlign: 'center' }}>{index + 1}</Text>
+                            </View>
+                        })
+                    }
+                </View>
                 <Carousel
                     // ref={refCar}
-                    data={resultSearch}
+                    data={resultSearchFilter}
                     onSnapToItem={index => setActiveSlide(index)}
                     renderItem={({ item, index }) => {
                         const {
@@ -108,33 +110,6 @@ const ResultView = ({ setPath, path, resultSearch, setResultSearch, ...props }) 
                     itemWidth={width}
                     layoutCardOffset={`18`}
                 />
-                {/* <FlatList
-                    data={resultSearch}
-                    // horizontal
-                    ListHeaderComponent={() => {
-                        return path ? <Image source={{ uri: path }} style={{ height: 200 }} resizeMode="contain" /> : null
-                    }}
-                    style={{ flex: 1 }}
-                    renderItem={({ item, index }) => {
-                        const {
-                            content_vi: title = '',
-                            class: grade = '',
-                            subject: book = '',
-                            subject: subject_name = "",
-                            answers = []
-                        } = item;
-                        const questionId = get(item, 'answers[0].question_id');
-                        if (!questionId) return null
-                        return (
-                            <RenderQnAForImg
-                                onPress={() => {
-                                    props.navigation.navigate('QuestionDetail', { questionId })
-                                }}
-                                {...{ title, grade: "Lớp " + grade, book: subject_name, answers, index }}
-                            />
-                        )
-                    }}
-                /> */}
             </ScrollView>
             <View style={{ flexDirection: 'row', justifyContent: 'space-around', paddingVertical: 6 }}>
                 <TouchableOpacity style={{
@@ -166,6 +141,29 @@ const CameraView = ({ setResultSearch, goBack, goToTextQna = () => { }, setPath 
     const camera = useRef(null);
 
     const [loading, setLoading] = useState(false)
+    const [orientation, setOrientation] = useState('NORMAL')
+
+    useEffect(() => {
+        // Orientation.unlockAllOrientations();
+        Orientation.getOrientation(_handleOrientation);
+        // // Orientation.getDeviceOrientation(_handleOrientation);
+        Orientation.addOrientationListener(_handleOrientation)
+        return () => {
+            Orientation.removeOrientationListener(_handleOrientation)
+            Orientation.lockToPortrait();
+        }
+    }, []);
+
+    const _handleOrientation = (val) => {
+        console.log('val_handleOrientation', val)
+        if (val == 'LANDSCAPE-LEFT' || val == 'LANDSCAPE-RIGHT') {
+            setOrientation(val)
+        } else {
+            setOrientation('NORMAL')
+        }
+    }
+    console.log('orientation', orientation)
+
 
     const takePicture = async () => {
         if (camera && camera.current) {
@@ -173,11 +171,12 @@ const CameraView = ({ setResultSearch, goBack, goToTextQna = () => { }, setPath 
             const data = await camera.current.takePictureAsync(options);
             console.log(data.uri, '=====dnd');
             ImagePickerCrop.openCropper({
-                path: data.uri,
 
                 freeStyleCropEnabled: true,
-                width: 500,
-                height: 200
+
+                width: 350,
+                height: 100,
+                path: data.uri,
             }).then(image => {
                 console.log('image123ee', image)
                 _handleUploadImg(image)
@@ -265,12 +264,13 @@ const CameraView = ({ setResultSearch, goBack, goToTextQna = () => { }, setPath 
         });
     };
     return (
-        <View style={styles.container}>
+        <View style={[styles.container, { backgroundColor: '#fff' }]}>
+          
             <RNCamera
                 ref={camera}
                 style={styles.preview}
                 type={RNCamera.Constants.Type.back}
-                flashMode={RNCamera.Constants.FlashMode.on}
+                flashMode={RNCamera.Constants.FlashMode.off}
                 androidCameraPermissionOptions={{
                     title: 'Permission to use camera',
                     message: 'We need your permission to use your camera',
@@ -287,38 +287,46 @@ const CameraView = ({ setResultSearch, goBack, goToTextQna = () => { }, setPath 
             //     console.log(barcodes);
             // }}
             />
-            {/* <View style={{height: 1, backgroundColor: '#fff', width: width, position: 'absolute',top: (height-30)/3}} /> */}
-            <View style={{ height: 1, backgroundColor: '#fff', width: 60, position: 'absolute', top: (height - 100) / 2, left: (width - 60) / 2 }} />
-            <View style={{ width: 1, backgroundColor: '#fff', height: 60, position: 'absolute', top: (height - 160) / 2, left: (width) / 2 }} />
-            {/* <View style={{width: 1, backgroundColor: '#fff', height: height, position: 'absolute',left: 2*(width)/3}} /> */}
-
+            {/* {orientation == "NORMAL" ? <View style={{position: ''}}>
+                <View style={{ height: 1, backgroundColor: '#fff', width: 60, position: 'absolute', top: (height - (orientation == 'NORMAL' ? 100 : 50)) / 2, left: (width - 60) / 2 }} />
+                <View style={{ width: 1, backgroundColor: '#fff', height: 60, position: 'absolute', top: (height - (orientation == 'NORMAL' ? 160 : 110)) / 2, left: (width) / 2 }} />
+            </View> : null} */}
             {loading ? <View style={{
                 justifyContent: 'center', alignItems: 'center',
-                position: 'absolute', bottom: height / 2 - 200, borderRadius: 10, width: width, backgroundColor: '#fff',
+                position: 'absolute',
+                // bottom: height / 2 - 200,
+                bottom: 0,
+                borderRadius: 10,
+                width: width,
+                backgroundColor: '#fff',
                 paddingHorizontal: 30, paddingVertical: 20, paddingBottom: 40
             }}>
                 <ActivityIndicator size="large" style={{ marginBottom: 20 }} />
                 <Text>Đang xử lý dữ liệu ảnh</Text>
                 <Text>Vui lòng chờ trong giây lát</Text>
-            </View> : <>
-                    <TouchableOpacity onPress={takePicture} style={styles.btnSnap}>
-                        <Icon name="search" style={{ color: COLOR.MAIN }} />
-                    </TouchableOpacity>
-
-                    <TouchableOpacity onPress={_handleSelectPhoto} style={styles.btnPhoto}>
+            </View> :
+                <View style={styles[`${orientation}_wrapper`]}>
+                    <TouchableOpacity onPress={_handleSelectPhoto}
+                        style={styles[`${'NORMAL'}_btnPhoto`]}
+                    >
                         <Icon type="FontAwesome" name="photo" style={{ color: COLOR.MAIN }} />
+                        <Text style={{ color: COLOR.MAIN, marginTop: 2 }}>Chọn ảnh</Text>
                     </TouchableOpacity>
-                    <TouchableOpacity onPress={goToTextQna} style={styles.btnText}>
+                    <TouchableOpacity onPress={takePicture} style={[styles[`NORMAL_btn_search`]]}>
+                    </TouchableOpacity>
+                    <TouchableOpacity onPress={goToTextQna} style={styles[`${'NORMAL'}_btnText`]}>
                         <Icon type="MaterialCommunityIcons" name="pen-plus" style={{ color: COLOR.MAIN }} />
+                        <Text style={{ color: COLOR.MAIN, marginTop: 2 }}>Đặt câu hỏi</Text>
                     </TouchableOpacity>
-                </>}
-            <TouchableOpacity onPress={goBack} style={[styles.btn, { position: 'absolute', left: 10, top: 20, height: 40, width: 40, borderRadius: 40 }]}>
-                <Icon type="Feather" name="arrow-left" style={{ color: COLOR.MAIN }} />
+                </View>
+                // <Btn {...{ orientation, takePicture, _handleSelectPhoto, goToTextQna }} />
+            }
+            <TouchableOpacity onPress={goBack} style={styles[`${orientation}_btn_close`]}>
+                <Icon type="AntDesign" name="close" style={{ color: COLOR.MAIN }} />
             </TouchableOpacity>
         </View>
     )
 }
-
 
 const styles = StyleSheet.create({
     container: {
@@ -345,41 +353,131 @@ const styles = StyleSheet.create({
         height: 70, width: 70, borderRadius: 70,
         backgroundColor: '#eee',
         position: 'absolute',
-        bottom: 50, left: width / 2 - 35,
+        bottom: 35, left: width / 2 - 35,
         justifyContent: 'center',
         alignItems: 'center',
         borderWidth: 2,
         borderColor: COLOR.MAIN
     },
-
-    btnPhoto: {
-        height: 50, width: 50, borderRadius: 50,
+    // left
+    'LANDSCAPE-LEFT_btn_search': {
+        height: 70, width: 70, borderRadius: 70,
         backgroundColor: '#eee',
         position: 'absolute',
-        bottom: 40, left: 20,
+        bottom: height / 2 - 50, right: 35,
         justifyContent: 'center',
         alignItems: 'center',
         borderWidth: 2,
         borderColor: COLOR.MAIN
     },
-    btnText: {
-        height: 50, width: 50, borderRadius: 50,
-        backgroundColor: '#eee',
+    'LANDSCAPE-LEFT_btnPhoto': {
         position: 'absolute',
-        bottom: 40, right: 20,
+        bottom: 10, right: 20,
         justifyContent: 'center',
         alignItems: 'center',
-        borderWidth: 2,
-        borderColor: COLOR.MAIN
     },
-    btn: {
+    'LANDSCAPE-LEFT_btnText': {
+        position: 'absolute',
+        bottom: height - 90, right: 20,
+        justifyContent: 'center',
+        alignItems: 'center',
+    },
+    'LANDSCAPE-LEFT_btn_close': {
         height: 60, width: 60, borderRadius: 60,
         backgroundColor: '#eee',
         justifyContent: 'center',
         alignItems: 'center',
         borderWidth: 2,
         borderColor: COLOR.MAIN,
-    }
+        position: 'absolute',
+        left: 10, top: 20, height: 40, width: 40, borderRadius: 40,
+    },
+    // right
+    'LANDSCAPE-RIGHT_btn_search': {
+        height: 70, width: 70, borderRadius: 70,
+        backgroundColor: '#eee',
+        position: 'absolute',
+        bottom: height / 2 - 50,
+        left: 35,
+        justifyContent: 'center',
+        alignItems: 'center',
+        borderWidth: 2,
+        borderColor: COLOR.MAIN
+    },
+    'LANDSCAPE-RIGHT_btnPhoto': {
+        position: 'absolute',
+        bottom: 10, left: 20,
+        justifyContent: 'center',
+        alignItems: 'center',
+    },
+    'LANDSCAPE-RIGHT_btnText': {
+        position: 'absolute',
+        bottom: height - 90, left: 20,
+        justifyContent: 'center',
+        alignItems: 'center',
+    },
+    'LANDSCAPE-RIGHT_btn_close': {
+        height: 60, width: 60, borderRadius: 60,
+        backgroundColor: '#eee',
+        justifyContent: 'center',
+        alignItems: 'center',
+        borderWidth: 2,
+        borderColor: COLOR.MAIN,
+        position: 'absolute',
+        right: 10, top: 20, height: 40, width: 40, borderRadius: 40,
+    },
+
+    // nomal
+    'NORMAL_btnText': {
+        // height: 50, width: 50, borderRadius: 50,
+        // backgroundColor: '#eee',
+        // position: 'absolute',
+        // bottom: 30, right: 20,
+        justifyContent: 'center',
+        alignItems: 'center',
+        // borderWidth: 2,
+        // borderColor: COLOR.MAIN
+    },
+    NORMAL_btn_close: {
+        height: 60, width: 60, borderRadius: 60,
+        backgroundColor: '#eee',
+        justifyContent: 'center',
+        alignItems: 'center',
+        borderWidth: 2,
+        borderColor: COLOR.MAIN,
+        position: 'absolute', left: 10, top: 20, height: 40, width: 40, borderRadius: 40,
+    },
+    NORMAL_btn_search: {
+        height: 70, width: 70, borderRadius: 70,
+        backgroundColor: COLOR.MAIN,
+        // position: 'absolute',
+        // bottom: 35, left: width / 2 - 35,
+        justifyContent: 'center',
+        alignItems: 'center',
+        borderWidth: 2,
+        borderColor: '#fff'
+    },
+    NORMAL_btnPhoto: {
+        // position: 'absolute',
+        // bottom: 10, left: 20,
+        justifyContent: 'center',
+        alignItems: 'center',
+    },
+    NORMAL_wrapper: {
+        position: 'absolute', bottom: 20, left: 10, right: 10,
+        justifyContent: 'space-between',
+        flexDirection: 'row', alignItems: 'flex-end'
+    },
+    'LANDSCAPE-LEFT_wrapper': {
+        position: 'absolute', bottom: 20, right: 10, top: 10,
+        justifyContent: 'space-between',
+        alignItems: 'flex-end'
+    },
+    'LANDSCAPE-RIGHT_wrapper': {
+        position: 'absolute', bottom: 10, left: 20, top: 10,
+        justifyContent: 'space-between',
+        alignItems: 'flex-end'
+    },
 
 })
 
