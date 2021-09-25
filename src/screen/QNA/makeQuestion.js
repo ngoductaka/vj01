@@ -6,40 +6,30 @@ import {
 } from 'react-native';
 import Toast from 'react-native-simple-toast';
 import { Icon, Button } from 'native-base';
-import { useSelector, useDispatch } from 'react-redux';
 import { get, debounce } from 'lodash';
 import { RNCamera } from 'react-native-camera';
-import { check, PERMISSIONS, RESULTS, openSettings, request } from 'react-native-permissions';
-
-import Orientation from 'react-native-orientation-locker';
 
 import Carousel, { Pagination } from 'react-native-snap-carousel';
-import firebase from 'react-native-firebase';
 
 import { fontSize, COLOR, unitIntertitialId } from '../../handle/Constant';
-import { fontMaker, fontStyles } from '../../utils/fonts';
-
-import { FilterModal, mapTypeQestion } from './com/FilterModal';
-import KeyboardStickyView from '../../component/shared/StickeyKeyboad';
 import imagePicker from '../../utils/imagePicker';
 import ImagePickerCrop from "react-native-image-crop-picker";
 
 
-import { TollBar } from './com/com';
 import services from '../../handle/services';
 import api from '../../handle/api';
-import { helpers } from '../../utils/helpers';
-import useDebounce from '../../utils/useDebounce';
-import { search_services } from './service';
-import { RenderQnAForImg } from '../../component/shared/ItemDocument';
-import { cameraPermission } from '../../utils/permission';
 
+import { RenderQnAForImg } from '../../component/shared/ItemDocument';
 const { width, height } = Dimensions.get('window');
 const userImg = "https://www.xaprb.com/media/2018/08/kitten.jpg";
 
 const QnA = (props) => {
     const [resultSearch, setResultSearch] = useState([])
     const [path, setPath] = useState([])
+
+    useEffect(() => {
+        Toast.showWithGravity("Chỉ chụp 1 câu hỏi", Toast.SHORT, Toast.CENTER);
+    }, [])
 
     return (
         <SafeAreaView style={{ flex: 1, position: 'relative' }}>
@@ -61,7 +51,6 @@ const ResultView = ({ setPath, path, resultSearch, setResultSearch, ...props }) 
         return resultSearch.filter(i => !!get(i, 'answers[0].question_id'))
     }, [resultSearch]);
 
-    console.log('resultSearchFilter', resultSearchFilter)
     return (
         <View style={{ paddingLeft: 8, position: 'relative', flex: 1 }}>
             <View style={{ flexDirection: 'row', alignItems: 'center', marginBottom: 6 }}>
@@ -139,43 +128,14 @@ const ResultView = ({ setPath, path, resultSearch, setResultSearch, ...props }) 
 const CameraView = ({ setResultSearch, goBack, goToTextQna = () => { }, setPath }) => {
 
     const camera = useRef(null);
-
     const [loading, setLoading] = useState(false)
-    const [orientation, setOrientation] = useState('NORMAL')
-
-    useEffect(() => {
-        // Orientation.unlockAllOrientations();
-        Orientation.getOrientation(_handleOrientation);
-        // // Orientation.getDeviceOrientation(_handleOrientation);
-        Orientation.addOrientationListener(_handleOrientation)
-        return () => {
-            Orientation.removeOrientationListener(_handleOrientation)
-            Orientation.lockToPortrait();
-        }
-    }, []);
-
-    const _handleOrientation = (val) => {
-        console.log('val_handleOrientation', val)
-        if (val == 'LANDSCAPE-LEFT' || val == 'LANDSCAPE-RIGHT') {
-            setOrientation(val)
-        } else {
-            setOrientation('NORMAL')
-        }
-    }
-    console.log('orientation', orientation)
-
 
     const takePicture = async () => {
         if (camera && camera.current) {
-            const options = { quality: 0.5, base64: true };
+            const options = {};
             const data = await camera.current.takePictureAsync(options);
-            console.log(data.uri, '=====dnd');
             ImagePickerCrop.openCropper({
-
                 freeStyleCropEnabled: true,
-
-                width: 350,
-                height: 100,
                 path: data.uri,
             }).then(image => {
                 console.log('image123ee', image)
@@ -265,7 +225,6 @@ const CameraView = ({ setResultSearch, goBack, goToTextQna = () => { }, setPath 
     };
     return (
         <View style={[styles.container, { backgroundColor: '#fff' }]}>
-          
             <RNCamera
                 ref={camera}
                 style={styles.preview}
@@ -283,14 +242,7 @@ const CameraView = ({ setResultSearch, goBack, goToTextQna = () => { }, setPath 
                     buttonPositive: 'Ok',
                     buttonNegative: 'Cancel',
                 }}
-            // onGoogleVisionBarcodesDetected={({ barcodes }) => {
-            //     console.log(barcodes);
-            // }}
             />
-            {/* {orientation == "NORMAL" ? <View style={{position: ''}}>
-                <View style={{ height: 1, backgroundColor: '#fff', width: 60, position: 'absolute', top: (height - (orientation == 'NORMAL' ? 100 : 50)) / 2, left: (width - 60) / 2 }} />
-                <View style={{ width: 1, backgroundColor: '#fff', height: 60, position: 'absolute', top: (height - (orientation == 'NORMAL' ? 160 : 110)) / 2, left: (width) / 2 }} />
-            </View> : null} */}
             {loading ? <View style={{
                 justifyContent: 'center', alignItems: 'center',
                 position: 'absolute',
@@ -305,7 +257,7 @@ const CameraView = ({ setResultSearch, goBack, goToTextQna = () => { }, setPath 
                 <Text>Đang xử lý dữ liệu ảnh</Text>
                 <Text>Vui lòng chờ trong giây lát</Text>
             </View> :
-                <View style={styles[`${orientation}_wrapper`]}>
+                <View style={styles[`${'NORMAL'}_wrapper`]}>
                     <TouchableOpacity onPress={_handleSelectPhoto}
                         style={styles[`${'NORMAL'}_btnPhoto`]}
                     >
@@ -319,9 +271,8 @@ const CameraView = ({ setResultSearch, goBack, goToTextQna = () => { }, setPath 
                         <Text style={{ color: COLOR.MAIN, marginTop: 2 }}>Đặt câu hỏi</Text>
                     </TouchableOpacity>
                 </View>
-                // <Btn {...{ orientation, takePicture, _handleSelectPhoto, goToTextQna }} />
             }
-            <TouchableOpacity onPress={goBack} style={styles[`${orientation}_btn_close`]}>
+            <TouchableOpacity onPress={goBack} style={styles[`${'NORMAL'}_btn_close`]}>
                 <Icon type="AntDesign" name="close" style={{ color: COLOR.MAIN }} />
             </TouchableOpacity>
         </View>

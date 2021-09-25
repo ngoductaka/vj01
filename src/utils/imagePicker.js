@@ -35,8 +35,6 @@ class ImagePickerModule {
       multiple: multiple,
       useFrontCamera: true,
       mediaType: "photo",
-      width: 350,
-      height: 100,
     })
       .then(response => {
         // console.log("ImagePicker Success: ", response);
@@ -52,13 +50,11 @@ class ImagePickerModule {
   launchLibrary(otherOption, { onChooseImage, onDidCancel, onError }) {
     try {
       ImagePickerCrop.openPicker({
-        compressImageMaxWidth: 1920,
+        compressImageMaxWidth: 3920,
         compressImageMaxHeight: 1080,
         freeStyleCropEnabled: true,
         mediaType: "photo",
         cropping: true,
-        width: 350,
-        height: 100,
         ...otherOption,
       })
         .then(response => {
