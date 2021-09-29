@@ -1,5 +1,5 @@
 import ImagePickerCrop from "react-native-image-crop-picker";
-import {Dimensions} from 'react-native';
+import { Dimensions } from 'react-native';
 
 const { width, height } = Dimensions.get('window');
 const defaultConfig = {
@@ -17,6 +17,27 @@ const options = {
   }
 };
 
+export const optionDefault = {
+  compressImageMaxWidth: 1920,
+  compressImageMaxHeight: 1080,
+  freeStyleCropEnabled: true,
+  cropping: true,
+  multiple: false,
+  useFrontCamera: false,
+  enableRotationGesture: false,
+  mediaType: "photo",
+  cropperToolbarColor: 'red',
+  cropperActiveWidgetColor: 'red',
+  // writeTempFile: false,
+  cropperToolbarTitle: "Chỉ cắt 1 câu hỏi",
+  enableRotationGesture: false,
+  compressImageQuality: 1,
+  // cropperTintColor: 'red',
+  // cropperToolbarWidgetColor: 'red',
+  // cropperStatusBarColor: 'red',
+  // cropperActiveWidgetColor: 'red',
+}
+
 class ImagePickerModule {
   constructor(config) {
     this.config = config || defaultConfig;
@@ -28,13 +49,7 @@ class ImagePickerModule {
 
   launchCamera(multiple, { onChooseImage, onDidCancel, onError, cropping }) {
     ImagePickerCrop.openCamera({
-      compressImageMaxWidth: 1920,
-      compressImageMaxHeight: 1080,
-      freeStyleCropEnabled: true,
-      cropping: true,
-      multiple: multiple,
-      useFrontCamera: true,
-      mediaType: "photo",
+      ...optionDefault,
     })
       .then(response => {
         // console.log("ImagePicker Success: ", response);
@@ -50,11 +65,7 @@ class ImagePickerModule {
   launchLibrary(otherOption, { onChooseImage, onDidCancel, onError }) {
     try {
       ImagePickerCrop.openPicker({
-        compressImageMaxWidth: 3920,
-        compressImageMaxHeight: 1080,
-        freeStyleCropEnabled: true,
-        mediaType: "photo",
-        cropping: true,
+        ...optionDefault,
         ...otherOption,
       })
         .then(response => {

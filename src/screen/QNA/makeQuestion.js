@@ -12,7 +12,7 @@ import { RNCamera } from 'react-native-camera';
 import Carousel, { Pagination } from 'react-native-snap-carousel';
 
 import { fontSize, COLOR, unitIntertitialId } from '../../handle/Constant';
-import imagePicker from '../../utils/imagePicker';
+import imagePicker, { optionDefault } from '../../utils/imagePicker';
 import ImagePickerCrop from "react-native-image-crop-picker";
 
 
@@ -21,18 +21,17 @@ import api from '../../handle/api';
 
 import { RenderQnAForImg } from '../../component/shared/ItemDocument';
 const { width, height } = Dimensions.get('window');
-const userImg = "https://www.xaprb.com/media/2018/08/kitten.jpg";
 
 const QnA = (props) => {
     const [resultSearch, setResultSearch] = useState([])
     const [path, setPath] = useState([])
 
     useEffect(() => {
-        Toast.showWithGravity("Chỉ chụp 1 câu hỏi", Toast.SHORT, Toast.CENTER);
+        Toast.showWithGravity("Chỉ chụp 1 câu hỏi", Toast.LONG, Toast.CENTER);
     }, [])
 
     return (
-        <SafeAreaView style={{ flex: 1, position: 'relative' }}>
+        <SafeAreaView style={{ flex: 1, position: 'relative', backgroundColor: '#fff' }}>
             {resultSearch && resultSearch[0] ?
                 <ResultView setPath={setPath} path={path} setResultSearch={setResultSearch} resultSearch={resultSearch} {...props} /> :
                 <CameraView
@@ -52,7 +51,7 @@ const ResultView = ({ setPath, path, resultSearch, setResultSearch, ...props }) 
     }, [resultSearch]);
 
     return (
-        <View style={{ paddingLeft: 8, position: 'relative', flex: 1 }}>
+        <View style={{ paddingLeft: 8, position: 'relative', flex: 1, backgroundColor: '#fff' }}>
             <View style={{ flexDirection: 'row', alignItems: 'center', marginBottom: 6 }}>
                 <TouchableOpacity onPress={() => props.navigation.goBack()}><Icon type="AntDesign" name="left" /></TouchableOpacity>
                 <Text style={{ fontSize: 20, fontWeight: 'bold', marginVertical: 10, marginLeft: 20 }}>Kết quả tìm kiếm: </Text>
@@ -135,7 +134,7 @@ const CameraView = ({ setResultSearch, goBack, goToTextQna = () => { }, setPath 
             const options = {};
             const data = await camera.current.takePictureAsync(options);
             ImagePickerCrop.openCropper({
-                freeStyleCropEnabled: true,
+                ...optionDefault,
                 path: data.uri,
             }).then(image => {
                 console.log('image123ee', image)
@@ -197,6 +196,7 @@ const CameraView = ({ setResultSearch, goBack, goToTextQna = () => { }, setPath 
         setLoading(true)
         api.post('http://45.117.82.169:9998/search_raw', {
             text: questionContent
+            // text: "Đề bài: Tìm điều kiện của n để A  chia hết B A= $14x^{8}y^{n}$ B= $-7x^{7}y^{4}$"
         })
             .then(({ response }) => {
                 // console.log('response123', response)
@@ -246,9 +246,9 @@ const CameraView = ({ setResultSearch, goBack, goToTextQna = () => { }, setPath 
             {loading ? <View style={{
                 justifyContent: 'center', alignItems: 'center',
                 position: 'absolute',
-                // bottom: height / 2 - 200,
                 bottom: 0,
-                borderRadius: 10,
+                borderTopStartRadius: 10,
+                borderTopEndRadius: 10,
                 width: width,
                 backgroundColor: '#fff',
                 paddingHorizontal: 30, paddingVertical: 20, paddingBottom: 40
@@ -273,7 +273,7 @@ const CameraView = ({ setResultSearch, goBack, goToTextQna = () => { }, setPath 
                 </View>
             }
             <TouchableOpacity onPress={goBack} style={styles[`${'NORMAL'}_btn_close`]}>
-                <Icon type="AntDesign" name="close" style={{ color: COLOR.MAIN }} />
+                <Icon type="AntDesign" name="closecircleo" style={{ color: COLOR.MAIN }} />
             </TouchableOpacity>
         </View>
     )
@@ -390,13 +390,13 @@ const styles = StyleSheet.create({
         // borderColor: COLOR.MAIN
     },
     NORMAL_btn_close: {
-        height: 60, width: 60, borderRadius: 60,
-        backgroundColor: '#eee',
-        justifyContent: 'center',
-        alignItems: 'center',
-        borderWidth: 2,
-        borderColor: COLOR.MAIN,
-        position: 'absolute', left: 10, top: 20, height: 40, width: 40, borderRadius: 40,
+        height: 70, width: 70, borderRadius: 70,
+        // backgroundColor: '#eee',
+        // justifyContent: 'center',
+        // alignItems: 'center',
+        // borderWidth: 2,
+        // borderColor: COLOR.MAIN,
+        position: 'absolute', left: 20, top: 30, height: 40, width: 40, borderRadius: 40,
     },
     NORMAL_btn_search: {
         height: 70, width: 70, borderRadius: 70,

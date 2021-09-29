@@ -2,17 +2,19 @@ import React from 'react';
 import {
 	View, Text, StyleSheet, TouchableOpacity, Dimensions, Image
 } from 'react-native';
-
+import MathJax from 'react-native-mathjax';
+import { Icon } from 'native-base';
+import { isNumber } from 'lodash';
+import { Thumbnail } from 'react-native-thumbnail-video';
 import HTML from 'react-native-render-html';
+
 import { fontSize, blackColor, COLOR } from '../../handle/Constant';
 import { fontMaker, fontStyles } from '../../utils/fonts';
-import { Icon } from 'native-base';
 import { mapBooktype } from '../../constant';
 import FastImage from 'react-native-fast-image';
 import { helpers } from '../../utils/helpers';
-import { Thumbnail } from 'react-native-thumbnail-video';
-import { isNumber } from 'lodash';
 import { RenderHtmlCustom } from '../../screen/Lesson/saved';
+
 const { width } = Dimensions.get('window');
 
 
@@ -210,29 +212,15 @@ const RenderQnAForImg = ({ title, onPress, viewCount, index, book, grade, answer
 	return (
 		<TouchableOpacity
 			onPress={onPress}
-			style={[stylesComponent.textItem, { paddingLeft: 0, borderBottomWidth: 0, borderBottomWidth: 2, borderColor: '#555' }]}
+			style={[stylesComponent.textItem, { paddingLeft: 0, backgroundColor: '#fff' }]}
 		>
 			<View style={{ flexDirection: 'row', alignItems: 'center' }}>
-				{/* <View
-					style={{
-						height: 30, width: 30, marginRight: 15, borderRadius: 20, justifyContent: 'center', alignItems: 'center',
-						borderColor: COLOR.MAIN,
-						borderWidth: 1
-					}}
-				>
-					<Icon type='FontAwesome' name='question' style={{ color: COLOR.MAIN, fontSize: 18 }} />
-				</View> */}
 				<View style={{ flex: 1 }}>
 					<Text style={{ fontSize: 22, color: '#5396CD', fontWeight: 'bold' }}>Câu hỏi :</Text>
-
-					<Text numberOfLines={2} style={stylesComponent.textContent}>
-						<Text style={{ fontWeight: 'bold', fontSize: 20 }}></Text> {title}
-					</Text>
+					<MathJax html={title || ''} />
 					<View style={{ flexDirection: 'row', justifyContent: 'flex-end' }}>
-						{/* <Text style={{ fontSize: 12, color: '#777', textAlign: 'right', marginTop: 7 }}>{answers_count ? `${answers_count} câu trả lời` : 'Chưa có câu trả lời'} </Text> */}
 						<Text style={{ fontSize: 12, color: '#777', textAlign: 'right', marginTop: 7 }}>{book} • {grade}</Text>
 					</View>
-					{/* <View style={{ marginLeft: 20 }}> */}
 					<Text style={{ fontSize: 22, color: '#5396CD', fontWeight: 'bold' }}>Câu trả lời gần nhất :</Text>
 					{
 						answers && answers[0] ?

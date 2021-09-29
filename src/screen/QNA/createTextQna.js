@@ -45,14 +45,15 @@ const QnA = (props) => {
 
     useEffect(() => { setFilter({ cls: current_class }) }, [current_class])
 
-    useEffect(() => {
-        if (questionContent) {
-            handleSearch({ questionContent, filter })
-        }
-    }, [questionContent, filter]);
+    // useEffect(() => {
+    //     if (questionContent) {
+    //         handleSearchDebounce({ questionContent, filter })
+    //     }
+    // }, [questionContent, filter]);
 
 
-    const handleSearch = React.useCallback(debounce(({ questionContent, filter }) => {
+
+    const _requestSearch = ({ questionContent, filter }) => {
         const { cls = '', currSub = '' } = filter || {};
         const query = { grade_id: cls == 13 ? '' : cls };
         if (currSub && currSub.id) {
@@ -74,14 +75,16 @@ const QnA = (props) => {
                 setLoading(false)
             })
 
-    }, 500), [])
+    }
+
+    const handleSearchDebounce = React.useCallback(debounce(_requestSearch, 10000), []);
 
     useEffect(() => {
         // _handleClickCamera()
     }, []);
 
-    const _handleClickPhoto =  () => photoPermission({next: _handleSelectPhoto})
-    const _handleClickCamera = () =>  cameraPermission({next: _handleUseCamera})
+    const _handleClickPhoto = () => photoPermission({ next: _handleSelectPhoto })
+    const _handleClickCamera = () => cameraPermission({ next: _handleUseCamera })
 
     const _handleUploadImg = async (file) => {
         try {
@@ -428,22 +431,45 @@ const QnA = (props) => {
                     // flex: 1,
                     width: width,
                     height: 55,
-                    borderTopColor: '#dedede',
-                    borderTopWidth: 1,
+                    // borderTopColor: '#dedede',
+                    // borderTopWidth: 1,
                     flexDirection: 'row',
                     alignItems: 'center',
                     backgroundColor: '#fff',
+                    justifyContent: 'space-around'
                     // paddingBottom: 15,
                     // paddingTop: 5,
                     // backgroundColor: 'red'
                 }}>
-                    <View style={{ flex: 1, flexDirection: 'row' }}>
-                        {/* <TouchableOpacity onPress={_handleClickPhoto} style={{ paddingHorizontal: 10, marginLeft: 15 }} >
+
+                        <TouchableOpacity style={{
+                            paddingVertical: 10, paddingHorizontal: 30, flexDirection: 'row',
+                            alignItems: 'center', backgroundColor: '#fff', borderRadius: 20
+                        }} onPress={() => {
+                            uploadQuestion()
+                        }}>
+                            <Icon name="ios-send" type="Ionicons" style={{ color: COLOR.MAIN }} />
+                            <Text style={{ color: COLOR.MAIN, fontWeight: 'bold', fontSize: 16, marginLeft: 7 }}>Gửi câu hỏi</Text>
+                        </TouchableOpacity>
+
+                        <TouchableOpacity style={{
+                            paddingVertical: 10, paddingHorizontal: 30, flexDirection: 'row',
+                            backgroundColor: COLOR.MAIN,
+                            alignItems: 'center', borderRadius: 20
+                        }} onPress={() => { 
+                            _requestSearch({ questionContent, filter })
+                        }}>
+                            <Icon type="AntDesign" name="search1" style={{ color: '#fff' }} />
+                            <Text style={{ color: '#fff', fontWeight: 'bold', fontSize: 16, marginLeft: 7 }}>Tìm kiếm</Text>
+                        </TouchableOpacity>
+
+                    {/* <View style={{ flex: 1, flexDirection: 'row' }}>
+                        <TouchableOpacity onPress={_handleClickPhoto} style={{ paddingHorizontal: 10, marginLeft: 15 }} >
                             <Icon name="image" type='Entypo' />
                         </TouchableOpacity>
                         <TouchableOpacity onPress={_handleClickCamera} style={{ paddingHorizontal: 10 }} >
                             <Icon name="camera" type='Entypo' />
-                        </TouchableOpacity> */}
+                        </TouchableOpacity>
                     </View>
                     {
                         loading ? <ActivityIndicator color="#000" style={{ paddingRight: 20 }} /> :
@@ -451,7 +477,7 @@ const QnA = (props) => {
                             <TouchableOpacity style={{ paddingRight: 20 }} onPress={uploadQuestion}>
                                 <Icon name="ios-send" type="Ionicons" style={{ color: COLOR.MAIN }} />
                             </TouchableOpacity>
-                    }
+                    } */}
                 </View>
             </SafeAreaView>
             <FilterModal
