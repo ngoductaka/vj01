@@ -8,12 +8,16 @@ import Toast from 'react-native-simple-toast';
 import { Icon, Button } from 'native-base';
 import { get, debounce } from 'lodash';
 import { RNCamera } from 'react-native-camera';
+import { CropView } from 'react-native-image-crop-tools';
+import * as ImagePicker from "react-native-image-picker"
+
+
 
 import Carousel, { Pagination } from 'react-native-snap-carousel';
 
 import { fontSize, COLOR, unitIntertitialId } from '../../handle/Constant';
-import imagePicker, { optionDefault } from '../../utils/imagePicker';
-import ImagePickerCrop from "react-native-image-crop-picker";
+// import imagePicker, { optionDefault } from '../../utils/imagePicker';
+// import ImagePickerCrop from "react-native-image-crop-picker";
 
 
 import services from '../../handle/services';
@@ -127,37 +131,33 @@ const ResultView = ({ setPath, path, resultSearch, setResultSearch, ...props }) 
 const CameraView = ({ setResultSearch, goBack, goToTextQna = () => { }, setPath }) => {
 
     const camera = useRef(null);
+    const cropViewRef = useRef(null);
     const [loading, setLoading] = useState(false)
+    const [url, setUrl] = useState('')
 
     const takePicture = async () => {
         if (camera && camera.current) {
             const options = {};
             const data = await camera.current.takePictureAsync(options);
-            ImagePickerCrop.openCropper({
-                ...optionDefault,
-                path: data.uri,
-            }).then(image => {
-                console.log('image123ee', image)
-                _handleUploadImg(image)
-            });
+            setUrl(data.uri)
         }
     };
 
     const _handleUploadImg = async (file) => {
+        console.log('file', file)
         try {
-            if (file && file.path) {
-                setPath(file.path)
+            if (file && file.uri) {
+                setPath(file.uri)
                 setLoading(true)
                 const dataUpload = new FormData();
-                dataUpload.append("file", { uri: file.path, name: get(file, 'filename', 'dnd.jpg'), type: 'multipart/form-data', });
+                dataUpload.append("file", { uri: file.uri, name: get(file, 'filename', 'dnd.jpg'), type: 'multipart/form-data', });
 
                 const data = await services.uploadFile('http://45.117.82.169:5411/api/vj/extracteq', dataUpload);
 
                 const result = get(data, 'data.result.lines', '');
                 if (result && result[0]) {
                     const resultLine = result.reduce((car, cur) => `${car} \n ${cur}`);
-                    console.log({ resultLine })
-                    handleSearch({ questionContent: resultLine })
+                    handleSearch({ questionContent: resultLine, imgData: { uri: file.uri, name: get(file, 'filename', 'dnd.jpg') } })
                 } else {
                     Alert.alert(
                         "Không có dữ liệu",
@@ -191,16 +191,30 @@ const CameraView = ({ setResultSearch, goBack, goToTextQna = () => { }, setPath 
             );
         }
     }
+    const _saveHis = async ({ imgData, response }) => {
+        try {
+            return 1;
+            const dataUpload = new FormData();
+            dataUpload.append("file", { ...imgData, type: 'multipart/form-data', });
+            dataUpload.append("response", response);
 
-    const handleSearch = ({ questionContent }) => {
+            const data = await services.uploadFile('http://45.117.82.169:5411/api/vj/extracteq', dataUpload);
+
+        } catch (err) {
+
+        }
+    }
+    const handleSearch = ({ questionContent, imgData }) => {
         setLoading(true)
         api.post('http://45.117.82.169:9998/search_raw', {
             text: questionContent
             // text: "Đề bài: Tìm điều kiện của n để A  chia hết B A= $14x^{8}y^{n}$ B= $-7x^{7}y^{4}$"
         })
             .then(({ response }) => {
-                // console.log('response123', response)
+                // console.log('dnd123123', response, questionContent);
                 setResultSearch(response);
+                _saveHis({ imgData, response })
+
             })
             .catch(err => {
                 console.log(err)
@@ -217,15 +231,33 @@ const CameraView = ({ setResultSearch, goBack, goToTextQna = () => { }, setPath 
             })
     };
     const _handleSelectPhoto = () => {
-        imagePicker.launchLibrary({}, {
-            onChooseImage: (response) => {
-                _handleUploadImg(response)
+        // imagePicker.launchLibrary({}, {
+        //     onChooseImage: (response) => {
+        //         _handleUploadImg(response)
+        //     }
+        // });
+
+        ImagePicker.launchImageLibrary({ noData: true }, response => {
+            const uriData = get(response, 'assets[0].uri', null);
+            if (uriData) {
+                setUrl(response.assets[0].uri);
+            } else {
+                Alert.alert(
+                    "Có lỗi!",
+                    "Ảnh không ghi nhận dữ liệu ảnh",
+                    [
+                        { text: "OK", onPress: () => console.log("OK Pressed") }
+                    ]
+                );
+
             }
         });
     };
+
+
     return (
         <View style={[styles.container, { backgroundColor: '#fff' }]}>
-            <RNCamera
+            {!url ? <RNCamera
                 ref={camera}
                 style={styles.preview}
                 type={RNCamera.Constants.Type.back}
@@ -242,7 +274,21 @@ const CameraView = ({ setResultSearch, goBack, goToTextQna = () => { }, setPath 
                     buttonPositive: 'Ok',
                     buttonNegative: 'Cancel',
                 }}
-            />
+            /> :
+                <CropView
+                    // sourceUrl={'https://img.vn/uploads/version/img24-png-20190726133727cbvncjKzsQ.png'}
+                    sourceUrl={url}
+                    style={{
+                        flex: 1,
+                    }}
+                    ref={cropViewRef}
+                    onImageCrop={(file) => {
+                        console.log('onImageCrop', file)
+                        _handleUploadImg(file)
+                    }}
+                    //   keepAspectRatio
+                    aspectRatio={{ width: 16, height: 9 }}
+                />}
             {loading ? <View style={{
                 justifyContent: 'center', alignItems: 'center',
                 position: 'absolute',
@@ -257,7 +303,7 @@ const CameraView = ({ setResultSearch, goBack, goToTextQna = () => { }, setPath 
                 <Text>Đang xử lý dữ liệu ảnh</Text>
                 <Text>Vui lòng chờ trong giây lát</Text>
             </View> :
-                <View style={styles[`${'NORMAL'}_wrapper`]}>
+                (!url ? <View style={styles[`${'NORMAL'}_wrapper`]}>
                     <TouchableOpacity onPress={_handleSelectPhoto}
                         style={styles[`${'NORMAL'}_btnPhoto`]}
                     >
@@ -270,7 +316,32 @@ const CameraView = ({ setResultSearch, goBack, goToTextQna = () => { }, setPath 
                         <Icon type="MaterialCommunityIcons" name="pen-plus" style={{ color: COLOR.MAIN }} />
                         <Text style={{ color: COLOR.MAIN, marginTop: 2 }}>Đặt câu hỏi</Text>
                     </TouchableOpacity>
-                </View>
+                </View> : <View style={styles[`${'NORMAL'}_wrapper`]}>
+
+                        <TouchableOpacity onPress={() => setUrl('')} style={styles[`${'NORMAL'}_btnText`]}>
+                            <Icon type="MaterialCommunityIcons" name="close" style={{ color: COLOR.MAIN }} />
+                            <Text style={{ color: COLOR.MAIN, marginTop: 2 }}>Chụp ảnh khác</Text>
+                        </TouchableOpacity>
+                        <TouchableOpacity onPress={() => {
+                            if (cropViewRef.current) {
+                                cropViewRef.current.saveImage(true, 100)
+                            } else {
+                                Alert.alert(
+                                    "Có lỗi!",
+                                    "Dnd lỗi không mong luôn",
+                                    [
+                                        { text: "OK", onPress: () => console.log("OK Pressed") }
+                                    ]
+                                );
+                            }
+                        }}
+                            style={styles[`${'NORMAL'}_btnPhoto`]}
+                        >
+                            <Icon type="FontAwesome" name="check" style={{ color: COLOR.MAIN }} />
+                            <Text style={{ color: COLOR.MAIN, marginTop: 2 }}>Chọn ảnh</Text>
+                        </TouchableOpacity>
+
+                    </View>)
             }
             <TouchableOpacity onPress={goBack} style={styles[`${'NORMAL'}_btn_close`]}>
                 <Icon type="AntDesign" name="closecircleo" style={{ color: COLOR.MAIN }} />

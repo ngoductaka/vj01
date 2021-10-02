@@ -218,6 +218,7 @@ const RenderQnAForImg = ({ title, onPress, viewCount, index, book, grade, answer
 				<View style={{ flex: 1 }}>
 					<Text style={{ fontSize: 22, color: '#5396CD', fontWeight: 'bold' }}>Câu hỏi :</Text>
 					<MathJax html={title || ''} />
+					{/* <MathJax html={'<p> <b>1. Định nghĩa: </b> Căn bậc ba của một số a, kí hiệu là <img src="https://vietjack.com/toan-lop-9/images/can-bac-ba.PNG" style="margin: 0 10px"> là số x sao cho $x^3 = a.$ </p>'} /> */}
 					<View style={{ flexDirection: 'row', justifyContent: 'flex-end' }}>
 						<Text style={{ fontSize: 12, color: '#777', textAlign: 'right', marginTop: 7 }}>{book} • {grade}</Text>
 					</View>
