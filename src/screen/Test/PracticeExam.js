@@ -46,6 +46,7 @@ const useGlobal = globalHook(React, initialState, actions);
 import firebase from 'react-native-firebase';
 import { setLearningTimes } from '../../redux/action/user_info';
 import { fbFull } from '../../utils/facebookAds';
+import MathJax from '../../utils/custom_web_view';
 const AdRequest = firebase.admob.AdRequest;
 let advert;
 let request;
@@ -569,7 +570,9 @@ const RenderData_ = ({ typeRender = "", indexItem = '', content, answer_content 
                                         )
                                     } else if (type === 'table') {
                                         return <RenderTable key={indexRow + indexItem + 'table' + index} style={{ height: 400, width: width }} content={content} />
-                                    }
+                                    } else if (type === 'mathml') {
+                                        return <MathJax html={content} />
+                                      }
                                 })
                             }
 

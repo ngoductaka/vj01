@@ -36,6 +36,7 @@ import BarLoading from './component/BarLoading';
 import SoundPlayer from './component/SoundPlayer';
 import { user_services } from '../../redux/services';
 import FadingQuestionNumber from './component/FadingQuestionNumber';
+import MathJax from '../../utils/custom_web_view';
 const initialState = {};
 
 const actions = {
@@ -740,7 +741,9 @@ const RenderData_ = ({ typeRender = "", indexItem = '', content, answer_content 
                                         )
                                     } else if (type === 'table') {
                                         return <RenderTable key={indexRow + indexItem + 'table' + index} style={{ height: 400, width: width }} content={content} />
-                                    }
+                                    } else if (type === 'mathml') {
+                                        return <MathJax html={content} />
+                                      }
                                 })
                             }
 

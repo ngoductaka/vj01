@@ -15,6 +15,7 @@ import resolveAssetSource from 'react-native/Libraries/Image/resolveAssetSource'
 
 import { WebView } from 'react-native-webview';
 import { get } from 'lodash';
+import MathJax from '../../../utils/custom_web_view';
 
 const getHTML = (svgContent, style) => `
 <html>
@@ -263,6 +264,8 @@ const RenderData = ({ indexItem = '', content }) => {
                                         )
                                     } else if (type === 'table') {
                                         return <RenderTable key={indexRow + indexItem + 'table' + index} style={{ height: 400, width: width }} content={content} />
+                                    } else if (type === 'mathml') {
+                                      return <MathJax html={content} />
                                     }
                                 })
                             }

@@ -78,6 +78,7 @@ const QnA = (props) => {
                 setLoading(false);
                 setFollow(data.is_follow)
                 setQuestionData(data);
+                console.log('123==============', data.content)
                 if (isScroll) {
                     try {
                         setTimeout(() => {
@@ -206,7 +207,7 @@ const QnA = (props) => {
                         ListHeaderComponent={
                             <RenderQuestion
                                 item={{
-                                    content: contentQuestion || get(questionData, 'content.parse_content'),
+                                    content: get(questionData, 'content.content'),
                                     image: get(questionData, 'content.image'),
                                     answerCount: get(questionData, 'answer', []).length,
                                 }}
@@ -435,6 +436,7 @@ const mapImg = {
 }
 
 const RenderQuestion = ({ questionId, item, index, handleClickAnswer = () => { }, setListShowImg = () => { }, setShowImg }) => {
+    console.log('item', item)
     const [like, setLike] = useState(false);
     const _handleLike = useCallback(() => {
         search_services.handleLike(questionId, { "rate": like ? -1 : 1 })
@@ -449,7 +451,9 @@ const RenderQuestion = ({ questionId, item, index, handleClickAnswer = () => { }
     return (
         <View style={[styles.itemQ]} >
             <View style={{ paddingHorizontal: 8 }}>
-                <RenderDataJson indexItem={index} content={item.content || ''} setShowImg={setShowImg} />
+
+                <MathJax html={item.content||''} />
+                {/* <RenderDataJson indexItem={index} content={item.content || ''} setShowImg={setShowImg} /> */}
             </View>
             <RenderListImg listImg={item.image} setVisible={setListShowImg} />
             <View style={{
@@ -558,7 +562,7 @@ const RenderAnwser = ({ item, index, handleComment, _gotoProfile = () => { }, se
                     isCheck={role_id == 1 || role_id == 2}
                 />
                 <View style={{ flex: 1 }}>
-                    <View style={{ padding: 10, backgroundColor: '#F1F2F6', flex: 1, borderRadius: 10 }}>
+                    <View style={{ padding: 10, backgroundColor: '#fff', flex: 1, borderRadius: 10, borderColor: '#fefefe', borderWidth: 1 }}>
                         <View style={{ flexDirection: 'row' }}>
                             <Text style={{ marginBottom: 8, ...fontMaker(fontStyles.Thin), fontSize: 17 }}>{name}</Text>
                             {(role_id == 1 || role_id == 2) ?
@@ -566,12 +570,13 @@ const RenderAnwser = ({ item, index, handleComment, _gotoProfile = () => { }, se
                                 : null}
                         </View>
                         <View>
-                            <RenderDataJson
+                            {/* <RenderDataJson
                                 indexItem={index}
                                 content={parse_content}
                                 isAnwser
                                 setShowImg={setShowImg}
-                            />
+                            /> */}
+                            <MathJax html={content} />
                             <TouchableOpacity onPress={() => { console.log('wewe'), setListShowImg(image) }}>
                                 <RenderListImg listImg={image} setVisible={setListShowImg} />
                             </TouchableOpacity>

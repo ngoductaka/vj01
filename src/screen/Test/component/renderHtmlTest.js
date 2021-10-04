@@ -32,6 +32,7 @@ const cssRules = cssRulesFromSpecs(defaultTableStylesSpecs);
 
 import Sound from '../../../component/Sound';
 import { COLOR } from '../../../handle/Constant';
+import MathJax from '../../../utils/custom_web_view';
 
 const config = {
     WebViewComponent: WebView,
@@ -410,7 +411,9 @@ export const RenderRow = ({ indexItem = '', row, indexRow, typeRender, setShowIm
                             )
                         } else if (type === 'table') {
                             return <RenderTable key={indexRow + indexItem + 'table' + index} style={{ height: 400, width: width }} content={content} />
-                        }
+                        } else if (type === 'mathml') {
+                            return <MathJax html={content} />
+                          }
                     })
                 }
 

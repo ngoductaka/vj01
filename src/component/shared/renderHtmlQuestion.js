@@ -19,6 +19,8 @@ import resolveAssetSource from 'react-native/Libraries/Image/resolveAssetSource'
 import { WebView } from 'react-native-webview';
 import { get, isEmpty } from 'lodash';
 import HTML from 'react-native-render-html';
+
+// import MathJax from 'react-native-mathjax';
 import {
   IGNORED_TAGS, alterNode, makeTableRenderer,
   cssRulesFromSpecs, defaultTableStylesSpecs,
@@ -34,6 +36,7 @@ import { fontMaker, fontStyles } from '../../utils/fonts';
 import BannerAd from './BannerAd';
 import { endpoints } from '../../constant/endpoints';
 import { handleImgSrc, handleImgTest } from '../../utils/images';
+import MathJax from '../../utils/custom_web_view';
 
 const config = {
   WebViewComponent: WebView,
@@ -201,10 +204,10 @@ export const handleImgLink = (link) => {
 
 export const handleAvatarLink = (link) => {
   try {
-      if (!link) return "https://www.xaprb.com/media/2018/08/kitten.jpg"
-      return link.includes('http') ? link : endpoints.BASE_HOI_DAP + link;
+    if (!link) return "https://www.xaprb.com/media/2018/08/kitten.jpg"
+    return link.includes('http') ? link : endpoints.BASE_HOI_DAP + link;
   } catch (err) {
-      return link;
+    return link;
   }
 };
 
@@ -361,8 +364,22 @@ export const RenderRow = ({ indexItem = '', row, indexRow, setShowImg, isAnwser 
                   ...fontMaker({ weight: fontStyles.Light }),
                 }}
               />
+            } else if (type === 'mathml') {
+              const { height: svgH = 3, width: svgW = 3 } = params;
+              if (isNaN(svgH) || isNaN(svgW)) return null;
+
+              const heightConvert = svgH * 10;
+              const widthConvert = getWidth(svgW * 10, isAnwser);
+
+              // return <MathJax html={content} />
+              return <View style={{ width: widthConvert, height: heightConvert, backgroundColor: 'red' }}>
+                <MathJax html={content} />
+                {/* <MathJax html={`<math style="font-family:'Times New Roman'" xmlns="http://www.w3.org/1998/Math/MathML" class="wrs_chemistry"><mstyle mathsize="18px"><mfrac><msub><mi mathvariant="normal">V</mi><mfenced><mi mathvariant="normal">H</mi></mfenced></msub><msub><mi mathvariant="normal">V</mi><mrow><mi>ABCD</mi><mo>.</mo><mi mathvariant="normal">A</mi><mo>'</mo><mi mathvariant="normal">B</mi><mo>'</mo><mi mathvariant="normal">C</mi><mo>'</mo><mi mathvariant="normal">D</mi><mo>'</mo></mrow></msub></mfrac></mstyle></math>`} /> */}
+              </View>
+              // return <View style={{height: 20, width: 20 , backgroundColor: 'red'}} />
             }
             else if (type === 'svg') {
+              console.log('----------------------------')
               const { height: svgH = 5, width: svgW = 20 } = params;
               if (isNaN(svgH) || isNaN(svgW)) return null;
               if (!content.includes('svg')) {

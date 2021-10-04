@@ -33,6 +33,7 @@ import Sound from '../Sound';
 import { fontMaker, fontStyles } from '../../utils/fonts';
 import BannerAd from './BannerAd';
 import { ViewWithBanner } from '../../utils/facebookAds';
+import MathJax from '../../utils/custom_web_view';
 
 const config = {
   WebViewComponent: WebView,
@@ -335,6 +336,8 @@ export const RenderRow = ({ indexItem = '', row, indexRow=0, setShowImg = () => 
                 key={indexRow + indexItem + index + 'text'}
                 indexRow={index} content={content}
               />
+            } else if (type === 'mathml') {
+              return <MathJax html={content} />
             }
             else if (type === 'svg') {
               const { height: svgH = 5, width: svgW = 20 } = params;
