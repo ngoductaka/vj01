@@ -83,6 +83,8 @@ const QnA = (props) => {
                     setLoading(false)
                     Toast.showWithGravity("Load câu hỏi lỗi!", Toast.SHORT, Toast.CENTER);
                 })
+        } else {
+            setResultSearch([])
         }
 
     }, [searchText, filter]);
@@ -176,7 +178,7 @@ const QnA = (props) => {
                                 )
                             }}
                         />
-
+                        <BottomBtn navigation={props.navigation} />
                     </View>
                 </View>
 
@@ -193,46 +195,71 @@ const QnA = (props) => {
     );
 };
 
+const BottomBtn = ({ navigation }) => {
+    return (
+        <View style={{ flexDirection: 'row', justifyContent: 'space-around', paddingVertical: 6 }}>
+            <TouchableOpacity style={{
+                paddingVertical: 10, paddingHorizontal: 30, flexDirection: 'row',
+                alignItems: 'center', backgroundColor: '#fff', borderRadius: 20
+            }} onPress={() => {
+                navigation.navigate('MakeQuestion')
+            }}>
+                <Icon name="camera" style={{ color: COLOR.MAIN }} />
+                <Text style={{ color: COLOR.MAIN, fontWeight: 'bold', fontSize: 16, marginLeft: 7 }}>Chụp ảnh</Text>
+            </TouchableOpacity>
+
+            <TouchableOpacity style={{
+                paddingVertical: 10, paddingHorizontal: 30, flexDirection: 'row',
+                backgroundColor: COLOR.MAIN,
+                alignItems: 'center', borderRadius: 20
+            }} onPress={() => { navigation.navigate('createTextQna') }}>
+                <Icon type="MaterialCommunityIcons" name="pen-plus" style={{ color: '#fff' }} />
+                <Text style={{ color: '#fff', fontWeight: 'bold', fontSize: 16, marginLeft: 7 }}>Đặt câu hỏi</Text>
+            </TouchableOpacity>
+        </View>
+    )
+}
+
 const OptionNewQna = ({ navigation }) => {
     return (
         <Animatable.View
             duration={1500}
             animation="zoomIn"
             delay={100} style={{
-                flex: 1, paddingVertical: 20,
-                width: width - 20,
+                flex: 1,
+                width: width,
+                // height: 500
             }}>
             {/* <Text style={{ fontSize: 20, color: '#000', marginVertical: 20 }}>Vui lòng nhập từ khoá để tìm kiếm</Text> */}
-            <TouchableOpacity onPress={() => navigation.navigate('MakeQuestion')} style={styles.shadow}>
-                <LinearGradient
-                    start={{ x: 0, y: 0 }}
-                    end={{ x: 1, y: 0 }}
-                    colors={['#1C4881', '#30AEFA', '#30AEFA', '#1C4881']}
-                    style={{
-                        flex: 1,
-                        borderRadius: 20, justifyContent: 'center',
-                        alignItems: 'center', paddingVertical: 30,
-                    }}
+            <TouchableOpacity onPress={() => navigation.navigate('MakeQuestion')}>
+                <View
+                    style={[{
+                        // flex: 1,
+                        borderColor: '#efefef', borderWidth: 1,
+                        borderRadius: 20,
+                        flexDirection: 'row',
+                        paddingVertical: 20,
+                        paddingHorizontal: 5,
+                        marginHorizontal: 15
+                    }, styles.shadow, {
+                        // backgroundColor: 'red'
+                    }]}
                 >
-                    <Image source={images.camera} style={{ height: 100 }} resizeMode="contain" />
-                    <Text style={{ fontSize: 22, color: '#fff', fontWeight: 'bold' }}>Chụp ảnh giải bài tập</Text>
-                </LinearGradient>
-            </TouchableOpacity>
+                    <View style={{ flex: 1, height: width / 2 - 30, width: width / 2 - 30, borderRadius: 10, overflow: 'hidden' }}>
+                        <Image source={images.crop} style={{ flex: 1, width: null, height: null, borderRadius: 10 }} resizeMode="cover" />
+                    </View>
+                    <View style={{ flex: 1, alignItems: 'center' }}>
+                        <Text style={{ fontSize: 21, color: '#222', fontWeight: 'bold', marginTop: 20, }}>Tính năng mới</Text>
+                        <Text style={{ fontSize: 16, color: '#555', fontWeight: '400', marginTop: 20, textAlign: 'center' }}>Ứng dụng AI vào chụp ảnh giải bài tập </Text>
+                        <View style={{ flexDirection: 'row', justifyContent: 'space-around', alignItems: 'center', alignSelf: 'stretch', marginTop: 20, marginHorizontal: 20, paddingVertical: 6, borderRadius: 8 }}>
+                            <Text style={{ fontSize: 16, color: '#111', fontWeight: '600', }}>Thử ngay </Text>
+                            <View style={{ height: 35, width: 35, backgroundColor: COLOR.MAIN, borderRadius: 35, justifyContent: 'center', alignItems: 'center' }}>
+                                <Icon type="AntDesign" name="right" style={{ fontSize: 20, color: '#fff' }} />
+                            </View>
+                        </View>
+                    </View>
 
-            <TouchableOpacity onPress={() => navigation.navigate('createTextQna')} style={[styles.shadow, { marginTop: 40 }]}>
-                <LinearGradient
-                    start={{ x: 0, y: 0 }}
-                    end={{ x: 1, y: 0 }}
-                    colors={['#3B8CDC', '#C9A1D9', '#C9A1D9', '#3B8CDC']}
-                    style={{
-                        flex: 1,
-                        borderRadius: 20, justifyContent: 'center',
-                        alignItems: 'center', paddingVertical: 30,
-                    }}
-                >
-                    <Image source={images.qna} style={{ height: 100 }} resizeMode="contain" />
-                    <Text style={{ fontSize: 22, color: '#fff', fontWeight: 'bold' }}>Đặt câu hỏi</Text>
-                </LinearGradient>
+                </View>
             </TouchableOpacity>
         </Animatable.View>
     )

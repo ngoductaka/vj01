@@ -372,7 +372,7 @@ export const RenderRow = ({ indexItem = '', row, indexRow, setShowImg, isAnwser 
               const widthConvert = getWidth(svgW * 10, isAnwser);
 
               // return <MathJax html={content} />
-              return <View style={{ width: widthConvert, height: heightConvert, backgroundColor: 'red' }}>
+              return <View style={{ width: widthConvert, height: heightConvert }}>
                 <MathJax html={content} />
                 {/* <MathJax html={`<math style="font-family:'Times New Roman'" xmlns="http://www.w3.org/1998/Math/MathML" class="wrs_chemistry"><mstyle mathsize="18px"><mfrac><msub><mi mathvariant="normal">V</mi><mfenced><mi mathvariant="normal">H</mi></mfenced></msub><msub><mi mathvariant="normal">V</mi><mrow><mi>ABCD</mi><mo>.</mo><mi mathvariant="normal">A</mi><mo>'</mo><mi mathvariant="normal">B</mi><mo>'</mo><mi mathvariant="normal">C</mi><mo>'</mo><mi mathvariant="normal">D</mi><mo>'</mo></mrow></msub></mfrac></mstyle></math>`} /> */}
               </View>

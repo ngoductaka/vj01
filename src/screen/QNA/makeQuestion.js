@@ -211,7 +211,7 @@ const CameraView = ({ setResultSearch, goBack, goToTextQna = () => { }, setPath 
             // text: "Đề bài: Tìm điều kiện của n để A  chia hết B A= $14x^{8}y^{n}$ B= $-7x^{7}y^{4}$"
         })
             .then(({ response }) => {
-                // console.log('dnd123123', response, questionContent);
+                // console.log('handleSearch_search_raw', {response, questionContent});
                 setResultSearch(response);
                 _saveHis({ imgData, response })
 

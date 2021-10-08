@@ -294,7 +294,6 @@ const QnA = (props) => {
                 </View>
                 <View style={{ flex: 1 }}>
                     <ScrollView
-                        // contentContainerStyle={{ flex: 1, backgroundColor: 'red' }}
                         onScroll={() => Keyboard.dismiss()}
                         scrollEventThrottle={24}
                     >

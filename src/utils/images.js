@@ -275,8 +275,8 @@ export const images = {
     calculator: require('../public/image/calculator.png'),
     dic: require('../public/image/dic.png'),
     bgSimp: require('../public/image/bg_simple.jpeg'),
-    camera: require('../public/image/camera.png'),
     qna: require('../public/image/qna.png'),
+    crop: require('../public/image/crop.png'),
 
 }
 

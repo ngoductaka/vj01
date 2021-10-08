@@ -11,7 +11,6 @@ import Toast from 'react-native-simple-toast';
 import OptionsMenu from "react-native-option-menu";
 import ImageView from "react-native-image-viewing";
 import StarRating from 'react-native-star-rating';
-import MathJax from 'react-native-mathjax';
 import {
     Placeholder,
     PlaceholderMedia,
@@ -207,7 +206,7 @@ const QnA = (props) => {
                         ListHeaderComponent={
                             <RenderQuestion
                                 item={{
-                                    content: get(questionData, 'content.content'),
+                                    content: get(questionData, 'content.parse_content'),
                                     image: get(questionData, 'content.image'),
                                     answerCount: get(questionData, 'answer', []).length,
                                 }}
@@ -452,8 +451,8 @@ const RenderQuestion = ({ questionId, item, index, handleClickAnswer = () => { }
         <View style={[styles.itemQ]} >
             <View style={{ paddingHorizontal: 8 }}>
 
-                <MathJax html={item.content||''} />
-                {/* <RenderDataJson indexItem={index} content={item.content || ''} setShowImg={setShowImg} /> */}
+                {/* <MathJax html={item.content||''} /> */}
+                <RenderDataJson indexItem={index} content={item.content || ''} setShowImg={setShowImg} />
             </View>
             <RenderListImg listImg={item.image} setVisible={setListShowImg} />
             <View style={{
@@ -570,13 +569,13 @@ const RenderAnwser = ({ item, index, handleComment, _gotoProfile = () => { }, se
                                 : null}
                         </View>
                         <View>
-                            {/* <RenderDataJson
+                            <RenderDataJson
                                 indexItem={index}
                                 content={parse_content}
                                 isAnwser
                                 setShowImg={setShowImg}
-                            /> */}
-                            <MathJax html={content} />
+                            />
+                            {/* <MathJax html={content} /> */}
                             <TouchableOpacity onPress={() => { console.log('wewe'), setListShowImg(image) }}>
                                 <RenderListImg listImg={image} setVisible={setListShowImg} />
                             </TouchableOpacity>
