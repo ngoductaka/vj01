@@ -178,7 +178,7 @@ const QnA = (props) => {
                                 )
                             }}
                         />
-                        <BottomBtn navigation={props.navigation} />
+                        {/* <BottomBtn navigation={props.navigation} /> */}
                     </View>
                 </View>
 
@@ -249,10 +249,40 @@ const OptionNewQna = ({ navigation }) => {
                         <Image source={images.crop} style={{ flex: 1, width: null, height: null, borderRadius: 10 }} resizeMode="cover" />
                     </View>
                     <View style={{ flex: 1, alignItems: 'center' }}>
-                        <Text style={{ fontSize: 21, color: '#222', fontWeight: 'bold', marginTop: 20, }}>Tính năng mới</Text>
-                        <Text style={{ fontSize: 16, color: '#555', fontWeight: '400', marginTop: 20, textAlign: 'center' }}>Ứng dụng AI vào chụp ảnh giải bài tập </Text>
+                        <Text style={{ fontSize: 21, color: '#222', fontWeight: 'bold', marginTop: 20, }}>Chụp ảnh bài tập</Text>
+                        <Text style={{ fontSize: 16, color: '#555', fontWeight: '400', marginTop: 20, textAlign: 'center' }}>Giải nhanh bài tập bằng Camera <Text style={{ fontWeight: 'bold' }}>(thử nghiệm)</Text></Text>
                         <View style={{ flexDirection: 'row', justifyContent: 'space-around', alignItems: 'center', alignSelf: 'stretch', marginTop: 20, marginHorizontal: 20, paddingVertical: 6, borderRadius: 8 }}>
                             <Text style={{ fontSize: 16, color: '#111', fontWeight: '600', }}>Thử ngay </Text>
+                            <View style={{ height: 35, width: 35, backgroundColor: COLOR.MAIN, borderRadius: 35, justifyContent: 'center', alignItems: 'center' }}>
+                                <Icon type="AntDesign" name="right" style={{ fontSize: 20, color: '#fff' }} />
+                            </View>
+                        </View>
+                    </View>
+
+                </View>
+            </TouchableOpacity>
+            <TouchableOpacity style={{ marginTop: 20 }} onPress={() => navigation.navigate('createTextQna')}>
+                <View
+                    style={[{
+                        // flex: 1,
+                        borderColor: '#efefef', borderWidth: 1,
+                        borderRadius: 20,
+                        flexDirection: 'row',
+                        paddingVertical: 20,
+                        paddingHorizontal: 5,
+                        marginHorizontal: 15
+                    }, styles.shadow, {
+                        // backgroundColor: 'red'
+                    }]}
+                >
+                    <View style={{ flex: 1, height: width / 2 - 30, width: width / 2 - 30, borderRadius: 10, overflow: 'hidden', marginRight: 9 }}>
+                        <Image source={images.qna} style={{ flex: 1, width: null, height: null, borderRadius: 10 }} resizeMode="cover" />
+                    </View>
+                    <View style={{ flex: 1, alignItems: 'center' }}>
+                        <Text style={{ fontSize: 21, color: '#222', fontWeight: 'bold', marginTop: 20, }}>Đặt câu hỏi</Text>
+                        <Text style={{ fontSize: 16, color: '#555', fontWeight: '400', marginTop: 20, textAlign: 'center' }}>Nhận đáp án chính xác từ gia sư</Text>
+                        <View style={{ flexDirection: 'row', justifyContent: 'space-around', alignItems: 'center', alignSelf: 'stretch', marginTop: 20, marginHorizontal: 20, paddingVertical: 6, borderRadius: 8 }}>
+                            <Text style={{ fontSize: 16, color: '#111', fontWeight: '600', }}>Tạo câu hỏi </Text>
                             <View style={{ height: 35, width: 35, backgroundColor: COLOR.MAIN, borderRadius: 35, justifyContent: 'center', alignItems: 'center' }}>
                                 <Icon type="AntDesign" name="right" style={{ fontSize: 20, color: '#fff' }} />
                             </View>

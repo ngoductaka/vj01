@@ -10,9 +10,7 @@ import { get, debounce } from 'lodash';
 import { RNCamera } from 'react-native-camera';
 import { CropView } from 'react-native-image-crop-tools';
 import * as ImagePicker from "react-native-image-picker"
-
-
-
+import ModalBox from 'react-native-modalbox';
 import Carousel, { Pagination } from 'react-native-snap-carousel';
 
 import { fontSize, COLOR, unitIntertitialId } from '../../handle/Constant';
@@ -24,6 +22,7 @@ import services from '../../handle/services';
 import api from '../../handle/api';
 
 import { RenderQnAForImg } from '../../component/shared/ItemDocument';
+import { images } from '../../utils/images';
 const { width, height } = Dimensions.get('window');
 
 const QnA = (props) => {
@@ -133,6 +132,7 @@ const CameraView = ({ setResultSearch, goBack, goToTextQna = () => { }, setPath 
     const camera = useRef(null);
     const cropViewRef = useRef(null);
     const [loading, setLoading] = useState(false)
+    const [showHelper, setShowHelper] = useState(false)
     const [url, setUrl] = useState('')
 
     const takePicture = async () => {
@@ -346,6 +346,37 @@ const CameraView = ({ setResultSearch, goBack, goToTextQna = () => { }, setPath 
             <TouchableOpacity onPress={goBack} style={styles[`${'NORMAL'}_btn_close`]}>
                 <Icon type="AntDesign" name="closecircleo" style={{ color: COLOR.MAIN }} />
             </TouchableOpacity>
+            <TouchableOpacity onPress={() => setShowHelper(true)} style={styles[`NORMAL_btn_help`]}>
+                <Icon type="help" name="Entypo" style={{ color: COLOR.MAIN }} />
+            </TouchableOpacity>
+            <ModalBox
+                onClosed={() => setShowHelper(false)}
+                isOpen={showHelper}
+                animationDuration={300}
+                coverScreen={true}
+                backdropPressToClose={true}
+                swipeToClose={false}
+                backdropColor='rgba(0, 0, 0, .7)'
+                style={{
+                    width: width, height: height - 200, borderTopLeftRadius: 15,
+                    borderTopRightRadius: 15, overflow: 'hidden', paddingTop: 5
+                }}
+                position='bottom'
+            >
+                <ScrollView>
+                    <View style={{ justifyContent: 'center', alignItems: 'center' }}>
+                        <Icon name={'down'} type="AntDesign" />
+                    </View>
+                    <Text style={{ textAlign: 'center', fontWeight: 'bold', fontSize: 20, marginTop: 10 }}>Tip tìm kiếm hiệu quả</Text>
+                    <View>
+                        <Text style={{ fontSize: 17, fontWeight: '400', margin: 20 }}>01. Chụp ảnh rõ nét và thẳng </Text>
+                        <Image style={{ height: width, width: width }} source={images.cut_img} 
+                        // source={{ uri: 'https://im2.ezgif.com/tmp/ezgif-2-6b257f041a56.gif' }}
+                         />
+                        <Text style={{ fontSize: 17, fontWeight: '400', margin: 20 }}>02. chỉ cắt 1 câu hỏi mà bạn muốn tìm kiếm để đạt hiệu quả cao nhất</Text>
+                    </View>
+                </ScrollView>
+            </ModalBox>
         </View>
     )
 }
@@ -413,6 +444,17 @@ const styles = StyleSheet.create({
         borderColor: COLOR.MAIN,
         position: 'absolute',
         left: 10, top: 20, height: 40, width: 40, borderRadius: 40,
+    },
+    'NORMAL_btn_help': {
+        height: 60, width: 60, borderRadius: 60,
+        // backgroundColor: '#eee',
+        justifyContent: 'center',
+        alignItems: 'center',
+        // borderWidth: 2,
+        // borderColor: COLOR.MAIN,
+        position: 'absolute',
+        right: 10, top: 20, height: 40, width: 40, borderRadius: 40,
+
     },
     // right
     'LANDSCAPE-RIGHT_btn_search': {
