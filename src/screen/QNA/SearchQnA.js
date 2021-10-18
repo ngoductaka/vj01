@@ -250,7 +250,8 @@ const OptionNewQna = ({ navigation }) => {
                     </View>
                     <View style={{ flex: 1, alignItems: 'center' }}>
                         <Text style={{ fontSize: 21, color: '#222', fontWeight: 'bold', marginTop: 20, }}>Chụp ảnh bài tập</Text>
-                        <Text style={{ fontSize: 16, color: '#555', fontWeight: '400', marginTop: 20, textAlign: 'center' }}>Giải nhanh bài tập bằng Camera <Text style={{ fontWeight: 'bold' }}>(thử nghiệm)</Text></Text>
+                        <Text style={{ fontSize: 16, color: '#555', fontWeight: '400', marginTop: 20, textAlign: 'center' }}>Giải nhanh bài tập bằng Camera </Text>
+                        <Text style={{ fontSize: 14, color: '#222', marginTop: 0, textAlign: 'center', fontWeight: 'bold' }}> (Thử nghiệm) </Text>
                         <View style={{ flexDirection: 'row', justifyContent: 'space-around', alignItems: 'center', alignSelf: 'stretch', marginTop: 20, marginHorizontal: 20, paddingVertical: 6, borderRadius: 8 }}>
                             <Text style={{ fontSize: 16, color: '#111', fontWeight: '600', }}>Thử ngay </Text>
                             <View style={{ height: 35, width: 35, backgroundColor: COLOR.MAIN, borderRadius: 35, justifyContent: 'center', alignItems: 'center' }}>

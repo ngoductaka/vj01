@@ -277,7 +277,7 @@ export const images = {
     bgSimp: require('../public/image/bg_simple.jpeg'),
     qna: require('../public/image/qna.png'),
     crop: require('../public/image/crop.png'),
-    cut_img: require('../public/image/cut_img.gif'),
+    cut_img: require('../public/image/cut_png.gif'),
 
 }
 
