@@ -955,7 +955,7 @@ const HeaderView = (props, noti = 0,
 	getNumberOfUnseenNoti = () => { },
 	avatarIdx,
 	setNoti = () => { },
-	) => {
+) => {
 	return (
 		<View style={{}}>
 			<View style={{ flex: 1, }}>
@@ -1009,33 +1009,17 @@ const openLink = async (url) => {
 	}
 }
 
-
 const BannerCourse = ({ name = "" }) => {
+
 	return (
-		<TouchableOpacity onPress={() => openLink('https://m.me/hoc.cung.vietjack')}>
+		<TouchableOpacity onPress={() => (helpers.isIOS) ? null : openLink('https://m.me/hoc.cung.vietjack')}>
 			<View
-				// colors={["#F4D6E8", '#FFE7E9', '#fefefe',]}
-				// start={{ x: 0, y: 0 }}
-				// end={{ x: 1, y: 1 }}
 				style={{
 					backgroundColor: '#E8F1EA',
-					// backgroundColor: '#FFE7E9', 
 					flexDirection: 'row',
 					alignItems: 'center', paddingHorizontal: 10, paddingRight: 0,
 					paddingVertical: 15,
-					// borderRadius: 10
 				}}>
-				{/* <ImageBackground resizeMethod="resize" source={images.bgSimp} style={{height: '100%', width: '100%', opacity: 0.1}}> */}
-				{/* <LottieView
-					autoPlay
-					loop
-					style={{
-						height: 100, width: 100, alignSelf: 'center',
-						opacity: 0.7,
-						position: 'absolute', right: 0
-					}}
-					source={require('../../public/learning-web-site.json')}
-				/> */}
 				<Image source={images.avatar2}
 					style={{
 						height: 100, width: 100, alignSelf: 'center',
@@ -1044,11 +1028,16 @@ const BannerCourse = ({ name = "" }) => {
 					}} />
 				<View style={{ paddingHorizontal: 10, flex: 1 }}>
 					<Animatable.Text duration={1000} animation="bounceInRight" delay={200} style={{ fontSize: 18, fontWeight: 'bold', ...fontMaker({ weight: fontStyles.Regular }) }}>Xin chào <Text style={{ fontWeight: 'bold', color: '#D54B3E' }}>{name}</Text></Animatable.Text>
-					<Animatable.Text duration={1500} animation="bounceInRight" delay={200} style={{ fontSize: 23, fontWeight: 'bold', ...fontMaker({ weight: fontStyles.Regular }) }}>Ưu đãi lớn bất ngờ từ vietjack</Animatable.Text>
-					<Animatable.Text duration={2500} animation="bounceInRight" delay={200} style={{ fontSize: 16, marginTop: 10, marginBottom: 8, ...fontMaker({ weight: fontStyles.Light }) }}>Tất cả khoá học chỉ với 250k </Animatable.Text>
-					<Animatable.View duration={3500} animation="bounceInRight" delay={200} style={{ backgroundColor: '#50A664', paddingHorizontal: 9, borderRadius: 5, paddingVertical: 7, alignSelf: 'baseline' }}>
-						<Text style={{ color: '#fff' }}>Đăng ký ngay! Ưu đãi có hạn</Text>
-					</Animatable.View>
+					<Animatable.Text duration={1500} animation="bounceInRight" delay={200} style={{ fontSize: 23, fontWeight: 'bold', ...fontMaker({ weight: fontStyles.Regular }) }}>{(helpers.isIOS) ? "Vietjack đồng hành cùng bạn" : "Ưu đãi lớn bất ngờ từ vietjack"}</Animatable.Text>
+					{
+						(helpers.isIOS) ? null :
+							<>
+								<Animatable.Text duration={2500} animation="bounceInRight" delay={200} style={{ fontSize: 16, marginTop: 10, marginBottom: 8, ...fontMaker({ weight: fontStyles.Light }) }}>Tất cả khoá học chỉ với 250k </Animatable.Text>
+								<Animatable.View duration={3500} animation="bounceInRight" delay={200} style={{ backgroundColor: '#50A664', paddingHorizontal: 9, borderRadius: 5, paddingVertical: 7, alignSelf: 'baseline' }}>
+									<Text style={{ color: '#fff' }}>Đăng ký ngay! Ưu đãi có hạn</Text>
+								</Animatable.View>
+							</>
+					}
 				</View>
 
 				{/* </ImageBackground> */}
