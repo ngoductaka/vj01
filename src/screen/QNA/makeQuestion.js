@@ -133,7 +133,9 @@ const CameraView = ({ setResultSearch, goBack, goToTextQna = () => { }, setPath 
     const cropViewRef = useRef(null);
     const [loading, setLoading] = useState(false)
     const [showHelper, setShowHelper] = useState(false)
+    const [showHis, setShowHis] = useState(false)
     const [url, setUrl] = useState('')
+    const [dataHis, setDataHis] = useState(false);
 
     const takePicture = async () => {
         if (camera && camera.current) {
@@ -144,7 +146,6 @@ const CameraView = ({ setResultSearch, goBack, goToTextQna = () => { }, setPath 
     };
 
     const _handleUploadImg = async (file) => {
-        console.log('file', file)
         try {
             if (file && file.uri) {
                 setPath(file.uri)
@@ -193,15 +194,12 @@ const CameraView = ({ setResultSearch, goBack, goToTextQna = () => { }, setPath 
     }
     const _saveHis = async ({ imgData, response }) => {
         try {
-            return 1;
             const dataUpload = new FormData();
-            dataUpload.append("file", { ...imgData, type: 'multipart/form-data', });
-            dataUpload.append("response", response);
-
-            const data = await services.uploadFile('http://45.117.82.169:5411/api/vj/extracteq', dataUpload);
+            dataUpload.append("file", { uri: imgData.uri, name: get(imgData, 'filename', 'dnd.jpg'), type: 'multipart/form-data' });
+            const data = await services.uploadFile('http://test.vietjack.com:8088/api/v1/media/upload-image', dataUpload);
 
         } catch (err) {
-
+            // console.log('err_saveHis', err)
         }
     }
     const handleSearch = ({ questionContent, imgData }) => {
@@ -231,12 +229,6 @@ const CameraView = ({ setResultSearch, goBack, goToTextQna = () => { }, setPath 
             })
     };
     const _handleSelectPhoto = () => {
-        // imagePicker.launchLibrary({}, {
-        //     onChooseImage: (response) => {
-        //         _handleUploadImg(response)
-        //     }
-        // });
-
         ImagePicker.launchImageLibrary({ noData: true }, response => {
             const uriData = get(response, 'assets[0].uri', null);
             if (uriData) {
@@ -253,6 +245,10 @@ const CameraView = ({ setResultSearch, goBack, goToTextQna = () => { }, setPath 
             }
         });
     };
+
+    const _handleFetchHis = () => {
+
+    }
 
 
     return (
@@ -276,14 +272,13 @@ const CameraView = ({ setResultSearch, goBack, goToTextQna = () => { }, setPath 
                 }}
             /> :
                 <CropView
-                    // sourceUrl={'https://img.vn/uploads/version/img24-png-20190726133727cbvncjKzsQ.png'}
                     sourceUrl={url}
                     style={{
                         flex: 1,
                     }}
                     ref={cropViewRef}
                     onImageCrop={(file) => {
-                        console.log('onImageCrop', file)
+                        // console.log('onImageCrop', file)
                         _handleUploadImg(file)
                     }}
                     //   keepAspectRatio
@@ -349,6 +344,9 @@ const CameraView = ({ setResultSearch, goBack, goToTextQna = () => { }, setPath 
             <TouchableOpacity onPress={() => setShowHelper(true)} style={styles[`NORMAL_btn_help`]}>
                 <Icon type="help" name="Entypo" style={{ color: COLOR.MAIN }} />
             </TouchableOpacity>
+            <TouchableOpacity onPress={() => {setShowHis(true)}} style={styles[`NORMAL_btn_his`]}>
+                <Icon type="FontAwesome" name="history" style={{ color: COLOR.MAIN }} />
+            </TouchableOpacity>
             <ModalBox
                 onClosed={() => setShowHelper(false)}
                 isOpen={showHelper}
@@ -370,10 +368,33 @@ const CameraView = ({ setResultSearch, goBack, goToTextQna = () => { }, setPath 
                     <Text style={{ textAlign: 'center', fontWeight: 'bold', fontSize: 20, marginTop: 10 }}>Tip tìm kiếm hiệu quả</Text>
                     <View>
                         <Text style={{ fontSize: 17, fontWeight: '400', margin: 20 }}>01. Chụp ảnh rõ nét và thẳng </Text>
-                        <Image style={{ height: width, width: width }} source={images.cut_img} 
+                        <Image style={{ height: width, width: width }} source={images.cut_img}
                         // source={{ uri: 'https://im2.ezgif.com/tmp/ezgif-2-6b257f041a56.gif' }}
-                         />
+                        />
                         <Text style={{ fontSize: 17, fontWeight: '400', margin: 20 }}>02. chỉ cắt 1 câu hỏi mà bạn muốn tìm kiếm để đạt hiệu quả cao nhất</Text>
+                    </View>
+                </ScrollView>
+            </ModalBox>
+            <ModalBox
+                onClosed={() => setShowHis(false)}
+                isOpen={showHis}
+                animationDuration={300}
+                coverScreen={true}
+                backdropPressToClose={true}
+                swipeToClose={false}
+                backdropColor='rgba(0, 0, 0, .7)'
+                style={{
+                    width: width, height: height - 100, borderTopLeftRadius: 15,
+                    borderTopRightRadius: 15, overflow: 'hidden', paddingTop: 5
+                }}
+                position='bottom'
+            >
+                <ScrollView>
+                    <View style={{ justifyContent: 'center', alignItems: 'center' }}>
+                        <Icon name={'down'} type="AntDesign" />
+                    </View>
+                    <Text style={{ textAlign: 'center', fontWeight: 'bold', fontSize: 20, marginTop: 10 }}>Lịch sử tìm kiếm</Text>
+                    <View>
                     </View>
                 </ScrollView>
             </ModalBox>
@@ -454,6 +475,14 @@ const styles = StyleSheet.create({
         // borderColor: COLOR.MAIN,
         position: 'absolute',
         right: 10, top: 20, height: 40, width: 40, borderRadius: 40,
+
+    },
+    'NORMAL_btn_his': {
+        height: 60, width: 60, borderRadius: 60,
+        justifyContent: 'center',
+        alignItems: 'center',
+        position: 'absolute',
+        right: 60, top: 20, height: 40, width: 40, borderRadius: 40,
 
     },
     // right

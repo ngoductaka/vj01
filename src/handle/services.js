@@ -6,7 +6,6 @@ const headers = {
 }
 
 const uploadImage = (data) => {
-    
     return api.post(endpoints.MEDIA_URL+'api/question/upload', data, headers)
 };
 
