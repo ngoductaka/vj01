@@ -14,7 +14,7 @@ import { Snackbar } from 'react-native-paper';
 import firebase from 'react-native-firebase';
 import moment from 'moment';
 import ModalBox from 'react-native-modalbox';
-
+import LottieView from 'lottie-react-native';
 import { withNavigationFocus } from 'react-navigation';
 
 import MenuItem, { NUMBER_COLUMS } from '../../component/menuItem';
@@ -443,7 +443,8 @@ const Class = memo((props) => {
 
 
 					}
-
+					{delayShow2 ? null :
+						<Qna navigation={props.navigation} />}
 					{delayShow2 ? null :
 						<LiveStream grade={props.userInfo.class} />}
 
@@ -922,11 +923,6 @@ const RecommendCoure = ({ dataRecommend, navigate, dataContinue, setVisible }) =
 			}
 			{
 				!isEmpty(dataRecommend.exam) ?
-					// <View>
-					// 	<Text
-					// 		style={{ fontSize: 18, marginTop: 15, marginBottom: 5, ...fontMaker({ weight: fontStyles.SemiBold }) }}
-					// 	>Bài kiểm tra liên quan</Text>
-					// 	{
 					get(dataRecommend, 'exam').map((item, index) => {
 						return <RenderExamRelated
 							title={get(item, 'title', '')}
@@ -942,8 +938,6 @@ const RecommendCoure = ({ dataRecommend, navigate, dataContinue, setVisible }) =
 							}}
 						/>
 					})
-					// 		}
-					// </View> 
 					: null
 			}
 
@@ -1009,8 +1003,28 @@ const openLink = async (url) => {
 	}
 }
 
-const BannerCourse = ({ name = "" }) => {
+const Qna = React.memo(({navigation}) => {
+	return (
+		<TouchableOpacity onPress={() => navigation.navigate('MakeQuestion')} style={{
+			flexDirection: 'row', alignItems: 'center',
+			backgroundColor: 'rgba(254, 225, 210)',
+		}}>
+			<View style={{ flex: 1, alignItems: 'center' }}>
+				<Text style={{ fontSize: 23, color: COLOR.MAIN, fontWeight: 'bold', marginTop: 20, }}>Chụp ảnh bài tập</Text>
+				<Text style={{ fontSize: 16, color: COLOR.MAIN, opacity: 0.8, fontWeight: '400', marginTop: 10 }}>Giải nhanh bài tập bằng Camera </Text>
+				{/* <Text style={{ fontSize: 14, color: '#222', marginTop: 0, textAlign: 'center', fontWeight: 'bold' }}> (Thử nghiệm) </Text> */}
+			</View>
+			<LottieView
+				autoPlay
+				loop
+				style={{ width: 195, height: 195, alignSelf: 'center' }}
+				source={require('../../public/68430-camera.json')}
+			/>
+		</TouchableOpacity >
+	)
+})
 
+const BannerCourse = React.memo(({ name = "" }) => {
 	return (
 		<TouchableOpacity onPress={() => (helpers.isIOS) ? null : openLink('https://m.me/hoc.cung.vietjack')}>
 			<View
@@ -1019,6 +1033,7 @@ const BannerCourse = ({ name = "" }) => {
 					flexDirection: 'row',
 					alignItems: 'center', paddingHorizontal: 10, paddingRight: 0,
 					paddingVertical: 15,
+					marginVertical: 20,
 				}}>
 				<Image source={images.avatar2}
 					style={{
@@ -1029,7 +1044,7 @@ const BannerCourse = ({ name = "" }) => {
 				<View style={{ paddingHorizontal: 10, flex: 1 }}>
 					<Animatable.Text duration={1000} animation="bounceInRight" delay={200} style={{ fontSize: 18, fontWeight: 'bold', ...fontMaker({ weight: fontStyles.Regular }) }}>Xin chào <Text style={{ fontWeight: 'bold', color: '#D54B3E' }}>{name}</Text></Animatable.Text>
 					<Animatable.Text duration={1500} animation="bounceInRight" delay={200} style={{ fontSize: 23, fontWeight: 'bold', ...fontMaker({ weight: fontStyles.Regular }) }}>{(helpers.isIOS) ? "Vietjack đồng hành cùng bạn" : "Ưu đãi lớn bất ngờ từ vietjack"}</Animatable.Text>
-					{
+					{/* {
 						(helpers.isIOS) ? null :
 							<>
 								<Animatable.Text duration={2500} animation="bounceInRight" delay={200} style={{ fontSize: 16, marginTop: 10, marginBottom: 8, ...fontMaker({ weight: fontStyles.Light }) }}>Tất cả khoá học chỉ với 250k </Animatable.Text>
@@ -1037,11 +1052,11 @@ const BannerCourse = ({ name = "" }) => {
 									<Text style={{ color: '#fff' }}>Đăng ký ngay! Ưu đãi có hạn</Text>
 								</Animatable.View>
 							</>
-					}
+					} */}
 				</View>
 
 				{/* </ImageBackground> */}
 			</View>
 		</TouchableOpacity>
 	)
-}
+})

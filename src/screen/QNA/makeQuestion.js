@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import {
     View, FlatList, Text, StyleSheet, Platform, Alert,
+
     TouchableOpacity, Dimensions, Image, ScrollView, NativeEventEmitter,
     SafeAreaView, TextInput, Keyboard, ActivityIndicator, useWindowDimensions,
 } from 'react-native';
@@ -12,26 +13,54 @@ import { CropView } from 'react-native-image-crop-tools';
 import * as ImagePicker from "react-native-image-picker"
 import ModalBox from 'react-native-modalbox';
 import Carousel, { Pagination } from 'react-native-snap-carousel';
+import { connect, useDispatch } from 'react-redux';
 
 import { fontSize, COLOR, unitIntertitialId } from '../../handle/Constant';
 // import imagePicker, { optionDefault } from '../../utils/imagePicker';
 // import ImagePickerCrop from "react-native-image-crop-picker";
-
 
 import services from '../../handle/services';
 import api from '../../handle/api';
 
 import { RenderQnAForImg } from '../../component/shared/ItemDocument';
 import { images } from '../../utils/images';
+import { getItem, KEY } from '../../handle/handleStorage';
+import { endpoints } from '../../constant/endpoints';
 const { width, height } = Dimensions.get('window');
 
 const QnA = (props) => {
     const [resultSearch, setResultSearch] = useState([])
-    const [path, setPath] = useState([])
+    const [path, setPath] = useState([]);
+    const [dataHis, setDataHis] = useState([])
 
     useEffect(() => {
         Toast.showWithGravity("Chỉ chụp 1 câu hỏi", Toast.LONG, Toast.CENTER);
+        console.log('userInfo123', props.userInfo.user)
+
+        _handleFetchHis()
     }, [])
+
+
+    const _handleFetchHis = async () => {
+        const data = await getItem(KEY.saved_user);
+        api.get(`/qa-user/history/${data.id}/image-search?page=0&limit=5`)
+            .then(({ data }) => {
+                setDataHis(data);
+                console.log('data00', data)
+            })
+    }
+
+    const _saveHis = async ({ imgData, response }) => {
+        try {
+            const dataUpload = new FormData();
+            dataUpload.append("file", { uri: imgData.uri, name: get(imgData, 'filename', 'dnd.jpg'), type: 'multipart/form-data' });
+            dataUpload.append("user_id", props.userInfo.user.id);
+            const data = await services.uploadFile(`${endpoints.hoi_dap_api}/api/v1/media/upload-image-search`, dataUpload);
+            // console.log('data234', data)
+        } catch (err) {
+            console.log('err_saveHis', err)
+        }
+    }
 
     return (
         <SafeAreaView style={{ flex: 1, position: 'relative', backgroundColor: '#fff' }}>
@@ -41,6 +70,8 @@ const QnA = (props) => {
                     setResultSearch={setResultSearch}
                     goBack={() => props.navigation.goBack()}
                     setPath={setPath}
+                    dataHis={dataHis}
+                    _saveHis={_saveHis}
                     goToTextQna={() => props.navigation.navigate('createTextQna')}
                 />}
         </SafeAreaView>
@@ -127,7 +158,10 @@ const ResultView = ({ setPath, path, resultSearch, setResultSearch, ...props }) 
     )
 }
 
-const CameraView = ({ setResultSearch, goBack, goToTextQna = () => { }, setPath }) => {
+const CameraView = ({
+    setResultSearch, goBack, _saveHis = () => { }, dataHis = [],
+    goToTextQna = () => { }, setPath
+}) => {
 
     const camera = useRef(null);
     const cropViewRef = useRef(null);
@@ -135,7 +169,6 @@ const CameraView = ({ setResultSearch, goBack, goToTextQna = () => { }, setPath 
     const [showHelper, setShowHelper] = useState(false)
     const [showHis, setShowHis] = useState(false)
     const [url, setUrl] = useState('')
-    const [dataHis, setDataHis] = useState(false);
 
     const takePicture = async () => {
         if (camera && camera.current) {
@@ -192,16 +225,6 @@ const CameraView = ({ setResultSearch, goBack, goToTextQna = () => { }, setPath 
             );
         }
     }
-    const _saveHis = async ({ imgData, response }) => {
-        try {
-            const dataUpload = new FormData();
-            dataUpload.append("file", { uri: imgData.uri, name: get(imgData, 'filename', 'dnd.jpg'), type: 'multipart/form-data' });
-            const data = await services.uploadFile('http://test.vietjack.com:8088/api/v1/media/upload-image', dataUpload);
-
-        } catch (err) {
-            // console.log('err_saveHis', err)
-        }
-    }
     const handleSearch = ({ questionContent, imgData }) => {
         setLoading(true)
         api.post('http://45.117.82.169:9998/search_raw', {
@@ -245,10 +268,6 @@ const CameraView = ({ setResultSearch, goBack, goToTextQna = () => { }, setPath 
             }
         });
     };
-
-    const _handleFetchHis = () => {
-
-    }
 
 
     return (
@@ -344,7 +363,7 @@ const CameraView = ({ setResultSearch, goBack, goToTextQna = () => { }, setPath 
             <TouchableOpacity onPress={() => setShowHelper(true)} style={styles[`NORMAL_btn_help`]}>
                 <Icon type="help" name="Entypo" style={{ color: COLOR.MAIN }} />
             </TouchableOpacity>
-            <TouchableOpacity onPress={() => {setShowHis(true)}} style={styles[`NORMAL_btn_his`]}>
+            <TouchableOpacity onPress={() => { setShowHis(true) }} style={styles[`NORMAL_btn_his`]}>
                 <Icon type="FontAwesome" name="history" style={{ color: COLOR.MAIN }} />
             </TouchableOpacity>
             <ModalBox
@@ -356,7 +375,7 @@ const CameraView = ({ setResultSearch, goBack, goToTextQna = () => { }, setPath 
                 swipeToClose={false}
                 backdropColor='rgba(0, 0, 0, .7)'
                 style={{
-                    width: width, height: height - 200, borderTopLeftRadius: 15,
+                    width: width, height: height - 100, borderTopLeftRadius: 15,
                     borderTopRightRadius: 15, overflow: 'hidden', paddingTop: 5
                 }}
                 position='bottom'
@@ -395,6 +414,21 @@ const CameraView = ({ setResultSearch, goBack, goToTextQna = () => { }, setPath 
                     </View>
                     <Text style={{ textAlign: 'center', fontWeight: 'bold', fontSize: 20, marginTop: 10 }}>Lịch sử tìm kiếm</Text>
                     <View>
+                        <FlatList
+                            data={dataHis}
+                            renderItem={({ item, index }) => {
+                                return (
+                                    <TouchableOpacity onPress={() => }>
+                                        <Text style={{marginLeft: 10, fontSize: 18, marginTop: 16}}>{index+1}.</Text>
+                                        <View style={{ height: 100, marginTop: 5, marginHorizontal: 5 }}>
+                                            <Image style={{ height: null, width: null, flex: 1 }} source={{ uri: item.url }} />
+                                        </View>
+                                    </TouchableOpacity>
+                                )
+                            }}
+                            keyExtractor={(item) => item.path}
+                            extraData={dataHis}
+                        />
                     </View>
                 </ScrollView>
             </ModalBox>
@@ -577,4 +611,9 @@ const styles = StyleSheet.create({
 
 
 
-export default QnA;
+export default connect(
+    (state) => ({
+        userInfo: state.userInfo,
+    }),
+    () => { }
+)(QnA);
