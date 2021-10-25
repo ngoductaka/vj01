@@ -234,8 +234,9 @@ const CameraView = ({
             .then(({ response }) => {
                 // console.log('handleSearch_search_raw', {response, questionContent});
                 setResultSearch(response);
-                _saveHis({ imgData, response })
-
+                if (imgData) {
+                    _saveHis({ imgData, response })
+                }
             })
             .catch(err => {
                 console.log(err)
@@ -268,6 +269,15 @@ const CameraView = ({
             }
         });
     };
+
+
+    const _handleSearchImgLink = (link) => {
+
+        setLoading(true)
+        setShowHis(false);
+        // const textSearch = ''
+        // handleSearch(textSearch, null)
+    }
 
 
     return (
@@ -381,9 +391,9 @@ const CameraView = ({
                 position='bottom'
             >
                 <ScrollView>
-                    <View style={{ justifyContent: 'center', alignItems: 'center' }}>
+                    <TouchableOpacity onPress={() => setShowHelper(false)} style={{ justifyContent: 'center', alignItems: 'center' }}>
                         <Icon name={'down'} type="AntDesign" />
-                    </View>
+                    </TouchableOpacity>
                     <Text style={{ textAlign: 'center', fontWeight: 'bold', fontSize: 20, marginTop: 10 }}>Tip tìm kiếm hiệu quả</Text>
                     <View>
                         <Text style={{ fontSize: 17, fontWeight: '400', margin: 20 }}>01. Chụp ảnh rõ nét và thẳng </Text>
@@ -409,17 +419,17 @@ const CameraView = ({
                 position='bottom'
             >
                 <ScrollView>
-                    <View style={{ justifyContent: 'center', alignItems: 'center' }}>
+                    <TouchableOpacity onPress={() => setShowHis(false)} style={{ justifyContent: 'center', alignItems: 'center' }}>
                         <Icon name={'down'} type="AntDesign" />
-                    </View>
+                    </TouchableOpacity>
                     <Text style={{ textAlign: 'center', fontWeight: 'bold', fontSize: 20, marginTop: 10 }}>Lịch sử tìm kiếm</Text>
                     <View>
                         <FlatList
                             data={dataHis}
                             renderItem={({ item, index }) => {
                                 return (
-                                    <TouchableOpacity onPress={() => }>
-                                        <Text style={{marginLeft: 10, fontSize: 18, marginTop: 16}}>{index+1}.</Text>
+                                    <TouchableOpacity onPress={() => { _handleSearchImgLink(item.url) }}>
+                                        <Text style={{ marginLeft: 10, fontSize: 18, marginTop: 16 }}>{index + 1}.</Text>
                                         <View style={{ height: 100, marginTop: 5, marginHorizontal: 5 }}>
                                             <Image style={{ height: null, width: null, flex: 1 }} source={{ uri: item.url }} />
                                         </View>
