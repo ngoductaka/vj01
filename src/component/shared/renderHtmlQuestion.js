@@ -379,7 +379,6 @@ export const RenderRow = ({ indexItem = '', row, indexRow, setShowImg, isAnwser 
               // return <View style={{height: 20, width: 20 , backgroundColor: 'red'}} />
             }
             else if (type === 'svg') {
-              console.log('----------------------------')
               const { height: svgH = 5, width: svgW = 20 } = params;
               if (isNaN(svgH) || isNaN(svgW)) return null;
               if (!content.includes('svg')) {

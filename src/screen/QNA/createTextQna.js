@@ -226,7 +226,7 @@ const QnA = (props) => {
             }
 
         } catch (err) {
-            setLoading(false)
+            setLoading(false);
         }
 
     }
@@ -239,10 +239,7 @@ const QnA = (props) => {
             if (!data.status) {
                 Alert.alert(
                     "Quá số lượng câu hỏi",
-                    "Bạn chỉ được đặt 3 câu hỏi 1 ngày", [
-                    { text: "OK", onPress: () => props.navigation.goBack() }
-                ]
-
+                    "Bạn có thử chức năng chụp ảnh giải bài tập", [{ text: "OK", onPress: () => props.navigation.goBack() }]
                 );
                 return 0;
             }
@@ -251,9 +248,9 @@ const QnA = (props) => {
             }
             setLoading(false)
         } catch (err) {
-            console.log('<err upload question>', err)
-
             setLoading(false)
+            console.log('<err upload question>', err)
+            Toast.showWithGravity("Đặt câu hỏi thất bại, vui lòng thử lại sau", Toast.SHORT, Toast.CENTER);
         }
 
     }
@@ -441,26 +438,26 @@ const QnA = (props) => {
                     // backgroundColor: 'red'
                 }}>
 
-                        <TouchableOpacity style={{
-                            paddingVertical: 10, paddingHorizontal: 30, flexDirection: 'row',
-                            alignItems: 'center', backgroundColor: '#fff', borderRadius: 20
-                        }} onPress={() => {
-                            uploadQuestion()
-                        }}>
-                            <Icon name="ios-send" type="Ionicons" style={{ color: COLOR.MAIN }} />
-                            <Text style={{ color: COLOR.MAIN, fontWeight: 'bold', fontSize: 16, marginLeft: 7 }}>Gửi câu hỏi</Text>
-                        </TouchableOpacity>
+                    <TouchableOpacity disabled={loading} style={{
+                        paddingVertical: 10, paddingHorizontal: 30, flexDirection: 'row',
+                        alignItems: 'center', backgroundColor: '#fff', borderRadius: 20
+                    }} onPress={() => {
+                        uploadQuestion()
+                    }}>
+                        {loading ? <ActivityIndicator color="#000" style={{ paddingRight: 20 }} /> : <Icon name="ios-send" type="Ionicons" style={{ color: COLOR.MAIN }} />}
+                        <Text style={{ color: COLOR.MAIN, fontWeight: 'bold', fontSize: 16, marginLeft: 7 }}>Gửi câu hỏi</Text>
+                    </TouchableOpacity>
 
-                        <TouchableOpacity style={{
-                            paddingVertical: 10, paddingHorizontal: 30, flexDirection: 'row',
-                            backgroundColor: COLOR.MAIN,
-                            alignItems: 'center', borderRadius: 20
-                        }} onPress={() => { 
-                            _requestSearch({ questionContent, filter })
-                        }}>
-                            <Icon type="AntDesign" name="search1" style={{ color: '#fff' }} />
-                            <Text style={{ color: '#fff', fontWeight: 'bold', fontSize: 16, marginLeft: 7 }}>Tìm kiếm</Text>
-                        </TouchableOpacity>
+                    <TouchableOpacity disabled={loading} style={{
+                        paddingVertical: 10, paddingHorizontal: 30, flexDirection: 'row',
+                        backgroundColor: COLOR.MAIN,
+                        alignItems: 'center', borderRadius: 20
+                    }} onPress={() => {
+                        _requestSearch({ questionContent, filter })
+                    }}>
+                        {loading ? <ActivityIndicator color="#000" style={{ paddingRight: 20 }} /> : <Icon type="AntDesign" name="search1" style={{ color: '#fff' }} />}
+                        <Text style={{ color: '#fff', fontWeight: 'bold', fontSize: 16, marginLeft: 7 }}>Tìm kiếm</Text>
+                    </TouchableOpacity>
 
                     {/* <View style={{ flex: 1, flexDirection: 'row' }}>
                         <TouchableOpacity onPress={_handleClickPhoto} style={{ paddingHorizontal: 10, marginLeft: 15 }} >
