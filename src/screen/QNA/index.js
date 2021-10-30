@@ -13,6 +13,7 @@ import { get, debounce } from 'lodash';
 import OptionsMenu from "react-native-option-menu";
 import ImageView from "react-native-image-viewing";
 import firebase from 'react-native-firebase';
+import LottieView from 'lottie-react-native';
 
 import { getDiffTime } from '../../utils/helpers';
 import { fontSize, COLOR, unitIntertitialId1 } from '../../handle/Constant';
@@ -229,7 +230,7 @@ const QnA = (props) => {
                         position: 'absolute',
                         bottom: 20,
                         right: 10,
-                        opacity: 0.7
+                        opacity: 0.9
                     }}>
                     <TouchableOpacity
                         onPress={() => props.navigation.navigate('MakeQuestion', { advert })}
@@ -242,7 +243,7 @@ const QnA = (props) => {
                             justifyContent: 'center', alignItems: 'center',
                             opacity: 0.9
                         }}>
-                        <Icon name="plus" type="AntDesign" style={{ color: '#fff' }} />
+                        <Icon name="camera" type="AntDesign" style={{ color: '#fff' }} />
                     </TouchableOpacity>
                 </Animatable.View>
 
@@ -427,6 +428,7 @@ const RenderHead = ({ filter, setFilter, setShowFilter, navigation, loading, ava
                     </TouchableOpacity>
                 </View>
             </View>
+            <Qna navigation={navigation} />
             <View>
                 {/* <View>
                     <ScrollView
@@ -702,3 +704,27 @@ const RenderQestion = ({ item, index, hanldleClick, _handleNavigate = () => { },
     )
 }
 
+const Qna = React.memo(({ navigation = null }) => {
+    return (
+        <TouchableOpacity onPress={() => {
+            if (navigation) {
+                navigation.navigate('MakeQuestion')
+            }
+        }} style={{
+            flexDirection: 'row', alignItems: 'center',
+            backgroundColor: 'rgba(254, 225, 210)',
+        }}>
+            <View style={{ flex: 1, alignItems: 'center' }}>
+                <Text style={{ fontSize: 23, color: COLOR.MAIN, fontWeight: 'bold', marginTop: 20, }}>Chụp ảnh bài tập</Text>
+                <Text style={{ fontSize: 16, color: COLOR.MAIN, opacity: 0.8, fontWeight: '400', marginTop: 10 }}>Giải nhanh bài tập bằng Camera </Text>
+                {/* <Text style={{ fontSize: 14, color: '#222', marginTop: 0, textAlign: 'center', fontWeight: 'bold' }}> (Thử nghiệm) </Text> */}
+            </View>
+            <LottieView
+                autoPlay
+                loop
+                style={{ width: 195, height: 195, alignSelf: 'center' }}
+                source={require('../../public/68430-camera.json')}
+            />
+        </TouchableOpacity >
+    )
+})

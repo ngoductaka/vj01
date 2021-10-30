@@ -8,6 +8,7 @@ import * as Animatable from 'react-native-animatable';
 import { connect } from 'react-redux';
 import { Icon } from 'native-base';
 import { isEmpty } from 'lodash';
+import LottieView from 'lottie-react-native';
 import {
     Placeholder,
     PlaceholderMedia,
@@ -245,8 +246,15 @@ const OptionNewQna = ({ navigation }) => {
                         // backgroundColor: 'red'
                     }]}
                 >
-                    <View style={{ flex: 1, height: width / 2 - 30, width: width / 2 - 30, borderRadius: 10, overflow: 'hidden' }}>
-                        <Image source={images.crop} style={{ flex: 1, width: null, height: null, borderRadius: 10 }} resizeMode="cover" />
+                    <View style={{ flex: 1, height: width / 2 - 30, width: width / 2 - 30, borderRadius: 10, overflow: 'hidden', justifyContent: 'center', alignItems: 'center' }}>
+                        {/* <Image source={images.crop} style={{ flex: 1, width: null, height: null, borderRadius: 10 }} resizeMode="cover" /> */}
+
+                        <LottieView
+                            autoPlay
+                            loop
+                            style={{ flex: 1, alignSelf: 'center' }}
+                            source={require('../../public/68430-camera.json')}
+                        />
                     </View>
                     <View style={{ flex: 1, alignItems: 'center' }}>
                         <Text style={{ fontSize: 21, color: '#222', fontWeight: 'bold', marginTop: 20, }}>Chụp ảnh bài tập</Text>
