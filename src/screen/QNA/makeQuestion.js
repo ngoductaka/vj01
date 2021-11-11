@@ -26,6 +26,7 @@ import { RenderQnAForImg } from '../../component/shared/ItemDocument';
 import { images } from '../../utils/images';
 import { getItem, KEY } from '../../handle/handleStorage';
 import { endpoints } from '../../constant/endpoints';
+import BannerAd from '../../component/shared/BannerAd';
 const { width, height } = Dimensions.get('window');
 
 const QnA = (props) => {
@@ -313,7 +314,7 @@ const CameraView = ({
                     //   keepAspectRatio
                     aspectRatio={{ width: 16, height: 9 }}
                 />}
-            {loading ? <View style={{
+            {loading || 1 ? <View style={{
                 justifyContent: 'center', alignItems: 'center',
                 position: 'absolute',
                 bottom: 0,
@@ -321,10 +322,14 @@ const CameraView = ({
                 borderTopEndRadius: 10,
                 width: width,
                 backgroundColor: '#fff',
-                paddingHorizontal: 30, paddingVertical: 20, paddingBottom: 40
+                paddingHorizontal: 30, paddingVertical: 20, paddingBottom: 80, paddingTop: 20
             }}>
-                <ActivityIndicator size="large" style={{ marginBottom: 20 }} />
-                <Text>Đang xử lý dữ liệu ảnh</Text>
+                <BannerAd type={0} />
+                <ActivityIndicator size="large" color={COLOR.MAIN} style={{
+                    marginBottom: 20,
+                    marginTop: 10
+                }} />
+                <Text style={{ fontSize: 20 }}>Đang xử lý dữ liệu ảnh</Text>
                 <Text>Vui lòng chờ trong giây lát</Text>
             </View> :
                 (!url ? <View style={styles[`${'NORMAL'}_wrapper`]}>
