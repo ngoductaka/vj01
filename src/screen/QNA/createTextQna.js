@@ -234,12 +234,12 @@ const QnA = (props) => {
     const _handleCreateQuestion = async (body) => {
         try {
             const data = await api.post('/question', body);
-            // console.log('da24143ta', data)
+            console.log('da24143ta', data)
             if (!data) return 0;
             if (!data.status) {
                 Alert.alert(
                     "Quá số lượng câu hỏi",
-                    "Bạn có thử chức năng chụp ảnh giải bài tập", [{ text: "OK", onPress: () => props.navigation.goBack() }]
+                    get(data, "message", "Bạn có thử chức năng chụp ảnh giải bài tập"), [{ text: "OK", onPress: () => props.navigation.goBack() }]
                 );
                 return 0;
             }

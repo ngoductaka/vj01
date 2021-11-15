@@ -167,9 +167,11 @@ const CameraView = ({
     const camera = useRef(null);
     const cropViewRef = useRef(null);
     const [loading, setLoading] = useState(false)
+    const [showBanner, setShowBanner] = useState(false)
     const [showHelper, setShowHelper] = useState(false)
     const [showHis, setShowHis] = useState(false)
     const [url, setUrl] = useState('')
+    const [response, setResponse] = useState(null)
 
     const takePicture = async () => {
         if (camera && camera.current) {
@@ -227,6 +229,7 @@ const CameraView = ({
         }
     }
     const handleSearch = ({ questionContent, imgData }) => {
+        setShowBanner(true);
         setLoading(true)
         api.post('http://45.117.82.169:9998/search_raw', {
             text: questionContent
@@ -234,12 +237,13 @@ const CameraView = ({
         })
             .then(({ response }) => {
                 // console.log('handleSearch_search_raw', {response, questionContent});
-                setResultSearch(response);
+                setResponse(response);
                 if (imgData) {
                     _saveHis({ imgData, response })
                 }
             })
             .catch(err => {
+                setShowBanner(false);
                 console.log(err)
                 Alert.alert(
                     "Có lỗi!",
@@ -280,7 +284,12 @@ const CameraView = ({
         // handleSearch(textSearch, null)
     }
 
+    const _setShowResult = () => {
+        setShowBanner(false);
+        if (response)
+            setResultSearch(response);
 
+    }
     return (
         <View style={[styles.container, { backgroundColor: '#fff' }]}>
             {!url ? <RNCamera
@@ -314,23 +323,50 @@ const CameraView = ({
                     //   keepAspectRatio
                     aspectRatio={{ width: 16, height: 9 }}
                 />}
-            {loading || 1 ? <View style={{
-                justifyContent: 'center', alignItems: 'center',
+            {showBanner ? <View style={{
+                justifyContent: 'space-between', alignItems: 'center',
                 position: 'absolute',
-                bottom: 0,
+                bottom: 0, top: 90,
                 borderTopStartRadius: 10,
                 borderTopEndRadius: 10,
                 width: width,
                 backgroundColor: '#fff',
                 paddingHorizontal: 30, paddingVertical: 20, paddingBottom: 80, paddingTop: 20
             }}>
+                <View>
+                    <Text style={{ fontSize: 21, textAlign: 'center', marginTop: 10 }}>
+                        Vietjack luôn cải thiện tính năng tìm kiếm chính xác hơn thông qua từ phí quảng cáo
+                    </Text>
+                </View>
                 <BannerAd type={0} />
-                <ActivityIndicator size="large" color={COLOR.MAIN} style={{
-                    marginBottom: 20,
-                    marginTop: 10
-                }} />
-                <Text style={{ fontSize: 20 }}>Đang xử lý dữ liệu ảnh</Text>
-                <Text>Vui lòng chờ trong giây lát</Text>
+                {loading ? <View>
+                    <ActivityIndicator size="large" color={COLOR.MAIN} style={{
+                        marginBottom: 20,
+                        marginTop: 10
+                    }} />
+                    <Text style={{ fontSize: 20 }}>Đang xử lý dữ liệu ảnh</Text>
+                    <Text>Vui lòng chờ trong giây lát</Text>
+                </View> :
+                    <View style={{ alignSelf: 'stretch' }}>
+                        <TouchableOpacity style={{
+                            paddingVertical: 10,
+                            // alignSelf: 'flex-start',
+                            // flex: 1,
+                            // paddingHorizontal: 30,
+                            //  flexDirection: 'row',
+                            backgroundColor: COLOR.MAIN,
+                            // alignItems: 'center', 
+                            borderRadius: 10
+                        }} onPress={() => {
+                            _setShowResult()
+                        }}>
+                            <Text style={{
+                                color: '#fff', textAlign: 'center',
+                                fontWeight: 'bold', fontSize: 16, marginLeft: 7
+                            }}>Xem kết quả</Text>
+                        </TouchableOpacity>
+                    </View>
+                }
             </View> :
                 (!url ? <View style={styles[`${'NORMAL'}_wrapper`]}>
                     <TouchableOpacity onPress={_handleSelectPhoto}
