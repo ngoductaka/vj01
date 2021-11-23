@@ -170,6 +170,7 @@ const CameraView = ({
     const [showBanner, setShowBanner] = useState(false)
     const [showHelper, setShowHelper] = useState(false)
     const [showHis, setShowHis] = useState(false)
+    const [showNote, setShowNote] = useState(true)
     const [url, setUrl] = useState('')
     const [response, setResponse] = useState(null)
 
@@ -417,6 +418,38 @@ const CameraView = ({
             <TouchableOpacity onPress={() => { setShowHis(true) }} style={styles[`NORMAL_btn_his`]}>
                 <Icon type="FontAwesome" name="history" style={{ color: COLOR.MAIN }} />
             </TouchableOpacity>
+
+            <ModalBox
+                onClosed={() => setShowNote(false)}
+                isOpen={showNote}
+                animationDuration={300}
+                coverScreen={true}
+                backdropPressToClose={true}
+                swipeToClose={false}
+                backdropColor='rgba(0, 0, 0, .7)'
+                style={{
+                    width: width - 20, height: width - 20, borderRadius: 15,
+                    borderTopRightRadius: 15, overflow: 'hidden', paddingTop: 5
+                }}
+                position='center'
+            >
+                <TouchableOpacity onPress={() => setShowNote(false)} style={{ justifyContent: 'flex-end', alignSelf: 'flex-end', marginRight: 20, marginTop: 10 }}>
+                    <Icon name={'close'} type="AntDesign" />
+                </TouchableOpacity>
+                <Text style={{ textAlign: 'center', fontWeight: 'bold', fontSize: 24, marginTop: 10, marginBottom: 15 }}>Tính năng thử nghiệm</Text>
+                <View>
+                    <Text style={{ fontSize: 17, fontWeight: '400', margin: 20 }}>
+                        * Kết quả tìm kiếm từ ảnh vẫn đang được hoàn thiện để đạt độ chính xác cao hơn
+                    </Text>
+                    <Text style={{ fontSize: 17, fontWeight: '400', margin: 20 }}>
+                        * Vui lòng chụp ảnh thẳng và rõ nét để có kết qủa tốt nhất
+                    </Text>
+                    <Text style={{ fontSize: 17, fontWeight: '400', margin: 20 }}>
+                        * Nếu chưa có kết quả mong muốn vui lòng đặt câu hỏi để nhận giải đáp từ gia sư
+                    </Text>
+                </View>
+            </ModalBox>
+
             <ModalBox
                 onClosed={() => setShowHelper(false)}
                 isOpen={showHelper}

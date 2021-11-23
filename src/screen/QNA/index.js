@@ -170,7 +170,7 @@ const QnA = (props) => {
     />, [filter, props.navigation, page.loading, userInfo]);
 
     const _renderItem = useCallback(({ item, index }) => {
-        return <RenderQestion {...{
+        return <RenderQuestion {...{
             item, index, hanldleClick, _handleNavigate,
             _handleReport, _handleFollow
         }} />
@@ -570,7 +570,7 @@ const TollBar = ({ navigation, current_class }) => {
 }
 
 
-const RenderQestion = ({ item, index, hanldleClick, _handleNavigate = () => { }, _handleFollow = () => { }, _handleReport = () => { } }) => {
+const RenderQuestion = ({ item, index, hanldleClick, _handleNavigate = () => { }, _handleFollow = () => { }, _handleReport = () => { } }) => {
     const {
         id = '',
         user: {
