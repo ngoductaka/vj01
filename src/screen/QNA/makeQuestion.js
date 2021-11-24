@@ -3,7 +3,7 @@ import {
     View, FlatList, Text, StyleSheet, Platform, Alert,
 
     TouchableOpacity, Dimensions, Image, ScrollView, NativeEventEmitter,
-    SafeAreaView, TextInput, Keyboard, ActivityIndicator, useWindowDimensions,
+    SafeAreaView, TextInput, Keyboard, ActivityIndicator, useWindowDimensions, Pressable,
 } from 'react-native';
 import Toast from 'react-native-simple-toast';
 import { Icon, Button } from 'native-base';
@@ -428,7 +428,7 @@ const CameraView = ({
                 swipeToClose={false}
                 backdropColor='rgba(0, 0, 0, .7)'
                 style={{
-                    width: width - 20, height: width - 20, borderRadius: 15,
+                    width: width - 30, height: width - 20, borderRadius: 15,
                     borderTopRightRadius: 15, overflow: 'hidden', paddingTop: 5
                 }}
                 position='center'
@@ -436,17 +436,20 @@ const CameraView = ({
                 <TouchableOpacity onPress={() => setShowNote(false)} style={{ justifyContent: 'flex-end', alignSelf: 'flex-end', marginRight: 20, marginTop: 10 }}>
                     <Icon name={'close'} type="AntDesign" />
                 </TouchableOpacity>
-                <Text style={{ textAlign: 'center', fontWeight: 'bold', fontSize: 24, marginTop: 10, marginBottom: 15 }}>Tính năng thử nghiệm</Text>
-                <View>
-                    <Text style={{ fontSize: 17, fontWeight: '400', margin: 20 }}>
+                <Text style={{ textAlign: 'center', fontWeight: 'bold', fontSize: 24, marginTop: 10, marginBottom: 20 }}>Tính năng thử nghiệm</Text>
+                <View style={{flex: 1}}>
+                    <Text style={{ fontSize: 17, fontWeight: '400', margin: 20, marginTop: 0 }}>
                         * Kết quả tìm kiếm từ ảnh vẫn đang được hoàn thiện để đạt độ chính xác cao hơn
                     </Text>
-                    <Text style={{ fontSize: 17, fontWeight: '400', margin: 20 }}>
+                    <Text style={{ fontSize: 17, fontWeight: '400', margin: 20, marginTop: 0 }}>
                         * Vui lòng chụp ảnh thẳng và rõ nét để có kết qủa tốt nhất
                     </Text>
-                    <Text style={{ fontSize: 17, fontWeight: '400', margin: 20 }}>
-                        * Nếu chưa có kết quả mong muốn vui lòng đặt câu hỏi để nhận giải đáp từ gia sư
+                    <Text style={{ fontSize: 17, fontWeight: '400', margin: 20, marginTop: 0 }}>
+                        * Nếu chưa có kết quả mong muốn vui lòng "Đặt câu hỏi" để nhận giải đáp từ gia sư
                     </Text>
+                </View>
+                <View style={{ alignItems: 'flex-end' }}>
+                    <Pressable style={{marginRight: 25, marginBottom: 20}} onPress={() => setShowNote(false)}><Text style={{fontSize: 18, fontWeight: '500'}}>OK</Text></Pressable>
                 </View>
             </ModalBox>
 
