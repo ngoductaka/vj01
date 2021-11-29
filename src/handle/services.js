@@ -6,7 +6,7 @@ const headers = {
 }
 
 const uploadImage = (data) => {
-    return api.post(endpoints.MEDIA_URL+'api/question/upload', data, headers)
+    return api.post(endpoints.hoi_dap_api+'/api/v1/media/upload-image', data, headers)
 };
 
 const uploadFile = (url, data) => {

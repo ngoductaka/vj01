@@ -77,7 +77,7 @@ const QnA = (props) => {
                 setLoading(false);
                 setFollow(data.is_follow)
                 setQuestionData(data);
-                console.log('123==============', data.content)
+                console.log('123==============', data)
                 if (isScroll) {
                     try {
                         setTimeout(() => {
@@ -252,7 +252,7 @@ const QnA = (props) => {
 
             <ImageView
                 images={get(listImgShow, 'data[0]', null) ?
-                    get(listImgShow, 'data', []).map(img => ({ uri: `${endpoints.MEDIA_URL}${get(img, 'path', '')}` })) : []
+                    get(listImgShow, 'data', []).map(img => ({ uri: get(img, 'path', '') })) : []
                 }
                 imageIndex={+get(listImgShow, 'index', 0)}
                 visible={!!listImgShow}
@@ -576,9 +576,12 @@ const RenderAnwser = ({ item, index, handleComment, _gotoProfile = () => { }, se
                                 setShowImg={setShowImg}
                             />
                             {/* <MathJax html={content} /> */}
-                            <TouchableOpacity onPress={() => { console.log('wewe'), setListShowImg(image) }}>
-                                <RenderListImg listImg={image} setVisible={setListShowImg} />
-                            </TouchableOpacity>
+                            {
+                                image && image[0] ?
+                                    <TouchableOpacity onPress={() => { console.log('wewe'), setListShowImg(image) }}>
+                                        <RenderListImg listImg={image} setVisible={setListShowImg} />
+                                    </TouchableOpacity> : null
+                            }
 
                             {/* <Text style={{}}>{JSON.stringify(parse_content)}</Text> */}
                         </View>
@@ -774,7 +777,7 @@ const FormComment = ({
                 if (response.path) {
                     try {
                         if (photos.length < 3)
-                            setPhotos([...photos, response.path])
+                            setPhotos([response.path])
                         else
                             Toast.showWithGravity("Bạn chỉ được gửi tối đa 3 ảnh", Toast.SHORT, Toast.CENTER);
 
@@ -786,6 +789,19 @@ const FormComment = ({
         });
     };
 
+    const _handleUseCamera = () => {
+
+        imagePicker.launchCamera(false, {
+            onChooseImage: (response) => {
+                if (response.path) {
+                    try {
+                        setPhotos([response.path])
+                    } catch (err) {
+                    }
+                }
+            }
+        })
+    }
 
 
     const _handleOpenSetting = () => {
@@ -843,19 +859,24 @@ const FormComment = ({
             setLoading(true)
             if (photos[0]) {
                 const dataUpload = new FormData();
-                photos.map(file => {
-                    let fileName = file.split('/');
-                    // console.log('filefilefilefilefile34234', file)
-                    dataUpload.append("img[]", {
-                        uri: file,
-                        name: fileName[fileName.length - 1],
-                        type: 'multipart/form-data',
-                    });
-                });
+                // let fileName = file.split('/');
+                //     // console.log('filefilefilefilefile34234', file)
+                //     dataUpload.append("img[]", {
+                //         uri: file,
+                //         name: fileName[fileName.length - 1],
+                //         type: 'multipart/form-data',
+                //     });
+                let fileName = photos[0].split('/');
+                dataUpload.append("file", {
+                    uri: photos[0],
+                    name: fileName[fileName.length - 1] || new Date().getTime() + '.jpg',
+                    type: 'multipart/form-data',
+
+                })
                 const imageUpload = await services.uploadImage(dataUpload);
-                // console.log('imageUpload============', imageUpload)
-                if (imageUpload && imageUpload.data) {
-                    const bodyComment = { content: commentText, image: imageUpload.data }
+                console.log(photos[0], 'imageUpload============', imageUpload)
+                if (imageUpload && imageUpload.url) {
+                    const bodyComment = { content: commentText, image: [imageUpload.url] }
                     // console.log('bodyComment=========', bodyComment)
                     const commentResult = await api.post(`answer/${questionId}`, bodyComment);
                     setLoading(false);
@@ -992,16 +1013,6 @@ const FormComment = ({
                 flexDirection: 'row',
                 alignItems: 'center',
             }}>
-                {commentType.type === 'answer' ? <View style={{ justifyContent: 'center', flexDirection: 'row' }}>
-                    {/* <TouchableOpacity
-                        onPress={_handleClickPhoto}
-                        style={{
-                            paddingLeft: 5,
-                            marginLeft: 5
-                        }} >
-                        <Icon name="image" type='Entypo' />
-                    </TouchableOpacity> */}
-                </View> : null}
                 <View style={{
                     flex: 1,
                     borderRadius: 15,
@@ -1011,7 +1022,8 @@ const FormComment = ({
                     marginRight: 20,
                     marginLeft: 10,
                     paddingHorizontal: 15,
-                    paddingVertical: 8
+                    paddingVertical: 8,
+                    flexDirection: 'row',
                 }}>
                     <TextInput
                         ref={inputEl}
@@ -1027,6 +1039,17 @@ const FormComment = ({
                         onChangeText={text => setCommentText(text)}
                         value={commentText}
                     />
+
+                    {commentType.type === 'answer' ? <View style={{ justifyContent: 'center', flexDirection: 'row' }}>
+                        <TouchableOpacity
+                            onPress={_handleClickPhoto}
+                            style={{
+                                paddingLeft: 5,
+                                marginLeft: 5
+                            }} >
+                            <Icon name="image" type='Entypo' />
+                        </TouchableOpacity>
+                    </View> : null}
                 </View>
                 {loading ? <ActivityIndicator color="#000" style={{ paddingRight: 20 }} /> :
                     <TouchableOpacity style={{ paddingRight: 20 }} onPress={handlePostComment}>
