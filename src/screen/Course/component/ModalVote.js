@@ -15,7 +15,7 @@ const { width } = Dimensions.get('window');
 export const ModalWrapp = (props) => {
     const {
         show = false, onClose = () => { },
-        showCancel = true, title=''
+        showCancel = true, title='', position = 'center'
     } = props;
     return (
         <ModalBox
@@ -27,7 +27,7 @@ export const ModalWrapp = (props) => {
             swipeToClose={!!showCancel}
             backdropColor='rgba(0, 0, 0, .7)'
             style={{ width: width, height: null, borderRadius: 25, overflow: 'hidden' }}
-            position='center'
+            position={position}
         >
             <View
                 style={{

@@ -18,7 +18,6 @@ import SimpleToast from 'react-native-simple-toast';
 import { user_services } from '../redux/services';
 import DropDownPicker from 'react-native-dropdown-picker';
 
-// import Picker from './Picker/simplePicker';
 
 
 const { width, height } = Dimensions.get('screen')

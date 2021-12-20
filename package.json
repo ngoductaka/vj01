@@ -12,7 +12,6 @@
     "lint": "eslint ."
   },
   "dependencies": {
-    "@gregfrench/react-native-wheel-picker": "^1.2.12",
     "@invertase/react-native-apple-authentication": "^2.1.0",
     "@react-native-community/art": "^1.2.0",
     "@react-native-community/async-storage": "^1.9.0",
