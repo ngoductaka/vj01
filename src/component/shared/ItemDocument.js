@@ -1,6 +1,6 @@
 import React from 'react';
 import {
-	View, Text, StyleSheet, TouchableOpacity, Dimensions, Image
+	View, Text, StyleSheet, TouchableOpacity, Dimensions, Image, ScrollView
 } from 'react-native';
 import MathJax from 'react-native-mathjax';
 import { Icon } from 'native-base';
@@ -210,30 +210,42 @@ const RenderQnASearch = ({ title, onPress, viewCount, index, book, grade, answer
 }
 const RenderQnAForImg = ({ title, onPress, viewCount, index, book, grade, answers_count = 0, answers = [] }) => {
 	return (
-		<TouchableOpacity
-			onPress={onPress}
-			style={[stylesComponent.textItem, { paddingLeft: 0, backgroundColor: '#fff' }]}
-		>
-			<View style={{ flexDirection: 'row', alignItems: 'center' }}>
-				<View style={{ flex: 1 }}>
-					<Text style={{ fontSize: 22, color: '#5396CD', fontWeight: 'bold' }}>Câu hỏi :</Text>
-					<MathJax html={title || ''} />
-					{/* <MathJax html={'<p> <b>1. Định nghĩa: </b> Căn bậc ba của một số a, kí hiệu là <img src="https://vietjack.com/toan-lop-9/images/can-bac-ba.PNG" style="margin: 0 10px"> là số x sao cho $x^3 = a.$ </p>'} /> */}
-					<View style={{ flexDirection: 'row', justifyContent: 'flex-end' }}>
-						<Text style={{ fontSize: 12, color: '#777', textAlign: 'right', marginTop: 7 }}>{book} • {grade}</Text>
-					</View>
-					<Text style={{ fontSize: 22, color: '#5396CD', fontWeight: 'bold' }}>Câu trả lời gần nhất :</Text>
-					{
-						answers && answers[0] ?
-							answers.map(((a, index) => {
-								return <RenderHtmlCustom content={a.content} />
-							})) : null
-					}
-					{/* </View> */}
-
-				</View>
+		// <TouchableOpacity
+		// 	onPress={onPress}
+		// 	style={[stylesComponent.textItem, { paddingLeft: 0, backgroundColor: '#fff' }]}
+		// >
+		<ScrollView style={{ flex: 1, marginTop: 10 }}>
+			<View style={{ flexDirection: 'row', justifyContent: 'space-between', marginBottom: 8 }}>
+				<Text style={{ fontSize: 22, color: '#5396CD', fontWeight: 'bold' }}>Câu hỏi :</Text>
+				<TouchableOpacity
+					onPress={onPress}
+					style={{
+						paddingHorizontal: 10, flexDirection: 'row',
+						alignItems: 'center', marginTop: 5,
+						paddingVertical: 6, marginRight: 10, borderRadius: 10,
+						backgroundColor: COLOR.MAIN
+					}}
+				>
+					<Text>Xem chi tiết</Text>
+					<Icon name="right" style={{ fontSize: 20, marginLeft: 10 }} type="AntDesign" />
+				</TouchableOpacity>
 			</View>
-		</TouchableOpacity>
+			<MathJax html={title || ''} />
+			{/* <MathJax html={'<p> <b>1. Định nghĩa: </b> Căn bậc ba của một số a, kí hiệu là <img src="https://vietjack.com/toan-lop-9/images/can-bac-ba.PNG" style="margin: 0 10px"> là số x sao cho $x^3 = a.$ </p>'} /> */}
+			<View style={{ flexDirection: 'row', justifyContent: 'flex-end' }}>
+				<Text style={{ fontSize: 12, color: '#777', textAlign: 'right', marginTop: 7 }}>{book} • {grade}</Text>
+			</View>
+			<Text style={{ fontSize: 22, color: '#5396CD', fontWeight: 'bold' }}>Câu trả lời gần nhất :</Text>
+			{
+				answers && answers[0] ?
+					answers.map(((a, index) => {
+						return <RenderHtmlCustom content={a.content} />
+					})) : null
+			}
+			{/* </View> */}
+
+		</ScrollView>
+		// </TouchableOpacity>
 	)
 }
 

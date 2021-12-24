@@ -79,7 +79,7 @@ const QnA = (props) => {
     );
 };
 
-const ResultView = ({ setPath, path, resultSearch, setResultSearch, ...props }) => {
+const ResultView = ({ setPath, path, resultSearch, setResultSearch, navigation, ...props }) => {
     const [activeSlide, setActiveSlide] = useState(0)
     const resultSearchFilter = React.useMemo(() => {
         return resultSearch.filter(i => !!get(i, 'answers[0].question_id'))
@@ -88,10 +88,16 @@ const ResultView = ({ setPath, path, resultSearch, setResultSearch, ...props }) 
     return (
         <View style={{ paddingLeft: 8, position: 'relative', flex: 1, backgroundColor: '#fff' }}>
             <View style={{ flexDirection: 'row', alignItems: 'center', marginBottom: 6 }}>
-                <TouchableOpacity onPress={() => props.navigation.goBack()}><Icon type="AntDesign" name="left" /></TouchableOpacity>
+                <TouchableOpacity onPress={() => navigation.goBack()}><Icon type="AntDesign" name="left" /></TouchableOpacity>
                 <Text style={{ fontSize: 20, fontWeight: 'bold', marginVertical: 10, marginLeft: 20 }}>Kết quả tìm kiếm: </Text>
             </View>
-            <ScrollView style={{ flex: 1 }}>
+            {/* <ScrollView
+            style={{ 
+                flex: 1, 
+                height: height,
+                backgroundColor: 'red'
+             }}
+            > */}
                 {path ? <Image source={{ uri: path }} style={{ height: 100 }} resizeMode="contain" /> : null}
                 <View style={{ flexDirection: 'row' }}>
                     {
@@ -122,7 +128,7 @@ const ResultView = ({ setPath, path, resultSearch, setResultSearch, ...props }) 
                         return (
                             <RenderQnAForImg
                                 onPress={() => {
-                                    props.navigation.navigate('QuestionDetail', { questionId })
+                                    navigation.navigate('QuestionDetail', { questionId })
                                 }}
                                 {...{ title, grade: "Lớp " + grade, book: subject_name, answers, index }}
                             />
@@ -133,7 +139,7 @@ const ResultView = ({ setPath, path, resultSearch, setResultSearch, ...props }) 
                     itemWidth={width}
                     layoutCardOffset={`18`}
                 />
-            </ScrollView>
+            {/* </ScrollView> */}
             <View style={{ flexDirection: 'row', justifyContent: 'space-around', paddingVertical: 6 }}>
                 <TouchableOpacity style={{
                     paddingVertical: 10, paddingHorizontal: 30, flexDirection: 'row',
@@ -150,7 +156,7 @@ const ResultView = ({ setPath, path, resultSearch, setResultSearch, ...props }) 
                     paddingVertical: 10, paddingHorizontal: 30, flexDirection: 'row',
                     backgroundColor: COLOR.MAIN,
                     alignItems: 'center', borderRadius: 20
-                }} onPress={() => { props.navigation.navigate('createTextQna') }}>
+                }} onPress={() => { navigation.navigate('createTextQna') }}>
                     <Icon type="MaterialCommunityIcons" name="pen-plus" style={{ color: '#fff' }} />
                     <Text style={{ color: '#fff', fontWeight: 'bold', fontSize: 16, marginLeft: 7 }}>Đặt câu hỏi</Text>
                 </TouchableOpacity>
@@ -437,7 +443,7 @@ const CameraView = ({
                     <Icon name={'close'} type="AntDesign" />
                 </TouchableOpacity>
                 <Text style={{ textAlign: 'center', fontWeight: 'bold', fontSize: 24, marginTop: 10, marginBottom: 20 }}>Tính năng thử nghiệm</Text>
-                <View style={{flex: 1}}>
+                <View style={{ flex: 1 }}>
                     <Text style={{ fontSize: 17, fontWeight: '400', margin: 20, marginTop: 0 }}>
                         * Kết quả tìm kiếm từ ảnh vẫn đang được hoàn thiện để đạt độ chính xác cao hơn
                     </Text>
@@ -449,7 +455,7 @@ const CameraView = ({
                     </Text>
                 </View>
                 <View style={{ alignItems: 'flex-end' }}>
-                    <Pressable style={{marginRight: 25, marginBottom: 20}} onPress={() => setShowNote(false)}><Text style={{fontSize: 18, fontWeight: '500'}}>OK</Text></Pressable>
+                    <Pressable style={{ marginRight: 25, marginBottom: 20 }} onPress={() => setShowNote(false)}><Text style={{ fontSize: 18, fontWeight: '500' }}>OK</Text></Pressable>
                 </View>
             </ModalBox>
 
