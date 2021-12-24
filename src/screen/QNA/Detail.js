@@ -39,6 +39,7 @@ import { RenderListImg } from '../../component/Image/renderListImg';
 // import { ViewWithBanner, fbFull } from '../../utils/facebookAds';
 import { ModalWrapp } from '../Course/component/ModalVote';
 import { BtnGradient } from '../../component/shared/Btn';
+import { connect } from 'react-redux';
 
 
 const { width, height } = Dimensions.get('window');
@@ -77,7 +78,7 @@ const QnA = (props) => {
                 setLoading(false);
                 setFollow(data.is_follow)
                 setQuestionData(data);
-                console.log('123==============', data)
+                // console.log('123==============', data)
                 if (isScroll) {
                     try {
                         setTimeout(() => {
@@ -218,7 +219,7 @@ const QnA = (props) => {
                         }
                         // render list anwer
                         renderItem={({ item, index }) => {
-                            return <RenderAnwser {...{ item, index, handleComment, _gotoProfile, setShowImg, setListShowImg }} />
+                            return <RenderAnwser {...{ item, index, handleComment, _gotoProfile, setShowImg, setListShowImg, requesQuestion }} />
                         }}
                         extraData={questionData}
                         keyExtractor={(item) => '' + item.id}
@@ -381,7 +382,14 @@ const styles = StyleSheet.create({
 })
 
 
-export default QnA;
+export default connect(
+    (state) => {
+        return {
+            user: get(state, 'userInfo.use', {})
+        }
+    },
+    () => { }
+)(QnA);
 
 const userStyle = StyleSheet.create({
     imgWapper: {
@@ -435,7 +443,7 @@ const mapImg = {
 }
 
 const RenderQuestion = ({ questionId, item, index, handleClickAnswer = () => { }, setListShowImg = () => { }, setShowImg }) => {
-    console.log('item', item)
+    // console.log('item', item)
     const [like, setLike] = useState(false);
     const _handleLike = useCallback(() => {
         search_services.handleLike(questionId, { "rate": like ? -1 : 1 })
@@ -492,167 +500,395 @@ const RenderQuestion = ({ questionId, item, index, handleClickAnswer = () => { }
     )
 }
 
-const RenderAnwser = ({ item, index, handleComment, _gotoProfile = () => { }, setShowImg = () => { }, setListShowImg = () => { } }) => {
-    const {
-        id = '',
-        user: {
-            id: useID = '',
-            avatar = '',
-            name = '',
-            role_id = ''
-        } = {},
-        content = '',
-        viewCount = null,
-        commentCount = 3,
-        likeCount = '',
-        timestamp = '2020-05-11T19:39:36.000000Z',
-        comment = [],
-        parse_content = '',
-        image = [],
-        pointAvg = 5,
-        rateCount = 0
-    } = item;
-    // console.log('item====', item)
+const RenderAnwser = connect(
+    (state) => {
+        return {
+            currUser: get(state, 'userInfo.user', {})
+        }
+    },
+    () => { })(({ currUser, item, index, handleComment, _gotoProfile = () => { }, setShowImg = () => { }, setListShowImg = () => { }, requesQuestion = () => { } }) => {
+        const {
+            id = '',
+            user: {
+                id: useID = '',
+                avatar = '',
+                name = '',
+                role_id = '',
+                email = NaN,
+            } = {},
+            content = '',
+            viewCount = null,
+            commentCount = 3,
+            likeCount = '',
+            timestamp = '2020-05-11T19:39:36.000000Z',
+            comment = [],
+            parse_content = '',
+            image = [],
+            pointAvg = 5,
+            rateCount = 0
+        } = item;
+        // console.log('currUser_234====', currUser.email, item.user)
 
-    const [vote, setVote] = useState(5);
-    const [showVote, setShowVote] = useState(false);
-    const [rate, setRate] = useState(pointAvg);
-    const [like, setLike] = useState(false);
+        const [vote, setVote] = useState(5);
+        const [showVote, setShowVote] = useState(false);
+        const [rate, setRate] = useState(pointAvg);
+        const [like, setLike] = useState(false);
+        // 
+        const [showEdit, setShowEdit] = useState(false)
 
 
-    const _handleLike = useCallback(() => {
-        search_services.handleLikeAnwser(id, { "rate": like ? -1 : 1 })
-            .then(() => {
-                setLike(!like);
-            })
-            .catch(err => {
-                console.log('err', err)
-            })
-    }, [like]);
+        const _handleLike = useCallback(() => {
+            search_services.handleLikeAnwser(id, { "rate": like ? -1 : 1 })
+                .then(() => {
+                    setLike(!like);
+                })
+                .catch(err => {
+                    console.log('err', err)
+                })
+        }, [like]);
 
-    const _handleVote = () => {
-        // answer/rate/{answerId}
-        makeRate(id, { point: vote })
-            .then((data) => {
-                const { point_floor = 5 } = data || {};
-                setRate(point_floor);
-                setTimeout(() => {
-                    Toast.showWithGravity("Cảm ơn vì đã đánh giá", Toast.LONG, Toast.CENTER)
-                }, 1000)
-            })
-            .catch(err => {
-                setTimeout(() => {
-                    Toast.showWithGravity("Gửi đánh giá thất bại vui lòng thử lại sau", Toast.LONG, Toast.CENTER)
-                }, 1000)
-            })
-            .finally(() => {
-                setShowVote(false);
-            })
-    }
+        const _handleVote = () => {
+            // answer/rate/{answerId}
+            makeRate(id, { point: vote })
+                .then((data) => {
+                    const { point_floor = 5 } = data || {};
+                    setRate(point_floor);
+                    setTimeout(() => {
+                        Toast.showWithGravity("Cảm ơn vì đã đánh giá", Toast.LONG, Toast.CENTER)
+                    }, 1000)
+                })
+                .catch(err => {
+                    setTimeout(() => {
+                        Toast.showWithGravity("Gửi đánh giá thất bại vui lòng thử lại sau", Toast.LONG, Toast.CENTER)
+                    }, 1000)
+                })
+                .finally(() => {
+                    setShowVote(false);
+                })
+        }
 
-    return (
-        <View
-            style={[styles.itemQ, {}]}
-        >
-            <View style={{ flexDirection: 'row', paddingRight: 10, marginTop: 15 }}>
-                <User style={{ marginRight: 5 }}
-                    _gotoProfile={() => _gotoProfile(useID)}
-                    uri={avatar}
-                    isCheck={role_id == 1 || role_id == 2}
-                />
-                <View style={{ flex: 1 }}>
-                    <View style={{ padding: 10, backgroundColor: '#fff', flex: 1, borderRadius: 10, borderColor: '#fefefe', borderWidth: 1 }}>
-                        <View style={{ flexDirection: 'row' }}>
-                            <Text style={{ marginBottom: 8, ...fontMaker(fontStyles.Thin), fontSize: 17 }}>{name}</Text>
-                            {(role_id == 1 || role_id == 2) ?
-                                <Icon style={{ color: COLOR.MAIN, fontSize: 15, marginLeft: 5, fontWeight: 'bolid' }} name="check-circle" type="FontAwesome" />
-                                : null}
+        return (
+            <View
+                style={[styles.itemQ, {}]}
+            >
+                <View style={{ flexDirection: 'row', paddingRight: 10, marginTop: 15 }}>
+                    <User style={{ marginRight: 5 }}
+                        _gotoProfile={() => _gotoProfile(useID)}
+                        uri={avatar}
+                        isCheck={role_id == 1 || role_id == 2}
+                    />
+                    <View style={{ flex: 1 }}>
+                        <View style={{ padding: 10, backgroundColor: '#fff', flex: 1, borderRadius: 10, borderColor: '#fefefe', borderWidth: 1 }}>
+                            <View style={{ flexDirection: 'row' }}>
+                                <Text style={{ marginBottom: 8, ...fontMaker(fontStyles.Thin), fontSize: 17 }}>{name}</Text>
+                                {(role_id == 1 || role_id == 2) ?
+                                    <Icon style={{ color: COLOR.MAIN, fontSize: 15, marginLeft: 5, fontWeight: 'bolid' }} name="check-circle" type="FontAwesome" />
+                                    : null}
+                            </View>
+                            <View>
+                                <RenderDataJson
+                                    indexItem={index}
+                                    content={parse_content}
+                                    isAnwser
+                                    setShowImg={setShowImg}
+                                />
+                                {/* <MathJax html={content} /> */}
+                                {
+                                    image && image[0] ?
+                                        <TouchableOpacity onPress={() => { console.log('wewe'), setListShowImg(image) }}>
+                                            <RenderListImg listImg={image} setVisible={setListShowImg} />
+                                        </TouchableOpacity> : null
+                                }
+
+                                {/* <Text style={{}}>{JSON.stringify(parse_content)}</Text> */}
+                            </View>
+                            {currUser.email !== email ? <TouchableOpacity
+                                onPress={() => { setShowVote(true) }}
+                                style={{
+                                    position: 'absolute', right: 0,
+                                    top: -10, padding: 5, paddingHorizontal: 10, borderRadius: 10,
+                                    backgroundColor: '#dedede', flexDirection: 'row',
+                                }}>
+                                <StarRating
+                                    disabled={true}
+                                    maxStars={5}
+                                    rating={rate}
+                                    fullStarColor={COLOR.MAIN}
+                                    starSize={fontSize.h2}
+                                />
+                                <Text style={{ marginLeft: 8, color: '#333' }}>{rate} ({rateCount})</Text>
+                            </TouchableOpacity> : <TouchableOpacity
+                                onPress={() => { setShowEdit({ id, content, image }) }}
+                                style={{
+                                    // width: 130,
+                                    position: 'absolute', right: 0,
+                                    top: 0, padding: 5, paddingHorizontal: 10, borderRadius: 10,
+                                    flexDirection: 'row',
+                                }}
+                            ><Icon style={{ fontSize: 25 }} type="AntDesign" name="edit" /></TouchableOpacity>}
                         </View>
-                        <View>
-                            <RenderDataJson
-                                indexItem={index}
-                                content={parse_content}
-                                isAnwser
-                                setShowImg={setShowImg}
-                            />
-                            {/* <MathJax html={content} /> */}
-                            {
-                                image && image[0] ?
-                                    <TouchableOpacity onPress={() => { console.log('wewe'), setListShowImg(image) }}>
-                                        <RenderListImg listImg={image} setVisible={setListShowImg} />
-                                    </TouchableOpacity> : null
-                            }
+                        <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
+                            <View style={{ flexDirection: 'row' }}>
+                                <View style={{ flexDirection: 'row', flex: 1 }}>
+                                    <Text style={{ fontSize: 16, marginLeft: 5 }}>{getDiffTime(timestamp)}</Text>
 
-                            {/* <Text style={{}}>{JSON.stringify(parse_content)}</Text> */}
-                        </View>
-                        <TouchableOpacity
-                            onPress={() => { setShowVote(true) }}
-                            style={{
-                                // width: 130,
-                                position: 'absolute', right: 0,
-                                top: -10, padding: 5, paddingHorizontal: 10, borderRadius: 10,
-                                backgroundColor: '#dedede', flexDirection: 'row',
-                            }}>
-                            <StarRating
-                                disabled={true}
-                                maxStars={5}
-                                rating={rate}
-                                fullStarColor={COLOR.MAIN}
-                                starSize={fontSize.h2}
-                            />
-                            <Text style={{ marginLeft: 8, color: '#333' }}>{rate} ({rateCount})</Text>
-                        </TouchableOpacity>
-                    </View>
-                    <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
-                        <View style={{ flexDirection: 'row' }}>
-                            <View style={{ flexDirection: 'row', flex: 1 }}>
-                                <Text style={{ fontSize: 16, marginLeft: 5 }}>{getDiffTime(timestamp)}</Text>
+                                    <TouchableOpacity style={{ flexDirection: 'row', alignItems: 'center', marginLeft: 15 }} onPress={_handleLike}>
+                                        <Icon name="heart" style={{ fontSize: 14, color: like ? '#FD7A6C' : '#ddd' }} type='AntDesign' />
+                                        <Text style={{ fontSize: 16, marginLeft: 5, color: like ? '#FD7A6C' : '#222' }}>Cảm ơn ({+likeCount + (like ? 1 : 0)})</Text>
+                                    </TouchableOpacity>
 
-                                <TouchableOpacity style={{ flexDirection: 'row', alignItems: 'center', marginLeft: 15 }} onPress={_handleLike}>
-                                    <Icon name="heart" style={{ fontSize: 14, color: like ? '#FD7A6C' : '#ddd' }} type='AntDesign' />
-                                    <Text style={{ fontSize: 16, marginLeft: 5, color: like ? '#FD7A6C' : '#222' }}>Cảm ơn ({+likeCount + (like ? 1 : 0)})</Text>
+                                </View>
+
+                                <TouchableOpacity onPress={() => handleComment('comment', { id, name, index })}>
+                                    {/* <Icon name="heart" style={{ fontSize: 15, color: 'red' }} type='AntDesign' /> */}
+                                    <Text style={{ fontSize: 16, marginLeft: 15 }}>Trả lời</Text>
                                 </TouchableOpacity>
 
                             </View>
+                        </View>
+                        <View>
+                            <FlatList
+                                data={comment}
+                                showsVerticalScrollIndicator={false}
+                                renderItem={({ item, index }) => {
+                                    return RenderFeedbackComment({ item, index, _gotoProfile })
+                                }}
+                                keyExtractor={(item) => '' + item.id}
+                            />
+                        </View>
 
-                            <TouchableOpacity onPress={() => handleComment('comment', { id, name, index })}>
-                                {/* <Icon name="heart" style={{ fontSize: 15, color: 'red' }} type='AntDesign' /> */}
-                                <Text style={{ fontSize: 16, marginLeft: 15 }}>Trả lời</Text>
-                            </TouchableOpacity>
-
+                    </View>
+                </View>
+                <ModalWrapp show={showVote} onClose={() => { setShowVote(false) }} title="Vote câu trả lời:">
+                    <View style={{ width: width - 50, paddingTop: 30, }}>
+                        <StarRating
+                            maxStars={5}
+                            rating={vote}
+                            fullStarColor={COLOR.MAIN}
+                            starSize={50}
+                            selectedStar={(val) => {
+                                setVote(val)
+                            }}
+                        />
+                        <View style={{ alignItems: 'center' }}>
+                            <BtnGradient onPress={_handleVote} text='Gửi' textStyle={{ fontWeight: 'bold' }} style={{ marginTop: 20 }} />
                         </View>
                     </View>
-                    <View>
-                        <FlatList
-                            data={comment}
-                            showsVerticalScrollIndicator={false}
-                            renderItem={({ item, index }) => {
-                                return RenderFeedbackComment({ item, index, _gotoProfile })
-                            }}
-                            keyExtractor={(item) => '' + item.id}
-                        />
-                    </View>
+                </ModalWrapp>
+                <EditForm visible={showEdit} _onClose={(isReload) => {
+                    if (isReload) {
+                        requesQuestion(true)
+                    }
+                    setShowEdit(false)
+                }} />
+            </View>
+        )
+    })
+const EditForm = ({
+    visible,
+    _onClose = () => { }
+}) => {
+    const [value, setValue] = useState('');
+    const [photos, setPhotos] = useState([]);
+    const [loading, setLoading] = useState(false);
+    // effect
+    useEffect(() => {
+        if (visible) {
+            setValue(visible.content)
+            if (get(visible, 'image[0]')) {
+                setPhotos(visible.image.map(({ path }) => path))
+            }
 
+        }
+    }, [visible])
+    // action
+    const _handleUploadImg = async () => {
+        try {
+            if (photos[0]) {
+                const dataUpload = new FormData();
+                let fileName = photos[0].split('/');
+                dataUpload.append("file", {
+                    uri: photos[0],
+                    name: fileName[fileName.length - 1] || new Date().getTime() + '.jpg',
+                    type: 'multipart/form-data',
+                })
+                const imageUpload = await services.uploadImage(dataUpload);
+                return imageUpload.url
+            }
+        } catch (err) {
+            return null;
+        }
+    }
+    const _handleEdit = async () => {
+        try {
+            const image = photos;
+            if (photos && photos[0] && !photos[0].includes('http')) {
+                image[0] = await _handleUploadImg();
+            }
+            // console.log('resultUploadImg', image)
+            // let image = [];
+            // if(ph)
+            // return 1;
+            setLoading(true)
+            await api.post(`${endpoints.BASE_URL}/answer/${visible.id}/update`, {
+                content: value, image
+            })
+            setLoading(false)
+            Toast.showWithGravity("Chỉnh câu trả lời thành công", Toast.LONG, Toast.CENTER);
+            Keyboard.dismiss();
+
+            setTimeout(() => {
+                _onClose(true)
+            }, 1000)
+        } catch (err) {
+            setLoading(false)
+
+            console.log(err)
+            Toast.showWithGravity(get(err, 'data.msg', "Chỉnh câu trả lời không thành công"), Toast.LONG, Toast.CENTER);
+
+            setTimeout(() => {
+                _onClose(false)
+            }, 1000)
+        }
+    };
+
+    // console.log('loading', loading)
+    const hanldeRemoveImg = (index) => {
+        photos.splice(index, 1);
+        setPhotos([...photos]);
+    }
+
+    const handleChoosePhotos = () => {
+        // imagePicker.
+        imagePicker.launchLibrary({}, {
+            onChooseImage: (response) => {
+                if (response.path) {
+                    try {
+                        if (photos.length < 3)
+                            setPhotos([response.path])
+                        else
+                            Toast.showWithGravity("Bạn chỉ được gửi tối đa 3 ảnh", Toast.SHORT, Toast.CENTER);
+
+                    } catch (err) {
+                        console.log(err)
+                    }
+                }
+            }
+        });
+    };
+
+    const _handleOpenSetting = () => {
+        Alert.alert(
+            "Mở cài đặt",
+            "Vui lòng cấp quyền để upload ảnh",
+            [
+                {
+                    text: "Cancel",
+                    onPress: () => console.log("Cancel Pressed"),
+                    style: "cancel"
+                },
+                { text: "OK", onPress: openSettings }
+            ],
+            { cancelable: true }
+        );
+
+    }
+
+    const _handleClickPhoto = async () => {
+        // 
+        if (helpers.isIOS) {
+            const result = await check(PERMISSIONS.IOS.PHOTO_LIBRARY);
+            if (result == RESULTS.GRANTED) {
+                handleChoosePhotos()
+            } else if (result === RESULTS.DENIED) {
+                const resultRequest = await request(PERMISSIONS.IOS.PHOTO_LIBRARY);
+                if (resultRequest === RESULTS.GRANTED) {
+                    handleChoosePhotos()
+                } else {
+                    _handleOpenSetting()
+                }
+            } else {
+                handleChoosePhotos()
+            }
+        } else {
+            const result = await check(PERMISSIONS.ANDROID.READ_EXTERNAL_STORAGE);
+            if (result === RESULTS.GRANTED) {
+                handleChoosePhotos();
+            } else if (result === RESULTS.DENIED) {
+                const resultRequest = await request(PERMISSIONS.ANDROID.READ_EXTERNAL_STORAGE);
+                if (resultRequest === RESULTS.GRANTED) {
+                    handleChoosePhotos()
+                } else {
+                    _handleOpenSetting()
+                }
+            } else {
+                handleChoosePhotos()
+            }
+        }
+    };
+
+    // console.log('photos', photos)
+    return (
+        <ModalWrapp position="bottom" show={!!visible} onClose={_onClose} title="Chỉnh sửa câu trả lời:">
+            <View style={{ width: width - 50, }}>
+                <TextInput
+                    value={value}
+                    onChangeText={setValue}
+                    textAlignVertical="top"
+                    multiline
+                    numberOfLines={3} style={{
+                        paddingHorizontal: 15, marginVertical: 10, minHeight: 80,
+                        borderColor: '#ddd', borderWidth: 1, borderRadius: 10
+                    }} />
+                <View style={{
+                    margin: 5, paddingHorizontal: 3, alignItems: 'center',
+                    flexDirection: 'row',
+                }}>
+                    {
+                        photos[0] ? photos.map((p, index) => {
+                            return (
+                                <View key={p} style={{
+                                    height: width / 6, width: width / 6,
+                                }}>
+                                    <Image
+                                        source={{ uri: p }}
+                                        style={{
+                                            flex: 1, width: null, height: null,
+                                            // height: width / 6, width: width / 6,
+                                            borderRadius: 10,
+                                        }}
+                                    // resizeMode='contain'
+                                    />
+                                    <TouchableOpacity
+                                        onPress={() => hanldeRemoveImg(index)}
+                                        style={{
+                                            position: 'absolute',
+                                            backgroundColor: '#fff',
+                                            right: 0,
+                                            // paddingHorizontal: 10, 
+                                            justifyContent: 'center',
+                                            height: 25, width: 25,
+                                            alignItems: 'center', justifyContent: 'center',
+                                            borderRadius: 25,
+                                            backgroundColor: '#fff',
+                                        }}>
+                                        <Icon name="close" style={{ color: 'red', fontSize: 19 }} />
+                                    </TouchableOpacity>
+
+                                </View>
+                            )
+                        }) : null
+                    }
+                    <TouchableOpacity onPress={_handleClickPhoto} style={{ marginLeft: 20, padding: 5, borderColor: '#dedede', borderWidth: 1 }}>
+                        <Icon name="add-photo-alternate" style={{ fontSize: 35 }} type="MaterialIcons" />
+                        {/* <Icon name="plus" style={{ fontSize: 30 }} type="AntDesign" /> */}
+                    </TouchableOpacity>
+                </View>
+                <View style={{ alignItems: 'center' }}>
+                    <BtnGradient loading={loading} onPress={_handleEdit} text='Chỉnh sửa' textStyle={{ fontWeight: 'bold' }} style={{ marginTop: 20 }} />
                 </View>
             </View>
-            <ModalWrapp show={showVote} onClose={() => { setShowVote(false) }} title="Vote câu trả lời:">
-                <View style={{ width: width - 50, paddingTop: 30, }}>
-                    <StarRating
-                        maxStars={5}
-                        rating={vote}
-                        fullStarColor={COLOR.MAIN}
-                        starSize={50}
-                        selectedStar={(val) => {
-                            setVote(val)
-                        }}
-                    />
-                    <View style={{ alignItems: 'center' }}>
-                        <BtnGradient onPress={_handleVote} text='Gửi' textStyle={{ fontWeight: 'bold' }} style={{ marginTop: 20 }} />
-                    </View>
-                </View>
-
-            </ModalWrapp>
-        </View>
+        </ModalWrapp>
     )
 }
 
@@ -859,19 +1095,11 @@ const FormComment = ({
             setLoading(true)
             if (photos[0]) {
                 const dataUpload = new FormData();
-                // let fileName = file.split('/');
-                //     // console.log('filefilefilefilefile34234', file)
-                //     dataUpload.append("img[]", {
-                //         uri: file,
-                //         name: fileName[fileName.length - 1],
-                //         type: 'multipart/form-data',
-                //     });
                 let fileName = photos[0].split('/');
                 dataUpload.append("file", {
                     uri: photos[0],
                     name: fileName[fileName.length - 1] || new Date().getTime() + '.jpg',
                     type: 'multipart/form-data',
-
                 })
                 const imageUpload = await services.uploadImage(dataUpload);
                 console.log(photos[0], 'imageUpload============', imageUpload)

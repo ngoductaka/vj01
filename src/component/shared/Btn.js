@@ -1,5 +1,5 @@
 import React from 'react';
-import { Text, TouchableOpacity, StyleSheet } from 'react-native';
+import { Text, TouchableOpacity, StyleSheet, ActivityIndicator } from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
 import { fontMaker, fontStyles } from '../../utils/fonts';
 import { COLOR, fontSize } from '../../handle/Constant';
@@ -10,15 +10,17 @@ export const BtnGradient = (props) => {
         style = {},
         colors = ['#ff7e5f', '#feb47b'],
         text = '',
-        textStyle = {}
+        textStyle = {},
+        loading = false,
     } = props;
     return (
-        <TouchableOpacity onPress={onPress}>
+        <TouchableOpacity disabled={loading} onPress={onPress}>
             <LinearGradient
                 style={[BtnStyle.container, style]}
                 colors={colors}
                 start={{ x: 1, y: 0 }} end={{ x: 1, y: 1 }}
             >
+                {loading ? <ActivityIndicator /> : null}
                 <Text style={[BtnStyle.text, textStyle]}> {text} </Text>
             </LinearGradient>
         </TouchableOpacity>
@@ -32,6 +34,7 @@ const BtnStyle = StyleSheet.create({
         borderRadius: 20,
         paddingVertical: 11,
         paddingHorizontal: 22,
+        flexDirection: 'row'
     },
     text: { color: '#fff', fontSize: 16 }
 })
@@ -39,7 +42,7 @@ const BtnStyle = StyleSheet.create({
 export const BtnFullColor = ({
     colors = ['#FD5667', '#FE8E40'],
     styles = {},
-    text=""
+    text = ""
 }) => {
     return (
 

@@ -370,23 +370,8 @@ const Class = memo((props) => {
 									tabContainerStyle={styles.barContainer} tabBarUnderlineStyle={{ height: 2, backgroundColor: Colors.pri }} tabBarActiveTextColor={Colors.pri} tabBarBackgroundColor={Colors.white}>
 									<Tab textStyle={styles.textStyle}
 										activeTextStyle={styles.activeTextStyle}
-										activeTabStyle={styles.activeTabStyle} tabStyle={styles.tabStyle}
-										heading="Cánh diều">
-
-										<View style={{ flexDirection: 'row', flexWrap: 'wrap', marginTop: 10 }}>
-											{
-												get(dataAllBook, 'data', []).filter(i => i.subject_type == 1).map((item, index) => {
-													return (
-														<View key={index + ''}>
-															{_renderMenuItem(item, index, _handleNavigation)}
-														</View>
-													)
-												})
-											}
-										</View>
-
-									</Tab>
-									<Tab textStyle={styles.textStyle} activeTextStyle={styles.activeTextStyle} activeTabStyle={styles.activeTabStyle} tabStyle={styles.tabStyle} heading="Kết nối tri thức ...">
+										activeTabStyle={styles.activeTabStyle}
+										tabStyle={styles.tabStyle} heading="Kết nối tri thức">
 										<View style={{ flexDirection: 'row', flexWrap: 'wrap', marginTop: 10 }}>
 											{
 												get(dataAllBook, 'data', []).filter(i => i.subject_type == 2).map((item, index) => {
@@ -419,6 +404,24 @@ const Class = memo((props) => {
 											numColumns={NUMBER_COLUMS}
 											keyExtractor={(_, index) => 'book_item' + index.toString()}
 										/> */}
+									</Tab>
+									<Tab textStyle={styles.textStyle}
+										activeTextStyle={styles.activeTextStyle}
+										activeTabStyle={styles.activeTabStyle} tabStyle={styles.tabStyle}
+										heading="Cánh diều">
+
+										<View style={{ flexDirection: 'row', flexWrap: 'wrap', marginTop: 10 }}>
+											{
+												get(dataAllBook, 'data', []).filter(i => i.subject_type == 1).map((item, index) => {
+													return (
+														<View key={index + ''}>
+															{_renderMenuItem(item, index, _handleNavigation)}
+														</View>
+													)
+												})
+											}
+										</View>
+
 									</Tab>
 								</Tabs> :
 								<View style={{ flexDirection: 'row', flexWrap: 'wrap', marginTop: 10 }}>
@@ -1003,7 +1006,7 @@ const openLink = async (url) => {
 	}
 }
 
-const Qna = React.memo(({navigation}) => {
+const Qna = React.memo(({ navigation }) => {
 	return (
 		<TouchableOpacity onPress={() => navigation.navigate('MakeQuestion')} style={{
 			flexDirection: 'row', alignItems: 'center',
