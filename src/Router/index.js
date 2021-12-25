@@ -55,6 +55,7 @@ import QnA from '../screen/QNA';
 import QuestionDetail from '../screen/QNA/Detail';
 import Comment from '../screen/QNA/Comment';
 import MakeQuestion from '../screen/QNA/makeQuestion';
+import {ResultView} from '../screen/QNA/makeQuestion';
 import SearchQnA from '../screen/QNA/SearchQnA';
 import createTextQna from '../screen/QNA/createTextQna';
 import NotificationQnA from '../screen/QNA/Notification';
@@ -374,6 +375,7 @@ const InAppStack = createStackNavigator({
 		// 	...TransitionPresets.ModalPresentationIOS,
 		// }
 	},
+	ResultView: ResultView,
 	createTextQna: {
 		screen: createTextQna,
 		// navigationOptions: {

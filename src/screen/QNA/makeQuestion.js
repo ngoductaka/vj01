@@ -31,7 +31,7 @@ const { width, height } = Dimensions.get('window');
 
 const QnA = (props) => {
     const [resultSearch, setResultSearch] = useState([])
-    const [path, setPath] = useState([]);
+    const [path, setPath] = useState();
     const [dataHis, setDataHis] = useState([])
 
     useEffect(() => {
@@ -62,36 +62,56 @@ const QnA = (props) => {
             console.log('err_saveHis', err)
         }
     }
+    // 
+    const navigationToResult = (result) => {
+        if (result && result[0]) {
+            props.navigation.navigate('ResultView', { path, resultSearch: result })
+            setPath('');
+            setResultSearch([])
+        }
+    };
 
     return (
         <SafeAreaView style={{ flex: 1, position: 'relative', backgroundColor: '#fff' }}>
-            {resultSearch && resultSearch[0] ?
-                <ResultView setPath={setPath} path={path} setResultSearch={setResultSearch} resultSearch={resultSearch} {...props} /> :
-                <CameraView
-                    setResultSearch={setResultSearch}
-                    goBack={() => props.navigation.goBack()}
-                    setPath={setPath}
-                    dataHis={dataHis}
-                    _saveHis={_saveHis}
-                    goToTextQna={() => props.navigation.navigate('createTextQna')}
-                />}
+            {/* {resultSearch && resultSearch[0] ?
+                <ResultView setPath={setPath} path={path} setResultSearch={setResultSearch} resultSearch={resultSearch} {...props} /> : */}
+            <CameraView
+                setResultSearch={setResultSearch}
+                goBack={() => props.navigation.goBack()}
+                setPath={setPath}
+                dataHis={dataHis}
+                _saveHis={_saveHis}
+                navigationToResult={navigationToResult}
+                goToTextQna={() => props.navigation.navigate('createTextQna')}
+            />
+            {/* } */}
         </SafeAreaView>
     );
 };
 
-const ResultView = ({ setPath, path, resultSearch, setResultSearch, navigation, ...props }) => {
+export const ResultView = ({
+    // setPath, 
+    // path, 
+    // resultSearch, 
+    // setResultSearch, 
+    navigation }) => {
+
+    const path = navigation.getParam('path', '');
+    const resultSearch = navigation.getParam('resultSearch', '');
+
     const [activeSlide, setActiveSlide] = useState(0)
     const resultSearchFilter = React.useMemo(() => {
         return resultSearch.filter(i => !!get(i, 'answers[0].question_id'))
     }, [resultSearch]);
 
     return (
-        <View style={{ paddingLeft: 8, position: 'relative', flex: 1, backgroundColor: '#fff' }}>
-            <View style={{ flexDirection: 'row', alignItems: 'center', marginBottom: 6 }}>
-                <TouchableOpacity onPress={() => navigation.goBack()}><Icon type="AntDesign" name="left" /></TouchableOpacity>
-                <Text style={{ fontSize: 20, fontWeight: 'bold', marginVertical: 10, marginLeft: 20 }}>Kết quả tìm kiếm: </Text>
-            </View>
-            {/* <ScrollView
+        <SafeAreaView style={{ flex: 1 }}>
+            <View style={{ paddingLeft: 8, position: 'relative', flex: 1, backgroundColor: '#fff' }}>
+                <View style={{ flexDirection: 'row', alignItems: 'center', marginBottom: 6 }}>
+                    <TouchableOpacity onPress={() => navigation.goBack()}><Icon type="AntDesign" name="left" /></TouchableOpacity>
+                    <Text style={{ fontSize: 20, fontWeight: 'bold', marginVertical: 10, marginLeft: 20 }}>Kết quả tìm kiếm: </Text>
+                </View>
+                {/* <ScrollView
             style={{ 
                 flex: 1, 
                 height: height,
@@ -139,37 +159,41 @@ const ResultView = ({ setPath, path, resultSearch, setResultSearch, navigation, 
                     itemWidth={width}
                     layoutCardOffset={`18`}
                 />
-            {/* </ScrollView> */}
-            <View style={{ flexDirection: 'row', justifyContent: 'space-around', paddingVertical: 6 }}>
-                <TouchableOpacity style={{
-                    paddingVertical: 10, paddingHorizontal: 30, flexDirection: 'row',
-                    alignItems: 'center', backgroundColor: '#fff', borderRadius: 20
-                }} onPress={() => {
-                    setResultSearch([]);
-                    setPath('')
-                }}>
-                    <Icon name="camera" style={{ color: COLOR.MAIN }} />
-                    <Text style={{ color: COLOR.MAIN, fontWeight: 'bold', fontSize: 16, marginLeft: 7 }}>Chụp lại</Text>
-                </TouchableOpacity>
+                {/* </ScrollView> */}
+                <View style={{ flexDirection: 'row', justifyContent: 'space-around', paddingVertical: 6 }}>
+                    <TouchableOpacity style={{
+                        paddingVertical: 10, paddingHorizontal: 30, flexDirection: 'row',
+                        alignItems: 'center', backgroundColor: '#fff', borderRadius: 20
+                    }} onPress={() => {
+                        // setResultSearch([]);
+                        // setPath('')
+                        navigation.navigate('MakeQuestion');
+                    }}>
+                        <Icon name="camera" style={{ color: COLOR.MAIN }} />
+                        <Text style={{ color: COLOR.MAIN, fontWeight: 'bold', fontSize: 16, marginLeft: 7 }}>Chụp lại</Text>
+                    </TouchableOpacity>
 
-                <TouchableOpacity style={{
-                    paddingVertical: 10, paddingHorizontal: 30, flexDirection: 'row',
-                    backgroundColor: COLOR.MAIN,
-                    alignItems: 'center', borderRadius: 20
-                }} onPress={() => { navigation.navigate('createTextQna') }}>
-                    <Icon type="MaterialCommunityIcons" name="pen-plus" style={{ color: '#fff' }} />
-                    <Text style={{ color: '#fff', fontWeight: 'bold', fontSize: 16, marginLeft: 7 }}>Đặt câu hỏi</Text>
-                </TouchableOpacity>
+                    <TouchableOpacity style={{
+                        paddingVertical: 10, paddingHorizontal: 30, flexDirection: 'row',
+                        backgroundColor: COLOR.MAIN,
+                        alignItems: 'center', borderRadius: 20
+                    }} onPress={() => { navigation.navigate('createTextQna') }}>
+                        <Icon type="MaterialCommunityIcons" name="pen-plus" style={{ color: '#fff' }} />
+                        <Text style={{ color: '#fff', fontWeight: 'bold', fontSize: 16, marginLeft: 7 }}>Đặt câu hỏi</Text>
+                    </TouchableOpacity>
+                </View>
             </View>
-        </View>
+        </SafeAreaView>
     )
 }
 
 const CameraView = ({
     setResultSearch, goBack, _saveHis = () => { }, dataHis = [],
-    goToTextQna = () => { }, setPath
+    goToTextQna = () => { },
+    navigationToResult = () => { },
+    setPath
 }) => {
-
+    const [keep, setKeep] = useState(true);
     const camera = useRef(null);
     const cropViewRef = useRef(null);
     const [loading, setLoading] = useState(false)
@@ -180,6 +204,14 @@ const CameraView = ({
     const [url, setUrl] = useState('')
     const [response, setResponse] = useState(null)
 
+    // useEffect(() => {
+    //     if (url)
+    //         setTimeout(() => {
+    //             setKeep(false)
+    //         }, 3 * 1000)
+    // }, [url])
+
+    console.log(keep, 'dnd123')
     const takePicture = async () => {
         if (camera && camera.current) {
             const options = {};
@@ -293,8 +325,15 @@ const CameraView = ({
 
     const _setShowResult = () => {
         setShowBanner(false);
-        if (response)
-            setResultSearch(response);
+        if (response) {
+            setLoading(false);
+            setShowBanner(false);
+            setShowHelper(false);
+            setShowHis(false);
+            setUrl('');
+            setResponse(null);
+            navigationToResult(response);
+        }
 
     }
     return (
@@ -319,16 +358,14 @@ const CameraView = ({
             /> :
                 <CropView
                     sourceUrl={url}
-                    style={{
-                        flex: 1,
-                    }}
+                    style={{ flex: 1 }}
                     ref={cropViewRef}
                     onImageCrop={(file) => {
                         // console.log('onImageCrop', file)
                         _handleUploadImg(file)
                     }}
-                    //   keepAspectRatio
-                    aspectRatio={{ width: 16, height: 9 }}
+                    keepAspectRatio={keep}
+                    aspectRatio={{ width: 16, height: 5 }}
                 />}
             {showBanner ? <View style={{
                 justifyContent: 'space-between', alignItems: 'center',
@@ -393,6 +430,10 @@ const CameraView = ({
                         <TouchableOpacity onPress={() => setUrl('')} style={styles[`${'NORMAL'}_btnText`]}>
                             <Icon type="MaterialCommunityIcons" name="close" style={{ color: COLOR.MAIN }} />
                             <Text style={{ color: COLOR.MAIN, marginTop: 2 }}>Chụp ảnh khác</Text>
+                        </TouchableOpacity>
+                        <TouchableOpacity onPress={() => setKeep(pre => !pre)} style={styles[`${'NORMAL'}_btnText`]}>
+                            <Icon type="Octicons" name="screen-full" style={{ color: COLOR.MAIN }} />
+                            <Text style={{ color: COLOR.MAIN, marginTop: 2 }}>{keep?"Tuỳ chỉnh kích thước":"Giữ kích thước"}</Text>
                         </TouchableOpacity>
                         <TouchableOpacity onPress={() => {
                             if (cropViewRef.current) {
