@@ -834,6 +834,7 @@ const EditForm = ({
                 <TextInput
                     value={value}
                     onChangeText={setValue}
+                    autoFocus
                     textAlignVertical="top"
                     multiline
                     numberOfLines={3} style={{

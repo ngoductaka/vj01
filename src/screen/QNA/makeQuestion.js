@@ -27,6 +27,7 @@ import { images } from '../../utils/images';
 import { getItem, KEY } from '../../handle/handleStorage';
 import { endpoints } from '../../constant/endpoints';
 import BannerAd from '../../component/shared/BannerAd';
+import { helpers } from '../../utils/helpers';
 const { width, height } = Dimensions.get('window');
 
 const QnA = (props) => {
@@ -193,7 +194,7 @@ const CameraView = ({
     navigationToResult = () => { },
     setPath
 }) => {
-    const [keep, setKeep] = useState(true);
+    const [keep, setKeep] = useState(helpers.isAndroid);
     const camera = useRef(null);
     const cropViewRef = useRef(null);
     const [loading, setLoading] = useState(false)
