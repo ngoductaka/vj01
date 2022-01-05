@@ -45,7 +45,7 @@ const itemHorizontalMargin = wp(2);
 export const sliderWidth = width;
 export const itemWidth = slideWidth + itemHorizontalMargin * 2;
 
-const LiveStream = ({ grade = null }) => {
+const LiveStream = React.memo(({ grade = null }) => {
     const [data, loading] = useRequest(`${endpoints.ROOT_URL}/courses/recent-livestreams?grade=${grade}`, [1])
 
     if (!get(data, 'data[0]') || !grade) return null;
@@ -70,7 +70,7 @@ const LiveStream = ({ grade = null }) => {
             />
         </View>
     )
-}
+});
 
 const RenderItem = ({ item, index }) => {
     return (

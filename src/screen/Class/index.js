@@ -82,20 +82,20 @@ const Class = memo((props) => {
 		if (get(HOT_SUBJECT_CLASS, `[${props.userInfo.class}]['0'].id`, ''))
 			setHotSubIdx(HOT_SUBJECT_CLASS[props.userInfo.class]['0'].id);
 	}, [props.userInfo.class]);
-	const checkLowDevice = async () => {
-		try {
-			if (helpers.isIOS) {
-				const deviceId = await DeviceInfo.getDeviceId();
-				const iosNumber = parseInt(deviceId.slice(6));
-				dispatch(setDeviceInfo(iosNumber < 9));
-			} else {
-				const apiLevel = await DeviceInfo.getApiLevel();
-				dispatch(setDeviceInfo(apiLevel <= 25));
-			}
-		} catch (error) {
-			dispatch(setDeviceInfo(true));
-		}
-	}
+	// const checkLowDevice = async () => {
+	// 	try {
+	// 		if (helpers.isIOS) {
+	// 			const deviceId = await DeviceInfo.getDeviceId();
+	// 			const iosNumber = parseInt(deviceId.slice(6));
+	// 			dispatch(setDeviceInfo(iosNumber < 9));
+	// 		} else {
+	// 			const apiLevel = await DeviceInfo.getApiLevel();
+	// 			dispatch(setDeviceInfo(apiLevel <= 25));
+	// 		}
+	// 	} catch (error) {
+	// 		dispatch(setDeviceInfo(true));
+	// 	}
+	// }
 
 	const scrollToTop = useCallback(() => {
 		if (classRef && classRef.current) {
@@ -478,6 +478,7 @@ const Class = memo((props) => {
 								}}
 								keyExtractor={(item, index) => index + 'game_item'}
 							/>
+							<LiveYTB navigation={props.navigation} />
 
 
 							{/* <ViewWithBanner /> */}
@@ -1023,6 +1024,28 @@ const Qna = React.memo(({ navigation }) => {
 				style={{ width: 195, height: 195, alignSelf: 'center' }}
 				source={require('../../public/68430-camera.json')}
 			/>
+		</TouchableOpacity >
+	)
+})
+const LiveYTB = React.memo(({ navigation }) => {
+	return (
+		<TouchableOpacity onPress={() => {
+			console.log('asdfasd')
+			navigation.navigate('HomeLiveYTB')
+		}} style={{
+			flexDirection: 'row', alignItems: 'center',
+			backgroundColor: 'rgba(254, 225, 210)',
+		}}>
+			<LottieView
+				autoPlay
+				loop
+				style={{ width: 140, height: 140, alignSelf: 'center' }}
+				source={require('../../public/livestream.json')}
+			/>
+			<View style={{ flex: 1, alignItems: 'center' }}>
+				<Text style={{ fontSize: 23, color: COLOR.MAIN, fontWeight: 'bold', marginTop: 20, }}>Lớp học online</Text>
+				<Text style={{ fontSize: 16, color: COLOR.MAIN, opacity: 0.8, fontWeight: '400', marginTop: 10 }}>Hướng dẫn chi tiết, giải bài tập</Text>
+			</View>
 		</TouchableOpacity >
 	)
 })

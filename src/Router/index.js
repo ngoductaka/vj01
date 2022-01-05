@@ -49,13 +49,13 @@ import GeneralAnalysis from '../screen/GeneralAnalysis';
 import PracticeRanking from '../screen/Test/PracticeRanking';
 import ViewAnswer from '../screen/Test/ViewAnswer';
 import Bookmark from '../screen/Bookmark';
-import XVideo from '../screen/XVideo';
+// import XVideo from '../screen/XVideo';
 import Notification from '../screen/Notification';
 import QnA from '../screen/QNA';
 import QuestionDetail from '../screen/QNA/Detail';
 import Comment from '../screen/QNA/Comment';
 import MakeQuestion from '../screen/QNA/makeQuestion';
-import {ResultView} from '../screen/QNA/makeQuestion';
+import { ResultView } from '../screen/QNA/makeQuestion';
 import SearchQnA from '../screen/QNA/SearchQnA';
 import createTextQna from '../screen/QNA/createTextQna';
 import NotificationQnA from '../screen/QNA/Notification';
@@ -77,6 +77,11 @@ import Calculator from '../screen/Utilities/Calculator';
 import UnitConvert from '../screen/Utilities/UnitConvert';
 import UtilitiesCenter from '../screen/Utilities';
 import SudokuInstruction from '../screen/GameCenter/Sudoku/containers/Instruction';
+
+// YTB
+import HomeLiveYTB from '../screen/LiveYTB';
+import YtbPlayer from '../screen/LiveYTB/YtbPlayer';
+
 
 const NUMBER_OF_TABS = 5;
 
@@ -487,8 +492,11 @@ const InAppStack = createStackNavigator({
 			...TransitionPresets.ModalSlideFromBottomIOS,
 		}
 	},
+	HomeLiveYTB: HomeLiveYTB,
+	YtbPlayer: YtbPlayer,
 	PdfView: PdfView,
 	UtilitiesCenter: UtilitiesCenter,
+	// ytb
 	// ConsultingForm:ConsultingForm,
 }, {
 	// defaultNavigationOptions: {

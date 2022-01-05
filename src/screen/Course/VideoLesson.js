@@ -12,11 +12,7 @@ import {
 import Video from 'react-native-video';
 import { get, throttle, isEmpty } from 'lodash';
 import { Icon, Tab, Tabs } from 'native-base';
-// import LottieView from 'lottie-react-native';
-// import StepIndicator from 'react-native-step-indicator';
 import { withNavigationFocus } from 'react-navigation';
-// import YoutubePlayer from "react-native-yt-player";
-// import YoutubePlayer from 'react-native-youtube-iframe';
 import KeepAwake from 'react-native-keep-awake';
 import Orientation from 'react-native-orientation-locker';
 import { Snackbar, TextInput } from 'react-native-paper';

@@ -156,7 +156,7 @@ const imgSubject = {
 }
 const plaidImg = (key) => imgSubject[key] ? imgSubject[key] : defaultImg
 
-const ImgVideoLage = ({ imgLecture, lectureId, isLecture, videoUrl, _handlePress, widthImg = width * 3 / 4 }) => {
+const ImgVideoLage = ({ imgLecture, widthImg = width * 3 / 4 }) => {
     const [opacity] = useState(new Animated.Value(0))
     const [opacityPlade] = useState(new Animated.Value(1))
 
