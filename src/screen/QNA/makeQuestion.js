@@ -362,7 +362,6 @@ const CameraView = ({
                     style={{ flex: 1 }}
                     ref={cropViewRef}
                     onImageCrop={(file) => {
-                        // console.log('onImageCrop', file)
                         _handleUploadImg(file)
                     }}
                     keepAspectRatio={keep}
@@ -442,7 +441,7 @@ const CameraView = ({
                             } else {
                                 Alert.alert(
                                     "Có lỗi!",
-                                    "Dnd lỗi không mong luôn",
+                                    "cropViewRef errors lỗi không mong luôn",
                                     [
                                         { text: "OK", onPress: () => console.log("OK Pressed") }
                                     ]

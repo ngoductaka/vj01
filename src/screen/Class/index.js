@@ -435,13 +435,6 @@ const Class = memo((props) => {
 										})
 									}
 								</View>
-								// <FlatList
-								// 	style={{ marginVertical: 20, marginTop: 25 }}
-								// 	data={get(dataAllBook, 'data', [])}
-								// 	renderItem={({ item, index }) => _renderMenuItem(item, index, _handleNavigation)}
-								// 	numColumns={NUMBER_COLUMS}
-								// 	keyExtractor={(_, index) => 'book_item' + index.toString()}
-								// />
 							)
 
 
@@ -478,7 +471,7 @@ const Class = memo((props) => {
 								}}
 								keyExtractor={(item, index) => index + 'game_item'}
 							/>
-							<LiveYTB navigation={props.navigation} />
+							{/* <LiveYTB navigation={props.navigation} /> */}
 
 
 							{/* <ViewWithBanner /> */}
