@@ -21,6 +21,7 @@ import { check, PERMISSIONS, RESULTS, openSettings, request } from 'react-native
 
 import ImageZoom from 'react-native-image-pan-zoom';
 import { SvgXml } from 'react-native-svg';
+import { connect } from 'react-redux';
 
 import api from '../../handle/api';
 import { getDiffTime, helpers } from '../../utils/helpers'
@@ -39,7 +40,7 @@ import { RenderListImg } from '../../component/Image/renderListImg';
 // import { ViewWithBanner, fbFull } from '../../utils/facebookAds';
 import { ModalWrapp } from '../Course/component/ModalVote';
 import { BtnGradient } from '../../component/shared/Btn';
-import { connect } from 'react-redux';
+import { ViewWithBanner } from '../../utils/facebookAds';
 
 
 const { width, height } = Dimensions.get('window');
@@ -225,14 +226,22 @@ const QnA = (props) => {
                         keyExtractor={(item) => '' + item.id}
                         // loading
                         ListFooterComponent={
-                            loading ? (
-                                <View style={{ padding: 10 }}>
-                                    <Placeholder Animation={Fade}
-                                        Left={PlaceholderMedia}>
-                                        <PlaceholderLine height={40} />
-                                    </Placeholder>
-                                </View>
-                            ) : null
+                            <View style={{ padding: 10 }}>
+                                {
+                                    loading ?
+                                        <Placeholder Animation={Fade}
+                                            Left={PlaceholderMedia}>
+                                            <PlaceholderLine height={40} />
+                                        </Placeholder>
+                                        :
+                                        <View>
+                                            <View style={{ height: 1, marginTop: 20, backgroundColor: '#ddd' }} />
+                                            <ViewWithBanner />
+                                        </View>
+
+                                }
+                            </View>
+
                         }
 
                     />

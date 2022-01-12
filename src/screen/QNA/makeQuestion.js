@@ -194,7 +194,7 @@ const CameraView = ({
     navigationToResult = () => { },
     setPath
 }) => {
-    const [keep, setKeep] = useState(helpers.isAndroid);
+    const [keep, setKeep] = useState(false);
     const camera = useRef(null);
     const cropViewRef = useRef(null);
     const [loading, setLoading] = useState(false)
