@@ -210,13 +210,17 @@ const RenderQnASearch = ({ title, onPress, viewCount, index, book, grade, answer
 }
 const RenderQnAForImg = ({ title, onPress, viewCount, index, book, grade, answers_count = 0, answers = [] }) => {
 	return (
-		// <TouchableOpacity
-		// 	onPress={onPress}
-		// 	style={[stylesComponent.textItem, { paddingLeft: 0, backgroundColor: '#fff' }]}
-		// >
-		<ScrollView style={{ flex: 1, marginTop: 10 }}>
+		<ScrollView style={{ flex: 1, marginTop: 10, marginRight: 10 }}>
 			<View style={{ flexDirection: 'row', justifyContent: 'space-between', marginBottom: 8 }}>
 				<Text style={{ fontSize: 22, color: '#5396CD', fontWeight: 'bold' }}>Câu hỏi :</Text>
+
+			</View>
+			<MathJax html={title || ''} />
+			<View style={{ flexDirection: 'row', justifyContent: 'flex-end' }}>
+				<Text style={{ fontSize: 12, color: '#777', textAlign: 'right', marginTop: 7 }}>{book} • {grade}</Text>
+			</View>
+			<Text style={{ fontSize: 22, color: '#5396CD', fontWeight: 'bold' }}>Câu trả lời gần nhất :</Text>
+			<View style={{flexDirection: 'row', justifyContent: 'flex-end'}}>
 				<TouchableOpacity
 					onPress={onPress}
 					style={{
@@ -230,20 +234,19 @@ const RenderQnAForImg = ({ title, onPress, viewCount, index, book, grade, answer
 					<Icon name="right" style={{ fontSize: 20, marginLeft: 10 }} type="AntDesign" />
 				</TouchableOpacity>
 			</View>
-			<MathJax html={title || ''} />
-			{/* <MathJax html={'<p> <b>1. Định nghĩa: </b> Căn bậc ba của một số a, kí hiệu là <img src="https://vietjack.com/toan-lop-9/images/can-bac-ba.PNG" style="margin: 0 10px"> là số x sao cho $x^3 = a.$ </p>'} /> */}
-			<View style={{ flexDirection: 'row', justifyContent: 'flex-end' }}>
-				<Text style={{ fontSize: 12, color: '#777', textAlign: 'right', marginTop: 7 }}>{book} • {grade}</Text>
-			</View>
-			<Text style={{ fontSize: 22, color: '#5396CD', fontWeight: 'bold' }}>Câu trả lời gần nhất :</Text>
 			{
 				answers && answers[0] ?
 					answers.map(((a, index) => {
-						return <RenderHtmlCustom content={a.content} />
+						return (
+							<ScrollView horizontal>
+								<View style={{ width: width * 1.5 }}>
+									<MathJax key={index + ''} html={a.content || ''} />
+								</View>
+							</ScrollView>
+						)
+						// return <RenderHtmlCustom content={a.content} />
 					})) : null
 			}
-			{/* </View> */}
-
 		</ScrollView>
 		// </TouchableOpacity>
 	)

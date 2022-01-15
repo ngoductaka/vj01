@@ -90,12 +90,7 @@ const QnA = (props) => {
     );
 };
 
-export const ResultView = ({
-    // setPath, 
-    // path, 
-    // resultSearch, 
-    // setResultSearch, 
-    navigation }) => {
+export const ResultView = ({ navigation }) => {
 
     const path = navigation.getParam('path', '');
     const resultSearch = navigation.getParam('resultSearch', '');
@@ -112,13 +107,6 @@ export const ResultView = ({
                     <TouchableOpacity onPress={() => navigation.goBack()}><Icon type="AntDesign" name="left" /></TouchableOpacity>
                     <Text style={{ fontSize: 20, fontWeight: 'bold', marginVertical: 10, marginLeft: 20 }}>Kết quả tìm kiếm: </Text>
                 </View>
-                {/* <ScrollView
-            style={{ 
-                flex: 1, 
-                height: height,
-                backgroundColor: 'red'
-             }}
-            > */}
                 {path ? <Image source={{ uri: path }} style={{ height: 100 }} resizeMode="contain" /> : null}
                 <View style={{ flexDirection: 'row' }}>
                     {
@@ -133,7 +121,6 @@ export const ResultView = ({
                     }
                 </View>
                 <Carousel
-                    // ref={refCar}
                     data={resultSearchFilter}
                     onSnapToItem={index => setActiveSlide(index)}
                     renderItem={({ item, index }) => {
@@ -160,14 +147,11 @@ export const ResultView = ({
                     itemWidth={width}
                     layoutCardOffset={`18`}
                 />
-                {/* </ScrollView> */}
                 <View style={{ flexDirection: 'row', justifyContent: 'space-around', paddingVertical: 6 }}>
                     <TouchableOpacity style={{
                         paddingVertical: 10, paddingHorizontal: 30, flexDirection: 'row',
                         alignItems: 'center', backgroundColor: '#fff', borderRadius: 20
                     }} onPress={() => {
-                        // setResultSearch([]);
-                        // setPath('')
                         navigation.navigate('MakeQuestion');
                     }}>
                         <Icon name="camera" style={{ color: COLOR.MAIN }} />
@@ -194,7 +178,6 @@ const CameraView = ({
     navigationToResult = () => { },
     setPath
 }) => {
-    const [keep, setKeep] = useState(false);
     const camera = useRef(null);
     const cropViewRef = useRef(null);
     const [loading, setLoading] = useState(false)
@@ -205,14 +188,6 @@ const CameraView = ({
     const [url, setUrl] = useState('')
     const [response, setResponse] = useState(null)
 
-    // useEffect(() => {
-    //     if (url)
-    //         setTimeout(() => {
-    //             setKeep(false)
-    //         }, 3 * 1000)
-    // }, [url])
-
-    console.log(keep, 'dnd123')
     const takePicture = async () => {
         if (camera && camera.current) {
             const options = {};
@@ -364,7 +339,6 @@ const CameraView = ({
                     onImageCrop={(file) => {
                         _handleUploadImg(file)
                     }}
-                    keepAspectRatio={keep}
                     aspectRatio={{ width: 16, height: 5 }}
                 />}
             {showBanner ? <View style={{
@@ -430,10 +404,6 @@ const CameraView = ({
                         <TouchableOpacity onPress={() => setUrl('')} style={styles[`${'NORMAL'}_btnText`]}>
                             <Icon type="MaterialCommunityIcons" name="close" style={{ color: COLOR.MAIN }} />
                             <Text style={{ color: COLOR.MAIN, marginTop: 2 }}>Chụp ảnh khác</Text>
-                        </TouchableOpacity>
-                        <TouchableOpacity onPress={() => setKeep(pre => !pre)} style={styles[`${'NORMAL'}_btnText`]}>
-                            <Icon type="Octicons" name="screen-full" style={{ color: COLOR.MAIN }} />
-                            <Text style={{ color: COLOR.MAIN, marginTop: 2 }}>{keep?"Tuỳ chỉnh kích thước":"Giữ kích thước"}</Text>
                         </TouchableOpacity>
                         <TouchableOpacity onPress={() => {
                             if (cropViewRef.current) {

@@ -11,6 +11,8 @@ import Toast from 'react-native-simple-toast';
 import OptionsMenu from "react-native-option-menu";
 import ImageView from "react-native-image-viewing";
 import StarRating from 'react-native-star-rating';
+
+import MathJax from 'react-native-mathjax';
 import {
     Placeholder,
     PlaceholderMedia,
@@ -184,15 +186,6 @@ const QnA = (props) => {
                     isFollow={isFollow}
                     subtitle={`• ${get(questionData, 'path.subject.subject_name', '')} • lớp ${get(questionData, 'path.class', '')}`}
                 />
-                {/* <MathJax
-                html={'$\sum_{i=0}^n i^2 = \frac{(n^2+n)(2n+1)}{6}$<br><p style="font-family: "Times New Roman"">This is an equation</p>'}
-                    // html={'Solve the equation $\\frac{x-2}{x+3}=\\frac{x-3}{2}$'}
-                /> */}
-
-                {/* <View style={{ height: 200 }}> */}
-                {/* <ViewWithBanner /> */}
-                {/* </View> */}
-                {/* list */}
                 <View style={{ flex: 1, marginBottom: 65 }}>
                     <KeyboardAwareFlatList
                         ref={refList}
@@ -206,17 +199,21 @@ const QnA = (props) => {
                         refreshing={refreshing}
                         // header content
                         ListHeaderComponent={
-                            <RenderQuestion
-                                item={{
-                                    content: get(questionData, 'content.parse_content'),
-                                    image: get(questionData, 'content.image'),
-                                    answerCount: get(questionData, 'answer', []).length,
-                                }}
-                                questionId={questionId}
-                                handleClickAnswer={handleComment}
-                                setListShowImg={setListShowImg}
-                                setShowImg={setShowImg}
-                            />
+                            <View>
+                                <RenderQuestion
+                                    item={{
+                                        content: get(questionData, 'content.parse_content'),
+                                        image: get(questionData, 'content.image'),
+                                        answerCount: get(questionData, 'answer', []).length,
+                                    }}
+                                    questionId={questionId}
+                                    handleClickAnswer={handleComment}
+                                    setListShowImg={setListShowImg}
+                                    setShowImg={setShowImg}
+                                />
+                                <View style={{ height: 1, marginTop: 20, backgroundColor: '#ddd' }} />
+                                <ViewWithBanner />
+                            </View>
                         }
                         // render list anwer
                         renderItem={({ item, index }) => {
@@ -233,12 +230,7 @@ const QnA = (props) => {
                                             Left={PlaceholderMedia}>
                                             <PlaceholderLine height={40} />
                                         </Placeholder>
-                                        :
-                                        <View>
-                                            <View style={{ height: 1, marginTop: 20, backgroundColor: '#ddd' }} />
-                                            <ViewWithBanner />
-                                        </View>
-
+                                        : null
                                 }
                             </View>
 
@@ -465,7 +457,7 @@ const RenderQuestion = ({ questionId, item, index, handleClickAnswer = () => { }
             })
     }, [like])
     return (
-        <View style={[styles.itemQ]} >
+        <View >
             <View style={{ paddingHorizontal: 8 }}>
 
                 {/* <MathJax html={item.content||''} /> */}
@@ -536,7 +528,7 @@ const RenderAnwser = connect(
             pointAvg = 5,
             rateCount = 0
         } = item;
-        // console.log('currUser_234====', currUser.email, item.user)
+        console.log('currUser_234====', item)
 
         const [vote, setVote] = useState(5);
         const [showVote, setShowVote] = useState(false);
@@ -578,30 +570,28 @@ const RenderAnwser = connect(
 
         return (
             <View
-                style={[styles.itemQ, {}]}
+            style={styles.itemQ}
             >
-                <View style={{ flexDirection: 'row', paddingRight: 10, marginTop: 15 }}>
-                    <User style={{ marginRight: 5 }}
-                        _gotoProfile={() => _gotoProfile(useID)}
-                        uri={avatar}
-                        isCheck={role_id == 1 || role_id == 2}
-                    />
+                <View style={{ flexDirection: 'row', paddingHorizontal: 10, marginTop: 15 }}>
                     <View style={{ flex: 1 }}>
                         <View style={{ padding: 10, backgroundColor: '#fff', flex: 1, borderRadius: 10, borderColor: '#fefefe', borderWidth: 1 }}>
                             <View style={{ flexDirection: 'row' }}>
+                                <User style={{ marginRight: 5 }}
+                                    _gotoProfile={() => _gotoProfile(useID)}
+                                    uri={avatar}
+                                    isCheck={role_id == 1 || role_id == 2}
+                                />
                                 <Text style={{ marginBottom: 8, ...fontMaker(fontStyles.Thin), fontSize: 17 }}>{name}</Text>
                                 {(role_id == 1 || role_id == 2) ?
                                     <Icon style={{ color: COLOR.MAIN, fontSize: 15, marginLeft: 5, fontWeight: 'bolid' }} name="check-circle" type="FontAwesome" />
                                     : null}
                             </View>
                             <View>
-                                <RenderDataJson
-                                    indexItem={index}
-                                    content={parse_content}
-                                    isAnwser
-                                    setShowImg={setShowImg}
-                                />
-                                {/* <MathJax html={content} /> */}
+                                <ScrollView horizontal>
+                                    <View style={{ width: width * 1.5 }}>
+                                        <MathJax html={content} />
+                                    </View>
+                                </ScrollView>
                                 {
                                     image && image[0] ?
                                         <TouchableOpacity onPress={() => { console.log('wewe'), setListShowImg(image) }}>
@@ -629,7 +619,6 @@ const RenderAnwser = connect(
                             </TouchableOpacity> : <TouchableOpacity
                                 onPress={() => { setShowEdit({ id, content, image }) }}
                                 style={{
-                                    // width: 130,
                                     position: 'absolute', right: 0,
                                     top: 0, padding: 5, paddingHorizontal: 10, borderRadius: 10,
                                     flexDirection: 'row',
