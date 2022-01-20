@@ -12,7 +12,9 @@ import OptionsMenu from "react-native-option-menu";
 import ImageView from "react-native-image-viewing";
 import StarRating from 'react-native-star-rating';
 
-import MathJax from 'react-native-mathjax';
+// import MathJax from 'react-native-mathjax';
+import MathJax from '../../utils/mathJack';
+
 import {
     Placeholder,
     PlaceholderMedia,
@@ -177,8 +179,9 @@ const QnA = (props) => {
                 <Header
                     userName={get(questionData, 'user.name', '')}
                     time={questionData.timestamp}
+                    role_id={get(questionData, 'user.role_id', '')}
                     avatar={get(questionData, 'user.avatar', '')}
-                    isCheck={get(questionData, 'user.role_id') == 1 || get(questionData, 'user.role_id') == 2}
+                    // isCheck={get(questionData, 'user.role_id') == 1 || get(questionData, 'user.role_id') == 2}
                     handleBack={handleBack}
                     gotoProfile={() => _gotoProfile(get(questionData, 'user.id', ''))}
                     _handleFollow={_handleFollow}
@@ -201,10 +204,12 @@ const QnA = (props) => {
                         ListHeaderComponent={
                             <RenderQuestion
                                 item={{
-                                    content: get(questionData, 'content.parse_content'),
+                                    // content: get(questionData, 'content.parse_content'),
+                                    content: get(questionData, 'content.content'),
                                     image: get(questionData, 'content.image'),
                                     answerCount: get(questionData, 'answer', []).length,
                                 }}
+                                questionData={questionData}
                                 questionId={questionId}
                                 handleClickAnswer={handleComment}
                                 setListShowImg={setListShowImg}
@@ -433,7 +438,7 @@ const User = ({ role_id, style = {}, uri, _gotoProfile = () => { } }) => {
     )
 }
 
-const RenderColor = ({role}) => {
+const RenderColor = ({ role }) => {
     if ([5, 6, 7].includes(role)) return (
         <Icon style={{
             position: 'absolute', top: -6, right: -4,
@@ -455,8 +460,12 @@ const mapImg = {
     // 3: 3,
 }
 
-const RenderQuestion = ({ questionId, item, index, handleClickAnswer = () => { }, setListShowImg = () => { }, setShowImg }) => {
-    // console.log('item', item)
+const RenderQuestion = ({
+    questionId, item, index,
+    questionData,
+    handleClickAnswer = () => { },
+    setListShowImg = () => { }, setShowImg }) => {
+    // console.log('questionData', questionData)
     const [like, setLike] = useState(false);
     const _handleLike = useCallback(() => {
         search_services.handleLike(questionId, { "rate": like ? -1 : 1 })
@@ -471,9 +480,12 @@ const RenderQuestion = ({ questionId, item, index, handleClickAnswer = () => { }
     return (
         <View >
             <View style={{ paddingHorizontal: 8 }}>
-
-                {/* <MathJax html={item.content||''} /> */}
-                <RenderDataJson indexItem={index} content={item.content || ''} setShowImg={setShowImg} />
+                <ScrollView horizontal>
+                    <View style={{ width: width * 2 }}>
+                        <MathJax html={item.content || ''} />
+                    </View>
+                </ScrollView>
+                {/* <RenderDataJson indexItem={index} content={item.content || ''} setShowImg={setShowImg} /> */}
             </View>
             <RenderListImg listImg={item.image} setVisible={setListShowImg} />
 
@@ -535,7 +547,7 @@ const RenderAnwser = connect(
             pointAvg = 5,
             rateCount = 0
         } = item;
-        console.log('currUser_234====', item)
+        // console.log('currUser_234====', item)
 
         const [vote, setVote] = useState(5);
         const [showVote, setShowVote] = useState(false);
@@ -588,12 +600,15 @@ const RenderAnwser = connect(
                                     uri={avatar}
                                     role_id={role_id}
                                 />
-                                <Text style={{ marginBottom: 8, ...fontMaker(fontStyles.Thin), fontSize: 17 }}>{name}</Text>
+                                <View>
+                                    <Text style={{ marginBottom: 5, ...fontMaker(fontStyles.Thin), fontSize: 17 }}>{name}</Text>
+                                    <Text style={{ fontSize: 11, marginLeft: 5 }}>{getDiffTime(timestamp)} trước</Text>
+                                </View>
                             </View>
                             <View>
                                 <ScrollView horizontal>
-                                    <View style={{ width: width * 1.5 }}>
-                                        <MathJax html={content} />
+                                    <View style={{ width: width * 10 }}>
+                                        <MathJax html={content||''} />
                                     </View>
                                 </ScrollView>
                                 {
@@ -605,22 +620,7 @@ const RenderAnwser = connect(
 
                                 {/* <Text style={{}}>{JSON.stringify(parse_content)}</Text> */}
                             </View>
-                            {currUser.email !== email ? <TouchableOpacity
-                                onPress={() => { setShowVote(true) }}
-                                style={{
-                                    position: 'absolute', right: 0,
-                                    top: -10, padding: 5, paddingHorizontal: 10, borderRadius: 10,
-                                    backgroundColor: '#dedede', flexDirection: 'row',
-                                }}>
-                                <StarRating
-                                    disabled={true}
-                                    maxStars={5}
-                                    rating={rate}
-                                    fullStarColor={COLOR.MAIN}
-                                    starSize={fontSize.h2}
-                                />
-                                <Text style={{ marginLeft: 8, color: '#333' }}>{rate} ({rateCount})</Text>
-                            </TouchableOpacity> : <TouchableOpacity
+                            {currUser.email !== email ? null : <TouchableOpacity
                                 onPress={() => { setShowEdit({ id, content, image }) }}
                                 style={{
                                     position: 'absolute', right: 0,
@@ -629,23 +629,32 @@ const RenderAnwser = connect(
                                 }}
                             ><Icon style={{ fontSize: 25 }} type="AntDesign" name="edit" /></TouchableOpacity>}
                         </View>
-                        <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
+                        <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginTop: 10, paddingBottom: 10, borderColor: '#ddd', borderBottomWidth: 1 }}>
                             <View style={{ flexDirection: 'row' }}>
-                                <View style={{ flexDirection: 'row', flex: 1 }}>
-                                    <Text style={{ fontSize: 16, marginLeft: 5 }}>{getDiffTime(timestamp)}</Text>
 
-                                    <TouchableOpacity style={{ flexDirection: 'row', alignItems: 'center', marginLeft: 15 }} onPress={_handleLike}>
+                                <View style={{ flexDirection: 'row', alignItems: 'center', flex: 1 }}>
+                                    <TouchableOpacity style={{
+                                        flexDirection: 'row', borderRadius: 6, alignItems: 'center',
+                                        marginLeft: 15, paddingHorizontal: 5, paddingVertical: 9,
+                                        borderColor: '#ddd', borderWidth: 1,
+                                    }} onPress={_handleLike}>
                                         <Icon name="heart" style={{ fontSize: 14, color: like ? '#FD7A6C' : '#ddd' }} type='AntDesign' />
-                                        <Text style={{ fontSize: 16, marginLeft: 5, color: like ? '#FD7A6C' : '#222' }}>Cảm ơn ({+likeCount + (like ? 1 : 0)})</Text>
+                                        <Text style={{ fontSize: 16, marginLeft: 5, color: like ? '#FD7A6C' : '#222' }}>{+likeCount + (like ? 1 : 0)}</Text>
                                     </TouchableOpacity>
-
+                                    <TouchableOpacity
+                                        onPress={() => { setShowVote(true) }}
+                                        style={{
+                                            flexDirection: 'row', borderRadius: 6, alignItems: 'center',
+                                            marginLeft: 15, paddingHorizontal: 5, paddingVertical: 9,
+                                            borderColor: '#ddd', borderWidth: 1,
+                                        }}>
+                                        <Icon type="AntDesign" style={{ fontSize: 20, color: COLOR.MAIN }} name="star" />
+                                        <Text style={{ marginLeft: 8, color: '#333' }}>{rate || 5} ({rateCount})</Text>
+                                    </TouchableOpacity>
                                 </View>
-
                                 <TouchableOpacity onPress={() => handleComment('comment', { id, name, index })}>
-                                    {/* <Icon name="heart" style={{ fontSize: 15, color: 'red' }} type='AntDesign' /> */}
-                                    <Text style={{ fontSize: 16, marginLeft: 15 }}>Trả lời</Text>
+                                    <Text style={{ fontSize: 16, marginRight: 15, fontWeight: '500', color: '#2477E6' }}>Trả lời</Text>
                                 </TouchableOpacity>
-
                             </View>
                         </View>
                         <View>
@@ -948,7 +957,7 @@ const Header = ({
     _handleFollow = () => { },
     _handleReport = () => { },
     isFollow = false,
-    isCheck,
+    role_id,
     subtitle = ''
 }) => {
     return (
@@ -966,9 +975,7 @@ const Header = ({
                 }}>
                     <TouchableOpacity onPress={gotoProfile} style={styles.largeImgWapper} >
                         <Image style={userStyle.imgLargeWapper} source={{ uri: handleAvatarLink(avatar) }} />
-                        <View style={{ backgroundColor: '#fff', position: 'absolute', right: -3, bottom: -3, borderRadius: 10 }}>
-                            {isCheck ? <Icon style={{ color: 'green', fontSize: 15, fontWeight: 'bold' }} name="check-circle" type="FontAwesome" /> : null}
-                        </View>
+                        <RenderColor role={role_id} />
                     </TouchableOpacity>
                     <View style={{ marginLeft: 10 }}>
                         <Text style={{ fontSize: 16 }}>{userName}</Text>
