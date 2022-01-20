@@ -199,21 +199,17 @@ const QnA = (props) => {
                         refreshing={refreshing}
                         // header content
                         ListHeaderComponent={
-                            <View>
-                                <RenderQuestion
-                                    item={{
-                                        content: get(questionData, 'content.parse_content'),
-                                        image: get(questionData, 'content.image'),
-                                        answerCount: get(questionData, 'answer', []).length,
-                                    }}
-                                    questionId={questionId}
-                                    handleClickAnswer={handleComment}
-                                    setListShowImg={setListShowImg}
-                                    setShowImg={setShowImg}
-                                />
-                                <View style={{ height: 1, marginTop: 20, backgroundColor: '#ddd' }} />
-                                <ViewWithBanner />
-                            </View>
+                            <RenderQuestion
+                                item={{
+                                    content: get(questionData, 'content.parse_content'),
+                                    image: get(questionData, 'content.image'),
+                                    answerCount: get(questionData, 'answer', []).length,
+                                }}
+                                questionId={questionId}
+                                handleClickAnswer={handleComment}
+                                setListShowImg={setListShowImg}
+                                setShowImg={setShowImg}
+                            />
                         }
                         // render list anwer
                         renderItem={({ item, index }) => {
@@ -428,13 +424,29 @@ const userStyle = StyleSheet.create({
 })
 
 
-const User = ({ isCheck = false, style = {}, uri, _gotoProfile = () => { } }) => {
+const User = ({ role_id, style = {}, uri, _gotoProfile = () => { } }) => {
     return (
         <TouchableOpacity onPress={_gotoProfile} style={[userStyle.imgLargeWapper, style]} >
             <Image style={[userStyle.img, {}]} source={{ uri: handleAvatarLink(uri) }} />
-
+            <RenderColor role={role_id} />
         </TouchableOpacity>
     )
+}
+
+const RenderColor = ({role}) => {
+    if ([5, 6, 7].includes(role)) return (
+        <Icon style={{
+            position: 'absolute', top: -6, right: -4,
+            color: 'green', fontSize: 15, marginLeft: 5, fontWeight: 'bolid'
+        }} name="check-circle" type="FontAwesome" />
+    );
+    if ([2, 4].includes(role)) return (
+        <Icon style={{
+            position: 'absolute', top: -6, right: -4,
+            color: COLOR.MAIN, fontSize: 15, marginLeft: 5, fontWeight: 'bolid'
+        }} name="check-circle" type="FontAwesome" />
+    );
+    return null
 }
 
 const mapImg = {
@@ -464,37 +476,32 @@ const RenderQuestion = ({ questionId, item, index, handleClickAnswer = () => { }
                 <RenderDataJson indexItem={index} content={item.content || ''} setShowImg={setShowImg} />
             </View>
             <RenderListImg listImg={item.image} setVisible={setListShowImg} />
+
+            <View style={{ height: 1, marginTop: 20, backgroundColor: '#ddd' }} />
+            <ViewWithBanner />
             <View style={{
                 flexDirection: 'row',
                 borderTopColor: '#cecece', borderTopWidth: 1,
                 alignItems: 'flex-end',
                 paddingTop: 8,
-                marginTop: 10,
+                marginTop: 20,
                 paddingHorizontal: 8
                 // justifyContent: 'flex-end'
             }}>
                 {/* <ListUser /> */}
-                <View style={{ flexDirection: 'row', justifyContent: 'space-between', flex: 1, alignItems: 'center' }}>
-                    <View style={{ flexDirection: 'row' }}>
-                        {/* <TouchableOpacity
-                            onPress={_handleLike}
-                            style={{ flexDirection: 'row', alignItems: 'center' }}
-                        >
-                            <Icon name="heart" type="EvilIcons" style={{ fontSize: 38, color: like ? COLOR.MAIN : '#111' }} />
-                            <Text style={{ fontSize: 18, color: like ? COLOR.MAIN : '#111' }}>Like</Text>
-                        </TouchableOpacity> */}
 
-                        <TouchableOpacity
-                            onPress={() => handleClickAnswer()}
-                            style={{ flexDirection: 'row', marginLeft: 0, alignItems: 'center' }}>
-                            <Icon name="comment" type="EvilIcons" style={{ fontSize: 28 }} />
-                            <Text style={{ fontSize: 18 }}>Trả lời</Text>
-                        </TouchableOpacity>
-                    </View>
-                    <View style={{ flexDirection: 'row' }}>
-                        <Text> {item.answerCount} câu trả lời</Text>
-                    </View>
-                </View>
+                {/* <View style={{ flexDirection: 'row', justifyContent: 'center', flex: 1, alignItems: 'center' }}> */}
+                <TouchableOpacity
+                    onPress={() => handleClickAnswer()}
+                    style={{
+                        flexDirection: 'row', marginLeft: 0,
+                        flex: 1, alignItems: 'center', justifyContent: 'center', paddingVertical: 8,
+                        backgroundColor: '#F1F3FA', borderRadius: 10
+                    }}>
+                    <Icon name="comment" type="EvilIcons" style={{ fontSize: 28, color: '#1589CB' }} />
+                    <Text style={{ fontSize: 18, color: '#1589CB', fontWeight: '600' }}>Trả lời ({item.answerCount})</Text>
+                </TouchableOpacity>
+                {/* </View> */}
 
             </View>
         </View>
@@ -570,7 +577,7 @@ const RenderAnwser = connect(
 
         return (
             <View
-            style={styles.itemQ}
+                style={styles.itemQ}
             >
                 <View style={{ flexDirection: 'row', paddingHorizontal: 10, marginTop: 15 }}>
                     <View style={{ flex: 1 }}>
@@ -579,12 +586,9 @@ const RenderAnwser = connect(
                                 <User style={{ marginRight: 5 }}
                                     _gotoProfile={() => _gotoProfile(useID)}
                                     uri={avatar}
-                                    isCheck={role_id == 1 || role_id == 2}
+                                    role_id={role_id}
                                 />
                                 <Text style={{ marginBottom: 8, ...fontMaker(fontStyles.Thin), fontSize: 17 }}>{name}</Text>
-                                {(role_id == 1 || role_id == 2) ?
-                                    <Icon style={{ color: COLOR.MAIN, fontSize: 15, marginLeft: 5, fontWeight: 'bolid' }} name="check-circle" type="FontAwesome" />
-                                    : null}
                             </View>
                             <View>
                                 <ScrollView horizontal>

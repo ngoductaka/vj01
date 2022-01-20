@@ -471,7 +471,7 @@ const Class = memo((props) => {
 								}}
 								keyExtractor={(item, index) => index + 'game_item'}
 							/>
-							{/* <LiveYTB navigation={props.navigation} /> */}
+							<LiveYTB navigation={props.navigation} />
 
 
 							{/* <ViewWithBanner /> */}

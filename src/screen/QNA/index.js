@@ -609,9 +609,10 @@ const RenderQuestion = ({ item, index, hanldleClick, _handleNavigate = () => { }
                 <View style={styles.subjectQ}>
                     <TouchableOpacity onPress={() => _handleNavigate(get(item, 'user.id', ''))} style={styles.largeImgWapper} >
                         <Image style={userStyle.img} source={{ uri: handleAvatarLink(avatar) }} />
-                        {(role_id == 1 || role_id == 2) ? <View style={{ backgroundColor: '#fff', position: 'absolute', right: -3, bottom: -3, borderRadius: 10 }}>
+                        {/* {1 ? <View style={{ backgroundColor: '#fff', position: 'absolute', right: -3, bottom: -3, borderRadius: 10 }}>
                             <Icon style={{ color: 'green', fontSize: 15, fontWeight: 'bolid' }} name="check-circle" type="FontAwesome" />
-                        </View> : null}
+                        </View> : null} */}
+                        <RenderColor role={role_id} />
                     </TouchableOpacity>
                     <View>
                         <Text style={styles.subjectTextQ}>{get(subject, 'subject_name', '') + ' • '} {getDiffTime(timestamp)}</Text>
@@ -728,3 +729,18 @@ const Qna = React.memo(({ navigation = null }) => {
         </TouchableOpacity >
     )
 })
+const RenderColor = ({role}) => {
+    if ([5, 6, 7].includes(role)) return (
+        <Icon style={{
+            position: 'absolute', top: -6, right: -4,
+            color: 'green', fontSize: 15, marginLeft: 5, fontWeight: 'bolid'
+        }} name="check-circle" type="FontAwesome" />
+    );
+    if ([2, 4].includes(role)) return (
+        <Icon style={{
+            position: 'absolute', top: -6, right: -4,
+            color: COLOR.MAIN, fontSize: 15, marginLeft: 5, fontWeight: 'bolid'
+        }} name="check-circle" type="FontAwesome" />
+    );
+    return null
+}
