@@ -480,11 +480,11 @@ const RenderQuestion = ({
     return (
         <View >
             <View style={{ paddingHorizontal: 8 }}>
-                <ScrollView horizontal>
-                    <View style={{ width: width * 2 }}>
+                {/* <ScrollView horizontal>
+                    <View style={{ width: width * 2 }}> */}
                         <MathJax html={item.content || ''} />
-                    </View>
-                </ScrollView>
+                    {/* </View>
+                </ScrollView> */}
                 {/* <RenderDataJson indexItem={index} content={item.content || ''} setShowImg={setShowImg} /> */}
             </View>
             <RenderListImg listImg={item.image} setVisible={setListShowImg} />
@@ -606,11 +606,11 @@ const RenderAnwser = connect(
                                 </View>
                             </View>
                             <View>
-                                <ScrollView horizontal>
-                                    <View style={{ width: width * 10 }}>
+                                {/* <ScrollView horizontal>
+                                    <View style={{ width: width * 2 }}> */}
                                         <MathJax html={content||''} />
-                                    </View>
-                                </ScrollView>
+                                    {/* </View>
+                                </ScrollView> */}
                                 {
                                     image && image[0] ?
                                         <TouchableOpacity onPress={() => { console.log('wewe'), setListShowImg(image) }}>
@@ -630,8 +630,7 @@ const RenderAnwser = connect(
                             ><Icon style={{ fontSize: 25 }} type="AntDesign" name="edit" /></TouchableOpacity>}
                         </View>
                         <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginTop: 10, paddingBottom: 10, borderColor: '#ddd', borderBottomWidth: 1 }}>
-                            <View style={{ flexDirection: 'row' }}>
-
+                            <View style={{ flexDirection: 'row', alignItems: 'center' }}>
                                 <View style={{ flexDirection: 'row', alignItems: 'center', flex: 1 }}>
                                     <TouchableOpacity style={{
                                         flexDirection: 'row', borderRadius: 6, alignItems: 'center',

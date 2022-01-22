@@ -31,24 +31,23 @@ class MathJax extends React.Component {
 
 		const { width, height } = JSON.parse(message.nativeEvent.data);
 		this.setState({
-			width,
+			width: width,
 			height,
-			realWidth: screen.width
 		});
 		setTimeout(() => {
 			this.setState({
-				width,
+				width: Math.max(width, screen.width),
 				height,
-				realWidth: width
+				show: true,
 			});
-			setTimeout(() => {
-				this.setState({
-					width,
-					height,
-					realWidth: screen.width
-				});
-	
-			}, 1000)
+			// setTimeout(() => {
+			// 	this.setState({
+			// 		width: Math.max(width, screen.width),
+			// 		height,
+			// 		realWidth: screen.width
+			// 	});
+
+			// }, 1000)
 
 		}, 1000)
 	}
@@ -72,7 +71,7 @@ class MathJax extends React.Component {
 			</script>
 
 			<script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js"></script>
-			<div id="formula" style="font-size: 13px">
+			<div id="formula" style="font-size: 15px">
 				${content}
 			</div>
 		`;
@@ -84,20 +83,19 @@ class MathJax extends React.Component {
 		const props = Object.assign({}, this.props, { html: undefined });
 
 		return (
-			<View style={{ width: this.state.width, height: this.state.height, ...props.style }}>
-				<WebView
-					scrollEnabled={false}
-					onMessage={this.handleMessage.bind(this)}
-					source={{ html }}
-					{...props}
-				/>
-				{/* <TouchableOpacity onPress={() => this.setState({
-					...this.state,
-					realWidth: this.state.width,
-					scrollEnabled: true
-				})}>
-					<Text>detail</Text>
-				</TouchableOpacity> */}
+			<View>
+				<ScrollView horizontal={this.state.show}>
+					<View style={{ width: this.state.width }}>
+						<View style={{ height: this.state.height, ...props.style }}>
+							<WebView
+								scrollEnabled={false}
+								onMessage={this.handleMessage.bind(this)}
+								source={{ html }}
+								{...props}
+							/>
+						</View>
+					</View>
+				</ScrollView>
 			</View>
 		);
 	}
