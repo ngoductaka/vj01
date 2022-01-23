@@ -173,7 +173,10 @@ export const ResultView = ({ navigation }) => {
 }
 
 const CameraView = ({
-    setResultSearch, goBack, _saveHis = () => { }, dataHis = [],
+    dataHis = [],
+    setResultSearch,
+    goBack,
+    _saveHis = () => { },
     goToTextQna = () => { },
     navigationToResult = () => { },
     setPath
@@ -187,12 +190,19 @@ const CameraView = ({
     const [showNote, setShowNote] = useState(true)
     const [url, setUrl] = useState('')
     const [response, setResponse] = useState(null)
+    const [loadImg, setLoadImg] = useState(false)
 
     const takePicture = async () => {
-        if (camera && camera.current) {
-            const options = {};
-            const data = await camera.current.takePictureAsync(options);
-            setUrl(data.uri)
+        try {
+            if (camera && camera.current) {
+                setLoadImg(true)
+                const options = {};
+                const data = await camera.current.takePictureAsync(options);
+                setLoadImg(false);
+                setUrl(data.uri)
+            }
+        } catch (err) {
+            setLoadImg(false);
         }
     };
 
@@ -393,14 +403,13 @@ const CameraView = ({
                         <Icon type="FontAwesome" name="photo" style={{ color: COLOR.MAIN }} />
                         <Text style={{ color: COLOR.MAIN, marginTop: 2 }}>Chọn ảnh</Text>
                     </TouchableOpacity>
-                    <TouchableOpacity onPress={takePicture} style={[styles[`NORMAL_btn_search`]]}>
-                    </TouchableOpacity>
+                    {loadImg ? <ActivityIndicator color={COLOR.MAIN} size={'large'} /> : <TouchableOpacity onPress={takePicture} style={[styles[`NORMAL_btn_search`]]}></TouchableOpacity>}
                     <TouchableOpacity onPress={goToTextQna} style={styles[`${'NORMAL'}_btnText`]}>
                         <Icon type="MaterialCommunityIcons" name="pen-plus" style={{ color: COLOR.MAIN }} />
                         <Text style={{ color: COLOR.MAIN, marginTop: 2 }}>Đặt câu hỏi</Text>
                     </TouchableOpacity>
-                </View> : <View style={styles[`${'NORMAL'}_wrapper`]}>
-
+                </View> :
+                    <View style={styles[`${'NORMAL'}_wrapper`]}>
                         <TouchableOpacity onPress={() => setUrl('')} style={styles[`${'NORMAL'}_btnText`]}>
                             <Icon type="MaterialCommunityIcons" name="close" style={{ color: COLOR.MAIN }} />
                             <Text style={{ color: COLOR.MAIN, marginTop: 2 }}>Chụp ảnh khác</Text>
