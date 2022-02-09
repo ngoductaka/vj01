@@ -33,6 +33,7 @@ const TableContent = ({
             </View> : null}
             {
                 listCourse.map((chapter = {}, index) => {
+                    console.log('dnd_chapter', chapter)
                     return (
                         <View>
                             <TouchableOpacity
@@ -181,7 +182,7 @@ const RenderListLesson = ({ chapter, index, l1, l2, _navigateToCourse,
                     const videoData = media.find(m => m.type == "video/mp4") || {};
                     const listPdf = media.filter(m => m.type == "application/pdf");
                     // "preview": "active",
-
+                    // console.log('course.status', course.status);
                     if (course.status !== 'active') return null;
                     return (
                         <View style={{ borderRadius: 4, paddingRight: 3 }}>

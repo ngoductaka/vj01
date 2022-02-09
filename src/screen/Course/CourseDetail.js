@@ -67,6 +67,7 @@ const CourseDetail = (props) => {
         if (videoItem.id) {
             getDetailCourse(videoItem.id)
                 .then(({ data }) => {
+                    console.log('daaaa', data)
                     if (showConsoult) {
                         setListCourse([{
                             "name": "Danh sách bài học miễn phí",

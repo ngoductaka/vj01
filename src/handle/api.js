@@ -53,7 +53,7 @@ request.interceptors.response.use((response) => {
 	}
 	// console.log('<error_ request.interceptors.response>', error.response)
 	const originalRequest = error.response.config;
-	// console.log('-----ssssss', originalRequest);
+	// console.log('-----err', originalRequest);
 
 	// refresh token expired
 	if (error.response.status === 401 && originalRequest.url === `${endpoints.SOCIAL_LOGIN}`) {
@@ -114,14 +114,14 @@ request.interceptors.response.use((response) => {
 
 const api = {
 	get: (url, baseURL = endpoints.BASE_URL) => {
-		console.log('<get_url>', url)
+		// console.log('<get_url>', url)
 		return request({
 			method: 'get',
 			baseURL,
 			url: url
 		})
 			.then(response => {
-				return response.data;
+				return response?.data;
 			})
 			.catch(err => {
 				// console.log('----error------', err);
@@ -131,7 +131,7 @@ const api = {
 	// post: (url, data, header = {}) => {
 	// 	console.log('<--post-->', url, data, header);
 	post: (url, data, header = {}, baseURL = endpoints.BASE_URL) => {
-		console.log('post ', { url, data });
+		// console.log('post ', { url, data });
 		return request({
 			method: 'post',
 			url: url,
@@ -164,7 +164,7 @@ const api = {
 			});
 	},
 	postFile: (url, data, header = {}, baseURL = endpoints.BASE_URL) => {
-		console.log('post ', { url }, { data });
+		// console.log('post ', { url }, { data });
 		return request({
 			method: 'post',
 			url: url,

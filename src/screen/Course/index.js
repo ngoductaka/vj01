@@ -84,11 +84,11 @@ const Course = (props) => {
         setLoadingGradle(true)
         getCouse({ classlevel: grade })
             .then(({ data }) => {
-                // console.log('datadatadata444', data)
+                console.log('datadatadata444', data)
                 setGradeCourse(data)
             })
             .catch(err => {
-
+                console.log('dnd)33333', err)
             })
             .finally(() => {
                 setLoadingGradle(false)
@@ -101,6 +101,7 @@ const Course = (props) => {
         setLoadingGradle(true)
         getCouse({ group: getGroupByClass(grade).query })
             .then(({ data }) => {
+                console.log('dddd', data)
                 setGroupCourse(data)
             })
             .catch(err => {
