@@ -17,8 +17,24 @@ import MenuItem from '../../component/menuItem';
 import { HeaderBarWithBack } from '../../component/Header/Normal';
 import { User } from '../../component/User';
 import { helpers } from '../../utils/helpers';
+import api from '../../handle/api';
+import { endpoints } from '../../constant/endpoints';
 
 const App = (props) => {
+    const [dataLive, setDataLive] = useState([1, 2, 3]);
+    useEffect(() => {
+        console.log('dnd123123')
+        const endPoint = `${endpoints.ROOT_URL}/courses/trending-livestreams`
+        // api.get(`${endpoints.ROOT_URL}/courses/livestreams?page=1&limit=5&sort=trending`)
+        api.get(endPoint)
+            .then(({ data }) => {
+                console.log('dddddd', data)
+                // setDataLive(data)
+            })
+            .catch(err => {
+                console.log('errr', err)
+            })
+    }, [])
 
     return (
         <SafeAreaView style={{ flex: 1 }}>
@@ -27,19 +43,18 @@ const App = (props) => {
                 <View style={{ backgroundColor: '#fff', marginBottom: 10, padding: 10 }}>
                     <SeeAllTitle
                         // onPress={() => props.navigation.navigate('TopicCourse', { advert, topic: `Khoá học của tôi`, data: myCourse, showConsoult: false })}
-                        text={`Bài giảng đạt điểm cao`} />
-                    <ScrollView horizontal showsHorizontalScrollIndicator={false}>
-                        {[1, 2, 3].map(videoItem => {
-                            return <ItemYtb navigation={props.navigation} />
-                        })}
-                    </ScrollView>
-
-                    <SeeAllTitle
-                        // onPress={() => props.navigation.navigate('TopicCourse', { advert, topic: `Khoá học của tôi`, data: myCourse, showConsoult: false })}
                         text={`Bài giảng miễn phí hôm nay`} />
                     <ScrollView horizontal showsHorizontalScrollIndicator={false}>
                         {[1, 2, 3].map(videoItem => {
                             return <ItemYtbFree navigation={props.navigation} />
+                        })}
+                    </ScrollView>
+                    <SeeAllTitle
+                        // onPress={() => props.navigation.navigate('TopicCourse', { advert, topic: `Khoá học của tôi`, data: myCourse, showConsoult: false })}
+                        text={`Bài giảng đạt điểm cao`} />
+                    <ScrollView horizontal showsHorizontalScrollIndicator={false}>
+                        {dataLive && dataLive[0] && dataLive.map(videoItem => {
+                            return <ItemYtb navigation={props.navigation} data={videoItem} />
                         })}
                     </ScrollView>
                 </View>
@@ -47,6 +62,10 @@ const App = (props) => {
         </SafeAreaView>
     )
 };
+
+const FreeView = () => {
+
+}
 
 export default App;
 
@@ -98,7 +117,8 @@ const ItemYtbFree = ({ navigation }) => {
 }
 
 
-const ItemYtb = ({ navigation }) => {
+export const ItemYtb = ({ navigation, data }) => {
+    console.log('dddd', data);
     return (
         <View style={{
             paddingHorizontal: 10,
@@ -121,9 +141,9 @@ const ItemYtb = ({ navigation }) => {
                     flexDirection: 'row',
                 }}>
                     <View style={{ flex: 1 }}>
-                        <Text numberOfLines={2} style={{ fontSize: 20, fontWeight: '500' }}>Toán lớp 6 (bộ sách cánh diều)</Text>
+                        <Text numberOfLines={2} style={{ fontSize: 20, fontWeight: '500' }}>{'Giải đề toán 11'}</Text>
                     </View>
-                    <Text style={{ textAlign: 'right', marginLeft: 7, fontWeight: '600' }}>Từ 120k/tháng</Text>
+                    {/* <Text style={{ textAlign: 'right', marginLeft: 7, fontWeight: '600' }}>Từ 120k/tháng</Text> */}
                 </View>
                 <Text style={{ marginVertical: 5 }}>Giải đề chi tiết bộ đề luyện thi 2022</Text>
 

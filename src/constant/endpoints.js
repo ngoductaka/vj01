@@ -1,5 +1,5 @@
-// const root = 'https://apps.vietjack.com:8081';
-const root = 'http://test.vietjack.com:8181';
+const root = 'https://apps.vietjack.com:8081';
+// const root = 'http://test.vietjack.com:8181';
 // const root = 'http://45.124.87.227:8181';
 export const endpoints = {
     BASE_URL: `${root}/api`,

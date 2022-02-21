@@ -436,11 +436,9 @@ const Class = memo((props) => {
 									}
 								</View>
 							)
-
-
 					}
-					{delayShow2 ? null :
-						<Qna navigation={props.navigation} />}
+					{/* {delayShow2 ? null :
+						<LiveYTB navigation={props.navigation} />} */}
 					{delayShow2 ? null :
 						<LiveStream grade={props.userInfo.class} />}
 
@@ -471,7 +469,8 @@ const Class = memo((props) => {
 								}}
 								keyExtractor={(item, index) => index + 'game_item'}
 							/>
-							{/* <LiveYTB navigation={props.navigation} /> */}
+
+							<Qna navigation={props.navigation} />
 
 
 							{/* <ViewWithBanner /> */}
@@ -976,7 +975,7 @@ const HeaderView = (props, noti = 0,
 				</View>
 
 				{/* banner */}
-				<BannerCourse name={get(props, 'userInfo.user.name', '')} />
+				{/* <BannerCourse name={get(props, 'userInfo.user.name', '')} /> */}
 				{/*  */}
 				{/* <View style={{ paddingHorizontal: 10, paddingTop: 0 }} >
 					<Animatable.Text duration={2000} animation="bounceInLeft" style={{ ...fontMaker({ weight: fontStyles.Light }), color: '#777BF0', fontSize: 26, }}>{GetTime()}</Animatable.Text>
@@ -1023,7 +1022,6 @@ const Qna = React.memo(({ navigation }) => {
 const LiveYTB = React.memo(({ navigation }) => {
 	return (
 		<TouchableOpacity onPress={() => {
-			console.log('asdfasd')
 			navigation.navigate('HomeLiveYTB')
 		}} style={{
 			flexDirection: 'row', alignItems: 'center',

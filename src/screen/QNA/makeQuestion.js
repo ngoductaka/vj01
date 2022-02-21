@@ -95,6 +95,8 @@ export const ResultView = ({ navigation }) => {
     const path = navigation.getParam('path', '');
     const resultSearch = navigation.getParam('resultSearch', '');
 
+    const scrollRef = useRef();
+
     const [activeSlide, setActiveSlide] = useState(0)
     const resultSearchFilter = React.useMemo(() => {
         return resultSearch.filter(i => !!get(i, 'answers[0].question_id'))
@@ -108,7 +110,7 @@ export const ResultView = ({ navigation }) => {
                     <Text style={{ fontSize: 20, fontWeight: 'bold', marginVertical: 10, marginLeft: 20 }}>Kết quả tìm kiếm: </Text>
                 </View>
                 {path ? <Image source={{ uri: path }} style={{ height: 100 }} resizeMode="contain" /> : null}
-                <View style={{ flexDirection: 'row' }}>
+                <View style={{ flexDirection: 'row', justifyContent: 'center', marginTop: 10 }}>
                     {
                         new Array(resultSearchFilter.length).fill(0).map((_, index) => {
                             return <View style={{
@@ -120,7 +122,30 @@ export const ResultView = ({ navigation }) => {
                         })
                     }
                 </View>
+                <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginTop: -5, paddingHorizontal: 10 }}>
+                    <TouchableOpacity style={{
+                        paddingVertical: 5, paddingHorizontal: 8,
+                        backgroundColor: COLOR.MAIN,
+                        borderRadius: 10, flexDirection: 'row', alignItems: 'center'
+                    }} onPress={() => {
+                        scrollRef.current.snapToPrev()
+                    }}>
+                        <Icon type="AntDesign" name="left" style={{ fontSize: 17, marginRight: 5, color: '#fff' }} />
+                        <Text style={{ color: '#fff' }}>Pre</Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity style={{
+                        paddingHorizontal: 8,
+                        backgroundColor: COLOR.MAIN,
+                        borderRadius: 10, flexDirection: 'row', alignItems: 'center'
+                    }} onPress={() => {
+                        scrollRef.current.snapToNext()
+                    }}>
+                        <Text style={{ color: '#fff' }}>Next</Text>
+                        <Icon type="AntDesign" name="right" style={{ fontSize: 17, marginLeft: 5, color: '#fff' }} />
+                    </TouchableOpacity>
+                </View>
                 <Carousel
+                    scrollEnabled={false}
                     data={resultSearchFilter}
                     onSnapToItem={index => setActiveSlide(index)}
                     renderItem={({ item, index }) => {
@@ -142,6 +167,7 @@ export const ResultView = ({ navigation }) => {
                             />
                         )
                     }}
+                    ref={scrollRef}
                     sliderWidth={width}
                     parallaxFactor={0.4}
                     itemWidth={width}
@@ -190,7 +216,7 @@ const CameraView = ({
     const [showNote, setShowNote] = useState(true)
     const [url, setUrl] = useState('')
     const [response, setResponse] = useState(null)
-    const [loadImg, setLoadImg] = useState(false)
+    const [loadImg, setLoadImg] = useState(false);
 
     const takePicture = async () => {
         try {
@@ -228,7 +254,8 @@ const CameraView = ({
                             { text: "OK", onPress: () => console.log("OK Pressed") }
                         ]
                     );
-                    setLoading(false)
+                    setLoading(false);
+                    setLoadImg(false);
                 }
             } else {
                 Alert.alert(
@@ -239,10 +266,12 @@ const CameraView = ({
                     ]
                 );
                 setLoading(false)
+                setLoadImg(false);
                 console.log("No img")
             }
         } catch (err) {
-            setLoading(false)
+            setLoading(false);
+            setLoadImg(false);
             console.log('err', err)
             Alert.alert(
                 "Có lỗi!",
@@ -279,7 +308,8 @@ const CameraView = ({
                 );
             })
             .finally(() => {
-                setLoading(false)
+                setLoading(false);
+                setLoadImg(false);
             })
     };
     const _handleSelectPhoto = () => {
@@ -414,8 +444,9 @@ const CameraView = ({
                             <Icon type="MaterialCommunityIcons" name="close" style={{ color: COLOR.MAIN }} />
                             <Text style={{ color: COLOR.MAIN, marginTop: 2 }}>Chụp ảnh khác</Text>
                         </TouchableOpacity>
-                        <TouchableOpacity onPress={() => {
-                            if (cropViewRef.current) {
+                        <TouchableOpacity loading={loadImg} onPress={() => {
+                            if (cropViewRef.current && !loadImg) {
+                                setLoadImg(true)
                                 cropViewRef.current.saveImage(true, 100)
                             } else {
                                 Alert.alert(
@@ -429,7 +460,7 @@ const CameraView = ({
                         }}
                             style={styles[`${'NORMAL'}_btnPhoto`]}
                         >
-                            <Icon type="FontAwesome" name="check" style={{ color: COLOR.MAIN }} />
+                            {loadImg ? <ActivityIndicator color={COLOR.MAIN} size={'large'} /> : <Icon type="FontAwesome" name="check" style={{ color: COLOR.MAIN }} />}
                             <Text style={{ color: COLOR.MAIN, marginTop: 2 }}>Chọn ảnh</Text>
                         </TouchableOpacity>
 

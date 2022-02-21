@@ -230,8 +230,8 @@ const RenderQnAForImg = ({ title, onPress, viewCount, index, book, grade, answer
 						backgroundColor: COLOR.MAIN
 					}}
 				>
-					<Text>Xem chi tiết</Text>
-					<Icon name="right" style={{ fontSize: 20, marginLeft: 10 }} type="AntDesign" />
+					<Text style={{color: '#fff'}}>Xem chi tiết</Text>
+					<Icon name="right" style={{ fontSize: 20, marginLeft: 10, color: '#fff' }} type="AntDesign" />
 				</TouchableOpacity>
 			</View>
 			{
