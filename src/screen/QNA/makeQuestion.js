@@ -122,7 +122,7 @@ export const ResultView = ({ navigation }) => {
                         })
                     }
                 </View>
-                <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginTop: -5, paddingHorizontal: 10 }}>
+                <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginTop: 5, paddingHorizontal: 10 }}>
                     <TouchableOpacity style={{
                         paddingVertical: 5, paddingHorizontal: 8,
                         backgroundColor: COLOR.MAIN,

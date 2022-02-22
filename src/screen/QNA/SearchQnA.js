@@ -156,7 +156,7 @@ const QnA = (props) => {
                                 return (
                                     <RenderQnASearch
                                         onPress={() => { props.navigation.navigate('QuestionDetail', { questionId }) }}
-                                        {...{ title, grade: "Lớp " + grade, book: subject_name }}
+                                        {...{ title, index, grade: "Lớp " + grade, book: subject_name }}
                                         answers_count={answers_count}
                                     />
                                 )

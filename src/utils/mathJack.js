@@ -6,6 +6,18 @@ const screen = Dimensions.get('window');
 
 const defaultOptions = {
 	messageStyle: 'none',
+	extensions:
+		['mml2jax.js', 'MathMenu.js', 'MathZoom.js', 'AssistiveMML.js', 'a11y/accessibility-menu.js',],
+	jax: ['input/MathML', 'output/CommonHTML'],
+	tex2jax: {
+		inlineMath: [['$', '$'], ['\\(', '\\)']],
+		displayMath: [['$$', '$$'], ['\\[', '\\]']],
+		processEscapes: true,
+	},
+	TeX: { extensions: ['AMSmath.js', 'AMSsymbols.js', 'noErrors.js', 'noUndefined.js'], },
+}
+const dnd = {
+	messageStyle: 'none',
 	extensions: ['tex2jax.js'],
 	jax: ['input/TeX', 'output/HTML-CSS'],
 	tex2jax: {
@@ -54,7 +66,7 @@ class MathJax extends React.Component {
 
 	wrapMathjax(content) {
 		const options = JSON.stringify(
-			Object.assign({}, defaultOptions, this.props.mathJaxOptions)
+			Object.assign({}, content.includes('<math') ? defaultOptions: dnd, this.props.mathJaxOptions)
 		);
 
 		return `
