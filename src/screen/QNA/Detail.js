@@ -12,7 +12,6 @@ import OptionsMenu from "react-native-option-menu";
 import ImageView from "react-native-image-viewing";
 import StarRating from 'react-native-star-rating';
 
-// import MathJax from 'react-native-mathjax';
 import MathJax from '../../utils/mathJack';
 
 import {

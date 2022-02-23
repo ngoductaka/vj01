@@ -447,7 +447,7 @@ const CameraView = ({
                         <TouchableOpacity loading={loadImg} onPress={() => {
                             if (cropViewRef.current && !loadImg) {
                                 setLoadImg(true)
-                                cropViewRef.current.saveImage(true, 100)
+                                cropViewRef.current.saveImage(true, 30)
                             } else {
                                 Alert.alert(
                                     "Có lỗi!",

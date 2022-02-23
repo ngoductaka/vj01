@@ -20,7 +20,6 @@ import { WebView } from 'react-native-webview';
 import { get, isEmpty } from 'lodash';
 import HTML from 'react-native-render-html';
 
-// import MathJax from 'react-native-mathjax';
 import {
   IGNORED_TAGS, alterNode, makeTableRenderer,
   cssRulesFromSpecs, defaultTableStylesSpecs,

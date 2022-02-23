@@ -2,16 +2,14 @@ import React from 'react';
 import {
 	View, Text, StyleSheet, TouchableOpacity, Dimensions, Image, ScrollView
 } from 'react-native';
-import MathJax from 'react-native-mathjax';
 import { Icon } from 'native-base';
 import { isNumber } from 'lodash';
 import { Thumbnail } from 'react-native-thumbnail-video';
-import HTML from 'react-native-render-html';
 
 import { fontSize, blackColor, COLOR } from '../../handle/Constant';
 import { fontMaker, fontStyles } from '../../utils/fonts';
 import { mapBooktype } from '../../constant';
-import FastImage from 'react-native-fast-image';
+import MathJax from '../../utils/mathJack';
 import { helpers } from '../../utils/helpers';
 import { RenderHtmlCustom } from '../../screen/Lesson/saved';
 

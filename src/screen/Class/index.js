@@ -1005,7 +1005,7 @@ const Qna = React.memo(({ navigation }) => {
 			flexDirection: 'row', alignItems: 'center',
 			backgroundColor: 'rgba(254, 225, 210)',
 		}}>
-			<View style={{ flex: 1, alignItems: 'center' }}>
+			<View style={{ flex: 1, alignItems: 'center', marginLeft: 5 }}>
 				<Text style={{ fontSize: 23, color: COLOR.MAIN, fontWeight: 'bold', marginTop: 20, }}>Chụp ảnh bài tập</Text>
 				<Text style={{ fontSize: 16, color: COLOR.MAIN, opacity: 0.8, fontWeight: '400', marginTop: 10 }}>Giải nhanh bài tập bằng Camera </Text>
 				{/* <Text style={{ fontSize: 14, color: '#222', marginTop: 0, textAlign: 'center', fontWeight: 'bold' }}> (Thử nghiệm) </Text> */}
