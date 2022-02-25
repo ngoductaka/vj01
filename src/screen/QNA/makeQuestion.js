@@ -14,6 +14,7 @@ import * as ImagePicker from "react-native-image-picker"
 import ModalBox from 'react-native-modalbox';
 import Carousel, { Pagination } from 'react-native-snap-carousel';
 import { connect, useDispatch } from 'react-redux';
+import ImageResizer from 'react-native-image-resizer';
 
 import { fontSize, COLOR, unitIntertitialId } from '../../handle/Constant';
 // import imagePicker, { optionDefault } from '../../utils/imagePicker';
@@ -235,17 +236,19 @@ const CameraView = ({
     const _handleUploadImg = async (file) => {
         try {
             if (file && file.uri) {
-                setPath(file.uri)
+                const convertUrl = await ImageResizer.createResizedImage(file.uri, file.width/2, file.height/2, 'JPEG', 70, 0, undefined, false, { mode: 'contain', onlyScaleDown: true })
+                // return 1;
+                setPath(convertUrl.uri)
                 setLoading(true)
                 const dataUpload = new FormData();
-                dataUpload.append("file", { uri: file.uri, name: get(file, 'filename', 'dnd.jpg'), type: 'multipart/form-data', });
+                dataUpload.append("file", { uri: convertUrl.uri, name: convertUrl.name || get(file, 'filename', 'dnd.jpg'), type: 'multipart/form-data', });
 
                 const data = await services.uploadFile('http://45.117.82.169:5411/api/vj/extracteq', dataUpload);
 
                 const result = get(data, 'data.result.lines', '');
                 if (result && result[0]) {
                     const resultLine = result.reduce((car, cur) => `${car} \n ${cur}`);
-                    handleSearch({ questionContent: resultLine, imgData: { uri: file.uri, name: get(file, 'filename', 'dnd.jpg') } })
+                    handleSearch({ questionContent: resultLine, imgData: { uri: convertUrl.uri, name: get(file, 'filename', 'dnd.jpg') } })
                 } else {
                     Alert.alert(
                         "Không có dữ liệu",
@@ -447,7 +450,7 @@ const CameraView = ({
                         <TouchableOpacity loading={loadImg} onPress={() => {
                             if (cropViewRef.current && !loadImg) {
                                 setLoadImg(true)
-                                cropViewRef.current.saveImage(true, 30)
+                                cropViewRef.current.saveImage(true, 20)
                             } else {
                                 Alert.alert(
                                     "Có lỗi!",

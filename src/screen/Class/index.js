@@ -437,8 +437,9 @@ const Class = memo((props) => {
 								</View>
 							)
 					}
-					{/* {delayShow2 ? null :
-						<LiveYTB navigation={props.navigation} />} */}
+					{delayShow2 ? null :
+						<Qna navigation={props.navigation} />}
+					{/* <LiveYTB navigation={props.navigation} /> */}
 					{delayShow2 ? null :
 						<LiveStream grade={props.userInfo.class} />}
 
@@ -470,7 +471,7 @@ const Class = memo((props) => {
 								keyExtractor={(item, index) => index + 'game_item'}
 							/>
 
-							<Qna navigation={props.navigation} />
+							{/* <Qna navigation={props.navigation} /> */}
 
 
 							{/* <ViewWithBanner /> */}
