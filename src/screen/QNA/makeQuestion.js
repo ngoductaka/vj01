@@ -236,7 +236,7 @@ const CameraView = ({
     const _handleUploadImg = async (file) => {
         try {
             if (file && file.uri) {
-                const convertUrl = await ImageResizer.createResizedImage(file.uri, file.width/2, file.height/2, 'JPEG', 70, 0, undefined, false, { mode: 'contain', onlyScaleDown: true })
+                const convertUrl = await ImageResizer.createResizedImage(file.uri, file.width / 2, file.height / 2, 'JPEG', 70, 0, undefined, false, { mode: 'contain', onlyScaleDown: true })
                 // return 1;
                 setPath(convertUrl.uri)
                 setLoading(true)
@@ -448,10 +448,7 @@ const CameraView = ({
                             <Text style={{ color: COLOR.MAIN, marginTop: 2 }}>Chụp ảnh khác</Text>
                         </TouchableOpacity>
                         <TouchableOpacity loading={loadImg} onPress={() => {
-                            if (cropViewRef.current && !loadImg) {
-                                setLoadImg(true)
-                                cropViewRef.current.saveImage(true, 20)
-                            } else {
+                            if (!cropViewRef.current) {
                                 Alert.alert(
                                     "Có lỗi!",
                                     "cropViewRef errors lỗi không mong luôn",
@@ -459,6 +456,11 @@ const CameraView = ({
                                         { text: "OK", onPress: () => console.log("OK Pressed") }
                                     ]
                                 );
+                                return 0
+                            }
+                            if (!loadImg) {
+                                setLoadImg(true)
+                                cropViewRef.current.saveImage(true, 20)
                             }
                         }}
                             style={styles[`${'NORMAL'}_btnPhoto`]}
