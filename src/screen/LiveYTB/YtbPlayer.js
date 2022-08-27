@@ -3,53 +3,26 @@ import {
     View,
     StyleSheet,
     Dimensions,
-    ScrollView,
+    FlatList,
     Text, BackHandler,
     SafeAreaView,
     PixelRatio, TouchableOpacity, StatusBar
 } from 'react-native';
-import Video from 'react-native-video';
-import { get, throttle, isEmpty } from 'lodash';
-import { Icon, Tab, Tabs } from 'native-base';
-import LottieView from 'lottie-react-native';
-import StepIndicator from 'react-native-step-indicator';
+import { Icon, Card } from 'native-base';
 import { withNavigationFocus } from 'react-navigation';
 // import YoutubePlayer from "react-native-yt-player";
 import YoutubePlayer from 'react-native-youtube-iframe';
 import KeepAwake from 'react-native-keep-awake';
 import Orientation from 'react-native-orientation-locker';
-import { Snackbar } from 'react-native-paper';
-
-import { Loading, useRequest } from '../../handle/api';
+import { Thumbnail } from 'react-native-thumbnail-video';
 import { helpers } from '../../utils/helpers';
-import { fontMaker, fontStyles } from '../../utils/fonts';
+
 import { COLOR } from '../../handle/Constant';
 // 
 import BackVideoHeader from './com/header';
 
 
 const { width, height } = Dimensions.get('window');
-
-const stepIndicatorStyles = {
-    stepIndicatorSize: 10,
-    currentStepIndicatorSize: 30,
-    separatorStrokeWidth: 3,
-    currentStepStrokeWidth: 3,
-    stepStrokeCurrentColor: '#fe7013',
-    separatorFinishedColor: '#fe7013',
-    separatorUnFinishedColor: '#aaaaaa',
-    stepIndicatorFinishedColor: '#fe7013',
-    stepIndicatorUnFinishedColor: '#aaaaaa',
-    stepIndicatorCurrentColor: '#ffffff',
-    stepIndicatorLabelFontSize: 15,
-    currentStepIndicatorLabelFontSize: 15,
-    stepIndicatorLabelCurrentColor: '#000000',
-    stepIndicatorLabelFinishedColor: '#ffffff',
-    stepIndicatorLabelUnFinishedColor: 'rgba(255,255,255,.5)',
-    labelColor: '#666666',
-    labelSize: 15,
-    currentStepLabelColor: '#fe7013',
-};
 
 const Colors = {
     white: '#ffffff',
@@ -60,7 +33,10 @@ const Colors = {
 const CoursePlayer = (props) => {
     const { navigation } = props;
 
-    const lectureId = navigation.getParam('lectureId', '');
+    const url = navigation.getParam('url', '');
+
+    const idYTB = React.useMemo(() => youtube_parser(url), [url])
+    console.log('idYTB', idYTB)
     const [full, setFull] = useState(false);
 
     const mediaPlayer = useRef();
@@ -113,7 +89,7 @@ const CoursePlayer = (props) => {
                 ref={mediaPlayer}
                 height={PixelRatio.roundToNearestPixel(width / (16 / 9))}
                 width={width}
-                videoId={'7DoHAMXLjZA'}
+                videoId={idYTB || '7DoHAMXLjZA'}
                 // videoId="qorU1icdKps"
                 play={isPlay}
                 onChangeState={event => {
@@ -129,9 +105,84 @@ const CoursePlayer = (props) => {
                     showClosedCaptions: true
                 }}
             />
+            <View style={{padding: 10}}>
+                <Text style={{fontSize: 22, fontWeight: '500'}}>Bài giảng liên quan</Text>
+            </View>
+            <FlatList
+                data={fake}
+                renderItem={({ item, index }) => {
+                    return (
+                        <ItemYtb onPress={() => { }} data={item} />
+                    )
+                }}
+            />
+
         </SafeAreaView>
     )
 };
+
+const fake = [
+    {
+        name: 'Saccarozơ - Bài 51',
+        url: 'https://www.youtube.com/watch?v=jI4lG1tGWn4'
+    },
+    {
+        name: 'Truyện Kiều - Ngữ văn',
+        url: 'https://www.youtube.com/watch?v=6d9VH3tC1vs'
+    },
+]
+
+
+export const ItemYtb = ({ onPress, data }) => {
+    return (
+        <View style={{
+            paddingHorizontal: 10,
+            paddingVertical: 10
+        }}>
+            <Thumbnail
+                iconStyle={{
+                    height: 25,
+                    width: 25,
+                }}
+                imageWidth={helpers.width-20}
+                imageHeight={helpers.width*9/16}
+                // url={'https://www.youtube.com/watch?v=yI498f491b4'}
+                url={data.url}
+            />
+            <View style={{
+                padding: 6,
+                width: 3 * helpers.width / 4,
+            }}>
+                <View style={{
+                    flexDirection: 'row',
+                }}>
+                    <View style={{ flex: 1 }}>
+                        <Text numberOfLines={1} style={{ fontSize: 20, fontWeight: '500' }}>{data.name}</Text>
+                    </View>
+                    {/* <Text style={{ textAlign: 'right', marginLeft: 7, fontWeight: '600' }}>Từ 120k/tháng</Text> */}
+                </View>
+                <Text style={{ marginVertical: 5 }}>Giải đề chi tiết bộ đề luyện thi 2022</Text>
+
+                <View style={{
+                    flexDirection: 'row',
+                    alignItems: 'center'
+                }}>
+                    <Text style={{ color: '#666' }}><Icon name="star" style={{ color: COLOR.MAIN, fontSize: 20 }} /> 4.7</Text>
+                    <Text style={{ marginLeft: 25, color: '#666' }}>CourseId  #4567</Text>
+                </View>
+            </View>
+
+            <TouchableOpacity
+                style={{
+                    flex: 1,
+                    position: 'absolute', top: 0, left: 0,
+                    width: '100%', height: '100%',
+                }}
+                onPress={onPress}>
+            </TouchableOpacity>
+        </View>
+    )
+}
 
 const styles = StyleSheet.create({
     container: {
@@ -207,4 +258,10 @@ function changeKeepAwake(shouldBeAwake) {
     } else {
         KeepAwake.deactivate();
     }
+}
+
+function youtube_parser(url) {
+    var regExp = /^.*((youtu.be\/)|(v\/)|(\/u\/\w\/)|(embed\/)|(watch\?))\??v?=?([^#&?]*).*/;
+    var match = url.match(regExp);
+    return (match && match[7].length == 11) ? match[7] : false;
 }

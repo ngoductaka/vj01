@@ -49,6 +49,8 @@ import { ViewWithBanner, FbNativeBanner } from '../../utils/facebookAds';
 import LiveStream from './component/LiveStream';
 import { Colors } from '../../utils/colors';
 import LiveNow from './component/LiveNow';
+import { SeeAllTitle, ItemYtb, ItemCourse } from '../LiveYTB';
+import { endpoints } from '../../constant/endpoints';
 
 const { width } = Dimensions.get('window');
 
@@ -170,7 +172,7 @@ const Class = memo((props) => {
 	const getNumberOfUnseenNoti = async () => {
 		try {
 			const result = await api.get('/notification/unseen');
-			console.log('getNumberOfUnseenNoti', result);
+			// console.log('getNumberOfUnseenNoti', result);
 			setNoti(get(result, 'count_unseen_notification', 0));
 		} catch (error) {
 			console.log(error);
@@ -365,7 +367,7 @@ const Class = memo((props) => {
 				<View style={{ flex: 1, padding: 10, paddingRight: 0 }}>
 					{
 						delayShow ? null :
-							(props.userInfo.class == 6 ?
+							([3, 6, 7, 10].includes(props.userInfo.class) ?
 								<Tabs renderTabBar={() => <ScrollableTab />}
 									tabContainerStyle={styles.barContainer} tabBarUnderlineStyle={{ height: 2, backgroundColor: Colors.pri }} tabBarActiveTextColor={Colors.pri} tabBarBackgroundColor={Colors.white}>
 									<Tab textStyle={styles.textStyle}
@@ -439,7 +441,6 @@ const Class = memo((props) => {
 					}
 					{delayShow2 ? null :
 						<Qna navigation={props.navigation} />}
-					{/* <LiveYTB navigation={props.navigation} /> */}
 					{delayShow2 ? null :
 						<LiveStream grade={props.userInfo.class} />}
 
@@ -470,6 +471,8 @@ const Class = memo((props) => {
 								}}
 								keyExtractor={(item, index) => index + 'game_item'}
 							/>
+							{/* dnd new version */}
+							{/* <LiveYTB navigation={props.navigation} /> */}
 
 							{/* <Qna navigation={props.navigation} /> */}
 
@@ -1021,24 +1024,65 @@ const Qna = React.memo(({ navigation }) => {
 	)
 })
 const LiveYTB = React.memo(({ navigation }) => {
+
+
+	const [dataLive, setDataLive] = useState([]);
+	const [freeCourse, setFreeCourse] = useState([]);
+	useEffect(() => {
+		requestDataInit();
+	}, []);
+
+	const requestDataInit = async () => {
+		try {
+			const freePoint = `${endpoints.ROOT_URL}/courses/livestreams/2/show`;
+			const paidPoint = `${endpoints.ROOT_URL}/courses/livestreams/1/show`;
+			const [free, paid] = await Promise.all([
+				api.get(freePoint),
+				api.get(paidPoint),
+			]);
+			setDataLive(paid.data.lessons)
+			setFreeCourse(free.data.lessons)
+
+		} catch (err) {
+
+		}
+
+	}
+
 	return (
-		<TouchableOpacity onPress={() => {
-			navigation.navigate('HomeLiveYTB')
-		}} style={{
-			flexDirection: 'row', alignItems: 'center',
-			backgroundColor: 'rgba(254, 225, 210)',
-		}}>
-			<LottieView
-				autoPlay
-				loop
-				style={{ width: 140, height: 140, alignSelf: 'center' }}
-				source={require('../../public/livestream.json')}
-			/>
-			<View style={{ flex: 1, alignItems: 'center' }}>
-				<Text style={{ fontSize: 23, color: COLOR.MAIN, fontWeight: 'bold', marginTop: 20, }}>Lớp học online</Text>
-				<Text style={{ fontSize: 16, color: COLOR.MAIN, opacity: 0.8, fontWeight: '400', marginTop: 10 }}>Hướng dẫn chi tiết, giải bài tập</Text>
+		<View>
+			<SeeAllTitle
+				onPress={() => navigation.navigate('HomeLiveYTB')}
+				text={`Lớp học livestream`} />
+			<ScrollView horizontal showsHorizontalScrollIndicator={false}>
+				{dataLive && dataLive[0] && dataLive.map((videoItem, index) => {
+					return <ItemYtb
+						isPass={index == 1}
+						navigation={navigation} data={videoItem} />
+				})}
+			</ScrollView>
+			<View style={[{
+				height: (helpers.width - 20) / 2,
+				width: helpers.width - 20, marginVertical: 15,
+				borderRadius: 10, overflow: 'hidden'
+
+			}, styles.shadow]}>
+				<Image
+					resizeMode="center"
+					style={{ height: null, width: null, flex: 1 }}
+					source={{ uri: 'https://aeonmall-tanphuceladon.com.vn/wp-content/uploads/2022/01/the-1200-x-800-px-1000-%C3%97-625-px-3.png' }}
+				/>
 			</View>
-		</TouchableOpacity >
+
+			<SeeAllTitle
+				onPress={() => navigation.navigate('HomeLiveYTB')}
+				text={`Khoá học livestream`} />
+			<ScrollView horizontal showsHorizontalScrollIndicator={false}>
+				{freeCourse && freeCourse[0] && freeCourse.map(videoItem => {
+					return <ItemCourse navigation={navigation} data={videoItem} />
+				})}
+			</ScrollView>
+		</View>
 	)
 })
 

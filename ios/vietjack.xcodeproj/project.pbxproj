@@ -945,13 +945,13 @@
 				CODE_SIGN_ENTITLEMENTS = VietJack/VietJack.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 133;
+				CURRENT_PROJECT_VERSION = 142;
 				DEVELOPMENT_TEAM = 289VSKW3KF;
 				ENABLE_BITCODE = NO;
 				INFOPLIST_FILE = VietJack/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				MARKETING_VERSION = 2.3.17;
+				MARKETING_VERSION = 2.3.25;
 				OTHER_LDFLAGS = (
 					"$(inherited)",
 					"-ObjC",
@@ -977,12 +977,12 @@
 				CODE_SIGN_ENTITLEMENTS = VietJack/VietJack.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 133;
+				CURRENT_PROJECT_VERSION = 142;
 				DEVELOPMENT_TEAM = 289VSKW3KF;
 				INFOPLIST_FILE = VietJack/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				MARKETING_VERSION = 2.3.17;
+				MARKETING_VERSION = 2.3.25;
 				OTHER_LDFLAGS = (
 					"$(inherited)",
 					"-ObjC",

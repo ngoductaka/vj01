@@ -148,7 +148,7 @@ const api = {
 			})
 			.catch(err => {
 				if (err.request) {
-					console.log('error4', err.request);
+					// console.log('error4', err.request);
 				}
 				// if (err.response) {
 				// 	console.log('error1', err.response.data);

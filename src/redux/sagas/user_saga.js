@@ -42,6 +42,8 @@ function* loginWithApple(action) {
             );
 
             const name = get(appleAuthRequestResponse, 'fullName.givenName', '') + get(appleAuthRequestResponse, 'fullName.familyName', '');
+            // alert(JSON.stringify(appleAuthRequestResponse))
+            saveItem('apple_data', appleAuthRequestResponse);
 
             // console.log('asbdkjabdkjasd', name);
             const payload = {
@@ -61,6 +63,12 @@ function* loginWithApple(action) {
                     ...result.user,
                     token: result.access_token,
                     device: result.device ? result.device : null
+                }
+                if (temp.user && temp.user.grade_id) {
+                    temp.user.grade_id = null
+                }
+                if (temp && temp.grade_id) {
+                    temp.grade_id = null
                 }
                 saveItem(KEY.saved_user, temp);
                 saveItem(Constants.ACCESS_TOKEN, result.access_token);
@@ -96,7 +104,6 @@ function* loginWithApple(action) {
 function* loginWithFacebook() {
     try {
         const data = yield user_services.onLoginFbPress();
-        console.log('====login facebook',data)
         const result = yield api.post(endpoints.SOCIAL_LOGIN, {
             "token_social": data.token,
             "token": data.token,
@@ -176,7 +183,7 @@ function* loginWithGoogle() {
     } catch (error) {
         // console.log('error gg login', error)
         console.log('gg login fail', error);
-        if(error.message) {
+        if (error.message) {
             Toast.showWithGravity(String(error.message), Toast.LONG, Toast.TOP)
         } else {
             Toast.showWithGravity("Login google thất bại vui lòng thử lại sau", Toast.LONG, Toast.TOP)

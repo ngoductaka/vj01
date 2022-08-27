@@ -15,16 +15,17 @@ import { setUserInfo } from '../../redux/action/user_info';
 
 
 import { ClassChoosenModal } from '../../component/shared/ClassChoosenModal';
-import { fontSize, blackColor, COLOR, avatarIndex } from '../../handle/Constant';
+import { Constants, fontSize, blackColor, COLOR, avatarIndex } from '../../handle/Constant';
 import LinearGradient from 'react-native-linear-gradient';
 import SimpleToast from 'react-native-simple-toast';
 import { helpers } from '../../utils/helpers';
 import { makeOptionShare } from '../../constant';
-import { ExitModal } from '../../component/shared/ExitModal';
+import { ExitModal, DelUserModal } from '../../component/shared/ExitModal';
 import api, { useRequest } from '../../handle/api';
 import { actGetListSubjects } from '../../redux/action/class';
 import { get } from 'lodash';
-import { saveItem, KEY } from '../../handle/handleStorage';
+import { saveItem, KEY, getItem } from '../../handle/handleStorage';
+import Axios from 'axios';
 
 const Profile = (props) => {
 
@@ -34,6 +35,7 @@ const Profile = (props) => {
     const [show, setShow] = useState(false);
     const [mount, setMount] = useState(false);
     const [showExitModal, setShowExitModal] = useState(false);
+    const [showDelModal, setShowDelModal] = useState(false);
     const avatarIdx = useSelector(state => get(state, 'userInfo.user.avatar_id', 0));
 
     const netInfo = useNetInfo();
@@ -95,7 +97,6 @@ const Profile = (props) => {
     };
 
     useEffect(() => {
-        console.log('currnet', currentClass);
         if (currentClass) {
             api.post(`/grades/${parseInt(currentClass)}/user`, {
                 "user_id": userInfo.id,
@@ -118,6 +119,52 @@ const Profile = (props) => {
 
     const _handleShare = () => {
         Share.open(makeOptionShare())
+    }
+    console.log('userInfo', userInfo)
+    const _handleDelUser = async () => {
+        try {
+
+            await AsyncStorage.clear()
+                .then(() => console.log('AsyncStorage clear'))
+                .catch(err => {
+                    console.log('errerrerrerrerr', err)
+                })
+            await api.post(`/users/${userInfo.id}/delete`)
+                .then((dndval) => console.log(dndval, 'del success', `users/${userInfo.id}/delete`))
+                .catch(err => {
+                    console.log('err_del', err)
+                })
+            const data = await getItem('apple_data')
+            if (data) {
+                // alert(JSON.stringify(data))
+
+                await Axios.post('https://appleid.apple.com/auth/revoke', {
+                    'client_id': '289VSKW3KF',
+                    'client_secret': 'MIGTAgEAMBMGByqGSM49AgEGCCqGSM49AwEHBHkwdwIBAQQgOhvkn7MOIlO9R8mPVw/OoznhpyMDtpIimGPmP0iQBA6gCgYIKoZIzj0DAQehRANCAATNjW097gZj7lXSS8VPTshoZRKUahB5Z6Jd/BcHo4dHd0+AnN7LR9PWw9u6PWR/KiBb2vMQxANOe7HqehiUsV3m',
+                    'token': data.identityToken,
+                    'token_type_hint': 'access_token',
+                }, {
+                    headers: {
+                        "content-type": 'application/x-www-form-urlencoded'
+                    }
+                })
+                    .then((data) => {
+                        // alert("dddddd"+JSON.stringify(data))
+                    })
+                    .catch(err => {
+                        console.log('apple logout', JSON.stringify(err))
+                        // alert('apple logout err'+JSON.stringify(err))
+                    })
+            }
+            navigation.navigate('Login');
+            dispatch(actLogout());
+
+        } catch (err) {
+            console.log('erractLogout', err)
+            navigation.navigate('Login');
+            dispatch(actLogout());
+
+        }
     }
 
     return (
@@ -182,6 +229,7 @@ const Profile = (props) => {
                     <ProfileItem navigation={navigation} type='Entypo' icon='mail' color='#FA9B43' size={24} title='Phản hồi' route='FeedBack' />
                     <ProfileItem navigation={navigation} type='SimpleLineIcons' icon='share' size={22} color='#1D8BF8' title='Chia sẻ ứng dụng' handlePress={_handleShare} />
                     <ProfileItem navigation={navigation} type='AntDesign' icon='poweroff' size={23} color='#ED5855' title='Đăng xuất' handlePress={() => setShowExitModal(true)} />
+                    <ProfileItem navigation={navigation} type='AntDesign' icon='deleteuser' size={23} color='#ED5855' title='Xoá tài khoản' handlePress={() => setShowDelModal(true)} />
                     <Text style={{ alignSelf: 'flex-end', marginTop: 20, fontSize: 15, ...fontMaker({ weight: 'Regular' }), color: blackColor(.6) }}>Phiên bản 2.2.92</Text>
                 </ScrollView>
             </View>
@@ -197,7 +245,11 @@ const Profile = (props) => {
             <ExitModal
                 show={showExitModal}
                 onConfirm={() => setShowExitModal(false)}
-                onCancel={() => _onLogout()}
+                onCancel={() => _onLogout()} />
+            <DelUserModal
+                show={showDelModal}
+                onConfirm={() => setShowDelModal(false)}
+                onCancel={_handleDelUser}
             />
         </View >
     )

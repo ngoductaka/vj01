@@ -117,7 +117,7 @@ const Auth = (props) => {
                     .then(user => {
                         const userData = JSON.parse(user);
                         if (userData) {
-                            console.log('use232ruseruseruser', userData.grade_id)
+                            // console.log('use232ruseruseruser', userData.grade_id)
                             if (userData.grade_id) {
                                 props.setUserInfo({ class: userData.grade_id });
                             }
