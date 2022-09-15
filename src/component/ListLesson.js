@@ -55,7 +55,7 @@ const ListLesson = (props) => {
 
 
 	const [allBookData, loading, err] = useRequest(endPoint, [endPoint]);
-	const [hostLesson, hostLoading, errHost] = useRequest(`/subjects/${subjectID || subject}/parts-data`, [subjectID || subject])
+	// const [hostLesson, hostLoading, errHost] = useRequest(`/subjects/${subjectID || subject}/parts-data`, [subjectID || subject])
 
 	let bookData = {};
 	if (allBookData) bookData = allBookData.data;
@@ -124,9 +124,13 @@ const ListLesson = (props) => {
 							_renderListLesson({ lessonItem, indexLesson, ...propsItem })}
 					/>}
 			</Loading>
+
+			<View style={{marginTop: 20}}>
+				<ViewWithBanner type="LESSON_TREE" />
+			</View>
 			{/* {} */}
 
-			{showContent &&
+			{/* {showContent &&
 				<View>
 					{
 						hostLesson && !isEmpty(hostLesson.exams) ?
@@ -160,7 +164,7 @@ const ListLesson = (props) => {
 									})}
 							</View> : null
 					}
-
+					
 					<Text style={{ fontSize: 22, marginTop: 35, marginBottom: 15, ...fontMaker({ weight: fontStyles.SemiBold }) }}>Gợi ý cho bạn </Text>
 					{
 						isEmpty(hostLesson) ? null :
@@ -176,9 +180,6 @@ const ListLesson = (props) => {
 							</ScrollView>
 
 					}
-					<View>
-						<ViewWithBanner type="LESSON_TREE" />
-					</View>
 					{
 						hostLesson && !isEmpty(hostLesson.articles) ?
 							get(hostLesson, 'articles', []).map(item => {
@@ -197,7 +198,7 @@ const ListLesson = (props) => {
 					}
 
 				</View>
-			}
+			} */}
 
 		</SafeAreaView>
 	)
