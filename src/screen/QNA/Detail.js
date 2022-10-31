@@ -75,6 +75,17 @@ const QnA = (props) => {
     const [listImgShow, setListShowImg] = useState(false);
     const [refreshing, setRefesh] = useState(false);
 
+    useEffect(() => {
+        try {
+            const advertParam = props.navigation.getParam('advert', null);
+            if (advertParam) {
+                advertParam.show()
+            }
+        } catch (err) {
+            console.log('dddd', err)
+        }
+    }, []);
+
     const requesQuestion = (isScroll) => {
         setLoading(true);
         return api.get(`/question/${questionId}`)

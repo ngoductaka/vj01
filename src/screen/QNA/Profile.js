@@ -20,12 +20,11 @@ const { width } = Dimensions.get('screen');
 
 const UserProfile = (props) => {
     const userId = props.navigation.getParam('userId', '');
-    console.log('userId', userId)
     const _handleBack = () => {
         props.navigation.goBack();
     }
     const [userData, err, loading] = useRequest(`qa-user/profile/${userId}`, [userId]);
-    console.log('userData', userData)
+
 
     return (
         <SafeAreaView style={styles.container}>

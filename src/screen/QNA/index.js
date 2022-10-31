@@ -47,9 +47,10 @@ const QnA = (props) => {
     const [filter, setFilter] = useState({ cls: current_class, popular: false });
     const [showFilter, setShowFilter] = useState(false);
 
-    const hanldleClick = useCallback((params) => {
-        props.navigation.navigate("QuestionDetail", params);
-    }, []);
+    const hanldleClick = useCallback((params = {}) => {
+        console.log('dodododod')
+        props.navigation.navigate("QuestionDetail", { ...params, advert });
+    }, [advert]);
 
     const [listQestion, setListQuestion] = useState([]);
     const [page, setPage] = useState({
@@ -132,7 +133,8 @@ const QnA = (props) => {
     const [refreshing, setRefreshing] = React.useState(false);
 
     const _handleNavigate = (id = '') => {
-        props.navigation.navigate('UserQnA', { userId: id })
+        console.log('ddddssss');
+        props.navigation.navigate('UserQnA', { userId: id, advert })
     }
     const _handleReport = (questionId) => {
     };
@@ -172,7 +174,7 @@ const QnA = (props) => {
     const _renderItem = useCallback(({ item, index }) => {
         return <RenderQuestion {...{
             item, index, hanldleClick, _handleNavigate,
-            _handleReport, _handleFollow
+            _handleReport, _handleFollow, advert
         }} />
     }, []);
 
@@ -223,7 +225,7 @@ const QnA = (props) => {
                         {showHeader && <FilterHeader loading={page.loading} filter={filter} setFilter={setFilter} show={showHeader} />}
                     </View>
                 </View>
-                <Animatable.View
+                {/* <Animatable.View
                     animation={'slideInRight'}
                     delay={1000}
                     style={{
@@ -245,7 +247,7 @@ const QnA = (props) => {
                         }}>
                         <Icon name="camera" type="AntDesign" style={{ color: '#fff' }} />
                     </TouchableOpacity>
-                </Animatable.View>
+                </Animatable.View> */}
 
             </SafeAreaView>
 
@@ -428,7 +430,7 @@ const RenderHead = ({ filter, setFilter, setShowFilter, navigation, loading, ava
                     </TouchableOpacity>
                 </View>
             </View>
-            <Qna navigation={navigation} />
+            {/* <Qna navigation={navigation} /> */}
             <View>
                 {/* <View>
                     <ScrollView
@@ -729,7 +731,7 @@ const Qna = React.memo(({ navigation = null }) => {
         </TouchableOpacity >
     )
 })
-const RenderColor = ({role}) => {
+const RenderColor = ({ role }) => {
     if ([5, 6, 7].includes(role)) return (
         <Icon style={{
             position: 'absolute', top: -6, right: -4,

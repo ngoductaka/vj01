@@ -439,8 +439,8 @@ const Class = memo((props) => {
 								</View>
 							)
 					}
-					{delayShow2 ? null :
-						<Qna navigation={props.navigation} />}
+					{/* {delayShow2 ? null :
+						<Qna navigation={props.navigation} />} */}
 					{delayShow2 ? null :
 						<LiveStream grade={props.userInfo.class} />}
 

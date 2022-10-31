@@ -52,17 +52,12 @@ const QnA = (props) => {
     useEffect(() => {
         try {
             const advertParam = props.navigation.getParam('advert', null);
-            console.log('search ads', advertParam)
             if (advertParam) {
                 advertParam.show()
             }
-
         } catch (err) {
             console.log('dddd', err)
         }
-
-        // _handleClickCamera()
-
     }, []);
 
     useEffect(() => {
@@ -232,7 +227,7 @@ const OptionNewQna = ({ navigation }) => {
                 // height: 500
             }}>
             {/* <Text style={{ fontSize: 20, color: '#000', marginVertical: 20 }}>Vui lòng nhập từ khoá để tìm kiếm</Text> */}
-            <TouchableOpacity onPress={() => navigation.navigate('MakeQuestion')}>
+            {/* <TouchableOpacity onPress={() => navigation.navigate('MakeQuestion')}>
                 <View
                     style={[{
                         // flex: 1,
@@ -247,8 +242,6 @@ const OptionNewQna = ({ navigation }) => {
                     }]}
                 >
                     <View style={{ flex: 1, height: width / 2 - 30, width: width / 2 - 30, borderRadius: 10, overflow: 'hidden', justifyContent: 'center', alignItems: 'center' }}>
-                        {/* <Image source={images.crop} style={{ flex: 1, width: null, height: null, borderRadius: 10 }} resizeMode="cover" /> */}
-
                         <LottieView
                             autoPlay
                             loop
@@ -267,9 +260,8 @@ const OptionNewQna = ({ navigation }) => {
                             </View>
                         </View>
                     </View>
-
                 </View>
-            </TouchableOpacity>
+            </TouchableOpacity> */}
             <TouchableOpacity style={{ marginTop: 20 }} onPress={() => navigation.navigate('createTextQna')}>
                 <View
                     style={[{
