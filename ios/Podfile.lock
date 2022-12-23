@@ -363,8 +363,6 @@ PODS:
     - React-Core
   - react-native-keep-awake (4.0.0):
     - React
-  - react-native-kochava-tracker (1.4.1):
-    - React
   - react-native-netinfo (5.9.10):
     - React-Core
   - react-native-orientation-locker (1.2.0):
@@ -569,7 +567,6 @@ DEPENDENCIES:
   - react-native-image-picker (from `../node_modules/react-native-image-picker`)
   - react-native-image-resizer (from `../node_modules/react-native-image-resizer`)
   - react-native-keep-awake (from `../node_modules/react-native-keep-awake`)
-  - react-native-kochava-tracker (from `../node_modules/react-native-kochava-tracker`)
   - "react-native-netinfo (from `../node_modules/@react-native-community/netinfo`)"
   - react-native-orientation-locker (from `../node_modules/react-native-orientation-locker`)
   - react-native-pdf (from `../node_modules/react-native-pdf`)
@@ -713,8 +710,6 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native-image-resizer"
   react-native-keep-awake:
     :path: "../node_modules/react-native-keep-awake"
-  react-native-kochava-tracker:
-    :path: "../node_modules/react-native-kochava-tracker"
   react-native-netinfo:
     :path: "../node_modules/@react-native-community/netinfo"
   react-native-orientation-locker:
@@ -870,7 +865,6 @@ SPEC CHECKSUMS:
   react-native-image-picker: 92f51a85a62c2d829dcbd0dda5af99e6f988a113
   react-native-image-resizer: d9fb629a867335bdc13230ac2a58702bb8c8828f
   react-native-keep-awake: afad8a51dfef9fe9655a6344771be32c8596d774
-  react-native-kochava-tracker: 2dd379e782904bc15ceea1d17a881f7dbc8ffd81
   react-native-netinfo: 30fb89fa913c342be82a887b56e96be6d71201dd
   react-native-orientation-locker: 47aaa55d59bfc1613804dc22f159e6bb1cca5f30
   react-native-pdf: 4b5a9e4465a6a3b399e91dc4838eb44ddf716d1f
