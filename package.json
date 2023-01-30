@@ -3,8 +3,8 @@
   "version": "0.0.1",
   "private": true,
   "scripts": {
-    "android": "react-native run-android",
-    "ios": "react-native run-ios",
+    "android": "npx react-native run-android",
+    "ios": "npx react-native run-ios",
     "apk": "cd android && ./gradlew assembleRelease",
     "abb": "cd android && ./gradlew bundleRelease",
     "start": "react-native start",

@@ -152,12 +152,13 @@ function* loginWithGoogle() {
     try {
         yield GoogleSignin.hasPlayServices();
         const userInfo = yield GoogleSignin.signIn();
-        // console.log('-----userInfouserInfouserInfo23----', userInfo);
+        console.log('-----32323dnd23----', userInfo);
         const result = yield api.post(endpoints.SOCIAL_LOGIN, {
             "token_social": userInfo.idToken,
             "token": userInfo.idToken,
             "type": 1,
         });
+        console.log('dnd22323', result.access_token)
         if (result.access_token) {
             const payload = {
                 ...result.user,
