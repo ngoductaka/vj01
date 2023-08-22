@@ -367,7 +367,7 @@ const Class = memo((props) => {
 				<View style={{ flex: 1, padding: 10, paddingRight: 0 }}>
 					{
 						delayShow ? null :
-							([3, 6, 7, 10].includes(props.userInfo.class) ?
+							([3,4, 6, 7,8, 10,11].includes(props.userInfo.class) ?
 								<Tabs renderTabBar={() => <ScrollableTab />}
 									tabContainerStyle={styles.barContainer} tabBarUnderlineStyle={{ height: 2, backgroundColor: Colors.pri }} tabBarActiveTextColor={Colors.pri} tabBarBackgroundColor={Colors.white}>
 									<Tab textStyle={styles.textStyle}

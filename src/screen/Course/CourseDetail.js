@@ -21,7 +21,6 @@ import { convertMoney, helpers } from '../../utils/helpers';
 import TableContent, { FreeCourse } from './component/TableContent';
 import CourseHeader from './component/CourseHeader';
 import { BtnFullWidth, TitleCourse } from './component/BtnFullWidth';
-import ConsultingForm from '../../component/ConsultingForm';
 import { getDetailCourse } from './services';
 import { fontMaker, fontStyles } from '../../utils/fonts';
 import { ModalWrapp } from './component/ModalVote';

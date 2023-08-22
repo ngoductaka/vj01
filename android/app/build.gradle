@@ -138,7 +138,7 @@ android {
         }
         minSdkVersion 21
         multiDexEnabled true
-        versionCode 138
+        versionCode 140
         versionName "2.2.99"
         missingDimensionStrategy 'react-native-camera', 'mlkit'
     }
