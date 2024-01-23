@@ -8,6 +8,7 @@
     "apk": "cd android && ./gradlew assembleRelease",
     "abb": "cd android && ./gradlew bundleRelease",
     "start": "react-native start",
+    "build:ios": "react-native bundle --entry-file='index.js' --bundle-output='./ios/main.jsbundle' --dev=false --platform='ios'",
     "test": "jest",
     "lint": "eslint ."
   },
